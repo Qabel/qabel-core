@@ -6,7 +6,7 @@ version = '0.1'
 
 jar {
 	manifest {
-		attributes 'Implementation-Title': 'Gradle Quickstart', 'Implementation-Version': version
+		attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
 	}
 }
 

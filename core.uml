@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:UMLLabProfile="http:///schemas/UMLLabProfile/NS/0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xsi:schemaLocation="http:///schemas/UMLLabProfile/NS/0 pathmap://UMLLAB_PROFILES/UMLLab.profile.uml#UMLLabProfile-Annotation_2-UMLLabProfile">
+  <uml:Model xmi:id="_3qPb4CIxEeSa1ZGIFJfw4w" name="core">
+    <eAnnotations xmi:id="_3zeQYCIxEeSa1ZGIFJfw4w" source="http://ns.yatta.de/umllab">
+      <contents xmi:type="ecore:EAnnotation" xmi:id="_3zeQYSIxEeSa1ZGIFJfw4w" source="codegen">
+        <details xmi:id="_3zeQYiIxEeSa1ZGIFJfw4w" key="codegenDirectory" value="/core/src/main/java"/>
+        <details xmi:id="_4NJUoCIxEeSa1ZGIFJfw4w" key="AssociatedSourceCode" value="/core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;2103581714/1;/core/src/main/java/de/qabel/core/config/Account.java;2941587434/1;/core/src/main/java/de/qabel/core/config/Accounts.java;253036883/1;/core/src/main/java/de/qabel/core/config/DropServer.java;1425750211/1;/core/src/main/java/de/qabel/core/config/DropServers.java;3248318116/1;/core/src/main/java/de/qabel/core/config/Identities.java;3800839486/1;/core/src/main/java/de/qabel/core/config/Identity.java;126576489/1;/core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;2723058210/1;/core/src/main/java/de/qabel/core/config/Settings.java;1678202969/1;/core/src/main/java/de/qabel/core/config/StorageServer.java;3834685852/1;/core/src/main/java/de/qabel/core/config/StorageServers.java;1432809180/1;/core/src/main/java/de/qabel/core/config/StorageVolume.java;1091653358/1;/core/src/main/java/de/qabel/core/config/StorageVolumes.java;1832782963/1;/core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;64931322/1;/core/src/main/java/de/qabel/core/drop/DropController.java;2805043907/1;/core/src/main/java/de/qabel/core/drop/DropListener.java;3397699833/1;/core/src/main/java/de/qabel/core/module/Module.java;2460479784/1;/core/src/main/java/de/qabel/core/module/ModuleManager.java;2794791002/1;/core/src/main/java/de/qabel/core/storage/StorageBlob.java;867182193/1;/core/src/main/java/de/qabel/core/storage/StorageConnection.java;621147669/1;/core/src/main/java/de/qabel/core/storage/StorageController.java;643696517/1;/core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;2999967961/1;/core/src/main/java/de/qabel/core/config/SyncedSettings.java;987959524/1;/core/src/main/java/de/qabel/core/config/LocalSettings.java;2370732363/1;"/>
+      </contents>
+    </eAnnotations>
+    <elementImport xmi:id="_4IlkwCIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+    </elementImport>
+    <elementImport xmi:id="_4IlkwSIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
+    </elementImport>
+    <elementImport xmi:id="_4IlkwiIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#char"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL0CIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#double"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL0SIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#float"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL0iIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL0yIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL1CIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#short"/>
+    </elementImport>
+    <elementImport xmi:id="_4ImL1SIxEeSa1ZGIFJfw4w">
+      <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+    </elementImport>
+    <packagedElement xmi:type="uml:Package" xmi:id="_4IKuACIxEeSa1ZGIFJfw4w" name="de">
+      <packagedElement xmi:type="uml:Package" xmi:id="_4IKuASIxEeSa1ZGIFJfw4w" name="qabel">
+        <packagedElement xmi:type="uml:Package" xmi:id="_4ILVEiIxEeSa1ZGIFJfw4w" name="core">
+          <packagedElement xmi:type="uml:Package" xmi:id="_4IL8ICIxEeSa1ZGIFJfw4w" name="config">
+            <packagedElement xmi:type="uml:Class" xmi:id="_4InZ8CIxEeSa1ZGIFJfw4w" name="AbstractModuleSettings" isAbstract="true"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IoBACIxEeSa1ZGIFJfw4w" name="Account">
+              <ownedAttribute xmi:id="_4KaJsyIxEeSa1ZGIFJfw4w" name="accounts" type="_4IooECIxEeSa1ZGIFJfw4w" association="_4KawwyIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KaJtCIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_AAaxwCI0EeSa1ZGIFJfw4w" name="id">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_CZrvMCI0EeSa1ZGIFJfw4w" name="updated">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_DW1T8CI0EeSa1ZGIFJfw4w" name="created">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_EpYg8CI0EeSa1ZGIFJfw4w" name="deleted">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_hSuDcCI1EeSa1ZGIFJfw4w" name="provider">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_icyC0CI1EeSa1ZGIFJfw4w" name="user">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_jWQogCI1EeSa1ZGIFJfw4w" name="auth">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IooECIxEeSa1ZGIFJfw4w" name="Accounts">
+              <ownedAttribute xmi:id="_4KawwCIxEeSa1ZGIFJfw4w" name="account" type="_4IoBACIxEeSa1ZGIFJfw4w" association="_4KawwyIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KawwSIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KawwiIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KawxCIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KawyCIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KawxSIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4Ip2MCIxEeSa1ZGIFJfw4w" name="DropServer">
+              <ownedAttribute xmi:id="_4KbX0CIxEeSa1ZGIFJfw4w" name="dropServers" type="_4IrEUCIxEeSa1ZGIFJfw4w" association="_4KbX1SIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KbX0SIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_X_VpACI0EeSa1ZGIFJfw4w" name="id">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_jtbn0CI0EeSa1ZGIFJfw4w" name="updated">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_koZbQCI0EeSa1ZGIFJfw4w" name="created">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_liKU0CI0EeSa1ZGIFJfw4w" name="deleted">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_me2mkCI0EeSa1ZGIFJfw4w" name="url">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_nWn8ECI0EeSa1ZGIFJfw4w" name="auth">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_oJaq8CI0EeSa1ZGIFJfw4w" name="active">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_pO66cCI0EeSa1ZGIFJfw4w" name="websockets">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_cWBf8CI1EeSa1ZGIFJfw4w" name="pollInterval">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IrEUCIxEeSa1ZGIFJfw4w" name="DropServers">
+              <ownedAttribute xmi:id="_4KbX0iIxEeSa1ZGIFJfw4w" name="dropServer" type="_4Ip2MCIxEeSa1ZGIFJfw4w" association="_4KbX1SIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KbX0yIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KbX1CIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kb-4CIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4Kb-5CIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kb-4SIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IsScCIxEeSa1ZGIFJfw4w" name="Identities">
+              <ownedAttribute xmi:id="_4Kb-5SIxEeSa1ZGIFJfw4w" name="identity" type="_4ItgkCIxEeSa1ZGIFJfw4w" association="_4Kcl8iIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kb-5iIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4Kb-5yIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kcl8yIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KdNACIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kcl9CIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4ItgkCIxEeSa1ZGIFJfw4w" name="Identity">
+              <ownedAttribute xmi:id="_4Kcl8CIxEeSa1ZGIFJfw4w" name="identities" type="_4IsScCIxEeSa1ZGIFJfw4w" association="_4Kcl8iIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kcl8SIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_NCjLUCI0EeSa1ZGIFJfw4w" name="id">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_PWXoECI0EeSa1ZGIFJfw4w" name="updated">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_QRVbgCI0EeSa1ZGIFJfw4w" name="created">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_ROPvsCI0EeSa1ZGIFJfw4w" name="deleted">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_SaHs8CI0EeSa1ZGIFJfw4w" name="alias">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_UEouACI0EeSa1ZGIFJfw4w" name="privateKey">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_VCxKMCI0EeSa1ZGIFJfw4w" name="inbox">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IuusCIxEeSa1ZGIFJfw4w" name="LocaleModuleSettings">
+              <generalization xmi:id="_4KOjgCIxEeSa1ZGIFJfw4w" general="_4InZ8CIxEeSa1ZGIFJfw4w"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4Iv80CIxEeSa1ZGIFJfw4w" name="Settings">
+              <ownedAttribute xmi:id="_4KebICIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KebJiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KebISIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KebIiIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KebJyIxEeSa1ZGIFJfw4w" name="moduleManager" type="_4I7jACIxEeSa1ZGIFJfw4w" association="_4KfCNSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KfCMCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KfCMSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_gy_h4CIyEeSa1ZGIFJfw4w" name="localSettings" type="_acxmsCIyEeSa1ZGIFJfw4w" association="_gy-TwCIyEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_gy_h4SIyEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_gy_h4iIyEeSa1ZGIFJfw4w" value="1"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IxK8CIxEeSa1ZGIFJfw4w" name="StorageServer">
+              <ownedAttribute xmi:id="_4KfCNiIxEeSa1ZGIFJfw4w" name="storageServers" type="_4IyZECIxEeSa1ZGIFJfw4w" association="_4KfpQiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KfCNyIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IyZECIxEeSa1ZGIFJfw4w" name="StorageServers">
+              <ownedAttribute xmi:id="_4KfCOCIxEeSa1ZGIFJfw4w" name="storageServer" type="_4IxK8CIxEeSa1ZGIFJfw4w" association="_4KfpQiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KfpQCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KfpQSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KfpQyIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KgQUiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KfpRCIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4IznMCIxEeSa1ZGIFJfw4w" name="StorageVolume">
+              <ownedAttribute xmi:id="_4KgQUyIxEeSa1ZGIFJfw4w" name="storageVolumes" type="_4I0OQCIxEeSa1ZGIFJfw4w" association="_4Kg3YiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KgQVCIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_pwlAkCI1EeSa1ZGIFJfw4w" name="id">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_rcCc0CI1EeSa1ZGIFJfw4w" name="updated">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_sXrlsCI1EeSa1ZGIFJfw4w" name="created">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_s_KccCI1EeSa1ZGIFJfw4w" name="deleted">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_uCdFcCI1EeSa1ZGIFJfw4w" name="server">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_us2tUCI1EeSa1ZGIFJfw4w" name="port">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_vh6tECI1EeSa1ZGIFJfw4w" name="path">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_wdGi8CI1EeSa1ZGIFJfw4w" name="auth">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I0OQCIxEeSa1ZGIFJfw4w" name="StorageVolumes">
+              <ownedAttribute xmi:id="_4KgQVSIxEeSa1ZGIFJfw4w" name="storageVolume" type="_4IznMCIxEeSa1ZGIFJfw4w" association="_4Kg3YiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kg3YCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4Kg3YSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kg3YyIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4Kg3ZyIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kg3ZCIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I1cYCIxEeSa1ZGIFJfw4w" name="SyncedModuleSettings">
+              <generalization xmi:id="_4KQ_wCIxEeSa1ZGIFJfw4w" general="_4InZ8CIxEeSa1ZGIFJfw4w"/>
+              <ownedAttribute xmi:id="_4KhecCIxEeSa1ZGIFJfw4w" name="syncedSettings" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KhedSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KhecSIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KheciIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KiFgCIxEeSa1ZGIFJfw4w" name="syncedSettings1" type="_4I_0cSIxEeSa1ZGIFJfw4w" association="_4KiFhSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KiFgSIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I_0cSIxEeSa1ZGIFJfw4w" name="SyncedSettings">
+              <ownedAttribute xmi:id="_4KawxiIxEeSa1ZGIFJfw4w" name="accounts" type="_4IooECIxEeSa1ZGIFJfw4w" association="_4KawyCIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KawxyIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kb-4iIxEeSa1ZGIFJfw4w" name="dropServers" type="_4IrEUCIxEeSa1ZGIFJfw4w" association="_4Kb-5CIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kb-4yIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kcl9SIxEeSa1ZGIFJfw4w" name="identities" type="_4IsScCIxEeSa1ZGIFJfw4w" association="_4KdNACIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kcl9iIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KebIyIxEeSa1ZGIFJfw4w" name="settings" type="_4Iv80CIxEeSa1ZGIFJfw4w" association="_4KebJiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KebJCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KebJSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KgQUCIxEeSa1ZGIFJfw4w" name="storageServers" type="_4IyZECIxEeSa1ZGIFJfw4w" association="_4KgQUiIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KgQUSIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4Kg3ZSIxEeSa1ZGIFJfw4w" name="storageVolumes" type="_4I0OQCIxEeSa1ZGIFJfw4w" association="_4Kg3ZyIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4Kg3ZiIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KhecyIxEeSa1ZGIFJfw4w" name="syncedModuleSettings" type="_4I1cYCIxEeSa1ZGIFJfw4w" association="_4KhedSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KhedCIxEeSa1ZGIFJfw4w"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KiFgiIxEeSa1ZGIFJfw4w" name="syncedModuleSettings1" type="_4I1cYCIxEeSa1ZGIFJfw4w" association="_4KiFhSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KiFgyIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KiFhCIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KawwyIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KaJsyIxEeSa1ZGIFJfw4w _4KawwCIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KawyCIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KawxCIxEeSa1ZGIFJfw4w _4KawxiIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KbX1SIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KbX0CIxEeSa1ZGIFJfw4w _4KbX0iIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4Kb-5CIxEeSa1ZGIFJfw4w" name="" memberEnd="_4Kb-4CIxEeSa1ZGIFJfw4w _4Kb-4iIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4Kcl8iIxEeSa1ZGIFJfw4w" name="" memberEnd="_4Kcl8CIxEeSa1ZGIFJfw4w _4Kb-5SIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KdNACIxEeSa1ZGIFJfw4w" name="" memberEnd="_4Kcl8yIxEeSa1ZGIFJfw4w _4Kcl9SIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KebJiIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KebIyIxEeSa1ZGIFJfw4w _4KebICIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KfCNSIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KfCMiIxEeSa1ZGIFJfw4w _4KebJyIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KfpQiIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KfCNiIxEeSa1ZGIFJfw4w _4KfCOCIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KgQUiIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KfpQyIxEeSa1ZGIFJfw4w _4KgQUCIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4Kg3YiIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KgQUyIxEeSa1ZGIFJfw4w _4KgQVSIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4Kg3ZyIxEeSa1ZGIFJfw4w" name="" memberEnd="_4Kg3YyIxEeSa1ZGIFJfw4w _4Kg3ZSIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KhedSIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KhecCIxEeSa1ZGIFJfw4w _4KhecyIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KiFhSIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KiFgiIxEeSa1ZGIFJfw4w _4KiFgCIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_acxmsCIyEeSa1ZGIFJfw4w" name="LocalSettings">
+              <ownedAttribute xmi:id="_gy-60CIyEeSa1ZGIFJfw4w" name="settings" type="_4Iv80CIxEeSa1ZGIFJfw4w" association="_gy-TwCIyEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_gy-60SIyEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_gy-60iIyEeSa1ZGIFJfw4w" value="1"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_h_uawyIyEeSa1ZGIFJfw4w" name="localeModuleSettings" type="_4IuusCIxEeSa1ZGIFJfw4w" association="_h_tzsCIyEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_h_uaxCIyEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_h_uaxSIyEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_nbJsMCIzEeSa1ZGIFJfw4w" name="pollInterval">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_qMMQcCIzEeSa1ZGIFJfw4w" name="pollIntervalWlan">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_sI_UUCIzEeSa1ZGIFJfw4w" name="pollIntervalMobile">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_vpUAcCIzEeSa1ZGIFJfw4w" name="lastUpdate" type="_6EXDACIzEeSa1ZGIFJfw4w" association="_6EgM8CIzEeSa1ZGIFJfw4w"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Association" xmi:id="_gy-TwCIyEeSa1ZGIFJfw4w" name="" memberEnd="_gy-60CIyEeSa1ZGIFJfw4w _gy_h4CIyEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_h_tzsCIyEeSa1ZGIFJfw4w" name="" memberEnd="_h_uawCIyEeSa1ZGIFJfw4w _h_uawyIyEeSa1ZGIFJfw4w">
+              <ownedEnd xmi:id="_h_uawCIyEeSa1ZGIFJfw4w" name="localSettings" type="_acxmsCIyEeSa1ZGIFJfw4w" association="_h_tzsCIyEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_h_uawSIyEeSa1ZGIFJfw4w"/>
+              </ownedEnd>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Association" xmi:id="_6EgM8CIzEeSa1ZGIFJfw4w" name="" memberEnd="_vpUAcCIzEeSa1ZGIFJfw4w _6Eg0ACIzEeSa1ZGIFJfw4w">
+              <ownedEnd xmi:id="_6Eg0ACIzEeSa1ZGIFJfw4w" name="" type="_acxmsCIyEeSa1ZGIFJfw4w" association="_6EgM8CIzEeSa1ZGIFJfw4w"/>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_4IO_cCIxEeSa1ZGIFJfw4w" name="module">
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I678CIxEeSa1ZGIFJfw4w" name="Module" isAbstract="true">
+              <ownedAttribute xmi:id="_4KisliIxEeSa1ZGIFJfw4w" name="moduleManager" type="_4I7jACIxEeSa1ZGIFJfw4w" association="_4KjToyIxEeSa1ZGIFJfw4w"/>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I7jACIxEeSa1ZGIFJfw4w" name="ModuleManager">
+              <ownedAttribute xmi:id="_4KfCMiIxEeSa1ZGIFJfw4w" name="settings" type="_4Iv80CIxEeSa1ZGIFJfw4w" association="_4KfCNSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KfCMyIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KfCNCIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KjToCIxEeSa1ZGIFJfw4w" name="module" type="_4I678CIxEeSa1ZGIFJfw4w" association="_4KjToyIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KjToSIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KjToiIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_4KjTpCIxEeSa1ZGIFJfw4w" name="storageConnection" type="_4I9_QCIxEeSa1ZGIFJfw4w" association="_4Kj6sCIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KjTpSIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KjTpiIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KjToyIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KisliIxEeSa1ZGIFJfw4w _4KjToCIxEeSa1ZGIFJfw4w"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4Kj6sCIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KjTpCIxEeSa1ZGIFJfw4w _4KjTpyIxEeSa1ZGIFJfw4w"/>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_4IT38CIxEeSa1ZGIFJfw4w" name="drop">
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I5GwSIxEeSa1ZGIFJfw4w" name="DropController">
+              <ownedAttribute xmi:id="_4KiFhiIxEeSa1ZGIFJfw4w" name="dropListener" type="_4I6U4CIxEeSa1ZGIFJfw4w" association="_4KislSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KiskCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KiskSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_4I6U4CIxEeSa1ZGIFJfw4w" name="DropListener"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_4KislSIxEeSa1ZGIFJfw4w" name="" memberEnd="_4KiskiIxEeSa1ZGIFJfw4w _4KiFhiIxEeSa1ZGIFJfw4w">
+              <ownedEnd xmi:id="_4KiskiIxEeSa1ZGIFJfw4w" name="dropController" type="_4I5GwSIxEeSa1ZGIFJfw4w" association="_4KislSIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KiskyIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KislCIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedEnd>
+            </packagedElement>
+          </packagedElement>
+          <packagedElement xmi:type="uml:Package" xmi:id="_4IUfACIxEeSa1ZGIFJfw4w" name="storage">
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I9YMCIxEeSa1ZGIFJfw4w" name="StorageBlob"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I9_QCIxEeSa1ZGIFJfw4w" name="StorageConnection">
+              <ownedAttribute xmi:id="_4KjTpyIxEeSa1ZGIFJfw4w" name="moduleManager" type="_4I7jACIxEeSa1ZGIFJfw4w" association="_4Kj6sCIxEeSa1ZGIFJfw4w">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_4KjTqCIxEeSa1ZGIFJfw4w"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KjTqSIxEeSa1ZGIFJfw4w" value="*"/>
+              </ownedAttribute>
+            </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I_NYCIxEeSa1ZGIFJfw4w" name="StorageController"/>
+            <packagedElement xmi:type="uml:Interface" xmi:id="_4I_0cCIxEeSa1ZGIFJfw4w" name="StorageResponseListener"/>
+          </packagedElement>
+        </packagedElement>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_4ILVECIxEeSa1ZGIFJfw4w" name="java">
+      <packagedElement xmi:type="uml:Package" xmi:id="_4ILVESIxEeSa1ZGIFJfw4w" name="util">
+        <packagedElement xmi:type="uml:Interface" xmi:id="_4KLgMCIxEeSa1ZGIFJfw4w" name="Set"/>
+        <packagedElement xmi:type="uml:Class" xmi:id="_4KMHQCIxEeSa1ZGIFJfw4w" name="HashSet"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="_6EXDACIzEeSa1ZGIFJfw4w" name="Date"/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:Package" xmi:id="_4ISp0CIxEeSa1ZGIFJfw4w" name="org">
+      <packagedElement xmi:type="uml:Package" xmi:id="_4ISp0SIxEeSa1ZGIFJfw4w" name="junit">
+        <packagedElement xmi:type="uml:Class" xmi:id="_4KRm0CIxEeSa1ZGIFJfw4w" name="Assert"/>
+        <packagedElement xmi:type="uml:Interface" xmi:id="_4KRm0iIxEeSa1ZGIFJfw4w" name="Test"/>
+      </packagedElement>
+    </packagedElement>
+    <packagedElement xmi:type="uml:DataType" xmi:id="_vpUngCIzEeSa1ZGIFJfw4w" name="Date"/>
+    <packagedElement xmi:type="uml:DataType" xmi:id="_yTiyECIzEeSa1ZGIFJfw4w" name="java.lang.Date"/>
+    <profileApplication xmi:id="_3ze3cCIxEeSa1ZGIFJfw4w">
+      <eAnnotations xmi:id="_3ze3cSIxEeSa1ZGIFJfw4w" source="http://www.eclipse.org/uml2/2.0.0/UML">
+        <references xmi:type="ecore:EPackage" href="pathmap://UMLLAB_PROFILES/UMLLab.profile.uml#UMLLabProfile-Annotation_2-UMLLabProfile"/>
+      </eAnnotations>
+      <appliedProfile href="pathmap://UMLLAB_PROFILES/UMLLab.profile.uml#UMLLabProfile"/>
+    </profileApplication>
+  </uml:Model>
+  <UMLLabProfile:TargetLanguage xmi:id="_3ze3ciIxEeSa1ZGIFJfw4w" base_Package="_3qPb4CIxEeSa1ZGIFJfw4w">
+    <languageName>java</languageName>
+  </UMLLabProfile:TargetLanguage>
+  <UMLLabProfile:Reference xmi:id="_4KLgMSIxEeSa1ZGIFJfw4w" base_Element="_4KLgMCIxEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_4KMHQSIxEeSa1ZGIFJfw4w" base_Element="_4KMHQCIxEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_4KRm0SIxEeSa1ZGIFJfw4w" base_Element="_4KRm0CIxEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_4KRm0yIxEeSa1ZGIFJfw4w" base_Element="_4KRm0iIxEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:UnresolvedElement xmi:id="_vpUngSIzEeSa1ZGIFJfw4w" base_Element="_vpUngCIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:UnresolvedElement xmi:id="_yTiyESIzEeSa1ZGIFJfw4w" base_Element="_yTiyECIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_6EZfQCIzEeSa1ZGIFJfw4w" base_Element="_6EXDACIzEeSa1ZGIFJfw4w"/>
+</xmi:XMI>
