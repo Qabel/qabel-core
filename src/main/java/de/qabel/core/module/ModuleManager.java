@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.HashSet;
 
 import de.qabel.core.config.Settings;
-import de.qabel.core.drop.DropController;
 
 public class ModuleManager {
 /**
