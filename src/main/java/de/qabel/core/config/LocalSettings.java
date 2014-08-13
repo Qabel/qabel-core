@@ -48,26 +48,6 @@ public long getPollInterval() {
    return this.pollInterval;
 }
 
-private long pollIntervalWlan;
-
-public void setPollIntervalWlan(long value) {
-   this.pollIntervalWlan = value;
-}
-
-public long getPollIntervalWlan() {
-   return this.pollIntervalWlan;
-}
-
-private long pollIntervalMobile;
-
-public void setPollIntervalMobile(long value) {
-   this.pollIntervalMobile = value;
-}
-
-public long getPollIntervalMobile() {
-   return this.pollIntervalMobile;
-}
-
 private Date lastUpdate;
 
 public void setLastUpdate(Date value) {

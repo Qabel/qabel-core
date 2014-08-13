@@ -82,16 +82,6 @@ public boolean isWebsockets() {
    return this.websockets;
 }
 
-private long pollInterval;
-
-public void setPollInterval(long value) {
-   this.pollInterval = value;
-}
-
-public long getPollInterval() {
-   return this.pollInterval;
-}
-
 /**
  * <pre>
  *           0..*     0..1

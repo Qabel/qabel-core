@@ -4,7 +4,14 @@
     <eAnnotations xmi:id="_3zeQYCIxEeSa1ZGIFJfw4w" source="http://ns.yatta.de/umllab">
       <contents xmi:type="ecore:EAnnotation" xmi:id="_3zeQYSIxEeSa1ZGIFJfw4w" source="codegen">
         <details xmi:id="_3zeQYiIxEeSa1ZGIFJfw4w" key="codegenDirectory" value="/core/src/main/java"/>
-        <details xmi:id="_4NJUoCIxEeSa1ZGIFJfw4w" key="AssociatedSourceCode" value="/core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;2103581714/1;/core/src/main/java/de/qabel/core/config/Account.java;2941587434/1;/core/src/main/java/de/qabel/core/config/Accounts.java;253036883/1;/core/src/main/java/de/qabel/core/config/DropServer.java;1425750211/1;/core/src/main/java/de/qabel/core/config/DropServers.java;3248318116/1;/core/src/main/java/de/qabel/core/config/Identities.java;3800839486/1;/core/src/main/java/de/qabel/core/config/Identity.java;126576489/1;/core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;2723058210/1;/core/src/main/java/de/qabel/core/config/Settings.java;1678202969/1;/core/src/main/java/de/qabel/core/config/StorageServer.java;3834685852/1;/core/src/main/java/de/qabel/core/config/StorageServers.java;1432809180/1;/core/src/main/java/de/qabel/core/config/StorageVolume.java;1091653358/1;/core/src/main/java/de/qabel/core/config/StorageVolumes.java;1832782963/1;/core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;64931322/1;/core/src/main/java/de/qabel/core/drop/DropController.java;2805043907/1;/core/src/main/java/de/qabel/core/drop/DropListener.java;3397699833/1;/core/src/main/java/de/qabel/core/module/Module.java;2460479784/1;/core/src/main/java/de/qabel/core/module/ModuleManager.java;2794791002/1;/core/src/main/java/de/qabel/core/storage/StorageBlob.java;867182193/1;/core/src/main/java/de/qabel/core/storage/StorageConnection.java;621147669/1;/core/src/main/java/de/qabel/core/storage/StorageController.java;643696517/1;/core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;2999967961/1;/core/src/main/java/de/qabel/core/config/SyncedSettings.java;987959524/1;/core/src/main/java/de/qabel/core/config/LocalSettings.java;2370732363/1;"/>
+        <details xmi:id="_4NJUoCIxEeSa1ZGIFJfw4w" key="AssociatedSourceCode" value="/core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;2103581714/1;/core/src/main/java/de/qabel/core/config/Account.java;2941587434/1;/core/src/main/java/de/qabel/core/config/Accounts.java;253036883/1;/core/src/main/java/de/qabel/core/config/DropServer.java;4211570999/1;/core/src/main/java/de/qabel/core/config/DropServers.java;3248318116/1;/core/src/main/java/de/qabel/core/config/Identities.java;3800839486/1;/core/src/main/java/de/qabel/core/config/Identity.java;126576489/1;/core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;2723058210/1;/core/src/main/java/de/qabel/core/config/Settings.java;1678202969/1;/core/src/main/java/de/qabel/core/config/StorageServer.java;3834685852/1;/core/src/main/java/de/qabel/core/config/StorageServers.java;1432809180/1;/core/src/main/java/de/qabel/core/config/StorageVolume.java;1091653358/1;/core/src/main/java/de/qabel/core/config/StorageVolumes.java;1832782963/1;/core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;64931322/1;/core/src/main/java/de/qabel/core/drop/DropController.java;2805043907/1;/core/src/main/java/de/qabel/core/drop/DropListener.java;3397699833/1;/core/src/main/java/de/qabel/core/module/Module.java;2460479784/1;/core/src/main/java/de/qabel/core/module/ModuleManager.java;2794791002/1;/core/src/main/java/de/qabel/core/storage/StorageBlob.java;867182193/1;/core/src/main/java/de/qabel/core/storage/StorageConnection.java;621147669/1;/core/src/main/java/de/qabel/core/storage/StorageController.java;643696517/1;/core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;2999967961/1;/core/src/main/java/de/qabel/core/config/SyncedSettings.java;987959524/1;/core/src/main/java/de/qabel/core/config/LocalSettings.java;3905518550/1;"/>
+      </contents>
+      <contents xmi:type="ecore:EAnnotation" xmi:id="_2RJEECK3EeSayczWr7Ytig" source="preferences">
+        <contents xmi:type="ecore:EAnnotation" xmi:id="_2RJrICK3EeSayczWr7Ytig" source="com.yattasolutions.codegen.reverse">
+          <details xmi:id="_2RJrISK3EeSayczWr7Ytig" key="com.yattasolutions.codegen.reverse.roundtrip.ReverseEngineerNewFiles" value="true"/>
+          <details xmi:id="_2RJrIiK3EeSayczWr7Ytig" key="com.yattasolutions.codegen.reverse.roundtrip.ReverseEngineerChangedFiles" value="true"/>
+          <details xmi:id="_2RJrIyK3EeSayczWr7Ytig" key="com.yattasolutions.codegen.reverse.roundtrip.RemoveDeletedFiles" value="true"/>
+        </contents>
       </contents>
     </eAnnotations>
     <elementImport xmi:id="_4IlkwCIxEeSa1ZGIFJfw4w">
@@ -101,9 +108,6 @@
               </ownedAttribute>
               <ownedAttribute xmi:id="_pO66cCI0EeSa1ZGIFJfw4w" name="websockets">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-              </ownedAttribute>
-              <ownedAttribute xmi:id="_cWBf8CI1EeSa1ZGIFJfw4w" name="pollInterval">
-                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
               </ownedAttribute>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_4IrEUCIxEeSa1ZGIFJfw4w" name="DropServers">
@@ -283,13 +287,7 @@
               <ownedAttribute xmi:id="_nbJsMCIzEeSa1ZGIFJfw4w" name="pollInterval">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
               </ownedAttribute>
-              <ownedAttribute xmi:id="_qMMQcCIzEeSa1ZGIFJfw4w" name="pollIntervalWlan">
-                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
-              </ownedAttribute>
-              <ownedAttribute xmi:id="_sI_UUCIzEeSa1ZGIFJfw4w" name="pollIntervalMobile">
-                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
-              </ownedAttribute>
-              <ownedAttribute xmi:id="_vpUAcCIzEeSa1ZGIFJfw4w" name="lastUpdate" type="_6EXDACIzEeSa1ZGIFJfw4w" association="_6EgM8CIzEeSa1ZGIFJfw4w"/>
+              <ownedAttribute xmi:id="_vpUAcCIzEeSa1ZGIFJfw4w" name="lastUpdate" type="_SKqIoCK4EeSayczWr7Ytig" association="_6EgM8CIzEeSa1ZGIFJfw4w"/>
             </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_gy-TwCIyEeSa1ZGIFJfw4w" name="" memberEnd="_gy-60CIyEeSa1ZGIFJfw4w _gy_h4CIyEeSa1ZGIFJfw4w"/>
             <packagedElement xmi:type="uml:Association" xmi:id="_h_tzsCIyEeSa1ZGIFJfw4w" name="" memberEnd="_h_uawCIyEeSa1ZGIFJfw4w _h_uawyIyEeSa1ZGIFJfw4w">
@@ -355,7 +353,7 @@
       <packagedElement xmi:type="uml:Package" xmi:id="_4ILVESIxEeSa1ZGIFJfw4w" name="util">
         <packagedElement xmi:type="uml:Interface" xmi:id="_4KLgMCIxEeSa1ZGIFJfw4w" name="Set"/>
         <packagedElement xmi:type="uml:Class" xmi:id="_4KMHQCIxEeSa1ZGIFJfw4w" name="HashSet"/>
-        <packagedElement xmi:type="uml:DataType" xmi:id="_6EXDACIzEeSa1ZGIFJfw4w" name="Date"/>
+        <packagedElement xmi:type="uml:DataType" xmi:id="_SKqIoCK4EeSayczWr7Ytig" name="Date"/>
       </packagedElement>
     </packagedElement>
     <packagedElement xmi:type="uml:Package" xmi:id="_4ISp0CIxEeSa1ZGIFJfw4w" name="org">
@@ -364,8 +362,6 @@
         <packagedElement xmi:type="uml:Interface" xmi:id="_4KRm0iIxEeSa1ZGIFJfw4w" name="Test"/>
       </packagedElement>
     </packagedElement>
-    <packagedElement xmi:type="uml:DataType" xmi:id="_vpUngCIzEeSa1ZGIFJfw4w" name="Date"/>
-    <packagedElement xmi:type="uml:DataType" xmi:id="_yTiyECIzEeSa1ZGIFJfw4w" name="java.lang.Date"/>
     <profileApplication xmi:id="_3ze3cCIxEeSa1ZGIFJfw4w">
       <eAnnotations xmi:id="_3ze3cSIxEeSa1ZGIFJfw4w" source="http://www.eclipse.org/uml2/2.0.0/UML">
         <references xmi:type="ecore:EPackage" href="pathmap://UMLLAB_PROFILES/UMLLab.profile.uml#UMLLabProfile-Annotation_2-UMLLabProfile"/>
@@ -380,7 +376,8 @@
   <UMLLabProfile:Reference xmi:id="_4KMHQSIxEeSa1ZGIFJfw4w" base_Element="_4KMHQCIxEeSa1ZGIFJfw4w"/>
   <UMLLabProfile:Reference xmi:id="_4KRm0SIxEeSa1ZGIFJfw4w" base_Element="_4KRm0CIxEeSa1ZGIFJfw4w"/>
   <UMLLabProfile:Reference xmi:id="_4KRm0yIxEeSa1ZGIFJfw4w" base_Element="_4KRm0iIxEeSa1ZGIFJfw4w"/>
-  <UMLLabProfile:UnresolvedElement xmi:id="_vpUngSIzEeSa1ZGIFJfw4w" base_Element="_vpUngCIzEeSa1ZGIFJfw4w"/>
-  <UMLLabProfile:UnresolvedElement xmi:id="_yTiyESIzEeSa1ZGIFJfw4w" base_Element="_yTiyECIzEeSa1ZGIFJfw4w"/>
-  <UMLLabProfile:Reference xmi:id="_6EZfQCIzEeSa1ZGIFJfw4w" base_Element="_6EXDACIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:UnresolvedElement xmi:id="_vpUngSIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:UnresolvedElement xmi:id="_yTiyESIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_6EZfQCIzEeSa1ZGIFJfw4w"/>
+  <UMLLabProfile:Reference xmi:id="_SKqvsCK4EeSayczWr7Ytig" base_Element="_SKqIoCK4EeSayczWr7Ytig"/>
 </xmi:XMI>
