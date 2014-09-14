@@ -4,7 +4,7 @@
     <eAnnotations xmi:id="_3zeQYCIxEeSa1ZGIFJfw4w" source="http://ns.yatta.de/umllab">
       <contents xmi:type="ecore:EAnnotation" xmi:id="_3zeQYSIxEeSa1ZGIFJfw4w" source="codegen">
         <details xmi:id="_3zeQYiIxEeSa1ZGIFJfw4w" key="codegenDirectory" value="/core/src/main/java"/>
-        <details xmi:id="_4NJUoCIxEeSa1ZGIFJfw4w" key="AssociatedSourceCode" value="/core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;2103581714/1;/core/src/main/java/de/qabel/core/config/Account.java;2941587434/1;/core/src/main/java/de/qabel/core/config/Accounts.java;253036883/1;/core/src/main/java/de/qabel/core/config/DropServer.java;4211570999/1;/core/src/main/java/de/qabel/core/config/DropServers.java;3248318116/1;/core/src/main/java/de/qabel/core/config/Identities.java;3800839486/1;/core/src/main/java/de/qabel/core/config/Identity.java;126576489/1;/core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;1266261034/1;/core/src/main/java/de/qabel/core/config/Settings.java;1678202969/1;/core/src/main/java/de/qabel/core/config/StorageServer.java;3834685852/1;/core/src/main/java/de/qabel/core/config/StorageServers.java;1432809180/1;/core/src/main/java/de/qabel/core/config/StorageVolume.java;1091653358/1;/core/src/main/java/de/qabel/core/config/StorageVolumes.java;1832782963/1;/core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;64931322/1;/core/src/main/java/de/qabel/core/drop/DropController.java;2805043907/1;/core/src/main/java/de/qabel/core/drop/DropListener.java;3397699833/1;/core/src/main/java/de/qabel/core/module/Module.java;2460479784/1;/core/src/main/java/de/qabel/core/module/ModuleManager.java;244494133/1;/core/src/main/java/de/qabel/core/storage/StorageBlob.java;867182193/1;/core/src/main/java/de/qabel/core/storage/StorageConnection.java;621147669/1;/core/src/main/java/de/qabel/core/storage/StorageController.java;1654367370/1;/core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;2999967961/1;/core/src/main/java/de/qabel/core/config/SyncedSettings.java;987959524/1;/core/src/main/java/de/qabel/core/config/LocalSettings.java;3905518550/1;"/>
+        <details xmi:id="_4NJUoCIxEeSa1ZGIFJfw4w" key="AssociatedSourceCode" value="/core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;2427137015/1;/core/src/main/java/de/qabel/core/config/Account.java;1055417978/1;/core/src/main/java/de/qabel/core/config/Accounts.java;2799591879/1;/core/src/main/java/de/qabel/core/config/DropServer.java;2764460551/1;/core/src/main/java/de/qabel/core/config/DropServers.java;255771274/1;/core/src/main/java/de/qabel/core/config/Identities.java;769882111/1;/core/src/main/java/de/qabel/core/config/Identity.java;987028709/1;/core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;3694991015/1;/core/src/main/java/de/qabel/core/config/Settings.java;1317282124/1;/core/src/main/java/de/qabel/core/config/StorageServer.java;3984288771/1;/core/src/main/java/de/qabel/core/config/StorageServers.java;1542330697/1;/core/src/main/java/de/qabel/core/config/StorageVolume.java;3627180361/1;/core/src/main/java/de/qabel/core/config/StorageVolumes.java;462479317/1;/core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;2663538453/1;/core/src/main/java/de/qabel/core/drop/DropController.java;2805043907/1;/core/src/main/java/de/qabel/core/drop/DropListener.java;1145466445/1;/core/src/main/java/de/qabel/core/module/Module.java;2534342405/1;/core/src/main/java/de/qabel/core/module/ModuleManager.java;82844511/1;/core/src/main/java/de/qabel/core/storage/StorageBlob.java;2819453192/1;/core/src/main/java/de/qabel/core/storage/StorageConnection.java;2755657394/1;/core/src/main/java/de/qabel/core/storage/StorageController.java;1654367370/1;/core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;3383841109/1;/core/src/main/java/de/qabel/core/config/SyncedSettings.java;1737176452/1;/core/src/main/java/de/qabel/core/config/LocalSettings.java;2730306426/1;"/>
       </contents>
       <contents xmi:type="ecore:EAnnotation" xmi:id="_2RJEECK3EeSayczWr7Ytig" source="preferences">
         <contents xmi:type="ecore:EAnnotation" xmi:id="_2RJrICK3EeSayczWr7Ytig" source="com.yattasolutions.codegen.reverse">
@@ -343,8 +343,20 @@
                 <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4KjTqSIxEeSa1ZGIFJfw4w" value="*"/>
               </ownedAttribute>
             </packagedElement>
-            <packagedElement xmi:type="uml:Class" xmi:id="_4I_NYCIxEeSa1ZGIFJfw4w" name="StorageController"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_4I_NYCIxEeSa1ZGIFJfw4w" name="StorageController">
+              <ownedAttribute xmi:id="_xyvBYTwZEeSIxM8t6j5y3g" name="storageConnection" type="_4I9_QCIxEeSa1ZGIFJfw4w" association="_xyvBYDwZEeSIxM8t6j5y3g">
+                <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_xyxdoDwZEeSIxM8t6j5y3g"/>
+                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_xyxdoTwZEeSIxM8t6j5y3g" value="*"/>
+              </ownedAttribute>
+              <ownedOperation xmi:id="_57kqYDwREeSIxM8t6j5y3g" name="startRequest">
+                <ownedParameter xmi:id="_57kqYTwREeSIxM8t6j5y3g" type="_4I9_QCIxEeSa1ZGIFJfw4w" direction="return"/>
+                <ownedParameter xmi:id="_57qxADwREeSIxM8t6j5y3g" name="StorageResponseListener"/>
+              </ownedOperation>
+            </packagedElement>
             <packagedElement xmi:type="uml:Interface" xmi:id="_4I_0cCIxEeSa1ZGIFJfw4w" name="StorageResponseListener"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_xyvBYDwZEeSIxM8t6j5y3g" name="" memberEnd="_xyvBYTwZEeSIxM8t6j5y3g _xyyEsDwZEeSIxM8t6j5y3g">
+              <ownedEnd xmi:id="_xyyEsDwZEeSIxM8t6j5y3g" name="" type="_4I_NYCIxEeSa1ZGIFJfw4w" association="_xyvBYDwZEeSIxM8t6j5y3g"/>
+            </packagedElement>
           </packagedElement>
         </packagedElement>
       </packagedElement>
