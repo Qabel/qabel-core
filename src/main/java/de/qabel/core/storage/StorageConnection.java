@@ -6,7 +6,23 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class StorageConnection {
-// TODO implement this operation
+/**
+ * <pre>
+ *           0..1     0..1
+ * StorageConnection ------------------------- StorageResponseListener
+ *           storageConnection        &lt;       storageResponseListener
+ * </pre>
+ */
+private StorageResponseListener storageResponseListener;
+
+public void setStorageResponseListener(StorageResponseListener value) {
+   this.storageResponseListener = value;
+}
+
+public StorageResponseListener getStorageResponseListener() {
+   return this.storageResponseListener;
+}
+
 public void cancel() {
    // TODO implement this operation
    throw new UnsupportedOperationException("not implemented");
