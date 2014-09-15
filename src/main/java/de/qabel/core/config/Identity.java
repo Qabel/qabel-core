@@ -51,14 +51,24 @@ public class Identity {
 		return this.alias;
 	}
 
-	private String privateKey;
+	private String privateEncKey;
 
-	public void setPrivateKey(String value) {
-		this.privateKey = value;
+	public void setPrivateEncKey(String value) {
+		this.privateEncKey = value;
 	}
 
-	public String getPrivateKey() {
-		return this.privateKey;
+	public String getPrivateEncKey() {
+		return this.privateEncKey;
+	}
+	
+	private String privateSignKey;
+
+	public void setPrivateSignKey(String value) {
+		this.privateSignKey = value;
+	}
+
+	public String getPrivateSignKey() {
+		return this.privateSignKey;
 	}
 
 	private String inbox;
