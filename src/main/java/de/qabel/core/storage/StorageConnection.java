@@ -6,6 +6,12 @@ import java.util.Set;
 import java.util.HashSet;
 
 public class StorageConnection {
+// TODO implement this operation
+public void cancel() {
+   // TODO implement this operation
+   throw new UnsupportedOperationException("not implemented");
+}
+
 	/**
 	 * <pre>
 	 *           0..*     0..*

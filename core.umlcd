@@ -21,8 +21,8 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7RoZUCIxEeSa1ZGIFJfw4w" sourceAnchor="49.0,0.0" targetAnchor="39.0,33.0" target="_7R10sCIxEeSa1ZGIFJfw4w" source="_7Xr-ACIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KawyCIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJFjxSEeSIxM8t6j5y3g" sourceY="-399" targetX="1338" targetY="140"/>
-    <bendpoints xmi:id="_BVBJFzxSEeSIxM8t6j5y3g" sourceX="-1338" sourceY="-413" targetY="126"/>
+    <bendpoints xmi:id="_pDWL-zy0EeSTkrUGR_lIdA" sourceY="-399" targetX="1338" targetY="140"/>
+    <bendpoints xmi:id="_pDWL_Dy0EeSTkrUGR_lIdA" sourceX="-1338" sourceY="-413" targetY="126"/>
     <nameVisual xmi:id="_7RoZUSIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75xXYyIxEeSa1ZGIFJfw4w" position="-571.0,-12.0"/>
     </nameVisual>
@@ -59,7 +59,7 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7SdfwCIxEeSa1ZGIFJfw4w" sourceAnchor="55.0,0.0" targetAnchor="104.0,17.0" target="_7S1TMCIxEeSa1ZGIFJfw4w" source="_7Xr-ACIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4Kb-5CIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJGDxSEeSIxM8t6j5y3g" sourceY="-542" targetX="304"/>
+    <bendpoints xmi:id="_pDWL_Ty0EeSTkrUGR_lIdA" sourceY="-542" targetX="304"/>
     <nameVisual xmi:id="_7SwasCIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75x-cCIxEeSa1ZGIFJfw4w" position="-168.0,-12.0"/>
     </nameVisual>
@@ -114,13 +114,13 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:GeneralizationVisual" xmi:id="_7Udq4CIxEeSa1ZGIFJfw4w" sourceAnchor="98.0,0.0" targetAnchor="94.0,33.0" superClass="_7QoTwCIxEeSa1ZGIFJfw4w" subClass="_7UzCECIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KOjgCIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVAiAzxSEeSIxM8t6j5y3g" sourceY="-23" targetX="-104" targetY="36"/>
-    <bendpoints xmi:id="_BVAiBDxSEeSIxM8t6j5y3g" sourceX="104" sourceY="-23" targetY="36"/>
+    <bendpoints xmi:id="_pDVk6jy0EeSTkrUGR_lIdA" sourceY="-23" targetX="-104" targetY="36"/>
+    <bendpoints xmi:id="_pDVk6zy0EeSTkrUGR_lIdA" sourceX="104" sourceY="-23" targetY="36"/>
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7U_PUCIxEeSa1ZGIFJfw4w" sourceAnchor="49.0,33.0" targetAnchor="23.0,0.0" target="_7Xr-ACIxEeSa1ZGIFJfw4w" source="_7VN40CIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KebJiIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVDlUTxSEeSIxM8t6j5y3g" sourceY="465" targetX="-3640" targetY="-73"/>
-    <bendpoints xmi:id="_BVDlUjxSEeSIxM8t6j5y3g" sourceX="3640" sourceY="464" targetY="-74"/>
+    <bendpoints xmi:id="_pDXaFjy0EeSTkrUGR_lIdA" sourceY="465" targetX="-3640" targetY="-73"/>
+    <bendpoints xmi:id="_pDXaFzy0EeSTkrUGR_lIdA" sourceX="3640" sourceY="464" targetY="-74"/>
     <nameVisual xmi:id="_7VJAUCIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75wJQyIxEeSa1ZGIFJfw4w" position="-1709.0,-12.0"/>
     </nameVisual>
@@ -139,7 +139,7 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7VKOcCIxEeSa1ZGIFJfw4w" sourceAnchor="37.0,33.0" targetAnchor="0.0,6.0" target="_7a304CIxEeSa1ZGIFJfw4w" source="_7VN40CIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KfCNSIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVDlUzxSEeSIxM8t6j5y3g" sourceX="-2" sourceY="778" targetX="-4527"/>
+    <bendpoints xmi:id="_pDXaGDy0EeSTkrUGR_lIdA" sourceX="-2" sourceY="778" targetX="-4527"/>
     <nameVisual xmi:id="_7VKOcSIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75wJRiIxEeSa1ZGIFJfw4w" position="-6.0,-118.0"/>
     </nameVisual>
@@ -176,8 +176,8 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7VxScCIxEeSa1ZGIFJfw4w" sourceAnchor="37.0,0.0" targetAnchor="63.0,33.0" target="_7WBKFyIxEeSa1ZGIFJfw4w" source="_7Xr-ACIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KgQUiIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJGTxSEeSIxM8t6j5y3g" sourceY="-165" targetX="2406" targetY="413"/>
-    <bendpoints xmi:id="_BVBJGjxSEeSIxM8t6j5y3g" sourceX="-2406" sourceY="-165" targetY="413"/>
+    <bendpoints xmi:id="_pDWzADy0EeSTkrUGR_lIdA" sourceY="-165" targetX="2406" targetY="413"/>
+    <bendpoints xmi:id="_pDWzATy0EeSTkrUGR_lIdA" sourceX="-2406" sourceY="-165" targetY="413"/>
     <nameVisual xmi:id="_7WBKECIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75x-diIxEeSa1ZGIFJfw4w" position="-766.0,-12.000000000000227"/>
     </nameVisual>
@@ -214,7 +214,7 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7WhgYCIxEeSa1ZGIFJfw4w" sourceAnchor="43.0,0.0" targetAnchor="130.0,15.0" target="_7WuUtiIxEeSa1ZGIFJfw4w" source="_7Xr-ACIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4Kg3ZyIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJGzxSEeSIxM8t6j5y3g" sourceX="-14" sourceY="-296" targetX="1305"/>
+    <bendpoints xmi:id="_pDWzAjy0EeSTkrUGR_lIdA" sourceX="-14" sourceY="-296" targetX="1305"/>
     <nameVisual xmi:id="_7WttoCIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75ylgCIxEeSa1ZGIFJfw4w" position="-168.0,-12.0"/>
     </nameVisual>
@@ -233,13 +233,13 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:GeneralizationVisual" xmi:id="_7W9lQCIxEeSa1ZGIFJfw4w" sourceAnchor="88.0,0.0" targetAnchor="94.0,33.0" superClass="_7QoTwCIxEeSa1ZGIFJfw4w" subClass="_7XTjgiIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KQ_wCIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJEDxSEeSIxM8t6j5y3g" sourceY="-790" targetX="104" targetY="35"/>
-    <bendpoints xmi:id="_BVBJETxSEeSIxM8t6j5y3g" sourceX="-104" sourceY="-789" targetY="36"/>
+    <bendpoints xmi:id="_pDWL9Ty0EeSTkrUGR_lIdA" sourceY="-790" targetX="104" targetY="35"/>
+    <bendpoints xmi:id="_pDWL9jy0EeSTkrUGR_lIdA" sourceX="-104" sourceY="-789" targetY="36"/>
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7XLnsCIxEeSa1ZGIFJfw4w" sourceAnchor="63.0,33.0" targetAnchor="114.0,0.0" target="_7XTjgiIxEeSa1ZGIFJfw4w" source="_7Xr-ACIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KhedSIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVBJHDxSEeSIxM8t6j5y3g" sourceY="100" targetX="2484" targetY="-62"/>
-    <bendpoints xmi:id="_BVBJHTxSEeSIxM8t6j5y3g" sourceX="-2484" sourceY="113" targetY="-49"/>
+    <bendpoints xmi:id="_pDWzAzy0EeSTkrUGR_lIdA" sourceY="100" targetX="2484" targetY="-62"/>
+    <bendpoints xmi:id="_pDWzBDy0EeSTkrUGR_lIdA" sourceX="-2484" sourceY="113" targetY="-49"/>
     <nameVisual xmi:id="_7XS8cCIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75ylgyIxEeSa1ZGIFJfw4w" position="-1026.0,-12.000000000000227"/>
     </nameVisual>
@@ -258,7 +258,7 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7XRuUCIxEeSa1ZGIFJfw4w" sourceAnchor="102.0,0.0" targetAnchor="0.0,16.0" target="_7Xr-ACIxEeSa1ZGIFJfw4w" source="_7XTjgiIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KiFhSIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVAiDzxSEeSIxM8t6j5y3g" sourceX="-2" sourceY="-180" targetX="-2435" targetY="-1"/>
+    <bendpoints xmi:id="_pDWL9Dy0EeSTkrUGR_lIdA" sourceX="-2" sourceY="-180" targetX="-2435" targetY="-1"/>
     <nameVisual xmi:id="_7XS8cyIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75xXYCIxEeSa1ZGIFJfw4w" position="2256.0,-10.999999999999773"/>
     </nameVisual>
@@ -295,7 +295,7 @@
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7ajEwCIxEeSa1ZGIFJfw4w" sourceAnchor="153.0,48.0" targetAnchor="63.0,33.0" target="_7a304CIxEeSa1ZGIFJfw4w" source="_7c9fkCIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4Kj6sCIxEeSa1ZGIFJfw4w"/>
-    <bendpoints xmi:id="_BVEMYDxSEeSIxM8t6j5y3g" sourceX="4954" sourceY="-11" targetY="4"/>
+    <bendpoints xmi:id="_pDYBKTy0EeSTkrUGR_lIdA" sourceX="4954" sourceY="-11" targetY="4"/>
     <nameVisual xmi:id="_7ajEwSIxEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_75zMlCIxEeSa1ZGIFJfw4w" position="-321.0,2.0"/>
     </nameVisual>
@@ -312,141 +312,141 @@
       <cardinality xmi:id="_7ajExyIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
     </targetRole>
   </edges>
-  <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7bPBQCIxEeSa1ZGIFJfw4w" sourceAnchor="0.0,17.0" targetAnchor="108.0,28.0" target="_7b0QECIxEeSa1ZGIFJfw4w" source="_7bk_gCIxEeSa1ZGIFJfw4w">
+  <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_7bPBQCIxEeSa1ZGIFJfw4w" sourceAnchor="0.0,38.0" targetAnchor="275.0,44.0" target="_7b0QECIxEeSa1ZGIFJfw4w" source="_7bk_gCIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4KislSIxEeSa1ZGIFJfw4w"/>
     <nameVisual xmi:id="_7bPBQSIxEeSa1ZGIFJfw4w" text="">
-      <visualProperties xmi:id="_75zMkSIxEeSa1ZGIFJfw4w" position="0.0,0.0"/>
+      <visualProperties xmi:id="_75zMkSIxEeSa1ZGIFJfw4w" position="-5.0,2.5"/>
     </nameVisual>
     <sourceRole xmi:id="_7bPBQiIxEeSa1ZGIFJfw4w" aggregationKind="NONE" name="dropController">
       <modelElement href="core.uml#_4KiskiIxEeSa1ZGIFJfw4w"/>
-      <visualProperties xmi:id="_75zMkCIxEeSa1ZGIFJfw4w" position="0.0,0.0"/>
+      <visualProperties xmi:id="_75zMkCIxEeSa1ZGIFJfw4w" position="-75.5,-63.5"/>
       <visibility xmi:id="_7bPBQyIxEeSa1ZGIFJfw4w" label="+"/>
       <cardinality xmi:id="_7bPBRCIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
     </sourceRole>
     <targetRole xmi:id="_7bPBRSIxEeSa1ZGIFJfw4w" aggregationKind="NONE" name="dropListener" navigable="true">
       <modelElement href="core.uml#_4KiFhiIxEeSa1ZGIFJfw4w"/>
-      <visualProperties xmi:id="_75zMkiIxEeSa1ZGIFJfw4w" position="0.0,0.0"/>
+      <visualProperties xmi:id="_75zMkiIxEeSa1ZGIFJfw4w" position="-4.0,41.5"/>
       <visibility xmi:id="_7bPBRiIxEeSa1ZGIFJfw4w" label="+"/>
       <cardinality xmi:id="_7bPBRyIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
     </targetRole>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7f10cCIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,0.0" targetAnchor="47.0,64.0"/>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7gGTICIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,0.0" targetAnchor="47.0,64.0" containedItem="_7hUbICIxEeSa1ZGIFJfw4w"/>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7huq0CIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7oAR8CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVC-QDxSEeSIxM8t6j5y3g" sourceY="-49" targetX="-26" targetY="35"/>
-    <bendpoints xmi:id="_BVC-QTxSEeSIxM8t6j5y3g" sourceX="26" sourceY="-49" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7huq0CIxEeSa1ZGIFJfw4w" sourceAnchor="43.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7oAR8CIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDXaFDy0EeSTkrUGR_lIdA" sourceY="-48" targetX="-30" targetY="36"/>
+    <bendpoints xmi:id="_pDXaFTy0EeSTkrUGR_lIdA" sourceX="30" sourceY="-48" targetY="36"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7iNL8CIxEeSa1ZGIFJfw4w" sourceAnchor="94.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7QoTwCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_68DxSEeSIxM8t6j5y3g" sourceY="-23" targetX="-1236" targetY="216"/>
-    <bendpoints xmi:id="_BU_68TxSEeSIxM8t6j5y3g" sourceX="1236" sourceY="-22" targetY="217"/>
+    <bendpoints xmi:id="_pDU90Dy0EeSTkrUGR_lIdA" sourceY="-23" targetX="-1236" targetY="216"/>
+    <bendpoints xmi:id="_pDU90Ty0EeSTkrUGR_lIdA" sourceX="1236" sourceY="-22" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7iyawCIxEeSa1ZGIFJfw4w" sourceAnchor="78.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7Ri5wCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_68jxSEeSIxM8t6j5y3g" sourceY="-25" targetX="376" targetY="217"/>
-    <bendpoints xmi:id="_BU_68zxSEeSIxM8t6j5y3g" sourceX="-376" sourceY="-25" targetY="217"/>
+    <bendpoints xmi:id="_pDU90jy0EeSTkrUGR_lIdA" sourceY="-25" targetX="376" targetY="217"/>
+    <bendpoints xmi:id="_pDU90zy0EeSTkrUGR_lIdA" sourceX="-376" sourceY="-25" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7jdJICIxEeSa1ZGIFJfw4w" sourceAnchor="39.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7R10sCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_69DxSEeSIxM8t6j5y3g" sourceY="-113" targetX="26" targetY="217"/>
-    <bendpoints xmi:id="_BU_69TxSEeSIxM8t6j5y3g" sourceX="-26" sourceY="-113" targetY="217"/>
+    <bendpoints xmi:id="_pDVk4Dy0EeSTkrUGR_lIdA" sourceY="-113" targetX="26" targetY="217"/>
+    <bendpoints xmi:id="_pDVk4Ty0EeSTkrUGR_lIdA" sourceX="-26" sourceY="-113" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7j2xwCIxEeSa1ZGIFJfw4w" sourceAnchor="97.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7SHhgCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_69jxSEeSIxM8t6j5y3g" sourceY="-15" targetX="570" targetY="216"/>
-    <bendpoints xmi:id="_BU_69zxSEeSIxM8t6j5y3g" sourceX="-570" sourceY="-14" targetY="217"/>
+    <bendpoints xmi:id="_pDVk4jy0EeSTkrUGR_lIdA" sourceY="-15" targetX="570" targetY="216"/>
+    <bendpoints xmi:id="_pDVk4zy0EeSTkrUGR_lIdA" sourceX="-570" sourceY="-14" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7kPzUCIxEeSa1ZGIFJfw4w" sourceAnchor="52.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7S1TMCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_6-DxSEeSIxM8t6j5y3g" sourceY="-127" targetX="1014" targetY="216"/>
-    <bendpoints xmi:id="_BU_6-TxSEeSIxM8t6j5y3g" sourceX="-1014" sourceY="-126" targetY="217"/>
+    <bendpoints xmi:id="_pDVk5Dy0EeSTkrUGR_lIdA" sourceY="-127" targetX="1014" targetY="216"/>
+    <bendpoints xmi:id="_pDVk5Ty0EeSTkrUGR_lIdA" sourceX="-1014" sourceY="-126" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7ko04CIxEeSa1ZGIFJfw4w" sourceAnchor="40.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7TxuYCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BU_6-jxSEeSIxM8t6j5y3g" sourceY="-686" targetX="1780" targetY="217"/>
-    <bendpoints xmi:id="_BVAiADxSEeSIxM8t6j5y3g" sourceX="-1780" sourceY="-686" targetY="217"/>
+    <bendpoints xmi:id="_pDVk5jy0EeSTkrUGR_lIdA" sourceY="-686" targetX="1780" targetY="217"/>
+    <bendpoints xmi:id="_pDVk5zy0EeSTkrUGR_lIdA" sourceX="-1780" sourceY="-686" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7k23UCIxEeSa1ZGIFJfw4w" sourceAnchor="84.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7T7fYCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiATxSEeSIxM8t6j5y3g" sourceY="-598" targetX="2156" targetY="217"/>
-    <bendpoints xmi:id="_BVAiAjxSEeSIxM8t6j5y3g" sourceX="-2156" sourceY="-598" targetY="217"/>
+    <bendpoints xmi:id="_pDVk6Dy0EeSTkrUGR_lIdA" sourceY="-598" targetX="2156" targetY="217"/>
+    <bendpoints xmi:id="_pDVk6Ty0EeSTkrUGR_lIdA" sourceX="-2156" sourceY="-598" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7lQf8CIxEeSa1ZGIFJfw4w" sourceAnchor="86.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7UzCECIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiBTxSEeSIxM8t6j5y3g" sourceY="-114" targetX="-1352" targetY="217"/>
-    <bendpoints xmi:id="_BVAiBjxSEeSIxM8t6j5y3g" sourceX="1352" sourceY="-114" targetY="217"/>
+    <bendpoints xmi:id="_pDVk7Dy0EeSTkrUGR_lIdA" sourceY="-114" targetX="-1352" targetY="217"/>
+    <bendpoints xmi:id="_pDVk7Ty0EeSTkrUGR_lIdA" sourceX="1352" sourceY="-114" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7ll3ICIxEeSa1ZGIFJfw4w" sourceAnchor="37.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7VN40CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVDlVDxSEeSIxM8t6j5y3g" sourceY="-114" targetX="-2314" targetY="217"/>
-    <bendpoints xmi:id="_BVDlVTxSEeSIxM8t6j5y3g" sourceX="2314" sourceY="-114" targetY="217"/>
+    <bendpoints xmi:id="_pDXaGTy0EeSTkrUGR_lIdA" sourceY="-114" targetX="-2314" targetY="217"/>
+    <bendpoints xmi:id="_pDXaGjy0EeSTkrUGR_lIdA" sourceX="2314" sourceY="-114" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7l9DgCIxEeSa1ZGIFJfw4w" sourceAnchor="60.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7VrL0CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiBzxSEeSIxM8t6j5y3g" sourceY="-75" targetX="-586" targetY="216"/>
-    <bendpoints xmi:id="_BVAiCDxSEeSIxM8t6j5y3g" sourceX="586" sourceY="-74" targetY="217"/>
+    <bendpoints xmi:id="_pDVk7jy0EeSTkrUGR_lIdA" sourceY="-75" targetX="-586" targetY="216"/>
+    <bendpoints xmi:id="_pDVk7zy0EeSTkrUGR_lIdA" sourceX="586" sourceY="-74" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7mU28CIxEeSa1ZGIFJfw4w" sourceAnchor="63.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7WBKFyIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiCTxSEeSIxM8t6j5y3g" sourceY="-75" targetX="-1054" targetY="216"/>
-    <bendpoints xmi:id="_BVAiCjxSEeSIxM8t6j5y3g" sourceX="1054" sourceY="-74" targetY="217"/>
+    <bendpoints xmi:id="_pDVk8Dy0EeSTkrUGR_lIdA" sourceY="-75" targetX="-1054" targetY="216"/>
+    <bendpoints xmi:id="_pDVk8Ty0EeSTkrUGR_lIdA" sourceX="1054" sourceY="-74" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7mtRcCIxEeSa1ZGIFJfw4w" sourceAnchor="70.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7WWhQCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiCzxSEeSIxM8t6j5y3g" sourceY="-274" targetX="-508" targetY="217"/>
-    <bendpoints xmi:id="_BVAiDDxSEeSIxM8t6j5y3g" sourceX="508" sourceY="-274" targetY="217"/>
+    <bendpoints xmi:id="_pDWL8Dy0EeSTkrUGR_lIdA" sourceY="-274" targetX="-508" targetY="217"/>
+    <bendpoints xmi:id="_pDWL8Ty0EeSTkrUGR_lIdA" sourceX="508" sourceY="-274" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7nDPsCIxEeSa1ZGIFJfw4w" sourceAnchor="65.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7WuUtiIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVAiDTxSEeSIxM8t6j5y3g" sourceY="-374" targetX="-26" targetY="217"/>
-    <bendpoints xmi:id="_BVAiDjxSEeSIxM8t6j5y3g" sourceX="26" sourceY="-374" targetY="217"/>
+    <bendpoints xmi:id="_pDWL8jy0EeSTkrUGR_lIdA" sourceY="-374" targetX="-26" targetY="217"/>
+    <bendpoints xmi:id="_pDWL8zy0EeSTkrUGR_lIdA" sourceX="26" sourceY="-374" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7nYm4CIxEeSa1ZGIFJfw4w" sourceAnchor="128.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7XTjgiIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVBJEjxSEeSIxM8t6j5y3g" sourceY="-23" targetX="-1092" targetY="1074"/>
-    <bendpoints xmi:id="_BVBJEzxSEeSIxM8t6j5y3g" sourceX="3354" sourceY="-24" targetX="2262" targetY="1073"/>
-    <bendpoints xmi:id="_BVBJFDxSEeSIxM8t6j5y3g" sourceX="3354" sourceY="-882" targetX="2262" targetY="215"/>
-    <bendpoints xmi:id="_BVBJFTxSEeSIxM8t6j5y3g" sourceX="1092" sourceY="-880" targetY="217"/>
+    <bendpoints xmi:id="_pDWL9zy0EeSTkrUGR_lIdA" sourceY="-23" targetX="-1092" targetY="1074"/>
+    <bendpoints xmi:id="_pDWL-Dy0EeSTkrUGR_lIdA" sourceX="3354" sourceY="-24" targetX="2262" targetY="1073"/>
+    <bendpoints xmi:id="_pDWL-Ty0EeSTkrUGR_lIdA" sourceX="3354" sourceY="-882" targetX="2262" targetY="215"/>
+    <bendpoints xmi:id="_pDWL-jy0EeSTkrUGR_lIdA" sourceX="1092" sourceY="-880" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7ntXACIxEeSa1ZGIFJfw4w" sourceAnchor="63.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_7Xr-ACIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVBwIDxSEeSIxM8t6j5y3g" sourceY="-685" targetX="1378" targetY="217"/>
-    <bendpoints xmi:id="_BVBwITxSEeSIxM8t6j5y3g" sourceX="-1378" sourceY="-685" targetY="217"/>
+    <bendpoints xmi:id="_pDWzBTy0EeSTkrUGR_lIdA" sourceY="-685" targetX="1378" targetY="217"/>
+    <bendpoints xmi:id="_pDWzBjy0EeSTkrUGR_lIdA" sourceX="-1378" sourceY="-685" targetY="217"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7oUbACIxEeSa1ZGIFJfw4w" sourceAnchor="46.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7pqe0CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVCXMjxSEeSIxM8t6j5y3g" sourceY="-49" targetX="2274" targetY="35"/>
-    <bendpoints xmi:id="_BVCXMzxSEeSIxM8t6j5y3g" sourceX="-2274" sourceY="-49" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7oUbACIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7pqe0CIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDXaEDy0EeSTkrUGR_lIdA" sourceY="-48" targetX="2275" targetY="36"/>
+    <bendpoints xmi:id="_pDXaETy0EeSTkrUGR_lIdA" sourceX="-2275" sourceY="-48" targetY="36"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7ozjMCIxEeSa1ZGIFJfw4w" sourceAnchor="32.0,0.0" targetAnchor="46.0,62.0" enclosingItem="_7pqe0CIxEeSa1ZGIFJfw4w" containedItem="_7YpnVCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVBwIjxSEeSIxM8t6j5y3g" sourceY="-74" targetX="364" targetY="1062"/>
-    <bendpoints xmi:id="_BVBwIzxSEeSIxM8t6j5y3g" sourceX="-364" sourceY="-74" targetY="1062"/>
+    <bendpoints xmi:id="_pDYBJTy0EeSTkrUGR_lIdA" sourceY="-74" targetX="364" targetY="1062"/>
+    <bendpoints xmi:id="_pDYBJjy0EeSTkrUGR_lIdA" sourceX="-364" sourceY="-74" targetY="1062"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7pWVwCIxEeSa1ZGIFJfw4w" sourceAnchor="63.0,0.0" targetAnchor="46.0,62.0" enclosingItem="_7pqe0CIxEeSa1ZGIFJfw4w" containedItem="_7a304CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVBwJDxSEeSIxM8t6j5y3g" sourceY="-74" targetX="-26" targetY="1062"/>
-    <bendpoints xmi:id="_BVBwJTxSEeSIxM8t6j5y3g" sourceX="26" sourceY="-74" targetY="1062"/>
+    <bendpoints xmi:id="_pDYBIzy0EeSTkrUGR_lIdA" sourceY="-74" targetX="-26" targetY="1062"/>
+    <bendpoints xmi:id="_pDYBJDy0EeSTkrUGR_lIdA" sourceX="26" sourceY="-74" targetY="1062"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7qC5UCIxEeSa1ZGIFJfw4w" sourceAnchor="46.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7rdOkCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVCXNDxSEeSIxM8t6j5y3g" sourceY="-49" targetX="90" targetY="35"/>
-    <bendpoints xmi:id="_BVCXNTxSEeSIxM8t6j5y3g" sourceX="-90" sourceY="-49" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7qC5UCIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7rdOkCIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYoMDy0EeSTkrUGR_lIdA" sourceY="-46" targetX="318" targetY="36"/>
+    <bendpoints xmi:id="_pDYoMTy0EeSTkrUGR_lIdA" sourceX="-318" sourceY="-46" targetY="36"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7qrygCIxEeSa1ZGIFJfw4w" sourceAnchor="63.0,0.0" targetAnchor="46.0,62.0" enclosingItem="_7rdOkCIxEeSa1ZGIFJfw4w" containedItem="_7bk_gCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVBwJjxSEeSIxM8t6j5y3g" sourceY="-75" targetX="404" targetY="34"/>
-    <bendpoints xmi:id="_BVBwJzxSEeSIxM8t6j5y3g" sourceX="-404" sourceY="-74" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7qrygCIxEeSa1ZGIFJfw4w" sourceAnchor="62.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7rdOkCIxEeSa1ZGIFJfw4w" containedItem="_7bk_gCIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYoMjy0EeSTkrUGR_lIdA" sourceY="-36" targetX="186" targetY="38"/>
+    <bendpoints xmi:id="_pDYoMzy0EeSTkrUGR_lIdA" sourceX="-186" sourceY="-36" targetY="38"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7rJFgCIxEeSa1ZGIFJfw4w" sourceAnchor="54.0,0.0" targetAnchor="46.0,62.0" enclosingItem="_7rdOkCIxEeSa1ZGIFJfw4w" containedItem="_7b0QECIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVCXMDxSEeSIxM8t6j5y3g" sourceY="-63" targetX="-38" targetY="35"/>
-    <bendpoints xmi:id="_BVCXMTxSEeSIxM8t6j5y3g" sourceX="38" sourceY="-63" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7rJFgCIxEeSa1ZGIFJfw4w" sourceAnchor="137.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7rdOkCIxEeSa1ZGIFJfw4w" containedItem="_7b0QECIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYoNDy0EeSTkrUGR_lIdA" sourceY="-30" targetX="-93" targetY="38"/>
+    <bendpoints xmi:id="_pDYoNTy0EeSTkrUGR_lIdA" sourceX="93" sourceY="-30" targetY="38"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7r4sYCIxEeSa1ZGIFJfw4w" sourceAnchor="46.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7uxoUCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVCXNjxSEeSIxM8t6j5y3g" sourceY="-49" targetX="-3108" targetY="35"/>
-    <bendpoints xmi:id="_BVCXNzxSEeSIxM8t6j5y3g" sourceX="3108" sourceY="-49" targetY="35"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7r4sYCIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,16.0" targetAnchor="47.0,62.0" enclosingItem="_7hUbICIxEeSa1ZGIFJfw4w" containedItem="_7uxoUCIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDXaEjy0EeSTkrUGR_lIdA" sourceY="-48" targetX="-3107" targetY="36"/>
+    <bendpoints xmi:id="_pDXaEzy0EeSTkrUGR_lIdA" sourceX="3107" sourceY="-48" targetY="36"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7sZCsCIxEeSa1ZGIFJfw4w" sourceAnchor="59.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7cY30CIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVEMZjxSEeSIxM8t6j5y3g" sourceY="-43" targetX="-32" targetY="1104"/>
-    <bendpoints xmi:id="_BVEMZzxSEeSIxM8t6j5y3g" sourceX="32" sourceY="-43" targetY="1104"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7sZCsCIxEeSa1ZGIFJfw4w" sourceAnchor="59.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7cY30CIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDXaGzy0EeSTkrUGR_lIdA" sourceY="-43" targetX="-32" targetY="1106"/>
+    <bendpoints xmi:id="_pDYBIDy0EeSTkrUGR_lIdA" sourceX="32" sourceY="-43" targetY="1106"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7s9qcCIxEeSa1ZGIFJfw4w" sourceAnchor="76.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7c9fkCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVEMYjxSEeSIxM8t6j5y3g" sourceY="-30" targetX="324" targetY="1104"/>
-    <bendpoints xmi:id="_BVEMYzxSEeSIxM8t6j5y3g" sourceX="-324" sourceY="-30" targetY="1104"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7s9qcCIxEeSa1ZGIFJfw4w" sourceAnchor="76.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7c9fkCIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYBKzy0EeSTkrUGR_lIdA" sourceY="-30" targetX="324" targetY="1106"/>
+    <bendpoints xmi:id="_pDYBLDy0EeSTkrUGR_lIdA" sourceX="-324" sourceY="-30" targetY="1106"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7tl8kCIxEeSa1ZGIFJfw4w" sourceAnchor="192.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7eGIACIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVEMZDxSEeSIxM8t6j5y3g" sourceY="-51" targetX="-316" targetY="1104"/>
-    <bendpoints xmi:id="_BVEMZTxSEeSIxM8t6j5y3g" sourceX="316" sourceY="-51" targetY="1104"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7tl8kCIxEeSa1ZGIFJfw4w" sourceAnchor="192.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7eGIACIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYBJzy0EeSTkrUGR_lIdA" sourceY="-51" targetX="-316" targetY="1106"/>
+    <bendpoints xmi:id="_pDYBKDy0EeSTkrUGR_lIdA" sourceX="316" sourceY="-51" targetY="1106"/>
   </edges>
-  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7uRSACIxEeSa1ZGIFJfw4w" sourceAnchor="99.0,0.0" targetAnchor="47.0,64.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7eyEgCIxEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVDlVjxSEeSIxM8t6j5y3g" sourceY="-32" targetX="129" targetY="1104"/>
-    <bendpoints xmi:id="_BVDlVzxSEeSIxM8t6j5y3g" sourceX="-129" sourceY="-32" targetY="1104"/>
+  <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7uRSACIxEeSa1ZGIFJfw4w" sourceAnchor="99.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7uxoUCIxEeSa1ZGIFJfw4w" containedItem="_7eyEgCIxEeSa1ZGIFJfw4w">
+    <bendpoints xmi:id="_pDYBLTy0EeSTkrUGR_lIdA" sourceY="-32" targetX="129" targetY="1106"/>
+    <bendpoints xmi:id="_pDYBLjy0EeSTkrUGR_lIdA" sourceX="-129" sourceY="-32" targetY="1106"/>
   </edges>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7v-iMCIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,0.0" targetAnchor="47.0,64.0"/>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_7xXCQCIxEeSa1ZGIFJfw4w" sourceAnchor="47.0,0.0" targetAnchor="47.0,64.0"/>
   <edges xsi:type="com.yattasolutions.diagrams:ContainmentVisual" xmi:id="_acyNwCIyEeSa1ZGIFJfw4w" sourceAnchor="105.0,0.0" targetAnchor="47.0,62.0" enclosingItem="_7oAR8CIxEeSa1ZGIFJfw4w" containedItem="_acyNwSIyEeSa1ZGIFJfw4w">
-    <bendpoints xmi:id="_BVC-QjxSEeSIxM8t6j5y3g" sourceY="-61" targetX="-1898" targetY="217"/>
-    <bendpoints xmi:id="_BVDlUDxSEeSIxM8t6j5y3g" sourceX="1898" sourceY="-61" targetY="217"/>
+    <bendpoints xmi:id="_pDYBITy0EeSTkrUGR_lIdA" sourceY="-61" targetX="-1898" targetY="217"/>
+    <bendpoints xmi:id="_pDYBIjy0EeSTkrUGR_lIdA" sourceX="1898" sourceY="-61" targetY="217"/>
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_gzBXECIyEeSa1ZGIFJfw4w" sourceAnchor="73.0,17.0" targetAnchor="0.0,68.0" target="_acyNwSIyEeSa1ZGIFJfw4w" source="_7VN40CIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_gy-TwCIyEeSa1ZGIFJfw4w"/>
@@ -492,7 +492,7 @@
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_xy1vEDwZEeSIxM8t6j5y3g" sourceAnchor="75.0,69.0" targetAnchor="384.0,83.0" target="_7eGIACIxEeSa1ZGIFJfw4w" source="_7c9fkCIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_xyvBYDwZEeSIxM8t6j5y3g"/>
     <visualProperties xmi:id="_xy1vETwZEeSIxM8t6j5y3g"/>
-    <bendpoints xmi:id="_BVEMYTxSEeSIxM8t6j5y3g" sourceY="35" targetX="447"/>
+    <bendpoints xmi:id="_pDYBKjy0EeSTkrUGR_lIdA" sourceY="35" targetX="447"/>
     <nameVisual xmi:id="_xy1vEjwZEeSIxM8t6j5y3g" text="">
       <visualProperties xmi:id="_x14cADwZEeSIxM8t6j5y3g" position="-203.0,2.0"/>
     </nameVisual>
@@ -502,30 +502,11 @@
       <visibility xmi:id="_xy1vFDwZEeSIxM8t6j5y3g" label="+"/>
       <cardinality xmi:id="_xy1vFTwZEeSIxM8t6j5y3g" label="*" max="-1"/>
     </sourceRole>
-    <targetRole xmi:id="_xy1vFjwZEeSIxM8t6j5y3g" aggregationKind="NONE" name="storageController" navigable="true">
+    <targetRole xmi:id="_xy1vFjwZEeSIxM8t6j5y3g" aggregationKind="NONE" name="">
       <modelElement href="core.uml#_xyyEsDwZEeSIxM8t6j5y3g"/>
       <visualProperties xmi:id="_x15DEDwZEeSIxM8t6j5y3g" position="79.0,2.0"/>
       <visibility xmi:id="_xy1vFzwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="_xy1vGDwZEeSIxM8t6j5y3g" label="0..1" max="1"/>
-    </targetRole>
-  </edges>
-  <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="__dSs4DwZEeSIxM8t6j5y3g" sourceAnchor="0.0,46.0" targetAnchor="199.0,44.0" target="_7eyEgCIxEeSa1ZGIFJfw4w" source="_7c9fkCIxEeSa1ZGIFJfw4w">
-    <modelElement href="core.uml#__dLYIDwZEeSIxM8t6j5y3g"/>
-    <visualProperties xmi:id="__dSs4TwZEeSIxM8t6j5y3g"/>
-    <nameVisual xmi:id="__dSs4jwZEeSIxM8t6j5y3g" text="">
-      <visualProperties xmi:id="__iiZQDwZEeSIxM8t6j5y3g" position="-4.0,2.0"/>
-    </nameVisual>
-    <sourceRole xmi:id="__dSs4zwZEeSIxM8t6j5y3g" aggregationKind="NONE" name="storageConnection" navigable="true">
-      <modelElement href="core.uml#__dLYITwZEeSIxM8t6j5y3g"/>
-      <visualProperties xmi:id="__ihLIDwZEeSIxM8t6j5y3g" position="-80.0,46.0"/>
-      <visibility xmi:id="__dSs5DwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="__dSs5TwZEeSIxM8t6j5y3g" label="*" max="-1"/>
-    </sourceRole>
-    <targetRole xmi:id="__dSs5jwZEeSIxM8t6j5y3g" aggregationKind="NONE" name="storageResponseListener" navigable="true">
-      <modelElement href="core.uml#__dL_MjwZEeSIxM8t6j5y3g"/>
-      <visualProperties xmi:id="__iiZQTwZEeSIxM8t6j5y3g" position="-81.00000000000006,-98.0"/>
-      <visibility xmi:id="__dSs5zwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="__dSs6DwZEeSIxM8t6j5y3g" label="*" max="-1"/>
+      <cardinality xmi:id="_xy1vGDwZEeSIxM8t6j5y3g" label="1" max="1" min="1"/>
     </targetRole>
   </edges>
   <edges xsi:type="com.yattasolutions.uml.diagrams.classifier:AssociationVisual" xmi:id="_gHqW4DxSEeSIxM8t6j5y3g" target="_acyNwSIyEeSa1ZGIFJfw4w">
@@ -1052,31 +1033,9 @@
       </type>
     </attributes>
   </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7bk_gCIxEeSa1ZGIFJfw4w" containment="_7qrygCIxEeSa1ZGIFJfw4w" name="DropController" package="_7rdOkCIxEeSa1ZGIFJfw4w" associationsOut="_7bPBQCIxEeSa1ZGIFJfw4w">
-    <modelElement href="core.uml#_4I5GwSIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7bk_gSIxEeSa1ZGIFJfw4w" position="3805.0,331.0" size="-1.0,-1.0"/>
-    <visibility xmi:id="_7bk_giIxEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="_7bk_gyIxEeSa1ZGIFJfw4w" name="dropListener">
-      <modelElement href="core.uml#_4KiFhiIxEeSa1ZGIFJfw4w"/>
-      <visibility xmi:id="_7bk_hCIxEeSa1ZGIFJfw4w" label="+"/>
-      <cardinality xmi:id="_7bk_hSIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
-      <type xmi:id="_7bk_hiIxEeSa1ZGIFJfw4w" name="DropListener">
-        <modelElement href="core.uml#_4I6U4CIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-  </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:InterfaceVisual" xmi:id="_7b0QECIxEeSa1ZGIFJfw4w" containment="_7rJFgCIxEeSa1ZGIFJfw4w" name="DropListener" package="_7rdOkCIxEeSa1ZGIFJfw4w" associationsIn="_7bPBQCIxEeSa1ZGIFJfw4w">
-    <modelElement href="core.uml#_4I6U4CIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7b0QESIxEeSa1ZGIFJfw4w" position="3372.0,320.0" size="-1.0,-1.0"/>
-    <visibility xmi:id="_7b0QEiIxEeSa1ZGIFJfw4w" label="+"/>
-  </nodes>
   <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:PackageVisual" xmi:id="_7pqe0CIxEeSa1ZGIFJfw4w" containment="_7oUbACIxEeSa1ZGIFJfw4w" containments="_7ozjMCIxEeSa1ZGIFJfw4w _7pWVwCIxEeSa1ZGIFJfw4w" classes="_7YpnVCIxEeSa1ZGIFJfw4w _7a304CIxEeSa1ZGIFJfw4w" name="module" nestingPackage="_7hUbICIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4IO_cCIxEeSa1ZGIFJfw4w"/>
     <visualProperties xmi:id="_7pqe0SIxEeSa1ZGIFJfw4w" position="5602.0,160.0" size="-1.0,-1.0"/>
-  </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:PackageVisual" xmi:id="_7rdOkCIxEeSa1ZGIFJfw4w" containment="_7qC5UCIxEeSa1ZGIFJfw4w" containments="_7qrygCIxEeSa1ZGIFJfw4w _7rJFgCIxEeSa1ZGIFJfw4w" classes="_7bk_gCIxEeSa1ZGIFJfw4w _7b0QECIxEeSa1ZGIFJfw4w" name="drop" nestingPackage="_7hUbICIxEeSa1ZGIFJfw4w">
-    <modelElement href="core.uml#_4IT38CIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7rdOkSIxEeSa1ZGIFJfw4w" position="3418.0,160.0" size="-1.0,-1.0"/>
   </nodes>
   <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:PackageVisual" xmi:id="_7uxoUCIxEeSa1ZGIFJfw4w" containment="_7r4sYCIxEeSa1ZGIFJfw4w" containments="_7sZCsCIxEeSa1ZGIFJfw4w _7s9qcCIxEeSa1ZGIFJfw4w _7tl8kCIxEeSa1ZGIFJfw4w _7uRSACIxEeSa1ZGIFJfw4w" classes="_7cY30CIxEeSa1ZGIFJfw4w _7c9fkCIxEeSa1ZGIFJfw4w _7eGIACIxEeSa1ZGIFJfw4w _7eyEgCIxEeSa1ZGIFJfw4w" name="storage" nestingPackage="_7hUbICIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4IUfACIxEeSa1ZGIFJfw4w"/>
@@ -1119,81 +1078,6 @@
       </type>
     </attributes>
   </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:InterfaceVisual" xmi:id="_7eyEgCIxEeSa1ZGIFJfw4w" containment="_7uRSACIxEeSa1ZGIFJfw4w" name="StorageResponseListener" package="_7uxoUCIxEeSa1ZGIFJfw4w" associationsIn="__dSs4DwZEeSIxM8t6j5y3g">
-    <modelElement href="core.uml#_4I_0cCIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7eyEgSIxEeSa1ZGIFJfw4w" position="297.0,1360.0" size="199.0,88.0"/>
-    <visibility xmi:id="_7eyEgiIxEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="__dTT8DwZEeSIxM8t6j5y3g" name="storageConnection">
-      <modelElement href="core.uml#__dLYITwZEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="__dTT8TwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="__dTT8jwZEeSIxM8t6j5y3g" label="*" max="-1"/>
-      <type xmi:id="__dTT8zwZEeSIxM8t6j5y3g" name="StorageConnection">
-        <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-    <operations xmi:id="_KnqNMDwSEeSIxM8t6j5y3g" name="onStorageResponseFinished">
-      <modelElement href="core.uml#_KnoYADwSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_KnqNMTwSEeSIxM8t6j5y3g" label="+"/>
-      <parameters xmi:id="_KnqNMjwSEeSIxM8t6j5y3g" name="StorageBlob">
-        <modelElement href="core.uml#_Kno_EDwSEeSIxM8t6j5y3g"/>
-      </parameters>
-    </operations>
-  </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7c9fkCIxEeSa1ZGIFJfw4w" containment="_7s9qcCIxEeSa1ZGIFJfw4w" name="StorageConnection" package="_7uxoUCIxEeSa1ZGIFJfw4w" associationsOut="_7ajEwCIxEeSa1ZGIFJfw4w _xy1vEDwZEeSIxM8t6j5y3g __dSs4DwZEeSIxM8t6j5y3g">
-    <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7c9fkSIxEeSa1ZGIFJfw4w" position="515.0,1358.0" size="153.0,69.0"/>
-    <visibility xmi:id="_7c9fkiIxEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="_7c9fkyIxEeSa1ZGIFJfw4w" name="moduleManager">
-      <modelElement href="core.uml#_4KjTpyIxEeSa1ZGIFJfw4w"/>
-      <visibility xmi:id="_7c9flCIxEeSa1ZGIFJfw4w" label="+"/>
-      <cardinality xmi:id="_7c9flSIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
-      <type xmi:id="_7c9fliIxEeSa1ZGIFJfw4w" name="ModuleManager">
-        <modelElement href="core.uml#_4I7jACIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-    <attributes xmi:id="_xy4yYDwZEeSIxM8t6j5y3g" name="storageController">
-      <modelElement href="core.uml#_xyyEsDwZEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_xy4yYTwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="_xy4yYjwZEeSIxM8t6j5y3g" label="0..1" max="1"/>
-      <type xmi:id="_xy4yYzwZEeSIxM8t6j5y3g" name="StorageController">
-        <modelElement href="core.uml#_4I_NYCIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-    <attributes xmi:id="__dUiEDwZEeSIxM8t6j5y3g" name="storageResponseListener">
-      <modelElement href="core.uml#__dL_MjwZEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="__dUiETwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="__dUiEjwZEeSIxM8t6j5y3g" label="*" max="-1"/>
-      <type xmi:id="__dUiEzwZEeSIxM8t6j5y3g" name="StorageResponseListener">
-        <modelElement href="core.uml#_4I_0cCIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-  </nodes>
-  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7eGIACIxEeSa1ZGIFJfw4w" containment="_7tl8kCIxEeSa1ZGIFJfw4w" name="StorageController" package="_7uxoUCIxEeSa1ZGIFJfw4w" associationsIn="_xy1vEDwZEeSIxM8t6j5y3g">
-    <modelElement href="core.uml#_4I_NYCIxEeSa1ZGIFJfw4w"/>
-    <visualProperties xmi:id="_7eGIASIxEeSa1ZGIFJfw4w" position="-241.0,1379.0" size="384.0,100.0"/>
-    <visibility xmi:id="_7eGIAiIxEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="_xy3kQDwZEeSIxM8t6j5y3g" name="storageConnection">
-      <modelElement href="core.uml#_xyvBYTwZEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_xy3kQTwZEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="_xy3kQjwZEeSIxM8t6j5y3g" label="*" max="-1"/>
-      <type xmi:id="_xy3kQzwZEeSIxM8t6j5y3g" name="StorageConnection">
-        <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
-      </type>
-    </attributes>
-    <operations xmi:id="_57ubYDwREeSIxM8t6j5y3g" name="startRequest">
-      <modelElement href="core.uml#_57kqYDwREeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_57ubYTwREeSIxM8t6j5y3g" label="+"/>
-      <outParameters xmi:id="_57ubYjwREeSIxM8t6j5y3g">
-        <modelElement href="core.uml#_57kqYTwREeSIxM8t6j5y3g"/>
-        <type xmi:id="_57ubYzwREeSIxM8t6j5y3g" name="StorageConnection">
-          <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
-        </type>
-      </outParameters>
-      <parameters xmi:id="_57ubZDwREeSIxM8t6j5y3g" name="StorageResponseListener">
-        <modelElement href="core.uml#_57qxADwREeSIxM8t6j5y3g"/>
-      </parameters>
-    </operations>
-  </nodes>
   <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7cY30CIxEeSa1ZGIFJfw4w" containment="_7sZCsCIxEeSa1ZGIFJfw4w" name="StorageBlob" package="_7uxoUCIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4I9YMCIxEeSa1ZGIFJfw4w"/>
     <visualProperties xmi:id="_7cY30SIxEeSa1ZGIFJfw4w" position="176.0,1371.0" size="102.0,81.0"/>
@@ -1235,14 +1119,6 @@
         <modelElement href="core.uml#_SKqIoCK4EeSayczWr7Ytig"/>
       </type>
     </attributes>
-    <attributes xmi:id="_gHpv0DxSEeSIxM8t6j5y3g" name="autoLoadModules">
-      <modelElement href="core.uml#_gHohsDxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_gHpv0TxSEeSIxM8t6j5y3g" label="+"/>
-      <cardinality xmi:id="_gHpv0jxSEeSIxM8t6j5y3g" label="1" max="1" min="1"/>
-      <type xmi:id="_gHpv0zxSEeSIxM8t6j5y3g" name="Array">
-        <modelElement href="pathmap://UMLLAB_PROFILES/UMLLab.profile.uml#UMLLabProfile-Array"/>
-      </type>
-    </attributes>
   </nodes>
   <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7a304CIxEeSa1ZGIFJfw4w" containment="_7pWVwCIxEeSa1ZGIFJfw4w" name="ModuleManager" package="_7pqe0CIxEeSa1ZGIFJfw4w" associationsIn="_7VKOcCIxEeSa1ZGIFJfw4w _7ajEwCIxEeSa1ZGIFJfw4w" associationsOut="_7YUQICIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4I7jACIxEeSa1ZGIFJfw4w"/>
@@ -1272,17 +1148,6 @@
         <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
       </type>
     </attributes>
-    <operations xmi:id="_j1jk8DxSEeSIxM8t6j5y3g" name="autoloadModules">
-      <modelElement href="core.uml#_j1iW0DxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_j1jk8TxSEeSIxM8t6j5y3g" label="+"/>
-    </operations>
-    <operations xmi:id="_m12tMDxSEeSIxM8t6j5y3g" name="loadModule">
-      <modelElement href="core.uml#_m12GIDxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_m12tMTxSEeSIxM8t6j5y3g" label="+"/>
-      <parameters xmi:id="_m12tMjxSEeSIxM8t6j5y3g" name="String">
-        <modelElement href="core.uml#_m12GITxSEeSIxM8t6j5y3g"/>
-      </parameters>
-    </operations>
   </nodes>
   <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7YpnVCIxEeSa1ZGIFJfw4w" containment="_7ozjMCIxEeSa1ZGIFJfw4w" name="Module" package="_7pqe0CIxEeSa1ZGIFJfw4w" abstractClass="true" associationsIn="_7YUQICIxEeSa1ZGIFJfw4w">
     <modelElement href="core.uml#_4I678CIxEeSa1ZGIFJfw4w"/>
@@ -1296,17 +1161,111 @@
         <modelElement href="core.uml#_4I7jACIxEeSa1ZGIFJfw4w"/>
       </type>
     </attributes>
-    <operations xmi:id="_o0VMEDxSEeSIxM8t6j5y3g" name="run">
-      <modelElement href="core.uml#_o0UlADxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_o0VMETxSEeSIxM8t6j5y3g" label="+"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7eGIACIxEeSa1ZGIFJfw4w" containment="_7tl8kCIxEeSa1ZGIFJfw4w" name="StorageController" package="_7uxoUCIxEeSa1ZGIFJfw4w" associationsIn="_xy1vEDwZEeSIxM8t6j5y3g">
+    <modelElement href="core.uml#_4I_NYCIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7eGIASIxEeSa1ZGIFJfw4w" position="-241.0,1379.0" size="384.0,100.0"/>
+    <visibility xmi:id="_7eGIAiIxEeSa1ZGIFJfw4w" label="+"/>
+    <attributes xmi:id="_xy3kQDwZEeSIxM8t6j5y3g" name="storageConnection">
+      <modelElement href="core.uml#_xyvBYTwZEeSIxM8t6j5y3g"/>
+      <visibility xmi:id="_xy3kQTwZEeSIxM8t6j5y3g" label="+"/>
+      <cardinality xmi:id="_xy3kQjwZEeSIxM8t6j5y3g" label="*" max="-1"/>
+      <type xmi:id="_xy3kQzwZEeSIxM8t6j5y3g" name="StorageConnection">
+        <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_6h7_MDyzEeSTkrUGR_lIdA" name="startRequest">
+      <modelElement href="core.uml#_6h14kDyzEeSTkrUGR_lIdA"/>
+      <visibility xmi:id="_6h7_MTyzEeSTkrUGR_lIdA" label="+"/>
+      <outParameters xmi:id="_6h7_MjyzEeSTkrUGR_lIdA">
+        <modelElement href="core.uml#_6h14kTyzEeSTkrUGR_lIdA"/>
+        <type xmi:id="_6h7_MzyzEeSTkrUGR_lIdA" name="StorageResponseListener">
+          <modelElement href="core.uml#_4I_0cCIxEeSa1ZGIFJfw4w"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_6h7_NDyzEeSTkrUGR_lIdA" name="listener">
+        <modelElement href="core.uml#_6h4U0DyzEeSTkrUGR_lIdA"/>
+        <type xmi:id="_P-uQ4Dy0EeSTkrUGR_lIdA" name="StorageResponseListener">
+          <modelElement href="core.uml#_4I_0cCIxEeSa1ZGIFJfw4w"/>
+        </type>
+      </parameters>
     </operations>
-    <operations xmi:id="_qOYvQDxSEeSIxM8t6j5y3g" name="stop">
-      <modelElement href="core.uml#_qOYIMDxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_qOYvQTxSEeSIxM8t6j5y3g" label="+"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7c9fkCIxEeSa1ZGIFJfw4w" containment="_7s9qcCIxEeSa1ZGIFJfw4w" name="StorageConnection" package="_7uxoUCIxEeSa1ZGIFJfw4w" associationsOut="_7ajEwCIxEeSa1ZGIFJfw4w _xy1vEDwZEeSIxM8t6j5y3g">
+    <modelElement href="core.uml#_4I9_QCIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7c9fkSIxEeSa1ZGIFJfw4w" position="515.0,1358.0" size="153.0,69.0"/>
+    <visibility xmi:id="_7c9fkiIxEeSa1ZGIFJfw4w" label="+"/>
+    <attributes xmi:id="_7c9fkyIxEeSa1ZGIFJfw4w" name="moduleManager">
+      <modelElement href="core.uml#_4KjTpyIxEeSa1ZGIFJfw4w"/>
+      <visibility xmi:id="_7c9flCIxEeSa1ZGIFJfw4w" label="+"/>
+      <cardinality xmi:id="_7c9flSIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
+      <type xmi:id="_7c9fliIxEeSa1ZGIFJfw4w" name="ModuleManager">
+        <modelElement href="core.uml#_4I7jACIxEeSa1ZGIFJfw4w"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_VbSnQDy0EeSTkrUGR_lIdA" name="cancel">
+      <modelElement href="core.uml#_VbSAMDy0EeSTkrUGR_lIdA"/>
+      <visibility xmi:id="_VbSnQTy0EeSTkrUGR_lIdA" label="+"/>
     </operations>
-    <operations xmi:id="_uTOdsDxSEeSIxM8t6j5y3g" name="registerListeners">
-      <modelElement href="core.uml#_uTN2oDxSEeSIxM8t6j5y3g"/>
-      <visibility xmi:id="_uTOdsTxSEeSIxM8t6j5y3g" label="+"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:InterfaceVisual" xmi:id="_7eyEgCIxEeSa1ZGIFJfw4w" containment="_7uRSACIxEeSa1ZGIFJfw4w" name="StorageResponseListener" package="_7uxoUCIxEeSa1ZGIFJfw4w">
+    <modelElement href="core.uml#_4I_0cCIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7eyEgSIxEeSa1ZGIFJfw4w" position="297.0,1360.0" size="199.0,88.0"/>
+    <visibility xmi:id="_7eyEgiIxEeSa1ZGIFJfw4w" label="+"/>
+    <operations xmi:id="_X7ZzkDy0EeSTkrUGR_lIdA" name="onStorageResponse">
+      <modelElement href="core.uml#_X7YlcDy0EeSTkrUGR_lIdA"/>
+      <visibility xmi:id="_X7ZzkTy0EeSTkrUGR_lIdA" label="+"/>
+      <outParameters xmi:id="_Y47y0Dy0EeSTkrUGR_lIdA">
+        <modelElement href="core.uml#_Y46ksDy0EeSTkrUGR_lIdA"/>
+        <type xmi:id="_Y47y0Ty0EeSTkrUGR_lIdA" name="StorageBlob">
+          <modelElement href="core.uml#_4I9YMCIxEeSa1ZGIFJfw4w"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_X7Zzkjy0EeSTkrUGR_lIdA" name="blob">
+        <modelElement href="core.uml#_X7ZMgDy0EeSTkrUGR_lIdA"/>
+      </parameters>
+    </operations>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:PackageVisual" xmi:id="_7rdOkCIxEeSa1ZGIFJfw4w" containment="_7qC5UCIxEeSa1ZGIFJfw4w" containments="_7qrygCIxEeSa1ZGIFJfw4w _7rJFgCIxEeSa1ZGIFJfw4w" classes="_7bk_gCIxEeSa1ZGIFJfw4w _7b0QECIxEeSa1ZGIFJfw4w" name="drop" nestingPackage="_7hUbICIxEeSa1ZGIFJfw4w">
+    <modelElement href="core.uml#_4IT38CIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7rdOkSIxEeSa1ZGIFJfw4w" position="3645.0,158.0" size="-1.0,-1.0"/>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:ClassifierVisual" xmi:id="_7bk_gCIxEeSa1ZGIFJfw4w" containment="_7qrygCIxEeSa1ZGIFJfw4w" name="DropController" package="_7rdOkCIxEeSa1ZGIFJfw4w" associationsOut="_7bPBQCIxEeSa1ZGIFJfw4w">
+    <modelElement href="core.uml#_4I5GwSIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7bk_gSIxEeSa1ZGIFJfw4w" position="3816.0,296.0" size="125.0,76.0"/>
+    <visibility xmi:id="_7bk_giIxEeSa1ZGIFJfw4w" label="+"/>
+    <attributes xmi:id="_7bk_gyIxEeSa1ZGIFJfw4w" name="dropListener">
+      <modelElement href="core.uml#_4KiFhiIxEeSa1ZGIFJfw4w"/>
+      <visibility xmi:id="_7bk_hCIxEeSa1ZGIFJfw4w" label="+"/>
+      <cardinality xmi:id="_7bk_hSIxEeSa1ZGIFJfw4w" label="*" max="-1"/>
+      <type xmi:id="_7bk_hiIxEeSa1ZGIFJfw4w" name="DropListener">
+        <modelElement href="core.uml#_4I6U4CIxEeSa1ZGIFJfw4w"/>
+      </type>
+    </attributes>
+    <operations xmi:id="_e46YQDy0EeSTkrUGR_lIdA" name="register">
+      <modelElement href="core.uml#_e45KIDy0EeSTkrUGR_lIdA"/>
+      <visibility xmi:id="_e46YQTy0EeSTkrUGR_lIdA" label="+"/>
+      <outParameters xmi:id="_flBQUDy0EeSTkrUGR_lIdA">
+        <modelElement href="core.uml#_flApQDy0EeSTkrUGR_lIdA"/>
+        <type xmi:id="_flBQUTy0EeSTkrUGR_lIdA" name="DropListener">
+          <modelElement href="core.uml#_4I6U4CIxEeSa1ZGIFJfw4w"/>
+        </type>
+      </outParameters>
+      <parameters xmi:id="_e46YQjy0EeSTkrUGR_lIdA" name="drop">
+        <modelElement href="core.uml#_e45xMDy0EeSTkrUGR_lIdA"/>
+      </parameters>
+    </operations>
+  </nodes>
+  <nodes xsi:type="com.yattasolutions.uml.diagrams.classifier:InterfaceVisual" xmi:id="_7b0QECIxEeSa1ZGIFJfw4w" containment="_7rJFgCIxEeSa1ZGIFJfw4w" name="DropListener" package="_7rdOkCIxEeSa1ZGIFJfw4w" associationsIn="_7bPBQCIxEeSa1ZGIFJfw4w">
+    <modelElement href="core.uml#_4I6U4CIxEeSa1ZGIFJfw4w"/>
+    <visualProperties xmi:id="_7b0QESIxEeSa1ZGIFJfw4w" position="3462.0,290.0" size="275.0,89.0"/>
+    <visibility xmi:id="_7b0QEiIxEeSa1ZGIFJfw4w" label="+"/>
+    <operations xmi:id="_lD-MUDy0EeSTkrUGR_lIdA" name="onDropEvent">
+      <modelElement href="core.uml#_lD9lQDy0EeSTkrUGR_lIdA"/>
+      <visibility xmi:id="_lD-MUTy0EeSTkrUGR_lIdA" label="+"/>
+      <parameters xmi:id="_lD-MUjy0EeSTkrUGR_lIdA" name="dropEvent">
+        <modelElement href="core.uml#_lD9lQTy0EeSTkrUGR_lIdA"/>
+      </parameters>
     </operations>
   </nodes>
 </com.yattasolutions.uml.diagrams.classifier:ClassDiagram>
