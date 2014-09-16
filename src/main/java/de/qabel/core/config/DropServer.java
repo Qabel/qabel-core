@@ -71,16 +71,6 @@ public class DropServer {
 		return this.active;
 	}
 
-	private boolean websockets;
-
-	public void setWebsockets(boolean value) {
-		this.websockets = value;
-	}
-
-	public boolean isWebsockets() {
-		return this.websockets;
-	}
-
 	/**
 	 * <pre>
 	 *           0..*     0..1
