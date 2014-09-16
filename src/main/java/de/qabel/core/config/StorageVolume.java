@@ -2,83 +2,76 @@ package de.qabel.core.config;
 
 public class StorageVolume {
 	private int id;
-
-	public void setId(int value) {
-		this.id = value;
-	}
+	private int updated;
+	private int created;
+	private int deleted;
+	private int storageServerId;
+	private String publicIdentifier;
+	private String token;
+	private String revokeToken;
 
 	public int getId() {
-		return this.id;
+		return id;
 	}
 
-	private int updated;
-
-	public void setUpdated(int value) {
-		this.updated = value;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getUpdated() {
-		return this.updated;
+		return updated;
 	}
 
-	private int created;
-
-	public void setCreated(int value) {
-		this.created = value;
+	public void setUpdated(int updated) {
+		this.updated = updated;
 	}
 
 	public int getCreated() {
-		return this.created;
+		return created;
 	}
 
-	private int deleted;
-
-	public void setDeleted(int value) {
-		this.deleted = value;
+	public void setCreated(int created) {
+		this.created = created;
 	}
 
 	public int getDeleted() {
-		return this.deleted;
+		return deleted;
 	}
 
-	private String server;
-
-	public void setServer(String value) {
-		this.server = value;
+	public void setDeleted(int deleted) {
+		this.deleted = deleted;
 	}
 
-	public String getServer() {
-		return this.server;
+	public int getStorageServerId() {
+		return storageServerId;
 	}
 
-	private int port;
-
-	public void setPort(int value) {
-		this.port = value;
+	public void setStorageServerId(int storageServerId) {
+		this.storageServerId = storageServerId;
 	}
 
-	public int getPort() {
-		return this.port;
+	public String getPublicIdentifier() {
+		return publicIdentifier;
 	}
 
-	private String path;
-
-	public void setPath(String value) {
-		this.path = value;
+	public void setPublicIdentifier(String publicIdentifier) {
+		this.publicIdentifier = publicIdentifier;
 	}
 
-	public String getPath() {
-		return this.path;
+	public String getToken() {
+		return token;
 	}
 
-	private String auth;
-
-	public void setAuth(String value) {
-		this.auth = value;
+	public void setToken(String token) {
+		this.token = token;
 	}
 
-	public String getAuth() {
-		return this.auth;
+	public String getRevokeToken() {
+		return revokeToken;
+	}
+
+	public void setRevokeToken(String revokeToken) {
+		this.revokeToken = revokeToken;
 	}
 
 	/**
