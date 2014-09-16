@@ -1,5 +1,7 @@
 package de.qabel.core.config;
 
+import java.net.URL;
+
 public class DropServer {
 	private int id;
 
@@ -41,13 +43,13 @@ public class DropServer {
 		return this.deleted;
 	}
 
-	private String url;
+	private URL url;
 
-	public void setUrl(String value) {
+	public void setUrl(URL value) {
 		this.url = value;
 	}
 
-	public String getUrl() {
+	public URL getUrl() {
 		return this.url;
 	}
 
