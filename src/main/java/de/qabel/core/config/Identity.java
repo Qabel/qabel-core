@@ -1,5 +1,7 @@
 package de.qabel.core.config;
 
+import java.net.URL;
+
 public class Identity {
 	private int id;
 	private int updated;
@@ -8,7 +10,7 @@ public class Identity {
 	private String alias;
 	private String privateEncKey;
 	private String privateSignKey;
-	private String inbox;
+	private URL inbox;
 
 	public void setId(int value) {
 		this.id = value;
@@ -66,11 +68,11 @@ public class Identity {
 		return this.privateSignKey;
 	}
 
-	public void setInbox(String value) {
-		this.inbox = value;
+	public void setInbox(URL inbox) {
+		this.inbox = inbox;
 	}
 
-	public String getInbox() {
+	public URL getInbox() {
 		return this.inbox;
 	}
 
