@@ -56,10 +56,10 @@ public class CryptoUtils {
 	}
 	
 	/*
-	 * Returns the SHA512 digest for a String
-	 */
-	public String getSHA512sum(String plain) {
-		byte[] digest = messageDigest.digest(plain.getBytes());
+	 * Returns the SHA512 digest for a byte array
+	 */	
+	public String getSHA512sum(byte[] bytes){
+		byte[] digest = messageDigest.digest(bytes);
 		StringBuilder sb = new StringBuilder(191);
 
 		for (int i = 0; i < digest.length - 1; i++) {
@@ -69,5 +69,12 @@ public class CryptoUtils {
 		sb.append(String.format("%02x", digest[digest.length - 1] & 0xff));
 
 		return sb.toString();
+	}
+	
+	/*
+	 * Returns the SHA512 digest for a String
+	 */
+	public String getSHA512sum(String plain) {
+		return getSHA512sum(plain.getBytes());
 	}
 }
