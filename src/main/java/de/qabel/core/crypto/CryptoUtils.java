@@ -10,8 +10,8 @@ public class CryptoUtils {
 
 	private static CryptoUtils instance;
 
-	private final static String asymKeyAlgo = "RSA";
-	private final static int asymKeySize = 2048;
+	private final static String ASYM_KEY_ALGORITHM = "RSA";
+	private final static int ASYM_KEY_SIZE = 2048;
 
 	private KeyPairGenerator keyGen;
 	private SecureRandom secRandom;
@@ -22,8 +22,8 @@ public class CryptoUtils {
 		try {
 			secRandom = new SecureRandom();
 
-			keyGen = KeyPairGenerator.getInstance(asymKeyAlgo);
-			keyGen.initialize(asymKeySize);
+			keyGen = KeyPairGenerator.getInstance(ASYM_KEY_ALGORITHM);
+			keyGen.initialize(ASYM_KEY_SIZE);
 
 			messageDigest = MessageDigest.getInstance("SHA-512");
 		} catch (NoSuchAlgorithmException e) {
