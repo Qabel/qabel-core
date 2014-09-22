@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import de.qabel.core.crypto.QblKeyPair;
+
 public class ConfigTest {
 
 	@Test

@@ -1,4 +1,4 @@
-package de.qabel.core.config;
+package de.qabel.core.crypto;
 
 import java.security.interfaces.RSAPublicKey;
 

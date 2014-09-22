@@ -1,5 +1,7 @@
-package de.qabel.core.config;
+package de.qabel.core.crypto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -10,7 +12,7 @@ public class QblKeyPair {
 
 	private KeyPair keyPair;
 	private String publicKeyFingerprint;
-	
+
 	public QblKeyPair() {
 		super();
 		keyPair = CryptoUtils.getInstance().generateKeyPair();
@@ -30,11 +32,17 @@ public class QblKeyPair {
 	}
 
 	private void genFingerprint() {
-		StringBuilder sb = new StringBuilder(622);
-		sb.append(((RSAPublicKey) keyPair.getPublic()).getPublicExponent());
-		sb.append(((RSAPublicKey) keyPair.getPublic()).getModulus());
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		try {
+			bs.write(((RSAPublicKey) keyPair.getPublic()).getPublicExponent()
+					.toByteArray());
+			bs.write(((RSAPublicKey) keyPair.getPublic()).getModulus()
+					.toByteArray());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		publicKeyFingerprint = CryptoUtils.getInstance().getSHA512sum(
-				sb.toString());
-
+				bs.toByteArray());
 	}
 }
