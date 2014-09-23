@@ -36,26 +36,37 @@ public class CryptoUtils {
 		return CryptoUtils.INSTANCE;
 	}
 
-	/*
-	 * Generates a new key pair
+	/**
+	 * Returns a new KeyPair
+	 * 
+	 * @return KeyPair
 	 */
 	public KeyPair generateKeyPair() {
 		return keyGen.generateKeyPair();
 	}
 
-	/*
-	 * Returns a random byte array with an arbitrary size 
-	 */	
+	/**
+	 * Returns a random byte array with an arbitrary size
+	 * 
+	 * @param numBytes
+	 *            Number of random bytes
+	 * @return byte[ ] with random bytes
+	 */
 	public byte[] getRandomBytes(int numBytes) {
 		byte[] ranBytes = new byte[numBytes];
 		secRandom.nextBytes(ranBytes);
 		return ranBytes;
 	}
-	
-	/*
+
+	/**
 	 * Returns the SHA512 digest for a byte array
-	 */	
-	public String getSHA512sum(byte[] bytes){
+	 * 
+	 * @param bytes
+	 *            byte[ ] to get the digest from
+	 * @return SHA512 digest as as String in the following format:
+	 *         "00:11:aa:bb:..."
+	 */
+	public String getSHA512sum(byte[] bytes) {
 		byte[] digest = messageDigest.digest(bytes);
 		StringBuilder sb = new StringBuilder(191);
 
@@ -67,9 +78,14 @@ public class CryptoUtils {
 
 		return sb.toString();
 	}
-	
-	/*
+
+	/**
 	 * Returns the SHA512 digest for a String
+	 * 
+	 * @param plain
+	 *            Input String
+	 * @return SHA512 digest as as String in the following format:
+	 *         "00:11:aa:bb:..."
 	 */
 	public String getSHA512sum(String plain) {
 		return getSHA512sum(plain.getBytes());
