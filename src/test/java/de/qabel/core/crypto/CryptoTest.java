@@ -19,4 +19,14 @@ public class CryptoTest {
 		
 		assertEquals(digest, expectedDigest);
 	}	
+	
+	@Test
+	public void qblKeyPairTest() {
+		QblKeyPair qkp = new QblKeyPair();
+
+		assertNotNull(qkp);
+		assertNotNull(qkp.getPrivateKey());
+		assertNotNull(qkp.getPublicKey());
+		assertNotNull(qkp.getPublicKeyFingerprint());
+	}
 }
