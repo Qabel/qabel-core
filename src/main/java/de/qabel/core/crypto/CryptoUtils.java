@@ -8,7 +8,7 @@ import java.security.SecureRandom;
 
 public class CryptoUtils {
 
-	private static CryptoUtils instance;
+	private final static CryptoUtils INSTANCE = new CryptoUtils();
 
 	private final static String ASYM_KEY_ALGORITHM = "RSA";
 	private final static int ASYM_KEY_SIZE = 2048;
@@ -33,10 +33,7 @@ public class CryptoUtils {
 	}
 
 	public static CryptoUtils getInstance() {
-		if (CryptoUtils.instance == null) {
-			CryptoUtils.instance = new CryptoUtils();
-		}
-		return CryptoUtils.instance;
+		return CryptoUtils.INSTANCE;
 	}
 
 	/*
