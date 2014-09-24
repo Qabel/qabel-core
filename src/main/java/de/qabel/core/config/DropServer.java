@@ -46,7 +46,16 @@ public class DropServer {
 	private URL url;
 
 	public void setUrl(URL value) {
-		this.url = value;
+        //check if its a valid Drop-URL.
+        String dropUrl;
+        if(value != null) {
+            dropUrl = value.toString().substring(value.toString().lastIndexOf("/") + 1);
+            if (dropUrl.length() != 43) {
+                throw new IllegalArgumentException("Drop ID has to be base64 encoded and 43 chars long.");
+            }
+            else this.url = value;
+        }
+
 	}
 
 	public URL getUrl() {
