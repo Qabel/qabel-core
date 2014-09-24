@@ -45,4 +45,21 @@ public class DropServerTest {
 
         }
     }
+
+    @Test
+    public void nonBase64URLTest() {
+        try {
+            exception.expect(IllegalArgumentException.class);
+            validUrl = new URL("http://www.baz.org/2@34567890123456789012345678901234567890123");
+            server.setUrl(validUrl);
+        } catch (MalformedURLException e) {
+
+        }
+    }
+
+    @Test
+    public void URLisNullTest() {
+        exception.expect(IllegalArgumentException.class);
+        server.setUrl(null);
+    }
 }
