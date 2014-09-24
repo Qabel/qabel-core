@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import de.qabel.core.crypto.*;
 import java.net.URL;
 
 public class Identity {
@@ -8,8 +9,8 @@ public class Identity {
 	private int created;
 	private int deleted;
 	private String alias;
-	private String privateEncKey;
-	private String privateSignKey;
+	private QblKeyPair encryptionKey;
+	private QblKeyPair signatureKey;
 	private URL inbox;
 
 	public void setId(int value) {
@@ -52,20 +53,20 @@ public class Identity {
 		return this.alias;
 	}
 
-	public void setPrivateEncKey(String value) {
-		this.privateEncKey = value;
+	public void setEncryptionKey(QblKeyPair value) {
+		this.encryptionKey = value;
 	}
 
-	public String getPrivateEncKey() {
-		return this.privateEncKey;
+	public QblKeyPair getEncryptionKey() {
+		return this.encryptionKey;
 	}
 
-	public void setPrivateSignKey(String value) {
-		this.privateSignKey = value;
+	public void setSignatureKey(QblKeyPair value) {
+		this.signatureKey = value;
 	}
 
-	public String getPrivateSignKey() {
-		return this.privateSignKey;
+	public QblKeyPair getSignatureKey() {
+		return this.signatureKey;
 	}
 
 	public void setInbox(URL inbox) {
