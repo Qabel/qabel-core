@@ -18,7 +18,7 @@ public class DropServerTest {
             validUrl = new URL("http://www.foo.org/1234567890123456789012345678901234567890123");
             server.setUrl(validUrl);
         } catch (MalformedURLException e) {
-            e.toString();
+
         }
     }
 
@@ -31,7 +31,7 @@ public class DropServerTest {
             exception.expect(IllegalArgumentException.class);
             server.setUrl(invalidUrl);
         } catch (MalformedURLException e) {
-            e.toString();
+
         }
     }
 
@@ -42,7 +42,7 @@ public class DropServerTest {
             exception.expect(IllegalArgumentException.class);
             server.setUrl(invalidUrl);
         } catch (MalformedURLException e) {
-            e.toString();
+
         }
     }
 }
