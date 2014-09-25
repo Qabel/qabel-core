@@ -1,48 +1,31 @@
 package de.qabel.core.crypto;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 
-import de.qabel.core.crypto.CryptoUtils;
+/**
+ * Abstract super class for all Qbl...KeyPair types 
+ * 
+ */
+abstract class QblKeyPair {
 
-public class QblKeyPair {
+	private RSAPrivateKey privateKey;
 
-	private KeyPair keyPair;
-	private String publicKeyFingerprint;
-
-	public QblKeyPair() {
+	QblKeyPair() {
 		super();
-		keyPair = CryptoUtils.getInstance().generateKeyPair();
-		genFingerprint();
 	}
 
-	public RSAPrivateKey getPrivateKey() {
-		return (RSAPrivateKey) keyPair.getPrivate();
+	void setRSAPrivateKey(RSAPrivateKey privateKey){
+		this.privateKey = privateKey;
+	}
+	
+	RSAPrivateKey getRSAPrivateKey() {
+		return privateKey;
 	}
 
-	public RSAPublicKey getPublicKey() {
-		return (RSAPublicKey) keyPair.getPublic();
-	}
-
-	public String getPublicKeyFingerprint() {
-		return publicKeyFingerprint;
-	}
-
-	private void genFingerprint() {
-		ByteArrayOutputStream bs = new ByteArrayOutputStream();
-		try {
-			bs.write(((RSAPublicKey) keyPair.getPublic()).getPublicExponent()
-					.toByteArray());
-			bs.write(((RSAPublicKey) keyPair.getPublic()).getModulus()
-					.toByteArray());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		publicKeyFingerprint = CryptoUtils.getInstance().getSHA512sum(
-				bs.toByteArray());
-	}
+	/**
+	 * Returns the fingerprint of a public key. Created as a SHA512
+	 * digest over the public key modulus and exponent.
+	 * @return byte[ ] with the public key fingerprint
+	 */
+	abstract byte[] getPublicKeyFingerprint();
 }
