@@ -10,13 +10,13 @@ import java.security.interfaces.RSAPublicKey;
  */
 public class QblEncKeyPair extends QblSubKeyPair {
 
-	private QblEncPublicKey qblSignPublicKey;
+	private QblEncPublicKey qblEncPublicKey;
 
 	QblEncKeyPair() {
 		super();
 		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
 		super.setRSAPrivateKey((RSAPrivateKey) keyPair.getPrivate());
-		qblSignPublicKey = new QblEncPublicKey(
+		qblEncPublicKey = new QblEncPublicKey(
 				(RSAPublicKey) keyPair.getPublic());
 	}
 
@@ -25,16 +25,16 @@ public class QblEncKeyPair extends QblSubKeyPair {
 	 * @return encryption public key
 	 */
 	QblEncPublicKey getQblEncPublicKey() {
-		return qblSignPublicKey;
+		return qblEncPublicKey;
 	}
 
 	@Override
 	void setQblPrimaryKeySignature(byte[] primaryKeySignature) {
-		qblSignPublicKey.setPrimaryKeySignature(primaryKeySignature);
+		qblEncPublicKey.setPrimaryKeySignature(primaryKeySignature);
 	}
 
 	@Override
 	byte[] getPublicKeyFingerprint() {
-		return qblSignPublicKey.getPublicKeyFingerprint();
+		return qblEncPublicKey.getPublicKeyFingerprint();
 	}
 }
