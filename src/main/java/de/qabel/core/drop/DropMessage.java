@@ -10,6 +10,8 @@ public class DropMessage<T extends ModelObject>{
     private Class<T> modelObject;
     private T data;
 
+    public DropMessage(){}
+
     public DropMessage(int version, Date time, String acknowledgeID, String sender, Class<T> modelObject, T data) {
         setVersion(version);
         setTime(time);
