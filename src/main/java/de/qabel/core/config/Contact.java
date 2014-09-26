@@ -9,6 +9,7 @@ import java.util.*;
  */
 public class Contact {
 	
+	private QblPrimaryPublicKey primaryPublicKey;
 	private QblEncPublicKey encryptionPublicKey;
 	private QblSignPublicKey signaturePublicKey;
 	/**
@@ -18,6 +19,16 @@ public class Contact {
 	private final Identity contactOwner;
 	private final Set<URL> dropUrls = new HashSet<URL>(); //TODO: Have drop urls management with add/remove/edit events etc.
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
+	
+	public QblPrimaryPublicKey getPrimaryPublicKey()
+	{
+		return primaryPublicKey;
+	}
+	
+	public void setPrimaryPublicKey(QblPrimaryPublicKey key)
+	{
+		primaryPublicKey = key;
+	}
 	
 	public Identity getContactOwner()
 	{
