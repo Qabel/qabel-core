@@ -10,8 +10,6 @@ public class Identity {
 	private int deleted;
 	private String alias;
 	private QblPrimaryKeyPair primaryKeyPair;
-	private QblEncKeyPair encryptionKey;
-	private QblSignKeyPair signatureKey;
 	private URL inbox;
 
 	public int getId() {
@@ -50,22 +48,6 @@ public class Identity {
 		return this.alias;
 	}
 
-	public void setEncryptionKeyPair(QblEncKeyPair value) {
-		this.encryptionKey = value;
-	}
-
-	public QblEncKeyPair getEncryptionKeyPair() {
-		return this.encryptionKey;
-	}
-
-	public void setSignatureKeyPair(QblSignKeyPair value) {
-		this.signatureKey = value;
-	}
-
-	public QblSignKeyPair getSignatureKeyPair() {
-		return this.signatureKey;
-	}
-	
 	public void setPrimaryKeyPair(QblPrimaryKeyPair key)
 	{
 		this.primaryKeyPair = key;
