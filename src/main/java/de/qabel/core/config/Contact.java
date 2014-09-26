@@ -9,8 +9,8 @@ import java.util.*;
  */
 public class Contact {
 	
-	private QblPublicKey encryptionPublicKey;
-	private QblPublicKey signaturePublicKey;
+	private QblEncPublicKey encryptionPublicKey;
+	private QblSignPublicKey signaturePublicKey;
 	/**
 	 * The owner identity which owns this Contact.
 	 * Note: This is not the identity which is represented by this contact!
@@ -24,28 +24,24 @@ public class Contact {
 		return contactOwner;
 	}
 	
-	public QblPublicKey getEncryptionPublicKey()
+	public QblEncPublicKey getEncryptionPublicKey()
 	{
 		return encryptionPublicKey;
 	}
 	
-	public void setEncryptionPublicKey(QblPublicKey key) throws IllegalArgumentException
+	public void setEncryptionPublicKey(QblEncPublicKey key)
 	{
-		if(key.equals(signaturePublicKey))
-			throw new IllegalArgumentException("Encryption and signature keys must be different keys!");
 		encryptionPublicKey = key;
 	}
 	
-	public QblPublicKey getSignaturePublicKey()
+	public QblSignPublicKey getSignaturePublicKey()
 	{
 		return signaturePublicKey;
 	}
 	
-	public void setSignaturePublicKey(QblPublicKey key) throws IllegalArgumentException
+	public void setSignaturePublicKey(QblSignPublicKey key)
 	{
-		if(key.equals(encryptionPublicKey))
-			throw new IllegalArgumentException("Encryption and signature keys must be different keys!");
-		encryptionPublicKey = key;
+		signaturePublicKey = key;
 	}
 	
 	public Set<URL> getDropUrls()
