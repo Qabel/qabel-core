@@ -4,7 +4,7 @@ import de.qabel.core.crypto.*;
 import java.net.URL;
 
 public class Identity {
-	private int id;
+	private final int id;
 	private int updated;
 	private int created;
 	private int deleted;
@@ -13,10 +13,6 @@ public class Identity {
 	private QblEncKeyPair encryptionKey;
 	private QblSignKeyPair signatureKey;
 	private URL inbox;
-
-	public void setId(int value) {
-		this.id = value;
-	}
 
 	public int getId() {
 		return this.id;
@@ -103,6 +99,12 @@ public class Identity {
 
 	public Identities getIdentities() {
 		return this.identities;
+	}
+	
+	
+	public Identity(int id)
+	{
+		this.id = id;
 	}
 
 }
