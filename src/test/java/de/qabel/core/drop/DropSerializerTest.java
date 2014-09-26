@@ -2,12 +2,10 @@ package de.qabel.core.drop;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.Date;
-import java.util.Random;
 
 public class DropSerializerTest {
     String json = null;
