@@ -15,14 +15,14 @@ public class Identities {
 	 *           identities        &gt;       identity
 	 * </pre>
 	 */
-	private Set<Identity> identity;
+	private Set<Identity> identities;
 	private SyncedSettings syncedSettings;
 	
 	public Set<Identity> getIdentities() {
-		if (this.identity == null) {
-			this.identity = new HashSet<Identity>();
+		if (this.identities == null) {
+			this.identities = new HashSet<Identity>();
 		}
-		return this.identity;
+		return this.identities;
 	}
 
 	/**
