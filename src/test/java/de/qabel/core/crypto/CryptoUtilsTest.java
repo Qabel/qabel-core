@@ -63,4 +63,17 @@ public class CryptoUtilsTest {
     	assertEquals(cipherTextBytes.length, plainTextBytes.length+16);
     	assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
     }
+    
+    @Test
+	public void encryptMessageTest() {
+		QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
+		String plaintext = "{\"version\":1,\"time\":100,\"sender\":20,\"model\":\"de.example.qabel.MailMessage\",\"data\":\"{\"sender\":\"a@a.com\",\"content\":\"hello world\",\"recipient\":\"b@b.com\"}\"}";
+
+		byte[] cipherText = cu.encryptMessage(plaintext,
+				qpkp.getQblEncPublicKey());
+
+		assertEquals(cu.decryptMessage(cipherText, qpkp.getQblEncPrivateKey()),
+				plaintext);
+
+	}
 }
