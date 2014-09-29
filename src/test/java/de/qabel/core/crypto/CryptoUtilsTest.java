@@ -39,29 +39,16 @@ public class CryptoUtilsTest {
 	}
 	
     @Test
-    public void symmEncTest() throws UnsupportedEncodingException {
+    public void symmEncDecTest() throws UnsupportedEncodingException {
     	BigInteger key = new BigInteger("1122334455667788991011121314151617181920212223242526272829303132", 16);
     	byte[] keyBytes = key.toByteArray();
     	String plainTextStr = "Hello this a plaintext, which should be encrypted.";
     	byte[] plainTextBytes = plainTextStr.getBytes();
     	
     	byte[] cipherTextBytes = cu.symmEncrypt(plainTextBytes, keyBytes);
+    	byte[] secondPlainTextBytes = cu.symmDecrypt(cipherTextBytes, keyBytes);
     	
-    	assertEquals(plainTextBytes.length+16, cipherTextBytes.length);
-    }
-    
-    @Test
-    public void symmDecTest() throws UnsupportedEncodingException {
-    	BigInteger key = new BigInteger("1122334455667788991011121314151617181920212223242526272829303132", 16);
-    	byte[] keyBytes = key.toByteArray();
-    	BigInteger cipherText = new BigInteger("7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e", 16);
-    	byte[] cipherTextBytes = cipherText.toByteArray();
-    	String plainTextStr = "Hello this a plaintext, which should be encrypted.";
-    	
-    	byte[] plainTextBytes = cu.symmDecrypt(cipherTextBytes, keyBytes);
-    	
-    	assertEquals(cipherTextBytes.length, plainTextBytes.length+16);
-    	assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
+    	assertEquals(plainTextStr, new String(secondPlainTextBytes, "UTF-8"));
     }
     
     @Test
