@@ -1,5 +1,7 @@
 # Qabel Core
 
+[![Build Status](https://travis-ci.org/Qabel/qabel-core.svg?branch=master)](https://travis-ci.org/Qabel/qabel-core)
+
 Qabel Core is the core component of a Qabel Client.
 
 ## building source
