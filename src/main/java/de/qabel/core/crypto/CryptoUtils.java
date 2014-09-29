@@ -13,9 +13,6 @@ import java.security.SecureRandom;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Arrays;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -28,10 +25,12 @@ public class CryptoUtils {
 	private final static CryptoUtils INSTANCE = new CryptoUtils();
 
 	private final static String ASYM_KEY_ALGORITHM = "RSA";
-	private final static int ASYM_KEY_SIZE = 2048;
+	private final static int ASYM_KEY_SIZE_BIT = 2048;
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static int SYMM_NONCE_SIZE_BIT = 128;
+	private final static int AES_KEY_SIZE_BYTE = 32;
+	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
 	private KeyPairGenerator keyGen;
 	private SecureRandom secRandom;
@@ -44,7 +43,7 @@ public class CryptoUtils {
 			secRandom = new SecureRandom();
 
 			keyGen = KeyPairGenerator.getInstance(ASYM_KEY_ALGORITHM);
-			keyGen.initialize(ASYM_KEY_SIZE);
+			keyGen.initialize(ASYM_KEY_SIZE_BIT);
 
 			messageDigest = MessageDigest.getInstance("SHA-512");
 			symmetricCipher = Cipher.getInstance(SYMM_TRANSFORMATION);
@@ -221,28 +220,28 @@ public class CryptoUtils {
 		}
 		return plaintext;
 	}
-	
+
 	/**
-	 * Returns the encrypted byte[] of the given plain text, i.e. ciphertext=enc(plaintext,key)
-	 * The algorithm, mode and padding is set in constant SYMM_TRANSFORMATION
+	 * Returns the encrypted byte[] of the given plain text, i.e.
+	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
+	 * constant SYMM_TRANSFORMATION
 	 * 
 	 * @param plainText
-	 * 		message which will be encrypted
+	 *            message which will be encrypted
 	 * @param key
-	 * 		symmetric key which is used for en- and decryption
-	 * @return
-	 * 		cipher text which is the result of the encryption
+	 *            symmetric key which is used for en- and decryption
+	 * @return cipher text which is the result of the encryption
 	 */
 	public byte[] symmEncrypt(byte[] plainText, byte[] key) {
 		byte[] rand;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		IvParameterSpec nonce;
-		
-		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT/8);
+
+		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		nonce = new IvParameterSpec(rand);
-		
+
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
-		
+
 		try {
 			cipherText.write(rand);
 		} catch (IOException e1) {
@@ -268,29 +267,30 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return cipherText.toByteArray();
 	}
-	
+
 	/**
-	 * Returns the plain text of the encrypted input plaintext=enc⁻¹(ciphertext,key)
-	 * The algorithm, mode and padding is set in constant SYMM_TRANSFORMATION
+	 * Returns the plain text of the encrypted input
+	 * plaintext=enc⁻¹(ciphertext,key) The algorithm, mode and padding is set in
+	 * constant SYMM_TRANSFORMATION
 	 * 
 	 * @param cipherText
-	 * 		encrypted message which will be decrypted
+	 *            encrypted message which will be decrypted
 	 * @param key
-	 * 		symmetric key which is used for en- and decryption
-	 * @return
-	 * 		plain text which is the result of the decryption
+	 *            symmetric key which is used for en- and decryption
+	 * @return plain text which is the result of the decryption
 	 */
 	public byte[] symmDecrypt(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT/8];
-		byte[] encryptedPlainText = new byte[cipherText.length-SYMM_NONCE_SIZE_BIT/8];
+		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] encryptedPlainText = new byte[cipherText.length
+				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
 		IvParameterSpec nonce;
 		SecretKeySpec symmetricKey;
-		
+
 		try {
 			bi.read(rand);
 			bi.read(encryptedPlainText);
@@ -298,10 +298,10 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		 
+
 		nonce = new IvParameterSpec(rand);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
-		
+
 		try {
 			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
 			plainText = symmetricCipher.doFinal(encryptedPlainText);
@@ -319,5 +319,58 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 		return plainText;
+	}
+
+	/**
+	 * Hybrid encrypts a String message for a recipient. The String message is
+	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
+	 * recipients public key.
+	 * 
+	 * @param message
+	 *            String message to encrypt
+	 * @param recipient
+	 *            Recipient to encrypt message for
+	 * @return hybrid encrypted String message
+	 */
+	public byte[] encryptMessage(String message, QblEncPublicKey recipient) {
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
+
+		try {
+			bs.write(rsaEncryptForRecipient(aesKey, recipient));
+			bs.write(symmEncrypt(message.getBytes(), aesKey));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bs.toByteArray();
+	}
+
+	/**
+	 * Decrypts a hybrid encrypted String message. The AES key is decrypted
+	 * using the own private key. The decrypted AES key is used to decrypt the
+	 * String message
+	 * 
+	 * @param cipherText
+	 *            hybrid encrypted String message
+	 * @param privKey
+	 *            private key to encrypt String message with
+	 * @return decrypted String message
+	 */
+	public String decryptMessage(byte[] cipherText, RSAPrivateKey privKey) {
+		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
+		byte[] encryptedAesKey = new byte[ENCRYPTED_AES_KEY_SIZE_BYTE];
+		byte[] aesCipherText = new byte[bs.available()
+				- ENCRYPTED_AES_KEY_SIZE_BYTE];
+
+		try {
+			bs.read(encryptedAesKey);
+			bs.read(aesCipherText);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		byte[] aesKey = rsaDecrypt(encryptedAesKey, privKey);
+		return new String(symmDecrypt(aesCipherText, aesKey));
 	}
 }
