@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -10,11 +11,14 @@ import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class CryptoUtils {
 
@@ -22,10 +26,14 @@ public class CryptoUtils {
 
 	private final static String ASYM_KEY_ALGORITHM = "RSA";
 	private final static int ASYM_KEY_SIZE = 2048;
+	private final static String SYMM_KEY_ALGORITHM = "AES";
+	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
+	private final static int SYMM_NONCE_SIZE = 128;
 
 	private KeyPairGenerator keyGen;
 	private SecureRandom secRandom;
 	private MessageDigest messageDigest;
+	private Cipher symmetricCipher;
 
 	private CryptoUtils() {
 
@@ -36,7 +44,11 @@ public class CryptoUtils {
 			keyGen.initialize(ASYM_KEY_SIZE);
 
 			messageDigest = MessageDigest.getInstance("SHA-512");
+			symmetricCipher = Cipher.getInstance(SYMM_TRANSFORMATION);
 		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -205,5 +217,87 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 		return plaintext;
+	}
+	
+	/**
+	 * Returns the encrypted byte[] of the given plain text, i.e. ciphertext=enc(plaintext,key)
+	 * The algorithm, mode and padding is set in constant SYMM_TRANSFORMATION
+	 * 
+	 * @param plainText
+	 * 		message which will be encrypted
+	 * @param key
+	 * 		symmetric key which is used for en- and decryption
+	 * @return
+	 * 		cipher text which is the result of the encryption
+	 */
+	public byte[] symmEncrypt(byte[] plainText, byte[] key) {
+		byte[] rand = new byte[SYMM_NONCE_SIZE/8];
+		byte[] encryptedPlainText = new byte[plainText.length];
+		byte[] cipherText = new byte[plainText.length+SYMM_NONCE_SIZE/8];
+		IvParameterSpec nonce;
+		
+		rand = getRandomBytes(SYMM_NONCE_SIZE/8);
+		nonce = new IvParameterSpec(rand);
+		
+		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		
+		try {
+			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
+			encryptedPlainText = symmetricCipher.doFinal(plainText);
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.arraycopy(encryptedPlainText, 0, cipherText, 0, encryptedPlainText.length);
+		System.arraycopy(rand, 0, cipherText, encryptedPlainText.length, rand.length);
+		
+		return cipherText;
+	}
+	
+	/**
+	 * Returns the plain text of the encrypted input plaintext=enc⁻¹(ciphertext,key)
+	 * The algorithm, mode and padding is set in constant SYMM_TRANSFORMATION
+	 * 
+	 * @param cipherText
+	 * 		encrypted message which will be decrypted
+	 * @param key
+	 * 		symmetric key which is used for en- and decryption
+	 * @return
+	 * 		plain text which is the result of the decryption
+	 */
+	public byte[] symmDecrypt(byte[] cipherText, byte[] key) {
+		byte[] rand = Arrays.copyOfRange(cipherText, cipherText.length-SYMM_NONCE_SIZE/8, cipherText.length);
+		byte[] encryptedPlainText = Arrays.copyOfRange(cipherText, 0, cipherText.length-SYMM_NONCE_SIZE/8); 
+		IvParameterSpec nonce = new IvParameterSpec(rand);
+		byte[] plainText = new byte[encryptedPlainText.length];
+		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		
+		try {
+			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
+			plainText = symmetricCipher.doFinal(encryptedPlainText);
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return plainText;
 	}
 }
