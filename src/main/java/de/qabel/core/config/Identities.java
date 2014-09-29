@@ -3,6 +3,10 @@ package de.qabel.core.config;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identities
+ */
+
 public class Identities {
 	/**
 	 * <pre>
@@ -12,8 +16,9 @@ public class Identities {
 	 * </pre>
 	 */
 	private Set<Identity> identity;
-
-	public Set<Identity> getIdentity() {
+	private SyncedSettings syncedSettings;
+	
+	public Set<Identity> getIdentities() {
 		if (this.identity == null) {
 			this.identity = new HashSet<Identity>();
 		}
@@ -27,8 +32,7 @@ public class Identities {
 	 *           identities        &lt;       syncedSettings
 	 * </pre>
 	 */
-	private SyncedSettings syncedSettings;
-
+	
 	public void setSyncedSettings(SyncedSettings value) {
 		this.syncedSettings = value;
 	}
