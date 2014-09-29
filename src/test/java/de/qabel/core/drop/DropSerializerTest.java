@@ -2,7 +2,6 @@ package de.qabel.core.drop;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -11,19 +10,25 @@ import java.util.Date;
 public class DropSerializerTest {
     String json = null;
 
-
-    @Ignore
     @Test
     public <T extends ModelObject> void serializeTest() {
-        DropMessage<ModelObject> a = new DropMessage<ModelObject>();
+        class TestMessage extends ModelObject{
+            public String content;
+
+        }
+
+        TestMessage m = new TestMessage();
+
+        m.content = "baz";
+        DropMessage<TestMessage> a = new DropMessage<TestMessage>();
         Date date = new Date();
 
         a.setTime(date);
         a.setSender("foo");
-        a.setData(null);
+        a.setData(m);
         a.setAcknowledgeID("bar");
         a.setVersion(1);
-        a.setModelObject(null);
+        a.setModelObject(TestMessage.class);
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
@@ -34,6 +39,6 @@ public class DropSerializerTest {
 
         json = gson.toJson(a);
 
-        assertNotNull(json, json);
+        assertNotNull(json);
     }
 }
