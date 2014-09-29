@@ -4,7 +4,13 @@ import de.qabel.core.crypto.*;
 
 import java.net.URL;
 
+
 import com.google.gson.annotations.SerializedName;
+
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity
+ */
+
 
 public class Identity {
 	private final int id;
