@@ -1,5 +1,8 @@
 package de.qabel.core.crypto;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -28,7 +31,7 @@ public class CryptoUtils {
 	private final static int ASYM_KEY_SIZE = 2048;
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
-	private final static int SYMM_NONCE_SIZE = 128;
+	private final static int SYMM_NONCE_SIZE_BIT = 128;
 
 	private KeyPairGenerator keyGen;
 	private SecureRandom secRandom;
@@ -231,19 +234,24 @@ public class CryptoUtils {
 	 * 		cipher text which is the result of the encryption
 	 */
 	public byte[] symmEncrypt(byte[] plainText, byte[] key) {
-		byte[] rand = new byte[SYMM_NONCE_SIZE/8];
-		byte[] encryptedPlainText = new byte[plainText.length];
-		byte[] cipherText = new byte[plainText.length+SYMM_NONCE_SIZE/8];
+		byte[] rand;
+		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		IvParameterSpec nonce;
 		
-		rand = getRandomBytes(SYMM_NONCE_SIZE/8);
+		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT/8);
 		nonce = new IvParameterSpec(rand);
 		
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 		
 		try {
+			cipherText.write(rand);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
 			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
-			encryptedPlainText = symmetricCipher.doFinal(plainText);
+			cipherText.write(symmetricCipher.doFinal(plainText));
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -256,12 +264,12 @@ public class CryptoUtils {
 		} catch (BadPaddingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		System.arraycopy(encryptedPlainText, 0, cipherText, 0, encryptedPlainText.length);
-		System.arraycopy(rand, 0, cipherText, encryptedPlainText.length, rand.length);
-		
-		return cipherText;
+		return cipherText.toByteArray();
 	}
 	
 	/**
@@ -276,11 +284,23 @@ public class CryptoUtils {
 	 * 		plain text which is the result of the decryption
 	 */
 	public byte[] symmDecrypt(byte[] cipherText, byte[] key) {
-		byte[] rand = Arrays.copyOfRange(cipherText, cipherText.length-SYMM_NONCE_SIZE/8, cipherText.length);
-		byte[] encryptedPlainText = Arrays.copyOfRange(cipherText, 0, cipherText.length-SYMM_NONCE_SIZE/8); 
-		IvParameterSpec nonce = new IvParameterSpec(rand);
-		byte[] plainText = new byte[encryptedPlainText.length];
-		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
+		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT/8];
+		byte[] encryptedPlainText = new byte[cipherText.length-SYMM_NONCE_SIZE_BIT/8];
+		byte[] plainText = null;
+		IvParameterSpec nonce;
+		SecretKeySpec symmetricKey;
+		
+		try {
+			bi.read(rand);
+			bi.read(encryptedPlainText);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		 
+		nonce = new IvParameterSpec(rand);
+		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 		
 		try {
 			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
