@@ -176,41 +176,41 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Sign a message with RSA
+	 * Sign data with RSA
 	 * 
-	 * @param message
-	 *            Message to sign
+	 * @param data
+	 *            Data to sign
 	 * @param qpkp
 	 *            QblPrimaryKeyPair to extract signature key from
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] rsaSign(byte[] message, QblPrimaryKeyPair qpkp) {
-		return rsaSign(message, qpkp.getQblSignPrivateKey());
+	private byte[] rsaSign(byte[] data, QblPrimaryKeyPair qpkp) {
+		return rsaSign(data, qpkp.getQblSignPrivateKey());
 	}
 
 	/**
-	 * Sign a message with RSA
+	 * Sign data with RSA
 	 * 
-	 * @param message
-	 *            Message to sign
+	 * @param data
+	 *            Data to sign
 	 * @param signatureKey
 	 *            QblSignKeyPair to extract signature key from
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] rsaSign(byte[] message, QblSignKeyPair signatureKey) {
-		return rsaSign(message, signatureKey.getRSAPrivateKey());
+	private byte[] rsaSign(byte[] data, QblSignKeyPair signatureKey) {
+		return rsaSign(data, signatureKey.getRSAPrivateKey());
 	}
 
 	/**
-	 * Sign a message with RSA
+	 * Sign data with RSA
 	 * 
-	 * @param message
-	 *            Message to sign
+	 * @param data
+	 *            Data to sign
 	 * @param signatureKey
 	 *            QblSignKeyPair to extract signature key from
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] rsaSign(byte[] message, RSAPrivateKey signatureKey) {
+	private byte[] rsaSign(byte[] data, RSAPrivateKey signatureKey) {
 		byte[] sign = null;
 
 		Signature signer;
@@ -218,7 +218,7 @@ public class CryptoUtils {
 			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			signer.initSign(signatureKey);
-			signer.update(message);
+			signer.update(data);
 			sign = signer.sign();
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key!");
@@ -335,7 +335,8 @@ public class CryptoUtils {
 	 *            public key to encrypt with
 	 * @return encrypted messsage
 	 */
-	private byte[] rsaEncryptForRecipient(byte[] message, QblEncPublicKey reciPubKey) {
+	private byte[] rsaEncryptForRecipient(byte[] message,
+			QblEncPublicKey reciPubKey) {
 		byte[] cipherText = null;
 		try {
 			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
