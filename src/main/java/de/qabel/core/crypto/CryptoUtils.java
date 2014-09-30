@@ -40,7 +40,7 @@ public class CryptoUtils {
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
-	private static Logger logger = LogManager.getLogger(CryptoUtils.class
+	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
 			.getName());
 
 	private KeyPairGenerator keyGen;
