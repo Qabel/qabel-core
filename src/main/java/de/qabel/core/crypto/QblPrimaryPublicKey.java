@@ -26,8 +26,8 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 *         public keys
 	 */
 	boolean attachEncPublicKey(QblEncPublicKey encPublicKey) {
-		if (CryptoUtils.getInstance().rsaValidateKeySignature(this,
-				encPublicKey)) {
+		if (CryptoUtils.getInstance().rsaValidateKeySignature(encPublicKey,
+				this)) {
 			encPublicKeys.add(encPublicKey);
 			return true;
 		}
@@ -42,8 +42,8 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 *         public keys
 	 */
 	boolean attachSignPublicKey(QblSignPublicKey signPublicKey) {
-		if (CryptoUtils.getInstance().rsaValidateKeySignature(this,
-				signPublicKey)) {
+		if (CryptoUtils.getInstance().rsaValidateKeySignature(signPublicKey,
+				this)) {
 			signPublicKeys.add(signPublicKey);
 			return true;
 		}

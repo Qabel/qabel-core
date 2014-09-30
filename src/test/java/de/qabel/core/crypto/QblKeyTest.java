@@ -56,10 +56,10 @@ public class QblKeyTest {
 
 		// Validate signature of signature and encryption sub public keys
 		assertTrue(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp1.getQblPrimaryPublicKey(), qkp1.getQblEncPublicKey()));
+				qkp1.getQblEncPublicKey(), qkp1.getQblPrimaryPublicKey()));
 
 		assertTrue(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp1.getQblPrimaryPublicKey(), qkp1.getQblSignPublicKey()));
+				qkp1.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
 
 	}
 
@@ -71,15 +71,15 @@ public class QblKeyTest {
 		// Try to validate signature of signature and encryption sub public keys
 		// with a wrong signature key
 		assertFalse(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp2.getQblPrimaryPublicKey(), qkp1.getQblEncPublicKey()));
+				qkp1.getQblEncPublicKey(), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp2.getQblPrimaryPublicKey(), qkp1.getQblSignPublicKey()));
+				qkp1.getQblSignPublicKey(), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp1.getQblPrimaryPublicKey(), qkp2.getQblEncPublicKey()));
+				qkp2.getQblEncPublicKey(), qkp1.getQblPrimaryPublicKey()));
 
 		assertFalse(CryptoUtils.getInstance().rsaValidateKeySignature(
-				qkp1.getQblPrimaryPublicKey(), qkp2.getQblSignPublicKey()));
+				qkp2.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
 	}
 }

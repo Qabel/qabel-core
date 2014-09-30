@@ -51,6 +51,14 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		encKeyPairs.add(qekp);
 	}
 
+	public QblEncKeyPair getEncKeyPairs() {
+		return encKeyPairs.get(0);
+	}
+
+	public QblSignKeyPair getSignKeyPairs() {
+		return signKeyPairs.get(0);
+	}
+
 	/**
 	 * Returns the primary public key
 	 * 
