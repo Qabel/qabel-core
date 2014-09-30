@@ -34,27 +34,28 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptMessageTest() throws BadPaddingException {
-		byte[] cipherText = cu.encryptMessage(jsonTestString,
+	public void encryptHybridTest() throws BadPaddingException {
+		byte[] cipherText = cu.encryptHybrid(jsonTestString,
 				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
 
 		assertEquals(
-				cu.decryptMessage(cipherText, qpkp, qpkp.getQblSignPublicKey()),
+				cu.decryptHybrid(cipherText, qpkp, qpkp.getQblSignPublicKey()),
 				jsonTestString);
 
 	}
 
 	@Test
-	public void encryptMessageTestInvalidSignature() {
-		byte[] cipherText = cu.encryptMessage(jsonTestString,
+	public void encryptHybridTestInvalidSignature() {
+		byte[] cipherText = cu.encryptHybrid(jsonTestString,
 				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
 
-		assertNull(cu.decryptMessage(cipherText, qpkp,
+		assertNull(cu.decryptHybrid(cipherText, qpkp,
 				qpkp2.getQblSignPublicKey()));
 	}
 
 	@Test
-	public void symmEncDecTest() throws UnsupportedEncodingException {
+	public void encryptDecryptSymmetricTest()
+			throws UnsupportedEncodingException {
 		BigInteger key = new BigInteger(
 				"1122334455667788991011121314151617181920212223242526272829303132",
 				16);
@@ -62,25 +63,26 @@ public class CryptoUtilsTest {
 		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
 		byte[] plainTextBytes = plainTextStr.getBytes();
 
-		byte[] cipherTextBytes = cu.symmEncrypt(plainTextBytes, keyBytes);
-		byte[] secondPlainTextBytes = cu.symmDecrypt(cipherTextBytes, keyBytes);
+		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
+		byte[] secondPlainTextBytes = cu.decryptSymmetric(cipherTextBytes,
+				keyBytes);
 
 		assertEquals(plainTextStr, new String(secondPlainTextBytes, "UTF-8"));
 	}
 
 	@Test
-	public void decryptMessageWithWrongKeyTest() throws BadPaddingException {
+	public void decryptHybridWithWrongKeyTest() throws BadPaddingException {
 		// exception.expect(BadPaddingException.class);
 
-		byte[] ciphertext = cu.encryptMessage(jsonTestString,
+		byte[] ciphertext = cu.encryptHybrid(jsonTestString,
 				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
-		assertNull(cu.decryptMessage(ciphertext, qpkp2,
+		assertNull(cu.decryptHybrid(ciphertext, qpkp2,
 				qpkp.getQblSignPublicKey()));
 
 	}
 
 	@Test
-	public void symmEncTest() throws UnsupportedEncodingException {
+	public void encryptSymmetricTest() throws UnsupportedEncodingException {
 		BigInteger key = new BigInteger(
 				"1122334455667788991011121314151617181920212223242526272829303132",
 				16);
@@ -88,14 +90,14 @@ public class CryptoUtilsTest {
 		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
 		byte[] plainTextBytes = plainTextStr.getBytes();
 
-		byte[] cipherTextBytes = cu.symmEncrypt(plainTextBytes, keyBytes);
+		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
 
 		assertEquals(plainTextBytes.length + 16, cipherTextBytes.length);
 	}
 
 	@Ignore
 	@Test
-	public void symmDecTest() throws UnsupportedEncodingException {
+	public void decryptSymmetricTest() throws UnsupportedEncodingException {
 		BigInteger key = new BigInteger(
 				"1122334455667788991011121314151617181920212223242526272829303132",
 				16);
@@ -106,7 +108,7 @@ public class CryptoUtilsTest {
 		byte[] cipherTextBytes = cipherText.toByteArray();
 		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
 
-		byte[] plainTextBytes = cu.symmDecrypt(cipherTextBytes, keyBytes);
+		byte[] plainTextBytes = cu.decryptSymmetric(cipherTextBytes, keyBytes);
 
 		assertEquals(cipherTextBytes.length, plainTextBytes.length + 16);
 		assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));

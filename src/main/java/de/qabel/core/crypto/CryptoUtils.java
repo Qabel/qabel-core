@@ -173,7 +173,7 @@ public class CryptoUtils {
 	 * @return Signature over SHA512 sum of message
 	 */
 	private byte[] rsaSign(byte[] message, QblPrimaryKeyPair qpkp) {
-		return rsaSign(message, qpkp.getQblSignPrivateKey());
+		return rsaSign(message, qpkp);
 	}
 
 	/**
@@ -234,7 +234,7 @@ public class CryptoUtils {
 		if (qkp == null || qpkp == null) {
 			return null;
 		}
-		return rsaSign(qkp.getPublicKeyFingerprint(), qpkp);
+		return rsaSign(qkp.getPublicKeyFingerprint(), qpkp.getRSAPrivateKey());
 	}
 
 	/**
@@ -387,7 +387,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return cipher text which is the result of the encryption
 	 */
-	byte[] symmEncrypt(byte[] plainText, byte[] key) {
+	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
 		byte[] rand;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		IvParameterSpec nonce;
@@ -437,7 +437,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return plain text which is the result of the decryption
 	 */
-	byte[] symmDecrypt(byte[] cipherText, byte[] key) {
+	byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
@@ -487,14 +487,14 @@ public class CryptoUtils {
 	 *            Recipient to encrypt message for
 	 * @return hybrid encrypted String message
 	 */
-	public byte[] encryptMessage(String message, QblEncPublicKey recipient,
+	public byte[] encryptHybrid(String message, QblEncPublicKey recipient,
 			QblSignKeyPair signatureKey) {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
 
 		try {
 			bs.write(rsaEncryptForRecipient(aesKey, recipient));
-			bs.write(symmEncrypt(message.getBytes(), aesKey));
+			bs.write(encryptSymmetric(message.getBytes(), aesKey));
 			bs.write(createSignature(bs.toByteArray(), signatureKey));
 		} catch (IOException e) {
 			logger.error("IOException while writing to ByteArrayOutputStream");
@@ -514,7 +514,7 @@ public class CryptoUtils {
 	 *            private key to encrypt String message with
 	 * @return decrypted String message or null if message is undecryptable
 	 */
-	public String decryptMessage(byte[] cipherText, QblPrimaryKeyPair privKey,
+	public String decryptHybrid(byte[] cipherText, QblPrimaryKeyPair privKey,
 			QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
@@ -557,7 +557,7 @@ public class CryptoUtils {
 		byte[] aesKey = rsaDecrypt(encryptedAesKey,
 				privKey.getQblEncPrivateKey());
 		if (aesKey != null) {
-			return new String(symmDecrypt(aesCipherText, aesKey));
+			return new String(decryptSymmetric(aesCipherText, aesKey));
 		}
 		return null;
 	}
