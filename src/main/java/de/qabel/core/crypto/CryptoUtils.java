@@ -173,7 +173,7 @@ public class CryptoUtils {
 	 * @return Signature over SHA512 sum of message
 	 */
 	private byte[] rsaSign(byte[] message, QblPrimaryKeyPair qpkp) {
-		return rsaSign(message, qpkp);
+		return rsaSign(message, qpkp.getQblSignPrivateKey());
 	}
 
 	/**
