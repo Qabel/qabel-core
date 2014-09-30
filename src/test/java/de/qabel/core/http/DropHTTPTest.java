@@ -1,33 +1,51 @@
 package de.qabel.core.http;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.ModelObject;
 
 public class DropHTTPTest {
+	private URL url;
+	private URL tooShortUrl;
+	private URL notExistingUrl;
+	public long postedAt = 0;
+
+	@Before
+	public void setUp() {
+		try {
+			url = new URL(
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo");
+			tooShortUrl = new URL("http://localhost:6000/IAmTooShort");
+			notExistingUrl = new URL(
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq");
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	// POST 200
 	@Test
 	public void postMessageOk() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		DropMessage<ModelObject> message = new DropMessage<ModelObject>(0,
 				new Date(), null, "Me", null, null);
 		// When
-		int responseCode = dHTTP.send(message);
+		int responseCode = dHTTP.send(this.url, message);
+		this.postedAt = System.currentTimeMillis();
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(200, responseCode);
@@ -39,16 +57,10 @@ public class DropHTTPTest {
 	public void postMessageNotGivenOrInvalid() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		DropMessage<ModelObject> message = new DropMessage<ModelObject>(0,
 				new Date(), null, "Me", null, null);
 		// When
-		int responseCode = dHTTP.send(message);
+		int responseCode = dHTTP.send(this.url, message);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(400, responseCode);
@@ -60,16 +72,10 @@ public class DropHTTPTest {
 	public void postMessageTooBig() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		DropMessage<ModelObject> message = new DropMessage<ModelObject>(0,
 				new Date(), null, "Me", null, null);
 		// When
-		int responseCode = dHTTP.send(message);
+		int responseCode = dHTTP.send(this.url, message);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(413, responseCode);
@@ -81,14 +87,8 @@ public class DropHTTPTest {
 	public void getRequestShouldGetCompleteDrop() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.url);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(200, responseCode);
@@ -100,14 +100,8 @@ public class DropHTTPTest {
 	public void getRequestWithInvalidOrMissingDropIdShouldBe400() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.tooShortUrl);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(400, responseCode);
@@ -119,14 +113,8 @@ public class DropHTTPTest {
 	public void getRequestForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.notExistingUrl);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(404, responseCode);
@@ -139,15 +127,8 @@ public class DropHTTPTest {
 	public void getRequestShouldEntriesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.url, 0);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(200, responseCode);
@@ -159,15 +140,9 @@ public class DropHTTPTest {
 	public void getRequestWithSinceDateShouldBe304() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.url,
+				System.currentTimeMillis());
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(304, responseCode);
@@ -179,15 +154,10 @@ public class DropHTTPTest {
 	public void getRequestWithSinceDateForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.receive();
+		int responseCode = dHTTP.receiveMessages(this.notExistingUrl,
+				System.currentTimeMillis());
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(404, responseCode);
@@ -199,14 +169,8 @@ public class DropHTTPTest {
 	public void shouldContainMessages() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.url);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(200, responseCode);
@@ -218,14 +182,8 @@ public class DropHTTPTest {
 	public void shouldBeInvalidOrMissingDropId() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.tooShortUrl);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(400, responseCode);
@@ -237,14 +195,8 @@ public class DropHTTPTest {
 	public void shouldBeEmpty() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.notExistingUrl);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(404, responseCode);
@@ -256,15 +208,8 @@ public class DropHTTPTest {
 	public void shouldContainNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.url, this.postedAt);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(200, responseCode);
@@ -276,15 +221,8 @@ public class DropHTTPTest {
 	public void shouldContainNoNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.url, System.currentTimeMillis());
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(304, responseCode);
@@ -296,15 +234,10 @@ public class DropHTTPTest {
 	public void shouldBeEmptyWithSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		try {
-			dHTTP.setURL(new URL("http://localhost:1337/drop"));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		dHTTP.setSinceDate(new Date());
 		// When
-		int responseCode = dHTTP.head();
+		int responseCode = dHTTP.head(this.notExistingUrl,
+				System.currentTimeMillis() + 10);
 		ArrayList<String> body = dHTTP.getHTTPBody();
 		// Then
 		assertEquals(404, responseCode);
