@@ -9,7 +9,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
+import java.security.Security;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.interfaces.RSAPrivateKey;
@@ -23,14 +25,16 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.logging.log4j.*;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class CryptoUtils {
 
 	private final static CryptoUtils INSTANCE = new CryptoUtils();
 
+	private final static String CRYPTOGRAPHIC_PROVIDER = "BC";
 	private final static String ASYM_KEY_ALGORITHM = "RSA";
 	private final static String MESSAGE_DIGEST_ALGORITHM = "SHA-512";
-	private final static String SIGNATURE_ALGORITHM = "SHA1withRSA";
+	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
 	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
 	private final static int RSA_KEY_SIZE_BIT = 2048;
@@ -51,18 +55,26 @@ public class CryptoUtils {
 	private CryptoUtils() {
 
 		try {
+			Security.addProvider(new BouncyCastleProvider());
+
 			secRandom = new SecureRandom();
 
-			keyGen = KeyPairGenerator.getInstance(ASYM_KEY_ALGORITHM);
+			keyGen = KeyPairGenerator.getInstance(ASYM_KEY_ALGORITHM,
+					CRYPTOGRAPHIC_PROVIDER);
 			keyGen.initialize(RSA_KEY_SIZE_BIT);
 
-			messageDigest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM);
-			symmetricCipher = Cipher.getInstance(SYMM_TRANSFORMATION);
+			messageDigest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM,
+					CRYPTOGRAPHIC_PROVIDER);
+			symmetricCipher = Cipher.getInstance(SYMM_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
 			e.printStackTrace();
 		} catch (NoSuchPaddingException e) {
 			logger.error("Cannot find selected padding! " + e.getMessage());
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -203,7 +215,8 @@ public class CryptoUtils {
 
 		Signature signer;
 		try {
-			signer = Signature.getInstance(SIGNATURE_ALGORITHM);
+			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
+					CRYPTOGRAPHIC_PROVIDER);
 			signer.initSign(signatureKey);
 			signer.update(message);
 			sign = signer.sign();
@@ -215,6 +228,9 @@ public class CryptoUtils {
 			e.printStackTrace();
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 		return sign;
@@ -270,7 +286,8 @@ public class CryptoUtils {
 			RSAPublicKey signatureKey) {
 		boolean isValid = false;
 		try {
-			Signature signer = Signature.getInstance(SIGNATURE_ALGORITHM);
+			Signature signer = Signature.getInstance(SIGNATURE_ALGORITHM,
+					CRYPTOGRAPHIC_PROVIDER);
 			signer.initVerify(signatureKey);
 			signer.update(message);
 			isValid = signer.verify(signature);
@@ -282,6 +299,9 @@ public class CryptoUtils {
 			e.printStackTrace();
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 		return isValid;
@@ -318,7 +338,8 @@ public class CryptoUtils {
 	private byte[] rsaEncryptForRecipient(byte[] message, QblEncPublicKey reciPubKey) {
 		byte[] cipherText = null;
 		try {
-			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM);
+			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
+					CRYPTOGRAPHIC_PROVIDER);
 			cipher.init(Cipher.ENCRYPT_MODE, reciPubKey.getRSAPublicKey(),
 					secRandom);
 			cipherText = cipher.doFinal(message);
@@ -337,6 +358,9 @@ public class CryptoUtils {
 		} catch (NoSuchPaddingException e) {
 			logger.error("Padding " + RSA_CIPHER_ALGORITM + " not found!");
 			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
+			e.printStackTrace();
 		}
 		return cipherText;
 	}
@@ -353,7 +377,8 @@ public class CryptoUtils {
 	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) {
 		byte[] plaintext = null;
 		try {
-			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM);
+			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
+					CRYPTOGRAPHIC_PROVIDER);
 			cipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
 			plaintext = cipher.doFinal(cipherText);
 		} catch (InvalidKeyException e) {
@@ -368,11 +393,15 @@ public class CryptoUtils {
 		} catch (NoSuchPaddingException e) {
 			logger.error("Padding " + RSA_CIPHER_ALGORITM + " not found!");
 			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
+			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			// This exception should occur if cipherText is decrypted with wrong
 			// private key
 			return null;
 		}
+
 		return plaintext;
 	}
 
