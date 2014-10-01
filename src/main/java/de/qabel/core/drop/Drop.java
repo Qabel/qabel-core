@@ -57,15 +57,16 @@ public class Drop {
     public void retrieve(){
         //TODO: retrieve message.
         //decrypt
-        String plain = null;
-        while(plain == null){
+        String plainJson = null;
+        while(plainJson == null){
             for (Contact c : contacts.getContacts()) {
-                plain = decryptDrop(cipherMessage,
+                plainJson = decryptDrop(cipherMessage,
                         c.getContactOwner().getPrimaryKeyPair(),
                         c.getSignaturePublicKey()
                 );
             }
         }
+        setMessage(deserialize(plainJson));
     }
 
     private <T extends ModelObject> String serialize() {
@@ -75,11 +76,11 @@ public class Drop {
         return gson.toJson(message);
     }
 
-    private <T extends ModelObject> DropMessage<T> deserialize() {
+    private <T extends ModelObject> DropMessage<T> deserialize(String plainJson) {
         GsonBuilder gb = new GsonBuilder();
         gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
         Gson gson = gb.create();
-        return null;
+        gson.fromJson(plainJson, DropMessage.class);
     }
 
     private byte[] encryptDrop(String jsonMessage, QblEncPublicKey key, QblSignKeyPair skp) {
