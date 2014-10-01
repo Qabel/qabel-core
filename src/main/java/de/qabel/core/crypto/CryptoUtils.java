@@ -179,10 +179,10 @@ public class CryptoUtils {
 	 * Sign data with RSA
 	 * 
 	 * @param data
-	 *            Data to sign
+	 *            Data to sign. Usually a message digest.
 	 * @param qpkp
 	 *            QblPrimaryKeyPair to extract signature key from
-	 * @return Signature over SHA512 sum of message
+	 * @return Signature of data
 	 */
 	private byte[] rsaSign(byte[] data, QblPrimaryKeyPair qpkp) {
 		return rsaSign(data, qpkp.getQblSignPrivateKey());
@@ -192,10 +192,10 @@ public class CryptoUtils {
 	 * Sign data with RSA
 	 * 
 	 * @param data
-	 *            Data to sign
+	 *            Data to sign. Usually a message digest.
 	 * @param signatureKey
 	 *            QblSignKeyPair to extract signature key from
-	 * @return Signature over SHA512 sum of message
+	 * @return Signature of data
 	 */
 	private byte[] rsaSign(byte[] data, QblSignKeyPair signatureKey) {
 		return rsaSign(data, signatureKey.getRSAPrivateKey());
@@ -205,10 +205,10 @@ public class CryptoUtils {
 	 * Sign data with RSA
 	 * 
 	 * @param data
-	 *            Data to sign
+	 *            Data to sign. Usually a message digest.
 	 * @param signatureKey
 	 *            QblSignKeyPair to extract signature key from
-	 * @return Signature over SHA512 sum of message
+	 * @return Signature of data
 	 */
 	private byte[] rsaSign(byte[] data, RSAPrivateKey signatureKey) {
 		byte[] sign = null;
@@ -254,7 +254,8 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Validates the signature of a message
+	 * Validates the signature of a message. The SHA512 digest of the message is
+	 * validated against the provided signature.
 	 * 
 	 * @param message
 	 *            Message to validate signature from
@@ -272,24 +273,24 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Validate the RSA signature of a message
+	 * Validate the RSA signature of a data.
 	 * 
-	 * @param message
-	 *            Message to validate signature from
+	 * @param data
+	 *            Data to validate signature from. Usually a message digest.
 	 * @param signature
-	 *            Signature to validate
+	 *            Signature to validate with
 	 * @param signatureKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
 	 */
-	private boolean rsaValidateSignature(byte[] message, byte[] signature,
+	private boolean rsaValidateSignature(byte[] data, byte[] signature,
 			RSAPublicKey signatureKey) {
 		boolean isValid = false;
 		try {
 			Signature signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			signer.initVerify(signatureKey);
-			signer.update(message);
+			signer.update(data);
 			isValid = signer.verify(signature);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key!");
@@ -509,7 +510,7 @@ public class CryptoUtils {
 	/**
 	 * Hybrid encrypts a String message for a recipient. The String message is
 	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
-	 * recipients public key.
+	 * recipients public key. The cipher text gets signed.
 	 * 
 	 * @param message
 	 *            String message to encrypt
@@ -517,8 +518,8 @@ public class CryptoUtils {
 	 *            Recipient to encrypt message for
 	 * @return hybrid encrypted String message
 	 */
-	public byte[] encryptHybrid(String message, QblEncPublicKey recipient,
-			QblSignKeyPair signatureKey) {
+	public byte[] encryptHybridAndSign(String message,
+			QblEncPublicKey recipient, QblSignKeyPair signatureKey) {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
 
@@ -534,7 +535,8 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Decrypts a hybrid encrypted String message. The AES key is decrypted
+	 * Decrypts a hybrid encrypted String message. Before decryption, the
+	 * signature over the cipher text gets validated. The AES key is decrypted
 	 * using the own private key. The decrypted AES key is used to decrypt the
 	 * String message
 	 * 
@@ -544,8 +546,8 @@ public class CryptoUtils {
 	 *            private key to encrypt String message with
 	 * @return decrypted String message or null if message is undecryptable
 	 */
-	public String decryptHybrid(byte[] cipherText, QblPrimaryKeyPair privKey,
-			QblSignPublicKey signatureKey) {
+	public String decryptHybridAndValidateSignature(byte[] cipherText,
+			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
 		// Get RSA encrypted AES key and encrypted data and signature over the
