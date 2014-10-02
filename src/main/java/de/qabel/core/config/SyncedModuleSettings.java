@@ -36,5 +36,4 @@ public class SyncedModuleSettings extends AbstractModuleSettings {
 	public SyncedSettings getSyncedSettings1() {
 		return this.syncedSettings1;
 	}
-
 }

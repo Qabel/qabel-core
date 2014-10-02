@@ -146,4 +146,65 @@ public class SyncedSettings {
 	public StorageVolumes getStorageVolumes() {
 		return this.storageVolumes;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((accounts == null) ? 0 : accounts.hashCode());
+		result = prime * result
+				+ ((dropServers == null) ? 0 : dropServers.hashCode());
+		result = prime * result
+				+ ((identities == null) ? 0 : identities.hashCode());
+		result = prime * result
+				+ ((settings == null) ? 0 : settings.hashCode());
+		result = prime * result
+				+ ((storageServers == null) ? 0 : storageServers.hashCode());
+		result = prime * result
+				+ ((storageVolumes == null) ? 0 : storageVolumes.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SyncedSettings other = (SyncedSettings) obj;
+		if (accounts == null) {
+			if (other.accounts != null)
+				return false;
+		} else if (!accounts.equals(other.accounts))
+			return false;
+		if (dropServers == null) {
+			if (other.dropServers != null)
+				return false;
+		} else if (!dropServers.equals(other.dropServers))
+			return false;
+		if (identities == null) {
+			if (other.identities != null)
+				return false;
+		} else if (!identities.equals(other.identities))
+			return false;
+		if (settings == null) {
+			if (other.settings != null)
+				return false;
+		} else if (!settings.equals(other.settings))
+			return false;
+		if (storageServers == null) {
+			if (other.storageServers != null)
+				return false;
+		} else if (!storageServers.equals(other.storageServers))
+			return false;
+		if (storageVolumes == null) {
+			if (other.storageVolumes != null)
+				return false;
+		} else if (!storageVolumes.equals(other.storageVolumes))
+			return false;
+		return true;
+	}
 }

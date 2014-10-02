@@ -94,4 +94,56 @@ public class Account {
 		return this.accounts;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
+		result = prime * result + created;
+		result = prime * result + deleted;
+		result = prime * result + id;
+		result = prime * result
+				+ ((provider == null) ? 0 : provider.hashCode());
+		result = prime * result + updated;
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Account other = (Account) obj;
+		if (auth == null) {
+			if (other.auth != null)
+				return false;
+		} else if (!auth.equals(other.auth))
+			return false;
+		if (created != other.created)
+			return false;
+		if (deleted != other.deleted)
+			return false;
+		if (id != other.id)
+			return false;
+		if (provider == null) {
+			if (other.provider != null)
+				return false;
+		} else if (!provider.equals(other.provider))
+			return false;
+		if (updated != other.updated)
+			return false;
+		if (user == null) {
+			if (other.user != null)
+				return false;
+		} else if (!user.equals(other.user))
+			return false;
+		return true;
+	}
+	
+	
+
 }

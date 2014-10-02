@@ -109,4 +109,50 @@ public class DropServer {
 		return this.dropServers;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (active ? 1231 : 1237);
+		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
+		result = prime * result + created;
+		result = prime * result + deleted;
+		result = prime * result + id;
+		result = prime * result + updated;
+		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DropServer other = (DropServer) obj;
+		if (active != other.active)
+			return false;
+		if (auth == null) {
+			if (other.auth != null)
+				return false;
+		} else if (!auth.equals(other.auth))
+			return false;
+		if (created != other.created)
+			return false;
+		if (deleted != other.deleted)
+			return false;
+		if (id != other.id)
+			return false;
+		if (updated != other.updated)
+			return false;
+		if (url == null) {
+			if (other.url != null)
+				return false;
+		} else if (!url.equals(other.url))
+			return false;
+		return true;
+	}
+
 }

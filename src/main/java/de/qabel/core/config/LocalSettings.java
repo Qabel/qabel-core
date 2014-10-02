@@ -64,4 +64,42 @@ public class LocalSettings {
 		return this.lastUpdate;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((lastUpdate == null) ? 0 : lastUpdate.hashCode());
+		result = prime
+				* result
+				+ ((localeModuleSettings == null) ? 0 : localeModuleSettings
+						.hashCode());
+		result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LocalSettings other = (LocalSettings) obj;
+		if (lastUpdate == null) {
+			if (other.lastUpdate != null)
+				return false;
+		} else if (!lastUpdate.equals(other.lastUpdate))
+			return false;
+		if (localeModuleSettings == null) {
+			if (other.localeModuleSettings != null)
+				return false;
+		} else if (!localeModuleSettings.equals(other.localeModuleSettings))
+			return false;
+		if (pollInterval != other.pollInterval)
+			return false;
+		return true;
+	}
+
 }
