@@ -4,6 +4,30 @@ import java.net.URL;
 
 public class DropServer {
 	private int id;
+	private int updated;
+	private int created;
+	private int deleted;
+	private URL url;
+	private String auth;
+	private boolean active;
+	/**
+	 * <pre>
+	 *           0..*     0..1
+	 * DropServer ------------------------- DropServers
+	 *           dropServer        &lt;       dropServers
+	 * </pre>
+	 */
+	private DropServers dropServers;
+	
+	public DropServer(URL url, String auth, boolean active) {
+		this.setUrl(url);
+		this.setAuth(auth);
+		this.setActive(active);
+	}
+	
+	public DropServer() {
+		
+	}
 
 	public void setId(int value) {
 		this.id = value;
@@ -13,7 +37,6 @@ public class DropServer {
 		return this.id;
 	}
 
-	private int updated;
 
 	public void setUpdated(int value) {
 		this.updated = value;
@@ -23,7 +46,6 @@ public class DropServer {
 		return this.updated;
 	}
 
-	private int created;
 
 	public void setCreated(int value) {
 		this.created = value;
@@ -33,7 +55,6 @@ public class DropServer {
 		return this.created;
 	}
 
-	private int deleted;
 
 	public void setDeleted(int value) {
 		this.deleted = value;
@@ -43,7 +64,6 @@ public class DropServer {
 		return this.deleted;
 	}
 
-	private URL url;
 
 	public void setUrl(URL value) {
         //check if its a valid Drop-URL.
@@ -62,7 +82,6 @@ public class DropServer {
 		return this.url;
 	}
 
-	private String auth;
 
 	public void setAuth(String value) {
 		this.auth = value;
@@ -72,7 +91,6 @@ public class DropServer {
 		return this.auth;
 	}
 
-	private boolean active;
 
 	public void setActive(boolean value) {
 		this.active = value;
@@ -82,14 +100,6 @@ public class DropServer {
 		return this.active;
 	}
 
-	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * DropServer ------------------------- DropServers
-	 *           dropServer        &lt;       dropServers
-	 * </pre>
-	 */
-	private DropServers dropServers;
 
 	public void setDropServers(DropServers value) {
 		this.dropServers = value;

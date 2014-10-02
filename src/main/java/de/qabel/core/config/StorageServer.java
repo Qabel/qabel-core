@@ -10,6 +10,11 @@ public class StorageServer {
 	private URL url;
 	private String auth;
 	
+	public StorageServer(URL url, String auth) {
+		this.setUrl(url);
+		this.setAuth(auth);
+	}
+	
 	public int getId() {
 		return id;
 	}

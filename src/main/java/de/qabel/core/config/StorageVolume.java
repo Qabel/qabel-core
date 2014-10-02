@@ -9,6 +9,12 @@ public class StorageVolume {
 	private String publicIdentifier;
 	private String token;
 	private String revokeToken;
+	
+	public StorageVolume(String publicIdentifier, String token, String revokeToken) {
+		this.setPublicIdentifier(publicIdentifier);
+		this.setToken(token);
+		this.setRevokeToken(revokeToken);
+	}
 
 	public int getId() {
 		return id;

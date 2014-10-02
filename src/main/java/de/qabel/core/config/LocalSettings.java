@@ -13,6 +13,22 @@ public class LocalSettings {
 	 * </pre>
 	 */
 	private Settings settings;
+	/**
+	 * <pre>
+	 *           0..1     0..*
+	 * LocalSettings ------------------------> LocaleModuleSettings
+	 *           localSettings        &gt;       localeModuleSettings
+	 * </pre>
+	 */
+	private Set<LocaleModuleSettings> localeModuleSettings;
+	private long pollInterval;
+	private Date lastUpdate;
+	
+	public LocalSettings(Settings settings, long pollInterval, Date lastUpdate) {
+		this.setSettings(settings);
+		this.setPollInterval(pollInterval);
+		this.setLastUpdate(lastUpdate);
+	}
 
 	public void setSettings(Settings value) {
 		this.settings = value;
@@ -22,14 +38,6 @@ public class LocalSettings {
 		return this.settings;
 	}
 
-	/**
-	 * <pre>
-	 *           0..1     0..*
-	 * LocalSettings ------------------------> LocaleModuleSettings
-	 *           localSettings        &gt;       localeModuleSettings
-	 * </pre>
-	 */
-	private Set<LocaleModuleSettings> localeModuleSettings;
 
 	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
 		if (this.localeModuleSettings == null) {
@@ -38,7 +46,6 @@ public class LocalSettings {
 		return this.localeModuleSettings;
 	}
 
-	private long pollInterval;
 
 	public void setPollInterval(long value) {
 		this.pollInterval = value;
@@ -48,7 +55,6 @@ public class LocalSettings {
 		return this.pollInterval;
 	}
 
-	private Date lastUpdate;
 
 	public void setLastUpdate(Date value) {
 		this.lastUpdate = value;
