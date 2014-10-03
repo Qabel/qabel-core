@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LocalSettings {
 	/**
 	 * <pre>
@@ -13,6 +15,24 @@ public class LocalSettings {
 	 * </pre>
 	 */
 	private Settings settings;
+	/**
+	 * <pre>
+	 *           0..1     0..*
+	 * LocalSettings ------------------------> LocaleModuleSettings
+	 *           localSettings        &gt;       localeModuleSettings
+	 * </pre>
+	 */
+	private Set<LocaleModuleSettings> localeModuleSettings;
+	@SerializedName("poll_interval")
+	private long pollInterval;
+	@SerializedName("drop_last_update")
+	private Date dropLastUpdate;
+	
+	public LocalSettings(Settings settings, long pollInterval, Date dropLastUpdate) {
+		this.setSettings(settings);
+		this.setPollInterval(pollInterval);
+		this.setdropLastUpdate(dropLastUpdate);
+	}
 
 	public void setSettings(Settings value) {
 		this.settings = value;
@@ -22,14 +42,6 @@ public class LocalSettings {
 		return this.settings;
 	}
 
-	/**
-	 * <pre>
-	 *           0..1     0..*
-	 * LocalSettings ------------------------> LocaleModuleSettings
-	 *           localSettings        &gt;       localeModuleSettings
-	 * </pre>
-	 */
-	private Set<LocaleModuleSettings> localeModuleSettings;
 
 	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
 		if (this.localeModuleSettings == null) {
@@ -38,7 +50,6 @@ public class LocalSettings {
 		return this.localeModuleSettings;
 	}
 
-	private long pollInterval;
 
 	public void setPollInterval(long value) {
 		this.pollInterval = value;
@@ -48,14 +59,51 @@ public class LocalSettings {
 		return this.pollInterval;
 	}
 
-	private Date lastUpdate;
 
-	public void setLastUpdate(Date value) {
-		this.lastUpdate = value;
+	public void setdropLastUpdate(Date value) {
+		this.dropLastUpdate = value;
 	}
 
 	public Date getLastUpdate() {
-		return this.lastUpdate;
+		return this.dropLastUpdate;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
+		result = prime
+				* result
+				+ ((localeModuleSettings == null) ? 0 : localeModuleSettings
+						.hashCode());
+		result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LocalSettings other = (LocalSettings) obj;
+		if (dropLastUpdate == null) {
+			if (other.dropLastUpdate != null)
+				return false;
+		} else if (!dropLastUpdate.equals(other.dropLastUpdate))
+			return false;
+		if (localeModuleSettings == null) {
+			if (other.localeModuleSettings != null)
+				return false;
+		} else if (!localeModuleSettings.equals(other.localeModuleSettings))
+			return false;
+		if (pollInterval != other.pollInterval)
+			return false;
+		return true;
 	}
 
 }

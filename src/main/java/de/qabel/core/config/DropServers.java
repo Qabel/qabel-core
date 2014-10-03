@@ -37,4 +37,31 @@ public class DropServers {
 		return this.syncedSettings;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dropServer == null) ? 0 : dropServer.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DropServers other = (DropServers) obj;
+		if (dropServer == null) {
+			if (other.dropServer != null)
+				return false;
+		} else if (!dropServer.equals(other.dropServer))
+			return false;
+		return true;
+	}
+
+	
 }
