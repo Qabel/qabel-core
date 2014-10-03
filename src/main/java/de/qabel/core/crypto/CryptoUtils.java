@@ -25,6 +25,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.logging.log4j.*;
+import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class CryptoUtils {
@@ -401,6 +402,10 @@ public class CryptoUtils {
 		} catch (BadPaddingException e) {
 			// This exception should occur if cipherText is decrypted with wrong
 			// private key
+			return null;
+		} catch (DataLengthException e) {
+			// This exception only occurs with Bouncy Castle while decrypting
+			// with a wrong private key
 			return null;
 		}
 
