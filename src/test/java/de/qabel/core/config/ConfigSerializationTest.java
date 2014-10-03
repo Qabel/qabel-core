@@ -3,7 +3,6 @@ package de.qabel.core.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Timestamp;
 import java.util.Date;
 
 import org.junit.Test;

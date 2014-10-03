@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LocalSettings {
 	/**
 	 * <pre>
@@ -21,13 +23,15 @@ public class LocalSettings {
 	 * </pre>
 	 */
 	private Set<LocaleModuleSettings> localeModuleSettings;
+	@SerializedName("poll_interval")
 	private long pollInterval;
-	private Date lastUpdate;
+	@SerializedName("drop_last_update")
+	private Date dropLastUpdate;
 	
-	public LocalSettings(Settings settings, long pollInterval, Date lastUpdate) {
+	public LocalSettings(Settings settings, long pollInterval, Date dropLastUpdate) {
 		this.setSettings(settings);
 		this.setPollInterval(pollInterval);
-		this.setLastUpdate(lastUpdate);
+		this.setdropLastUpdate(dropLastUpdate);
 	}
 
 	public void setSettings(Settings value) {
@@ -56,12 +60,12 @@ public class LocalSettings {
 	}
 
 
-	public void setLastUpdate(Date value) {
-		this.lastUpdate = value;
+	public void setdropLastUpdate(Date value) {
+		this.dropLastUpdate = value;
 	}
 
 	public Date getLastUpdate() {
-		return this.lastUpdate;
+		return this.dropLastUpdate;
 	}
 
 	@Override
@@ -69,7 +73,7 @@ public class LocalSettings {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((lastUpdate == null) ? 0 : lastUpdate.hashCode());
+				+ ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
 		result = prime
 				* result
 				+ ((localeModuleSettings == null) ? 0 : localeModuleSettings
@@ -87,10 +91,10 @@ public class LocalSettings {
 		if (getClass() != obj.getClass())
 			return false;
 		LocalSettings other = (LocalSettings) obj;
-		if (lastUpdate == null) {
-			if (other.lastUpdate != null)
+		if (dropLastUpdate == null) {
+			if (other.dropLastUpdate != null)
 				return false;
-		} else if (!lastUpdate.equals(other.lastUpdate))
+		} else if (!dropLastUpdate.equals(other.dropLastUpdate))
 			return false;
 		if (localeModuleSettings == null) {
 			if (other.localeModuleSettings != null)

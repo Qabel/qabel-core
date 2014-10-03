@@ -5,20 +5,28 @@ import de.qabel.core.crypto.*;
 import java.net.*;
 import java.util.*;
 
+import com.google.gson.annotations.SerializedName;
+
 /** 
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact {
 	
+	@SerializedName("public_primary_key")
 	private QblPrimaryPublicKey primaryPublicKey;
+	@SerializedName("public_enc_key")
 	private QblEncPublicKey encryptionPublicKey;
+	@SerializedName("public_sign_key")
 	private QblSignPublicKey signaturePublicKey;
 	/**
 	 * The owner identity which owns this Contact.
 	 * Note: This is not the identity which is represented by this contact!
 	 */
+	@SerializedName("my_identity")
 	private final Identity contactOwner;
+	@SerializedName("drop_urls")
 	private final Set<URL> dropUrls = new HashSet<URL>(); //TODO: Have drop urls management with add/remove/edit events etc.
+	@SerializedName("module_data")
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
 	public QblPrimaryPublicKey getPrimaryPublicKey()

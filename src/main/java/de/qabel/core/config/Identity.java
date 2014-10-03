@@ -4,6 +4,8 @@ import de.qabel.core.crypto.*;
 
 import java.net.URL;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Identity {
 	private final int id;
 	private int updated;

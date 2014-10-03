@@ -1,13 +1,18 @@
 package de.qabel.core.config;
 
+import com.google.gson.annotations.SerializedName;
+
 public class StorageVolume {
 	private int id;
 	private int updated;
 	private int created;
 	private int deleted;
+	@SerializedName("storage_server_id")
 	private int storageServerId;
+	@SerializedName("public_identifier")
 	private String publicIdentifier;
 	private String token;
+	@SerializedName("revoke_token")
 	private String revokeToken;
 	
 	public StorageVolume(String publicIdentifier, String token, String revokeToken) {
