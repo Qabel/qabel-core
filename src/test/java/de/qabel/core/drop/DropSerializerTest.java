@@ -30,6 +30,8 @@ public class DropSerializerTest {
         a.setVersion(1);
         a.setModelObject(TestMessage.class);
 
+        Drop d = new Drop();
+
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
         builder.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());

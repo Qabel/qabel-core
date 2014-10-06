@@ -7,8 +7,11 @@ import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
+import de.qabel.core.http.DropHTTP;
 
-public class Drop {
+import java.net.URL;
+
+public class Drop <T extends ModelObject>{
     private DropMessage<ModelObject> message;
     private Contacts contacts;
     private Identities identities;
@@ -42,16 +45,21 @@ public class Drop {
         sendAndForget();
     }
 
-    public void sendAndForget() {
+    public int sendAndForget() {
+        DropHTTP http = new DropHTTP();
         String m = serialize();
+        int res = 0;
         for (Contact c : contacts.getContacts()) {
             byte[] cryptedMessage = encryptDrop(
                                     m,
                                     c.getEncryptionPublicKey(),
                                     c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
             );
-            //TODO: send
+            for (URL u : c.getDropUrls()) {
+                res = http.send(u, cryptedMessage);
+            }
         }
+        return res;
     }
 
     public void retrieve(){
@@ -80,7 +88,7 @@ public class Drop {
         GsonBuilder gb = new GsonBuilder();
         gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
         Gson gson = gb.create();
-        gson.fromJson(plainJson, DropMessage.class);
+        return gson.fromJson(plainJson, DropMessage.class);
     }
 
     private byte[] encryptDrop(String jsonMessage, QblEncPublicKey key, QblSignKeyPair skp) {
