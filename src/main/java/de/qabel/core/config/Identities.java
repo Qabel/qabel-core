@@ -3,6 +3,10 @@ package de.qabel.core.config;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identities
+ */
+
 public class Identities {
 	/**
 	 * <pre>
@@ -11,13 +15,14 @@ public class Identities {
 	 *           identities        &gt;       identity
 	 * </pre>
 	 */
-	private Set<Identity> identity;
-
-	public Set<Identity> getIdentity() {
-		if (this.identity == null) {
-			this.identity = new HashSet<Identity>();
+	private Set<Identity> identities;
+	private SyncedSettings syncedSettings;
+	
+	public Set<Identity> getIdentities() {
+		if (this.identities == null) {
+			this.identities = new HashSet<Identity>();
 		}
-		return this.identity;
+		return this.identities;
 	}
 
 	/**
@@ -27,8 +32,7 @@ public class Identities {
 	 *           identities        &lt;       syncedSettings
 	 * </pre>
 	 */
-	private SyncedSettings syncedSettings;
-
+	
 	public void setSyncedSettings(SyncedSettings value) {
 		this.syncedSettings = value;
 	}
@@ -42,7 +46,7 @@ public class Identities {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((identity == null) ? 0 : identity.hashCode());
+				+ ((identities == null) ? 0 : identities.hashCode());
 		return result;
 	}
 
@@ -55,10 +59,10 @@ public class Identities {
 		if (getClass() != obj.getClass())
 			return false;
 		Identities other = (Identities) obj;
-		if (identity == null) {
-			if (other.identity != null)
+		if (identities == null) {
+			if (other.identities != null)
 				return false;
-		} else if (!identity.equals(other.identity))
+		} else if (!identities.equals(other.identities))
 			return false;
 		return true;
 	}

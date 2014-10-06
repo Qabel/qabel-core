@@ -15,7 +15,7 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 	public void write(JsonWriter out, Identities value) throws IOException {
 		out.beginArray();
 		Gson gson = new Gson();
-		Set<Identity> set = value.getIdentity();
+		Set<Identity> set = value.getIdentities();
 		TypeAdapter<Identity> adapter = gson.getAdapter(Identity.class);
 		for(Identity identity : set) {
 			adapter.write(out, identity);
@@ -39,7 +39,7 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 		in.beginArray();
 		while(in.hasNext()) {
 			identity = adapter.read(in);
-			identities.getIdentity().add(identity);
+			identities.getIdentities().add(identity);
 		}
 		in.endArray();
 		

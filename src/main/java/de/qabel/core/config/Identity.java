@@ -4,7 +4,13 @@ import de.qabel.core.crypto.*;
 
 import java.net.URL;
 
+
 import com.google.gson.annotations.SerializedName;
+
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity
+ */
+
 
 public class Identity {
 	private final int id;
@@ -14,6 +20,7 @@ public class Identity {
 	private String alias;
 	private QblPrimaryKeyPair primaryKeyPair;
 	private URL inbox;
+
 	/**
 	 * <pre>
 	 *           0..*     0..1
@@ -21,7 +28,6 @@ public class Identity {
 	 *           identity        &lt;       identities
 	 * </pre>
 	 */
-	private Identities identities;
 	
 	public Identity(String alias, URL inbox) {
 		this.id = 0; //just to set it somehow
@@ -29,7 +35,7 @@ public class Identity {
 		this.setPrimaryKeyPair(primaryKeyPair);
 		this.setInbox(inbox);
 	}
-
+	
 	public int getId() {
 		return this.id;
 	}
@@ -82,22 +88,8 @@ public class Identity {
 
 	public URL getInbox() {
 		return this.inbox;
-	}
+	}	
 
-
-	public void setIdentities(Identities value) {
-		this.identities = value;
-	}
-
-	public Identities getIdentities() {
-		return this.identities;
-	}
-	
-	
-	public Identity(int id)
-	{
-		this.id = id;
-	}
 
 	@Override
 	public int hashCode() {
