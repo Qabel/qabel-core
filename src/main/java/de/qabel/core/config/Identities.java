@@ -46,7 +46,7 @@ public class Identities {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((identity == null) ? 0 : identity.hashCode());
+				+ ((identities == null) ? 0 : identities.hashCode());
 		return result;
 	}
 
@@ -59,10 +59,10 @@ public class Identities {
 		if (getClass() != obj.getClass())
 			return false;
 		Identities other = (Identities) obj;
-		if (identity == null) {
-			if (other.identity != null)
+		if (identities == null) {
+			if (other.identities != null)
 				return false;
-		} else if (!identity.equals(other.identity))
+		} else if (!identities.equals(other.identities))
 			return false;
 		return true;
 	}
