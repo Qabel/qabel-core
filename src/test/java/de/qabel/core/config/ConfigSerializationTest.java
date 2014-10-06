@@ -39,7 +39,7 @@ public class ConfigSerializationTest {
 		//generate and add an "identities" entry
 		try {
 			Identity identity = new Identity("alias", new URL("https://inbox.qabel.de"));
-			syncedSettings.getIdentities().getIdentity().add(identity);
+			syncedSettings.getIdentities().getIdentities().add(identity);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
