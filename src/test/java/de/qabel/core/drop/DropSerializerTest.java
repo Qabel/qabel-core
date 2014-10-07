@@ -5,23 +5,35 @@ import com.google.gson.GsonBuilder;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class DropSerializerTest {
     String json = null;
 
+    static class TestMessage extends ModelObject{
+        public String content;
+
+    }
+
     @Test
     public <T extends ModelObject> void serializeTest() {
-        class TestMessage extends ModelObject{
-            public String content;
-
-        }
 
         TestMessage m = new TestMessage();
 
         m.content = "baz";
         DropMessage<TestMessage> a = new DropMessage<TestMessage>();
         Date date = new Date();
+
+        //fake date for testing
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        date = cal.getTime();
 
         a.setTime(date);
         a.setSender("foo");
@@ -38,7 +50,10 @@ public class DropSerializerTest {
         Gson gson = builder.create();
 
         json = gson.toJson(a);
-
         assertNotNull(json);
+        assertEquals("{\"version\":1,\"time\":1412632800000," +
+                     "\"sender\":\"foo\",\"acknowledgeID\":\"bar\"" +
+                     ",\"model\":\"de.qabel.core.drop.DropSerializerTest$TestMessage\"," +
+                     "\"data\":\"{\\\"content\\\":\\\"baz\\\"}\"}", json);
     }
 }
