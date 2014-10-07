@@ -95,7 +95,7 @@ public class Drop <T extends ModelObject>{
      * Retrieves a drop message from given URL
      *
      * @param url
-     *            url where to to retrieve the drop from
+     *            url where to retrieve the drop from
      */
     public void retrieve(URL url){
         DropHTTP http = new DropHTTP();
