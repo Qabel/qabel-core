@@ -16,7 +16,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	private ArrayList<QblEncKeyPair> encKeyPairs;
 	private ArrayList<QblSignKeyPair> signKeyPairs;
 
-	QblPrimaryKeyPair() {
+	public QblPrimaryKeyPair() {
 		super();
 
 		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
@@ -64,7 +64,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return primary public key
 	 */
-	QblPrimaryPublicKey getQblPrimaryPublicKey() {
+	public QblPrimaryPublicKey getQblPrimaryPublicKey() {
 		return qblPrimaryPublicKey;
 	}
 
@@ -73,7 +73,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return encryption public key
 	 */
-	QblEncPublicKey getQblEncPublicKey() {
+	public QblEncPublicKey getQblEncPublicKey() {
 		// TODO: Implement support for multiple sub-keys
 		return encKeyPairs.get(0).getQblEncPublicKey();
 	}
@@ -83,7 +83,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return signature public key
 	 */
-	QblSignPublicKey getQblSignPublicKey() {
+	public QblSignPublicKey getQblSignPublicKey() {
 		// TODO: Implement support for multiple sub-keys
 		return signKeyPairs.get(0).getQblSignPublicKey();
 	}

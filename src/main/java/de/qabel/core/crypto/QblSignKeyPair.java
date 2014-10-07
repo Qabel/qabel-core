@@ -24,7 +24,7 @@ public class QblSignKeyPair extends QblSubKeyPair {
 	 * Returns a public key which can be only used for signatures
 	 * @return public key for signatures
 	 */
-	QblSignPublicKey getQblSignPublicKey() {
+	public QblSignPublicKey getQblSignPublicKey() {
 		return qblSignPublicKey;
 	}
 
