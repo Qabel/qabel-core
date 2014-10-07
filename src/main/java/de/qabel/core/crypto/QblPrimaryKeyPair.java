@@ -16,7 +16,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	private ArrayList<QblEncKeyPair> encKeyPairs;
 	private ArrayList<QblSignKeyPair> signKeyPairs;
 
-	QblPrimaryKeyPair() {
+	public QblPrimaryKeyPair() {
 		super();
 
 		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
