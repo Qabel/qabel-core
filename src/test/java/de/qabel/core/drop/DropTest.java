@@ -4,6 +4,8 @@ import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
+import de.qabel.core.crypto.*;
+import de.qabel.core.crypto.QblPrimaryKeyPair;
 import org.junit.*;
 
 import java.net.MalformedURLException;
@@ -11,44 +13,67 @@ import java.net.URL;
 import java.util.Date;
 
 public class DropTest {
-    String iUrl = "http://localhost:6000/12345678901234567890123456789012345678901234567890";
+    String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
+    String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
     URL identityUrl = null;
-    String cUrl = "http://localhost:6000/12345678901234567890123456789012345678901234567891";
     URL contactUrl = null;
+    QblPrimaryKeyPair keypair = new QblPrimaryKeyPair();
+    QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
+    QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
+    QblEncPublicKey qepk = qpkp.getQblEncPublicKey();
+    QblSignPublicKey qspk = qpkp.getQblSignPublicKey();
+
+    Identity i = new Identity("foo", identityUrl);
+    Identities is = new Identities();
+    Contacts contacts = new Contacts();
+    Contact contact = new Contact(i);
+
+    static class TestMessage extends ModelObject {
+        public String content;
+
+        public TestMessage() {
+        }
+    }
 
     @Test
-    public <T extends ModelObject> void sendAndForgetTest() {
-        Identities is = new Identities();
+    @Ignore
+    public void sendAndForgetTest() {
+
         try {
             identityUrl = new URL(iUrl);
-        } catch (MalformedURLException e){
-            //I don't care.
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-            Identity i = new Identity("foo", identityUrl);
 
         try {
             contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e){
-            //I don't care.
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
 
-        Contacts contacts = new Contacts();
-        Contact contact = new Contact(i);
+        i.setPrimaryKeyPair(keypair);
+        is.getIdentities().add(i);
+
 
         contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppk);
+        contact.setEncryptionPublicKey(qepk);
+        contact.setSignaturePublicKey(qspk);
+
+        contacts.getContacts().add(contact);
+
         Drop d = new Drop();
         d.setContacts(contacts);
 
-        class TestMessage extends ModelObject{
-            public String content;
 
-        }
         TestMessage m = new TestMessage();
         m.content = "baz";
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>();
         Date date = new Date();
 
+        d.setIdentities(is);
         dm.setTime(date);
         dm.setSender("foo");
         dm.setData(m);
@@ -59,10 +84,30 @@ public class DropTest {
         d.setMessage(dm);
 
         Assert.assertEquals(200, d.sendAndForget());
-
-
-
     }
 
+    @Test
+    @Ignore
+    public void retrieveTest() {
 
+        contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppk);
+        contact.setEncryptionPublicKey(qepk);
+        contact.setSignaturePublicKey(qspk);
+
+        contacts.getContacts().add(contact);
+
+        try {
+            contactUrl = new URL(cUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        Drop d = new Drop();
+        d.setContacts(contacts);
+        d.setMessage(null);
+        d.retrieve(contactUrl);
+        //We don't have the key (yet), so the Message should be null.
+        Assert.assertNull(d.getMessage());
+    }
 }
