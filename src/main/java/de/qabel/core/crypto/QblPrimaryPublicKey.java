@@ -12,7 +12,7 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	private ArrayList<QblEncPublicKey> encPublicKeys;
 	private ArrayList<QblSignPublicKey> signPublicKeys;
 
-	QblPrimaryPublicKey(RSAPublicKey publicKey) {
+	public QblPrimaryPublicKey(RSAPublicKey publicKey) {
 		super(publicKey);
 		encPublicKeys = new ArrayList<QblEncPublicKey>();
 		signPublicKeys = new ArrayList<QblSignPublicKey>();
@@ -48,5 +48,15 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 			return true;
 		}
 		return false;
+	}
+	
+	public QblEncPublicKey getEncPublicKey(){
+		// TODO: Implement support for multiple sub-keys
+		return encPublicKeys.get(0);
+	}
+	
+	public QblSignPublicKey getSignPublicKey(){
+		// TODO: Implement support for multiple sub-keys
+		return signPublicKeys.get(0);
 	}
 }
