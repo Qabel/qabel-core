@@ -24,7 +24,7 @@ abstract class QblPublicKey {
 	 * Returns the Javax RSAPublicKey
 	 * @return Javax RSA public key
 	 */
-	RSAPublicKey getRSAPublicKey(){
+	public RSAPublicKey getRSAPublicKey(){
 		return publicKey;
 	}
 	
@@ -32,7 +32,7 @@ abstract class QblPublicKey {
 	 * Returns the modulus of the public key
 	 * @return public key modulus
 	 */
-	BigInteger getModulus() {
+	public BigInteger getModulus() {
 		return publicKey.getModulus();
 	}
 
@@ -40,7 +40,7 @@ abstract class QblPublicKey {
 	 * Returns the exponent of the public key
 	 * @return public key exponent
 	 */
-	BigInteger getPublicExponent() {
+	public BigInteger getPublicExponent() {
 		return publicKey.getPublicExponent();
 	}
 

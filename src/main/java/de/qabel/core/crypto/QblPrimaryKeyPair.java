@@ -93,7 +93,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return encryption private key
 	 */
-	RSAPrivateKey getQblEncPrivateKey() {
+	public RSAPrivateKey getQblEncPrivateKey() {
 		// TODO: Implement support for multiple sub-keys
 		return encKeyPairs.get(0).getRSAPrivateKey();
 	}
@@ -103,7 +103,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return signature private key
 	 */
-	RSAPrivateKey getQblSignPrivateKey() {
+	public RSAPrivateKey getQblSignPrivateKey() {
 		// TODO: Implement support for multiple sub-keys
 		return signKeyPairs.get(0).getRSAPrivateKey();
 	}
