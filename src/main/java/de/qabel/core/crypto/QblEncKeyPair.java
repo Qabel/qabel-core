@@ -24,7 +24,7 @@ public class QblEncKeyPair extends QblSubKeyPair {
 	 * Returns the encryption public key
 	 * @return encryption public key
 	 */
-	QblEncPublicKey getQblEncPublicKey() {
+	public QblEncPublicKey getQblEncPublicKey() {
 		return qblEncPublicKey;
 	}
 
