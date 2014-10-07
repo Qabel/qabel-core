@@ -24,9 +24,6 @@ public class DropMessageGsonTest {
         DropMessage<TestMessage> a = new DropMessage<TestMessage>();
         Date date = new Date();
 
-        //fake date for testing
-
-
         a.setTime(date);
         a.setSender("foo");
         a.setData(m);
