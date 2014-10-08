@@ -36,7 +36,6 @@ public class DropTest {
     }
 
     @Test
-    @Ignore
     public void sendAndForgetTest() {
 
         try {
@@ -64,7 +63,6 @@ public class DropTest {
         contacts.getContacts().add(contact);
 
         Drop d = new Drop();
-        d.setContacts(contacts);
 
 
         TestMessage m = new TestMessage();
@@ -73,7 +71,6 @@ public class DropTest {
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>();
         Date date = new Date();
 
-        d.setIdentities(is);
         dm.setTime(date);
         dm.setSender("foo");
         dm.setData(m);
@@ -81,13 +78,10 @@ public class DropTest {
         dm.setVersion(1);
         dm.setModelObject(TestMessage.class);
 
-        d.setMessage(dm);
-
-        Assert.assertEquals(200, d.sendAndForget());
+        Assert.assertEquals(200, d.sendAndForget(dm, contacts, i));
     }
 
     @Test
-    @Ignore
     public void retrieveTest() {
 
         contact.getDropUrls().add(contactUrl);
@@ -104,10 +98,10 @@ public class DropTest {
             e.printStackTrace();
         }
         Drop d = new Drop();
-        d.setContacts(contacts);
-        d.setMessage(null);
-        d.retrieve(contactUrl);
+
+
+        DropMessage<ModelObject> result = d.retrieve(contactUrl, contacts);
         //We don't have the key (yet), so the Message should be null.
-        Assert.assertNull(d.getMessage());
+        Assert.assertNull(result);
     }
 }
