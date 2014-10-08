@@ -10,6 +10,7 @@ public abstract class Module {
 	 */
 	private ModuleManager moduleManager;
 
+	
 	public void setModuleManager(ModuleManager value) {
 		this.moduleManager = value;
 	}
@@ -17,5 +18,7 @@ public abstract class Module {
 	public ModuleManager getModuleManager() {
 		return this.moduleManager;
 	}
+
+	abstract public void init();
 
 }

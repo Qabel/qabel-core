@@ -44,16 +44,22 @@ public class ModuleManager {
 	 * <pre>
 	 *           1..1     0..*
 	 * ModuleManager ------------------------- Module
-	 *           moduleManager        &gt;       module
+	 *           moduleManager        &gt;       modules
 	 * </pre>
 	 */
-	private Set<Module> module;
+	private Set<Module> modules;
 
-	public Set<Module> getModule() {
-		if (this.module == null) {
-			this.module = new HashSet<Module>();
+	public Set<Module> getModules() {
+		if (this.modules == null) {
+			this.modules = new HashSet<Module>();
 		}
-		return this.module;
+		return this.modules;
 	}
 
+	public void initModule(Class<?> module) throws InstantiationException, IllegalAccessException {
+		Module m = (Module) module.newInstance();
+		m.setModuleManager(this);
+		m.init();
+		getModules().add(m);
+	}
 }
