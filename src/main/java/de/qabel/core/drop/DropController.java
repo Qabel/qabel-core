@@ -1,13 +1,10 @@
 package de.qabel.core.drop;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class DropController {
-public DropListener register(String/*No type specified*/ drop) {
-   // TODO implement this operation
-   throw new UnsupportedOperationException("not implemented");
-}
 
 	/**
 	 * <pre>
@@ -16,13 +13,25 @@ public DropListener register(String/*No type specified*/ drop) {
 	 *           dropController        &gt;       dropListener
 	 * </pre>
 	 */
-	private Set<DropListener> dropListener;
+	private Map<Class<? extends ModelObject>, ArrayList<DropListener>> dropListeners;
 
-	public Set<DropListener> getDropListener() {
-		if (this.dropListener == null) {
-			this.dropListener = new HashSet<DropListener>();
-		}
-		return this.dropListener;
+	public <T extends ModelObject> DropController() {
+		this.dropListeners = new HashMap<Class<? extends ModelObject>, ArrayList<DropListener>>();
 	}
 
+	public boolean register(ModelObject modelObject, DropListener dropListener) {
+		ArrayList<DropListener> ar = dropListeners.get(modelObject.getClass());
+		if (ar == null) {
+			ar = new ArrayList<DropListener>();
+		}
+		ar.add(dropListener);
+		dropListeners.put(modelObject.getClass(), ar);
+		return true;
+	}
+
+	public void handleDrop(DropMessage<? extends ModelObject> dm) {
+		for (DropListener dl : dropListeners.get(dm.getModelObject())) {
+			dl.onDropEvent((DropMessage<ModelObject>) dm);
+		}
+	}
 }
