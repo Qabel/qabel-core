@@ -18,6 +18,7 @@ public class DropMessageGsonTest {
     @Test
     public <T extends ModelObject> void serializeTest() {
 
+
         TestMessage m = new TestMessage();
 
         m.content = "baz";
@@ -39,10 +40,12 @@ public class DropMessageGsonTest {
         Gson gson = builder.create();
 
         json = gson.toJson(a);
+        assertNotNull(json);
 
-        DropMessage<TestMessage> mm = gson.fromJson(json, DropMessage.class);
-
-        assertEquals(mm.getSender(), a.getSender());
-
+        DropMessage<TestMessage> deserializedJson = gson.fromJson(json, DropMessage.class);
+        assertEquals("baz", deserializedJson.getData().content);
+        assertEquals("foo", deserializedJson.getSender());
+        assertEquals("bar", deserializedJson.getAcknowledgeID());
+        assertEquals(1, deserializedJson.getVersion());
     }
 }
