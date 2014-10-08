@@ -4,56 +4,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
-import de.qabel.core.config.Identities;
+import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
 import de.qabel.core.http.DropHTTP;
 
 import java.net.URL;
 
-public class Drop <T extends ModelObject>{
-    private DropMessage<ModelObject> message;
-    private Contacts contacts;
-    private Identities identities;
-    private byte[] cipherMessage;
+public class Drop <T extends ModelObject> {
+    GsonBuilder gb = null;
+    Gson gson = null;
+
 
     public Drop() {
-    }
-
-    public Drop(DropMessage<ModelObject> message, Contacts contacts){
-        setMessage(message);
-        setContacts(contacts);
-    }
-
-    public DropMessage<ModelObject> getMessage() {
-        return message;
-    }
-
-    public void setMessage(DropMessage<ModelObject> message) {
-        this.message = message;
-    }
-
-    public Identities getIdentities() {
-        return identities;
-    }
-
-    public void setIdentities(Identities identities) {
-        this.identities = identities;
-    }
-
-    public byte[] getCipherMessage() {
-        return cipherMessage;
-    }
-
-    public void setCipherMessage(byte[] cipherMessage) {
-        this.cipherMessage = cipherMessage;
-    }
-
-    public Contacts getContacts() {
-        return contacts;
-    }
-
-    public void setContacts(Contacts contacts) {
-        this.contacts = contacts;
+        gb = new GsonBuilder();
+        gb.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
+        gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
+        gson = gb.create();
     }
 
     /**
@@ -63,20 +29,27 @@ public class Drop <T extends ModelObject>{
      * TODO: implement
      *
      */
-    public void send() {
-        sendAndForget();
+    public void send(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
+        sendAndForget(message, contacts, identity);
     }
 
     /**
      * Sends the message and does not wait for acknowledgement
      *
+     * @param message
+     *                Message to send
+     * @param contacts
+     *                Contacts to send message to
+     *
+     * @param identity
+     *                Identity to sign message with
+     *
      * @return HTTP status code from the drop-server.
      *
-     *
      */
-    public int sendAndForget() {
+    public int sendAndForget(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
         DropHTTP http = new DropHTTP();
-        String m = serialize();
+        String m = serialize(message);
         int res = 0;
         for (Contact c : contacts.getContacts()) {
             byte[] cryptedMessage = encryptDrop(
@@ -95,11 +68,17 @@ public class Drop <T extends ModelObject>{
      * Retrieves a drop message from given URL
      *
      * @param url
-     *            url where to retrieve the drop from
+     *            URL where to retrieve the drop from
+     *
+     * @param contacts
+     *            Contacts to check the signature with
+     *
+     * @return Retrieved, encrypted Dropmessage.
      */
-    public void retrieve(URL url){
+    public DropMessage retrieve(URL url, Contacts contacts){
         DropHTTP http = new DropHTTP();
-        setCipherMessage(http.receiveMessages(url).getBytes());
+
+        byte[] cipherMessage = http.receiveMessages(url).getBytes();
         String plainJson = null;
         for (Contact c : contacts.getContacts()) {
             if(plainJson == null) {
@@ -112,32 +91,34 @@ public class Drop <T extends ModelObject>{
             }
         }
         if(plainJson != null) {
-            setMessage(deserialize(plainJson));
+            return deserialize(plainJson);
         } else {
-            setMessage(null);
+            return null;
         }
     }
 
     /**
      * Serializes the message
+     *
+     * @param message
+     *              DropMessage to serialize
+     *
+     * @return String with message as json
+     *
      */
-    private String serialize() {
-        GsonBuilder gb = new GsonBuilder();
-        gb.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
-        Gson gson = gb.create();
+    private String serialize(DropMessage<ModelObject> message) {
         return gson.toJson(message);
     }
+
     /**
      * Deserializes the message
      *
      * @param plainJson
      *            plain Json String
      *
+     * @return deserialized Dropmessage
      */
-    private DropMessage deserialize(String plainJson) {
-        GsonBuilder gb = new GsonBuilder();
-        gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
-        Gson gson = gb.create();
+    private DropMessage<ModelObject> deserialize(String plainJson) {
         return gson.fromJson(plainJson, DropMessage.class);
     }
 
