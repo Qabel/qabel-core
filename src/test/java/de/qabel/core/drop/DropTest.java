@@ -36,6 +36,7 @@ public class DropTest {
     }
 
     @Test
+    @Ignore
     public void sendAndForgetTest() {
 
         try {
@@ -82,6 +83,7 @@ public class DropTest {
     }
 
     @Test
+    @Ignore
     public void retrieveTest() {
 
         contact.getDropUrls().add(contactUrl);
