@@ -29,8 +29,8 @@ public class Drop <T extends ModelObject> {
      * TODO: implement
      *
      */
-    public void send(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
-        sendAndForget(message, contacts, identity);
+    public int send(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
+        return sendAndForget(message, contacts, identity);
     }
 
     /**
