@@ -23,9 +23,9 @@ public class DropController {
 		ArrayList<DropListener> ar = dropListeners.get(modelObject.getClass());
 		if (ar == null) {
 			ar = new ArrayList<DropListener>();
+			dropListeners.put(modelObject.getClass(), ar);
 		}
 		ar.add(dropListener);
-		dropListeners.put(modelObject.getClass(), ar);
 		return true;
 	}
 
