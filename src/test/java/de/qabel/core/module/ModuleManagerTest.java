@@ -26,7 +26,7 @@ public class ModuleManagerTest {
 	public void instanciateModuleTest() throws InstantiationException, IllegalAccessException {
 		ModuleManager mm = new ModuleManager();
 		Constructor<?>[] c = TestModule.class.getConstructors();
-		mm.initModule(TestModule.class);
+		mm.startModule(TestModule.class);
 		assertTrue(((TestModule)mm.getModules().iterator().next()).isInit);
 	}
 }

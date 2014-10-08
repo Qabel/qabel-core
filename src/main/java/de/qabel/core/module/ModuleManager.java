@@ -56,10 +56,11 @@ public class ModuleManager {
 		return this.modules;
 	}
 
-	public void initModule(Class<?> module) throws InstantiationException, IllegalAccessException {
+	public void startModule(Class<?> module) throws InstantiationException, IllegalAccessException {
 		Module m = (Module) module.newInstance();
 		m.setModuleManager(this);
 		m.init();
 		getModules().add(m);
+		
 	}
 }
