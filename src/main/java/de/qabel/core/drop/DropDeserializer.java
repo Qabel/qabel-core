@@ -28,7 +28,7 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
             @SuppressWarnings("unchecked")
             Class<? extends ModelObject> cls = (Class<? extends ModelObject>) loader
                     .loadClass(model);
-            m = new Gson().fromJson(json.getAsJsonObject(), cls);
+            m = new Gson().fromJson(json.getAsJsonObject().get("data").getAsString(), cls);
         } catch (ClassNotFoundException e1) {
             //not found
             return null;
@@ -39,6 +39,8 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
         dm.setTime(new Date(time));
         dm.setSender(sender);
         dm.setData(m);
+        dm.setAcknowledgeID(acknowledgeID);
+        dm.setModelObject((Class<ModelObject>) m.getClass());
 
         return dm;
     }
