@@ -15,7 +15,7 @@ public class DropController {
 	 */
 	private Map<Class<? extends ModelObject>, ArrayList<DropListener>> dropListeners;
 
-	public <T extends ModelObject> DropController() {
+	public DropController() {
 		this.dropListeners = new HashMap<Class<? extends ModelObject>, ArrayList<DropListener>>();
 	}
 
