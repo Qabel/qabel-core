@@ -7,15 +7,17 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
-public class DropSerializerTest {
+public class DropMessageGsonTest {
     String json = null;
+
+    static class TestMessage extends ModelObject{
+        public String content;
+
+    }
 
     @Test
     public <T extends ModelObject> void serializeTest() {
-        class TestMessage extends ModelObject{
-            public String content;
 
-        }
 
         TestMessage m = new TestMessage();
 
@@ -38,7 +40,12 @@ public class DropSerializerTest {
         Gson gson = builder.create();
 
         json = gson.toJson(a);
-
         assertNotNull(json);
+
+        DropMessage<TestMessage> deserializedJson = gson.fromJson(json, DropMessage.class);
+        assertEquals("baz", deserializedJson.getData().content);
+        assertEquals("foo", deserializedJson.getSender());
+        assertEquals("bar", deserializedJson.getAcknowledgeID());
+        assertEquals(1, deserializedJson.getVersion());
     }
 }
