@@ -25,3 +25,11 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '1.12'
 }
+sourceSets { 
+	main { 
+	    resources.srcDirs += ['src/resources/config/'] 
+	} 
+	test {
+		resources.srcDirs += ['src/resources/config/'] 
+	}
+}
