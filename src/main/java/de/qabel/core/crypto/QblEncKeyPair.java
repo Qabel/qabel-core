@@ -19,6 +19,12 @@ public class QblEncKeyPair extends QblSubKeyPair {
 		qblEncPublicKey = new QblEncPublicKey(
 				(RSAPublicKey) keyPair.getPublic());
 	}
+	
+	QblEncKeyPair(RSAPrivateKey encPrivateKey, RSAPublicKey encPublicKey){
+		super();
+		super.setRSAPrivateKey(encPrivateKey);
+		qblEncPublicKey = new QblEncPublicKey(encPublicKey);
+	}
 
 	/**
 	 * Returns the encryption public key
