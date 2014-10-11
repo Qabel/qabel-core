@@ -2,31 +2,53 @@ package de.qabel.core.module;
 
 import static org.junit.Assert.*;
 
-import java.lang.reflect.Constructor;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class ModuleManagerTest {
 	static class TestModule extends Module {
-        public boolean isInit = false;
+		public boolean isInit = false;
+		private boolean isRunning = false;
+
 		public TestModule() {
+			super(TestModule.class.getName());
 		}
-		
+
 		@Override
 		public void init() {
 			isInit = true;
 		}
+
+		@Override
+		public void run() {
+			try {
+				while (!this.isInterrupted()) {
+					sleep(100);
+					setRunning(true);
+				}
+				setRunning(false);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		public synchronized boolean isStarted() {
+			return isRunning;
+		}
+
+		public synchronized void setRunning(boolean isRunning) {
+			this.isRunning = isRunning;
+		}
 	}
+
 	@Test
-	public void instanciateModuleTest() throws InstantiationException, IllegalAccessException {
+	public void liveCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager();
-		Constructor<?>[] c = TestModule.class.getConstructors();
 		mm.startModule(TestModule.class);
-		assertTrue(((TestModule)mm.getModules().iterator().next()).isInit);
+		TestModule module = (TestModule) mm.getModules().iterator().next();
+		assertTrue(module.isInit);
+		assertFalse(module.isStarted());
+		Thread.sleep(200);
+		assertTrue(module.isStarted());
+		mm.shutdown();
 	}
 }
