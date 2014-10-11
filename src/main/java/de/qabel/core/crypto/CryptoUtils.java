@@ -20,6 +20,8 @@ import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -38,6 +40,7 @@ public class CryptoUtils {
 	private final static String MESSAGE_DIGEST_ALGORITHM = "SHA-512";
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
+	private final static String HMAC_ALGORITHM = "Hmac" + MESSAGE_DIGEST_ALGORITHM;
 	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
 	private final static int RSA_KEY_SIZE_BIT = 2048;
 	private final static String SYMM_KEY_ALGORITHM = "AES";
@@ -609,5 +612,23 @@ public class CryptoUtils {
 			return new String(decryptSymmetric(aesCipherText, aesKey));
 		}
 		return null;
+	}
+	
+	public byte[] calcHmac(byte[] text, byte[] key) {
+		Mac hmac;
+		byte [] result = null;
+		try {
+			hmac = Mac.getInstance(HMAC_ALGORITHM);
+			hmac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
+			result = hmac.doFinal(text);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		return result;
 	}
 }
