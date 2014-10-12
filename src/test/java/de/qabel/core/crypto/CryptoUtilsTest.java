@@ -113,4 +113,19 @@ public class CryptoUtilsTest {
 		assertEquals(cipherTextBytes.length, plainTextBytes.length + 16);
 		assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
 	}
+	
+	@Test
+	public void calcHmacTest() {
+		byte[] key = new BigInteger("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", 16).toByteArray();
+		byte[] text = new BigInteger("4869205468657265", 16).toByteArray();
+		byte[] hmac = new BigInteger("87aa7cdea5ef619d4ff0b4241a1d6cb02379f4e2ce4ec2787ad0b30545e17cdedaa833b7d6b8a702038b274eaea3f4e4be9d914eeb61f1702e696c203a126854", 16).toByteArray();
+		byte[] hmacResult = cu.calcHmac(text, key);
+		
+		assertArrayEquals(hmac, hmacResult);
+	}
+	
+	@Test
+	public void autheticatedEnDecryptionSymmetricTest() {
+		
+	}
 }
