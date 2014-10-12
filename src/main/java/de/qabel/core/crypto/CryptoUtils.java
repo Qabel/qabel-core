@@ -268,7 +268,7 @@ public class CryptoUtils {
 	 * @param signPublicKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private boolean validateSignature(byte[] message, byte[] signature,
 			QblSignPublicKey signPublicKey) throws InvalidKeyException {
@@ -287,7 +287,7 @@ public class CryptoUtils {
 	 * @param signatureKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private boolean rsaValidateSignature(byte[] data, byte[] signature,
 			RSAPublicKey signatureKey) throws InvalidKeyException {
@@ -313,7 +313,7 @@ public class CryptoUtils {
 	 * @param primaryKey
 	 *            Primary public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
 			QblPrimaryPublicKey primaryKey) throws InvalidKeyException {
@@ -333,7 +333,7 @@ public class CryptoUtils {
 	 * @param reciPubKey
 	 *            public key to encrypt with
 	 * @return encrypted messsage. Can be null if error occurred.
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) throws InvalidKeyException {
@@ -361,9 +361,10 @@ public class CryptoUtils {
 	 * @param privKey
 	 *            private key to decrypt with
 	 * @return decrypted ciphertext, or null if undecryptable
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) throws InvalidKeyException {
+	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
+			throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
 			asymmetricCipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
@@ -499,10 +500,11 @@ public class CryptoUtils {
 	 *            private key to sign message with
 	 * 
 	 * @return hybrid encrypted String message
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	public synchronized byte[] encryptHybridAndSign(String message,
-			QblEncPublicKey recipient, QblSignKeyPair signatureKey) throws InvalidKeyException {
+			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
+			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
 
@@ -530,7 +532,7 @@ public class CryptoUtils {
 	 *            public key to validate signature with
 	 * @return decrypted String message or null if message is undecryptable or
 	 *         signature is invalid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	public synchronized String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
@@ -621,7 +623,7 @@ public class CryptoUtils {
 	 *            HMAC which will be verified
 	 * @param key
 	 *            key for HMAC calculation
-	 * @return result of verification i.e. null/not null
+	 * @return result of verification i.e. true/false
 	 */
 	public synchronized boolean validateHmac(byte[] text, byte[] hmac,
 			byte[] key) {
