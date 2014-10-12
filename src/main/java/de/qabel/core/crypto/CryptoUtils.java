@@ -45,6 +45,7 @@ public class CryptoUtils {
 	private final static int RSA_KEY_SIZE_BIT = 2048;
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
+	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_NONCE_SIZE_BIT = 128;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
@@ -417,7 +418,7 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Returns the encrypted byte[] of the given plain text, i.e.
+	 * Returns the encrypted byte[] of the given plaintext, i.e.
 	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
 	 * constant SYMM_TRANSFORMATION
 	 * 
@@ -425,7 +426,7 @@ public class CryptoUtils {
 	 *            message which will be encrypted
 	 * @param key
 	 *            symmetric key which is used for en- and decryption
-	 * @return cipher text which is the result of the encryption
+	 * @return ciphertext which is the result of the encryption
 	 */
 	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
 		byte[] rand;
@@ -467,7 +468,7 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Returns the plain text of the encrypted input
+	 * Returns the plaintext of the encrypted input
 	 * plaintext=enc⁻¹(ciphertext,key) The algorithm, mode and padding is set in
 	 * constant SYMM_TRANSFORMATION
 	 * 
@@ -475,7 +476,7 @@ public class CryptoUtils {
 	 *            encrypted message which will be decrypted
 	 * @param key
 	 *            symmetric key which is used for en- and decryption
-	 * @return plain text which is the result of the decryption. Can be null if error occurred.
+	 * @return plaintext which is the result of the decryption
 	 */
 	byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
@@ -614,11 +615,19 @@ public class CryptoUtils {
 		return null;
 	}
 	
+	/**
+	 * Calculates HMAC of input.
+	 * @param text
+	 * 			input text
+	 * @param key
+	 * 			key for HMAC calculation 
+	 * @return HMAC of text under key
+	 */
 	public byte[] calcHmac(byte[] text, byte[] key) {
 		Mac hmac;
 		byte [] result = null;
 		try {
-			hmac = Mac.getInstance(HMAC_ALGORITHM);
+			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
 			hmac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
 			result = hmac.doFinal(text);
 		} catch (NoSuchAlgorithmException e) {
@@ -627,8 +636,152 @@ public class CryptoUtils {
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}		
-		
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return result;
+	}
+	
+	/**
+	 * Simple verification of HMAC
+	 * @param text
+	 * 			original input text
+	 * @param hmac
+	 * 			HMAC which will be verified
+	 * @param key
+	 * 			key for HMAC calculation
+	 * @return result of verification i.e. true/false
+	 */
+	public boolean verifyHmac(byte[] text, byte[] hmac, byte[] key) {
+		// TODO isEqual might not be time constant?!
+		return MessageDigest.isEqual(hmac, calcHmac(text, key));
+	}
+	
+	/**
+	 * Encryptes plaintext in GCM Mode to get an authenticated encryption.
+	 * It's an alternative to encrypt-then-(H)MAC in CTR mode. It will be
+	 * tested and reviewed which AE will be used.
+	 * @param plainText
+	 * 			Plaintext which will be encrypted 
+	 * @param key
+	 * 			Symmetric key which will be used for encryption and authentication
+	 * @return
+	 * 			Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 */
+	public byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
+		Cipher gcmCipher = null;
+		SecretKeySpec symmetricKey;
+		IvParameterSpec nonce;
+		byte[] rand;
+		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
+		
+		try {
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		nonce = new IvParameterSpec(rand);
+		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		
+		try {
+			gcmCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		try {
+			cipherText.write(rand);
+			cipherText.write(gcmCipher.doFinal(plainText));
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return cipherText.toByteArray();
+	}
+	
+	/**
+	 * Decryptes ciphertext in GCM Mode and verifies the integrity and
+	 * authentication. As well as encryptAuthenticatedSymmetric() it
+	 * will be tested which AE will be used. 
+	 * @param cipherText
+	 * 			Ciphertext which will be decrypted 
+	 * @param key
+	 * 			Symmetric key which will be used for decryption and verification
+	 * @return
+	 * 			Plaintext
+	 */
+	public byte[] decryptAuthenticatedSymmetric(byte[] cipherText, byte[] key) {
+		Cipher gcmCipher = null;
+		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
+		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] encryptedPlainText = new byte[cipherText.length
+				- SYMM_NONCE_SIZE_BIT / 8];
+		byte[] plainText = null;
+		IvParameterSpec nonce;
+		SecretKeySpec symmetricKey;
+
+		try {
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
+		} catch (NoSuchAlgorithmException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (NoSuchProviderException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (NoSuchPaddingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		try {
+			bi.read(rand);
+			bi.read(encryptedPlainText);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		nonce = new IvParameterSpec(rand);
+		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+
+		try {
+			gcmCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
+			plainText = gcmCipher.doFinal(encryptedPlainText);
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			// TODO Auto-generated catch block
+			// TODO this exception is thrown if ciphertext or authentication tag was modified
+			e.printStackTrace();
+		}
+		return plainText;
 	}
 }
