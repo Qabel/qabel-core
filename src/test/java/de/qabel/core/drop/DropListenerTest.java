@@ -1,14 +1,22 @@
 package de.qabel.core.drop;
 
 import static org.junit.Assert.assertEquals;
-
 import java.util.Date;
-
 import org.junit.Test;
 
 public class DropListenerTest {
 
-	static public class ModelObject1 extends ModelObject {
+	final static int expectedTestMO1HandlerCalls = 2;
+	final static int expectedTestMO2HandlerCalls = 0;
+
+	static int testMO1HandlerCalled = 0;
+	static int testMO2HandlerCalled = 0;
+
+	static public class TestMO1 extends ModelObject {
+		public String content;
+	}
+
+	static public class TestMO2 extends ModelObject {
 		public String content;
 	}
 
@@ -20,7 +28,8 @@ public class DropListenerTest {
 			assertEquals("bar", dropMessage.getAcknowledgeID());
 			assertEquals(1412687357, dropMessage.getTime());
 			assertEquals("payload data",
-					((ModelObject1) dropMessage.getData()).content);
+					((TestMO1) dropMessage.getData()).content);
+			testMO1HandlerCalled++;
 		}
 	}
 
@@ -32,7 +41,15 @@ public class DropListenerTest {
 			assertEquals("bar", dropMessage.getAcknowledgeID());
 			assertEquals(1412687357, dropMessage.getTime());
 			assertEquals("payload data",
-					((ModelObject1) dropMessage.getData()).content);
+					((TestMO1) dropMessage.getData()).content);
+			testMO1HandlerCalled++;
+		}
+	}
+
+	static class DropListener3 implements DropListener {
+		@Override
+		public void onDropEvent(DropMessage<ModelObject> dropMessage) {
+			testMO2HandlerCalled++;
 		}
 	}
 
@@ -41,24 +58,33 @@ public class DropListenerTest {
 
 		DropListener dl1 = new DropListener1();
 		DropListener dl2 = new DropListener2();
+		DropListener dl3 = new DropListener3();
 
-		ModelObject1 m = new ModelObject1();
-		m.content = "payload data";
+		TestMO1 mo1 = new TestMO1();
+		mo1.content = "payload data";
+
+		TestMO2 mo2 = new TestMO2();
+		mo1.content = "payload data";
 
 		DropController dc = new DropController();
-		dc.register(m, dl1);
-		dc.register(m, dl2);
+		dc.register(mo1, dl1);
+		dc.register(mo1, dl2);
+		dc.register(mo2, dl3);
 
-		DropMessage<ModelObject1> dm = new DropMessage<ModelObject1>();
+		DropMessage<TestMO1> dm = new DropMessage<TestMO1>();
 		Date date = new Date(1412687357);
 
 		dm.setTime(date);
 		dm.setSender("foo");
-		dm.setData(m);
+		dm.setData(mo1);
 		dm.setAcknowledgeID("bar");
 		dm.setVersion(1);
-		dm.setModelObject(ModelObject1.class);
+		dm.setModelObject(TestMO1.class);
 
+		// DropListener1 and DropListener2 should be called for this DropMessage
+		// type while DropListener3 should remain uncalled.
 		dc.handleDrop(dm);
+		assertEquals(expectedTestMO1HandlerCalls, testMO1HandlerCalled);
+		assertEquals(expectedTestMO2HandlerCalls, testMO2HandlerCalled);
 	}
 }
