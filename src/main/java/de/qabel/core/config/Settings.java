@@ -25,17 +25,14 @@ public class Settings {
 
 	/**
 	 * <pre>
-	 *           0..*     0..*
+	 *           0..1     0..1
 	 * Settings ------------------------- SyncedSettings
 	 *           settings        &gt;       syncedSettings
 	 * </pre>
 	 */
-	private Set<SyncedSettings> syncedSettings;
+	private SyncedSettings syncedSettings;
 
-	public Set<SyncedSettings> getSyncedSettings() {
-		if (this.syncedSettings == null) {
-			this.syncedSettings = new HashSet<SyncedSettings>();
-		}
+	public SyncedSettings getSyncedSettings() {
 		return this.syncedSettings;
 	}
 

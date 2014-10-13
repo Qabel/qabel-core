@@ -20,23 +20,6 @@ public class StorageServers {
 		return this.storageServer;
 	}
 
-	/**
-	 * <pre>
-	 *           0..1     0..1
-	 * StorageServers ------------------------- SyncedSettings
-	 *           storageServers        &lt;       syncedSettings
-	 * </pre>
-	 */
-	private SyncedSettings syncedSettings;
-
-	public void setSyncedSettings(SyncedSettings value) {
-		this.syncedSettings = value;
-	}
-
-	public SyncedSettings getSyncedSettings() {
-		return this.syncedSettings;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

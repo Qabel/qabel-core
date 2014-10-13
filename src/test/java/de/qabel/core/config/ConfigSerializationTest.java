@@ -58,11 +58,10 @@ public class ConfigSerializationTest {
 		syncedSettings.setStorageVolumes(new StorageVolumes());
 		//generate and add a "storage_volumes" entry
 		syncedSettings.getStorageVolumes().getStorageVolume().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
-		syncedSettings.setSyncedModuleSettings(new SyncedModuleSettings());
-		syncedSettings.getSyncedModuleSettings().getSyncedSettings();
+		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 		
 		//
-		LocalSettings localSettings = new LocalSettings(null, 10, new Date(System.currentTimeMillis()));		
+		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
 		
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(Accounts.class, new AccountsTypeAdapter());

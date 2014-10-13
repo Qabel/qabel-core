@@ -63,23 +63,6 @@ public class StorageServer {
 		this.auth = auth;
 	}
 
-	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * StorageServer ------------------------- StorageServers
-	 *           storageServer        &lt;       storageServers
-	 * </pre>
-	 */
-	private StorageServers storageServers;
-
-	public void setStorageServers(StorageServers value) {
-		this.storageServers = value;
-	}
-
-	public StorageServers getStorageServers() {
-		return this.storageServers;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

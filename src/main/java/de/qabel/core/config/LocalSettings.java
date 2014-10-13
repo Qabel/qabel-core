@@ -9,14 +9,6 @@ import com.google.gson.annotations.SerializedName;
 public class LocalSettings {
 	/**
 	 * <pre>
-	 *           0..1     0..1
-	 * LocalSettings ------------------------- Settings
-	 *           localSettings        &lt;       settings
-	 * </pre>
-	 */
-	private Settings settings;
-	/**
-	 * <pre>
 	 *           0..1     0..*
 	 * LocalSettings ------------------------> LocaleModuleSettings
 	 *           localSettings        &gt;       localeModuleSettings
@@ -28,20 +20,10 @@ public class LocalSettings {
 	@SerializedName("drop_last_update")
 	private Date dropLastUpdate;
 	
-	public LocalSettings(Settings settings, long pollInterval, Date dropLastUpdate) {
-		this.setSettings(settings);
+	public LocalSettings(long pollInterval, Date dropLastUpdate) {
 		this.setPollInterval(pollInterval);
 		this.setdropLastUpdate(dropLastUpdate);
 	}
-
-	public void setSettings(Settings value) {
-		this.settings = value;
-	}
-
-	public Settings getSettings() {
-		return this.settings;
-	}
-
 
 	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
 		if (this.localeModuleSettings == null) {

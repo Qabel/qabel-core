@@ -16,29 +16,12 @@ public class Identities {
 	 * </pre>
 	 */
 	private Set<Identity> identities;
-	private SyncedSettings syncedSettings;
 	
 	public Set<Identity> getIdentities() {
 		if (this.identities == null) {
 			this.identities = new HashSet<Identity>();
 		}
 		return this.identities;
-	}
-
-	/**
-	 * <pre>
-	 *           0..1     0..1
-	 * Identities ------------------------- SyncedSettings
-	 *           identities        &lt;       syncedSettings
-	 * </pre>
-	 */
-	
-	public void setSyncedSettings(SyncedSettings value) {
-		this.syncedSettings = value;
-	}
-
-	public SyncedSettings getSyncedSettings() {
-		return this.syncedSettings;
 	}
 
 	@Override
