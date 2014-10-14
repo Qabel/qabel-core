@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class DropServers {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * DropServers ------------------------- DropServer
 	 *           dropServers        &gt;       dropServer
 	 * </pre>

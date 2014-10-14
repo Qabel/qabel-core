@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 public class SyncedSettings {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * SyncedSettings ------------------------- SyncedModuleSettings
 	 *           syncedSettings        &lt;       syncedModuleSettings
 	 * </pre>
@@ -16,7 +16,7 @@ public class SyncedSettings {
 	private Set<SyncedModuleSettings> syncedModuleSettings;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- Identities
 	 *           syncedSettings        &gt;       identities
 	 * </pre>
@@ -24,7 +24,7 @@ public class SyncedSettings {
 	private Identities identities;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- Accounts
 	 *           syncedSettings        &gt;       accounts
 	 * </pre>
@@ -33,7 +33,7 @@ public class SyncedSettings {
 	
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- DropServers
 	 *           syncedSettings        &gt;       dropServers
 	 * </pre>
@@ -42,7 +42,7 @@ public class SyncedSettings {
 	private DropServers dropServers;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- StorageServers
 	 *           syncedSettings        &gt;       storageServers
 	 * </pre>
@@ -51,7 +51,7 @@ public class SyncedSettings {
 	private StorageServers storageServers;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- StorageVolumes
 	 *           syncedSettings        &gt;       storageVolumes
 	 * </pre>

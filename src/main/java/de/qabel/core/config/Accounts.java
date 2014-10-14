@@ -7,7 +7,7 @@ public class Accounts {
 	
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * Accounts ------------------------- Account
 	 *           accounts        &gt;       account
 	 * </pre>

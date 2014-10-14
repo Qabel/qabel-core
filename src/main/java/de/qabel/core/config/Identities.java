@@ -10,7 +10,7 @@ import java.util.HashSet;
 public class Identities {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * Identities ------------------------- Identity
 	 *           identities        &gt;       identity
 	 * </pre>

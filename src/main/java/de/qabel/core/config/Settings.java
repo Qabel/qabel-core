@@ -8,7 +8,7 @@ import de.qabel.core.module.ModuleManager;
 public class Settings {
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * Settings ------------------------- LocalSettings
 	 *           settings        &gt;       localSettings
 	 * </pre>
@@ -25,7 +25,7 @@ public class Settings {
 
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * Settings ------------------------- SyncedSettings
 	 *           settings        &gt;       syncedSettings
 	 * </pre>
@@ -38,7 +38,7 @@ public class Settings {
 
 	/**
 	 * <pre>
-	 *           0..*     0..*
+	 *           1     0..*
 	 * Settings ------------------------- ModuleManager
 	 *           settings        &gt;       moduleManager
 	 * </pre>

@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class StorageServers {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * StorageServers ------------------------- StorageServer
 	 *           storageServers        &gt;       storageServer
 	 * </pre>

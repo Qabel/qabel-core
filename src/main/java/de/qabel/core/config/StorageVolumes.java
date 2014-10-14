@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class StorageVolumes {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * StorageVolumes ------------------------- StorageVolume
 	 *           storageVolumes        &gt;       storageVolume
 	 * </pre>

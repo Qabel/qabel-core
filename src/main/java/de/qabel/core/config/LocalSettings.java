@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class LocalSettings {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * LocalSettings ------------------------> LocaleModuleSettings
 	 *           localSettings        &gt;       localeModuleSettings
 	 * </pre>

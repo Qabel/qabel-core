@@ -9,7 +9,7 @@ public class Contacts {
 	
     	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * Contacts ------------------------- Contact
 	 *           contacts        &gt;       contacts
 	 * </pre>
