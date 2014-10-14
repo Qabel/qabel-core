@@ -85,23 +85,6 @@ public class StorageVolume {
 		this.revokeToken = revokeToken;
 	}
 
-	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * StorageVolume ------------------------- StorageVolumes
-	 *           storageVolume        &lt;       storageVolumes
-	 * </pre>
-	 */
-	private StorageVolumes storageVolumes;
-
-	public void setStorageVolumes(StorageVolumes value) {
-		this.storageVolumes = value;
-	}
-
-	public StorageVolumes getStorageVolumes() {
-		return this.storageVolumes;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

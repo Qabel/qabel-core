@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class StorageServers {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * StorageServers ------------------------- StorageServer
 	 *           storageServers        &gt;       storageServer
 	 * </pre>
@@ -18,23 +18,6 @@ public class StorageServers {
 			this.storageServer = new HashSet<StorageServer>();
 		}
 		return this.storageServer;
-	}
-
-	/**
-	 * <pre>
-	 *           0..1     0..1
-	 * StorageServers ------------------------- SyncedSettings
-	 *           storageServers        &lt;       syncedSettings
-	 * </pre>
-	 */
-	private SyncedSettings syncedSettings;
-
-	public void setSyncedSettings(SyncedSettings value) {
-		this.syncedSettings = value;
-	}
-
-	public SyncedSettings getSyncedSettings() {
-		return this.syncedSettings;
 	}
 
 	@Override

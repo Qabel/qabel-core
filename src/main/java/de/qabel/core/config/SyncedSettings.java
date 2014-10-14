@@ -1,38 +1,22 @@
 package de.qabel.core.config;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
 
 public class SyncedSettings {
 	/**
 	 * <pre>
-	 *           0..*     0..*
-	 * SyncedSettings ------------------------- Settings
-	 *           syncedSettings        &lt;       settings
-	 * </pre>
-	 */
-	private Set<Settings> settings;
-	/**
-	 * <pre>
-	 *           0..*     0..1
+	 *           1     0..*
 	 * SyncedSettings ------------------------- SyncedModuleSettings
-	 *           syncedSettings        &gt;       syncedModuleSettings
+	 *           syncedSettings        &lt;       syncedModuleSettings
 	 * </pre>
 	 */
-	private SyncedModuleSettings syncedModuleSettings;
+	private Set<SyncedModuleSettings> syncedModuleSettings;
 	/**
 	 * <pre>
-	 *           0..1     0..*
-	 * SyncedSettings ------------------------- SyncedModuleSettings
-	 *           syncedSettings1        &lt;       syncedModuleSettings1
-	 * </pre>
-	 */
-	private Set<SyncedModuleSettings> syncedModuleSettings1;
-	/**
-	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- Identities
 	 *           syncedSettings        &gt;       identities
 	 * </pre>
@@ -40,7 +24,7 @@ public class SyncedSettings {
 	private Identities identities;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- Accounts
 	 *           syncedSettings        &gt;       accounts
 	 * </pre>
@@ -49,7 +33,7 @@ public class SyncedSettings {
 	
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- DropServers
 	 *           syncedSettings        &gt;       dropServers
 	 * </pre>
@@ -58,7 +42,7 @@ public class SyncedSettings {
 	private DropServers dropServers;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- StorageServers
 	 *           syncedSettings        &gt;       storageServers
 	 * </pre>
@@ -67,7 +51,7 @@ public class SyncedSettings {
 	private StorageServers storageServers;
 	/**
 	 * <pre>
-	 *           0..1     0..1
+	 *           1     1
 	 * SyncedSettings ------------------------- StorageVolumes
 	 *           syncedSettings        &gt;       storageVolumes
 	 * </pre>
@@ -81,33 +65,14 @@ public class SyncedSettings {
 		this.identities = new Identities();
 		this.storageServers = new StorageServers();
 		this.storageVolumes = new StorageVolumes();
-		this.syncedModuleSettings = new SyncedModuleSettings();
 	}
 
-	public Set<Settings> getSettings() {
-		if (this.settings == null) {
-			this.settings = new HashSet<Settings>();
+	public Set<SyncedModuleSettings> getSyncedModuleSettings() {
+		if (this.syncedModuleSettings == null) {
+			this.syncedModuleSettings = new HashSet<SyncedModuleSettings>();
 		}
-		return this.settings;
-	}
-
-
-	public void setSyncedModuleSettings(SyncedModuleSettings value) {
-		this.syncedModuleSettings = value;
-	}
-
-	public SyncedModuleSettings getSyncedModuleSettings() {
 		return this.syncedModuleSettings;
 	}
-
-
-	public Set<SyncedModuleSettings> getSyncedModuleSettings1() {
-		if (this.syncedModuleSettings1 == null) {
-			this.syncedModuleSettings1 = new HashSet<SyncedModuleSettings>();
-		}
-		return this.syncedModuleSettings1;
-	}
-
 
 	public void setIdentities(Identities value) {
 		this.identities = value;
@@ -163,11 +128,13 @@ public class SyncedSettings {
 		result = prime * result
 				+ ((identities == null) ? 0 : identities.hashCode());
 		result = prime * result
-				+ ((settings == null) ? 0 : settings.hashCode());
-		result = prime * result
 				+ ((storageServers == null) ? 0 : storageServers.hashCode());
 		result = prime * result
 				+ ((storageVolumes == null) ? 0 : storageVolumes.hashCode());
+		result = prime
+				* result
+				+ ((syncedModuleSettings == null) ? 0 : syncedModuleSettings
+						.hashCode());
 		return result;
 	}
 
@@ -195,11 +162,6 @@ public class SyncedSettings {
 				return false;
 		} else if (!identities.equals(other.identities))
 			return false;
-		if (settings == null) {
-			if (other.settings != null)
-				return false;
-		} else if (!settings.equals(other.settings))
-			return false;
 		if (storageServers == null) {
 			if (other.storageServers != null)
 				return false;
@@ -212,4 +174,5 @@ public class SyncedSettings {
 			return false;
 		return true;
 	}
+	
 }

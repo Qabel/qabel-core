@@ -6,7 +6,7 @@ import java.util.HashSet;
 public class DropServers {
 	/**
 	 * <pre>
-	 *           0..1     0..*
+	 *           1     0..*
 	 * DropServers ------------------------- DropServer
 	 *           dropServers        &gt;       dropServer
 	 * </pre>
@@ -18,23 +18,6 @@ public class DropServers {
 			this.dropServer = new HashSet<DropServer>();
 		}
 		return this.dropServer;
-	}
-
-	/**
-	 * <pre>
-	 *           0..1     0..1
-	 * DropServers ------------------------- SyncedSettings
-	 *           dropServers        &lt;       syncedSettings
-	 * </pre>
-	 */
-	private SyncedSettings syncedSettings;
-
-	public void setSyncedSettings(SyncedSettings value) {
-		this.syncedSettings = value;
-	}
-
-	public SyncedSettings getSyncedSettings() {
-		return this.syncedSettings;
 	}
 
 	@Override

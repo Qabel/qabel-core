@@ -10,14 +10,6 @@ public class DropServer {
 	private URL url;
 	private String auth;
 	private boolean active;
-	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * DropServer ------------------------- DropServers
-	 *           dropServer        &lt;       dropServers
-	 * </pre>
-	 */
-	private DropServers dropServers;
 	
 	public DropServer(URL url, String auth, boolean active) {
 		this.setUrl(url);
@@ -98,15 +90,6 @@ public class DropServer {
 
 	public boolean isActive() {
 		return this.active;
-	}
-
-
-	public void setDropServers(DropServers value) {
-		this.dropServers = value;
-	}
-
-	public DropServers getDropServers() {
-		return this.dropServers;
 	}
 
 	@Override
