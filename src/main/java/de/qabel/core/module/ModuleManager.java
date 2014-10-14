@@ -49,6 +49,12 @@ public class ModuleManager {
 	 */
 	private Set<Module> modules;
 
+	Thread dropReceiverThread = new Thread() {
+		public void run() {
+			// TODO: run receiver, call callback on the Module-Thread.
+		};
+	};
+	
 	public Set<Module> getModules() {
 		if (this.modules == null) {
 			this.modules = new HashSet<Module>();
@@ -56,10 +62,32 @@ public class ModuleManager {
 		return this.modules;
 	}
 
-	public void initModule(Class<?> module) throws InstantiationException, IllegalAccessException {
+	/**
+	 * Starts a given Module by its class
+	 * @param module
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public void startModule(Class<?> module) throws InstantiationException, IllegalAccessException {
 		Module m = (Module) module.newInstance();
 		m.setModuleManager(this);
 		m.init();
 		getModules().add(m);
+		m.start();
+	}
+	
+	/**
+	 * Shuts down all Modules
+	 */
+	public void shutdown() {
+		while(getModules().isEmpty() == false) {
+			getModules().iterator().next().stopModule();
+		}
+	}
+	/**
+	 * 
+	 */
+	public void stopModule(Module module) {
+		module.stopModule();
 	}
 }
