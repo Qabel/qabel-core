@@ -99,16 +99,13 @@ public class CryptoUtilsTest {
 	@Ignore
 	@Test
 	public void decryptSymmetricTest() throws UnsupportedEncodingException {
-		/*
 		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
 		byte[] cipherText = Hex.decode("7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e");
 		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
 
-		byte[] plainTextBytes = cu.decryptSymmetric(cipherTextBytes, keyBytes);
+		byte[] plainText = cu.decryptSymmetric(cipherText, key);
 
-		assertEquals(cipherTextBytes.length, plainTextBytes.length + 16);
-		assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
-		*/
+		assertEquals(plainTextStr, new String(plainText, "UTF-8"));
 	}
 	
 	@Test
