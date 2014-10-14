@@ -40,7 +40,7 @@ public class CryptoUtils {
 	private final static String MESSAGE_DIGEST_ALGORITHM = "SHA-512";
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
-	private final static String HMAC_ALGORITHM = "Hmac" + MESSAGE_DIGEST_ALGORITHM;
+	private final static String HMAC_ALGORITHM = "HMac/" + "SHA512";
 	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
 	private final static int RSA_KEY_SIZE_BIT = 2048;
 	private final static String SYMM_KEY_ALGORITHM = "AES";

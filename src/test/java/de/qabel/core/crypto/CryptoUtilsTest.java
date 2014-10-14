@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 import javax.crypto.BadPaddingException;
 
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -98,34 +99,31 @@ public class CryptoUtilsTest {
 	@Ignore
 	@Test
 	public void decryptSymmetricTest() throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		BigInteger cipherText = new BigInteger(
-				"7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e",
-				16);
-		byte[] cipherTextBytes = cipherText.toByteArray();
+		/*
+		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
+		byte[] cipherText = Hex.decode("7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e");
 		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
 
 		byte[] plainTextBytes = cu.decryptSymmetric(cipherTextBytes, keyBytes);
 
 		assertEquals(cipherTextBytes.length, plainTextBytes.length + 16);
 		assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
+		*/
 	}
 	
 	@Test
-	public void calcHmacTest() {
-		byte[] key = new BigInteger("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b", 16).toByteArray();
-		byte[] text = new BigInteger("4869205468657265", 16).toByteArray();
-		byte[] hmac = new BigInteger("87aa7cdea5ef619d4ff0b4241a1d6cb02379f4e2ce4ec2787ad0b30545e17cdedaa833b7d6b8a702038b274eaea3f4e4be9d914eeb61f1702e696c203a126854", 16).toByteArray();
+	public void calcHmacTest() throws UnsupportedEncodingException {
+		// Test case from http://www.ietf.org/rfc/rfc4231.txt
+		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
+		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		byte[] hmacResult = cu.calcHmac(text, key);
-		
+		System.out.println(Hex.toHexString(hmacResult));
 		assertArrayEquals(hmac, hmacResult);
 	}
-	
+	/*
 	@Test
 	public void autheticatedEnDecryptionSymmetricTest() {
 		
-	}
+	}*/
 }
