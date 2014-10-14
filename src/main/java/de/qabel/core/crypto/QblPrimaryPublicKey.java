@@ -12,7 +12,7 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	private ArrayList<QblEncPublicKey> encPublicKeys;
 	private ArrayList<QblSignPublicKey> signPublicKeys;
 
-	public QblPrimaryPublicKey(RSAPublicKey publicKey) {
+	QblPrimaryPublicKey(RSAPublicKey publicKey) {
 		super(publicKey);
 		encPublicKeys = new ArrayList<QblEncPublicKey>();
 		signPublicKeys = new ArrayList<QblSignPublicKey>();

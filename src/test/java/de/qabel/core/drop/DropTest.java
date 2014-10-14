@@ -17,8 +17,8 @@ public class DropTest {
     String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
     URL identityUrl = null;
     URL contactUrl = null;
-    QblPrimaryKeyPair keypair = new QblPrimaryKeyPair();
-    QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
+    QblPrimaryKeyPair keypair = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+    QblPrimaryKeyPair qpkp = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
     QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
     QblEncPublicKey qepk = qpkp.getQblEncPublicKey();
     QblSignPublicKey qspk = qpkp.getQblSignPublicKey();

@@ -4,6 +4,7 @@ import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A QblPrimaryKeyPair represents the own identity. Is contains at least one
@@ -16,7 +17,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	private ArrayList<QblEncKeyPair> encKeyPairs;
 	private ArrayList<QblSignKeyPair> signKeyPairs;
 
-	public QblPrimaryKeyPair() {
+	QblPrimaryKeyPair() {
 		super();
 
 		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
@@ -31,11 +32,45 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		generateSignKeyPair();
 	}
 
+	QblPrimaryKeyPair(RSAPrivateKey privateKey, RSAPublicKey publicKey) {
+		super();
+
+		super.setRSAPrivateKey(privateKey);
+		qblPrimaryPublicKey = new QblPrimaryPublicKey(publicKey);
+
+		encKeyPairs = new ArrayList<QblEncKeyPair>();
+		signKeyPairs = new ArrayList<QblSignKeyPair>();
+	}
+
+	QblPrimaryKeyPair(RSAPrivateKey privateKey, RSAPublicKey publicKey,
+			QblEncKeyPair encKeyPair, QblSignKeyPair signKeyPair) {
+		this(privateKey, publicKey);
+		attachEncKeyPair(encKeyPair);
+		attachSignKeyPair(signKeyPair);
+	}
+
+	QblPrimaryKeyPair(RSAPrivateKey privateKey, RSAPublicKey publicKey,
+			List<QblEncKeyPair> encKeyPairs, List<QblSignKeyPair> signKeyPairs) {
+		this(privateKey, publicKey);
+
+		for (QblEncKeyPair qekp : encKeyPairs) {
+			attachEncKeyPair(qekp);
+		}
+
+		for (QblSignKeyPair qskp : signKeyPairs) {
+			attachSignKeyPair(qskp);
+		}
+	}
+
 	/**
 	 * Generates a new QblSignKeyPair
 	 */
-	private void generateSignKeyPair() {
+	void generateSignKeyPair() {
 		QblSignKeyPair qskp = new QblSignKeyPair();
+		attachSignKeyPair(qskp);
+	}
+
+	public void attachSignKeyPair(QblSignKeyPair qskp) {
 		qskp.setQblPrimaryKeySignature(CryptoUtils.getInstance()
 				.rsaSignKeyPair(qskp, this));
 		signKeyPairs.add(qskp);
@@ -44,8 +79,12 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	/**
 	 * Generates a new QblEncKeyPair
 	 */
-	private void generateEncKeyPair() {
+	void generateEncKeyPair() {
 		QblEncKeyPair qekp = new QblEncKeyPair();
+		attachEncKeyPair(qekp);
+	}
+
+	public void attachEncKeyPair(QblEncKeyPair qekp) {
 		qekp.setQblPrimaryKeySignature(CryptoUtils.getInstance()
 				.rsaSignKeyPair(qekp, this));
 		encKeyPairs.add(qekp);

@@ -10,4 +10,8 @@ public class QblSignPublicKey extends QblSubPublicKey {
 	QblSignPublicKey(RSAPublicKey publicKey) {
 		super(publicKey);
 	}
+
+	QblSignPublicKey(RSAPublicKey publicKey, byte[] primaryKeySignature) {
+		super(publicKey, primaryKeySignature);
+	}
 }

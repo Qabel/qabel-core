@@ -20,6 +20,12 @@ public class QblSignKeyPair extends QblSubKeyPair {
 				(RSAPublicKey) keyPair.getPublic());
 	}
 	
+	QblSignKeyPair(RSAPrivateKey signPrivateKey, RSAPublicKey signPublicKey){
+		super();
+		super.setRSAPrivateKey(signPrivateKey);
+		qblSignPublicKey = new QblSignPublicKey(signPublicKey);
+	}
+	
 	/**
 	 * Returns a public key which can be only used for signatures
 	 * @return public key for signatures
