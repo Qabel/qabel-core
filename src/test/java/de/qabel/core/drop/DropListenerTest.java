@@ -1,7 +1,10 @@
 package de.qabel.core.drop;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
+
 import org.junit.Test;
 
 public class DropListenerTest {
@@ -54,7 +57,7 @@ public class DropListenerTest {
 	}
 
 	@Test
-	public void dropListenerTest() {
+	public void dropListenerTest() throws InterruptedException {
 
 		DropListener dl1 = new DropListener1();
 		DropListener dl2 = new DropListener2();
@@ -67,9 +70,8 @@ public class DropListenerTest {
 		mo1.content = "payload data";
 
 		DropController dc = new DropController();
-		dc.register(mo1, dl1);
-		dc.register(mo1, dl2);
-		dc.register(mo2, dl3);
+		BlockingQueue<DropMessage<ModelObject>> bq1 = dc.register(mo1, dl1);
+		BlockingQueue<DropMessage<ModelObject>> bq2 = dc.register(mo1, dl2);
 
 		DropMessage<TestMO1> dm = new DropMessage<TestMO1>();
 		Date date = new Date(1412687357);
@@ -86,5 +88,8 @@ public class DropListenerTest {
 		dc.handleDrop(dm);
 		assertEquals(expectedTestMO1HandlerCalls, testMO1HandlerCalled);
 		assertEquals(expectedTestMO2HandlerCalls, testMO2HandlerCalled);
+		
+		assertEquals(dm, bq1.take());
+		assertEquals(dm, bq2.take());
 	}
 }
