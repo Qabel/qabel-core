@@ -654,8 +654,8 @@ public class CryptoUtils {
 	 * 			key for HMAC calculation
 	 * @return result of verification i.e. true/false
 	 */
-	public boolean verifyHmac(byte[] text, byte[] hmac, byte[] key) {
-		// TODO isEqual might not be time constant?!
+	public boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
+		// TODO isEqual might not be constant in time?!
 		return MessageDigest.isEqual(hmac, calcHmac(text, key));
 	}
 	
@@ -731,7 +731,7 @@ public class CryptoUtils {
 	 * @return
 	 * 			Plaintext
 	 */
-	public byte[] decryptAuthenticatedSymmetric(byte[] cipherText, byte[] key) {
+	public byte[] decryptAuthenticatedSymmetricAndValidateTag(byte[] cipherText, byte[] key) {
 		Cipher gcmCipher = null;
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
