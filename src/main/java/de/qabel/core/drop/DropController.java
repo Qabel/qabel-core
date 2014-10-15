@@ -21,6 +21,14 @@ public class DropController {
 		this.mapBlockingQueues = new HashMap<Class<? extends ModelObject>, ArrayList<BlockingQueue<DropMessage<ModelObject>>>>();
 	}
 
+	/**
+	 * Register for DropMessages with a modelObject
+	 * 
+	 * @param modelObject
+	 *            ModelObject to receive DropMessages for
+	 * @return a queue in which the DropController will put received
+	 *         DropMessages with the selected ModelObject
+	 */
 	public BlockingQueue<DropMessage<ModelObject>> register(
 			ModelObject modelObject) {
 
@@ -36,6 +44,13 @@ public class DropController {
 		return bq;
 	}
 
+	/**
+	 * Handles a received DropMessage. Puts this DropMessage into the registered
+	 * Queues.
+	 * 
+	 * @param dm
+	 *            DropMessage which should be handled
+	 */
 	public void handleDrop(DropMessage<? extends ModelObject> dm) {
 		for (BlockingQueue<DropMessage<ModelObject>> bq : mapBlockingQueues
 				.get(dm.getModelObject())) {
