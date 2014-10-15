@@ -83,29 +83,13 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptSymmetricTest() throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
-		byte[] plainTextBytes = plainTextStr.getBytes();
-
-		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
-
-		assertEquals(plainTextBytes.length + 16, cipherTextBytes.length);
-	}
-
-	@Ignore
-	@Test
-	public void decryptSymmetricTest() throws UnsupportedEncodingException {
+	public void symmetricCryptoTest() throws UnsupportedEncodingException {
 		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
-		byte[] cipherText = Hex.decode("7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e");
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
+		String plainText = "Hello this a plaintext, which should be encrypted.";
 
-		byte[] plainText = cu.decryptSymmetric(cipherText, key);
-
-		assertEquals(plainTextStr, new String(plainText, "UTF-8"));
+		byte[] cipherText = cu.encryptSymmetric(plainText.getBytes(), key);
+		byte[] plainTextTwo = cu.decryptSymmetric(cipherText, key);
+		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
 	}
 	
 	@Test
@@ -115,12 +99,16 @@ public class CryptoUtilsTest {
 		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
 		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		byte[] hmacResult = cu.calcHmac(text, key);
-		System.out.println(Hex.toHexString(hmacResult));
 		assertArrayEquals(hmac, hmacResult);
 	}
-	/*
+	
 	@Test
-	public void autheticatedEnDecryptionSymmetricTest() {
-		
-	}*/
+	public void autheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
+		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
+		String plainText = "Hello this a plaintext, which should be encrypted.";
+
+		byte[] cipherText = cu.encryptAuthenticatedSymmetric(plainText.getBytes(), key);
+		byte[] plainTextTwo = cu.decryptAuthenticatedSymmetric(cipherText, key);
+		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
+	}
 }

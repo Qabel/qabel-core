@@ -29,6 +29,7 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.*;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Hex;
 
 public class CryptoUtils {
 
@@ -658,6 +659,7 @@ public class CryptoUtils {
 		return MessageDigest.isEqual(hmac, calcHmac(text, key));
 	}
 	
+	
 	/**
 	 * Encryptes plaintext in GCM Mode to get an authenticated encryption.
 	 * It's an alternative to encrypt-then-(H)MAC in CTR mode. It will be
@@ -673,7 +675,6 @@ public class CryptoUtils {
 		Cipher gcmCipher = null;
 		SecretKeySpec symmetricKey;
 		IvParameterSpec nonce;
-		byte[] rand;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		
 		try {
@@ -689,8 +690,7 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 		
-		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
-		nonce = new IvParameterSpec(rand);
+		nonce = new IvParameterSpec(getRandomBytes(SYMM_NONCE_SIZE_BIT / 8));
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 		
 		try {
@@ -704,7 +704,7 @@ public class CryptoUtils {
 		}
 		
 		try {
-			cipherText.write(rand);
+			cipherText.write(nonce.getIV());
 			cipherText.write(gcmCipher.doFinal(plainText));
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
@@ -755,7 +755,7 @@ public class CryptoUtils {
 		}
 		
 		try {
-			bi.read(rand);
+			bi.read(rand);	
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
