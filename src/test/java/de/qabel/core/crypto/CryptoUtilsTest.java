@@ -55,23 +55,6 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptDecryptSymmetricTest()
-			throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
-		byte[] plainTextBytes = plainTextStr.getBytes();
-
-		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
-		byte[] secondPlainTextBytes = cu.decryptSymmetric(cipherTextBytes,
-				keyBytes);
-
-		assertEquals(plainTextStr, new String(secondPlainTextBytes, "UTF-8"));
-	}
-
-	@Test
 	public void decryptHybridWithWrongKeyTest() throws BadPaddingException {
 		// exception.expect(BadPaddingException.class);
 
