@@ -10,6 +10,7 @@ import org.junit.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 
 public class DropTest {
@@ -79,7 +80,7 @@ public class DropTest {
         dm.setVersion(1);
         dm.setModelObject(TestMessage.class);
 
-        Assert.assertEquals(200, d.sendAndForget(dm, contacts, i));
+        Assert.assertEquals(200, d.sendAndForget(dm, contacts));
     }
 
     @Test
@@ -102,7 +103,7 @@ public class DropTest {
         Drop d = new Drop();
 
 
-        DropMessage<ModelObject> result = d.retrieve(contactUrl, contacts);
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
         //We don't have the key (yet), so the Message should be null.
         Assert.assertNull(result);
     }

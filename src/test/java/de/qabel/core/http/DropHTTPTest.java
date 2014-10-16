@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -40,7 +42,7 @@ public class DropHTTPTest {
 	public void postMessageOk() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		String message = "Hello Welt";
+		String message = "Test";
 		// When
 		int responseCode = dHTTP.send(this.workingUrl, message.getBytes());
 		this.postedAt = System.currentTimeMillis();
@@ -78,15 +80,15 @@ public class DropHTTPTest {
 
 	// GET 200
 	@Test
-	@Ignore
+    @Ignore
 	public void getRequestShouldGetCompleteDrop() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.workingUrl);
+		Collection<String> response = dHTTP.receiveMessages(this.workingUrl);
 		// Then
 		assertNotEquals(null, response);
-		assertNotEquals("", response);
+		assertNotEquals(new ArrayList<String>(), response);
 	}
 
 	// GET 400
@@ -96,10 +98,10 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.tooShortUrl);
+		Collection<String> response = dHTTP.receiveMessages(this.tooShortUrl);
 		// Then
 		assertNotEquals(null, response);
-		assertEquals("", response);
+		assertEquals(new ArrayList<String>(), response);
 	}
 
 	// GET 404
@@ -109,10 +111,10 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.notExistingUrl);
+		Collection<String> response = dHTTP.receiveMessages(this.notExistingUrl);
 		// Then
 		assertNotEquals(null, response);
-		assertEquals("", response);
+		assertEquals(new ArrayList<String>(), response);
 	}
 
 	// GET 200 SINCE
@@ -122,10 +124,10 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.workingUrl, 0);
+		Collection<String> response = dHTTP.receiveMessages(this.workingUrl, 0);
 		// Then
 		assertNotEquals(null, response);
-		assertNotEquals("", response);
+		assertNotEquals(new ArrayList<String>(), response);
 	}
 
 	// GET 304 SINCE
@@ -135,11 +137,11 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.workingUrl,
+		Collection<String> response = dHTTP.receiveMessages(this.workingUrl,
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, response);
-		assertEquals("", response);
+		assertEquals(new ArrayList<String>(), response);
 	}
 
 	// GET 404 SINCE
@@ -149,11 +151,11 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		String response = dHTTP.receiveMessages(this.notExistingUrl,
+		Collection<String> response = dHTTP.receiveMessages(this.notExistingUrl,
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, response);
-		assertEquals("", response);
+		assertEquals(new ArrayList<String>(), response);
 	}
 
 	// HEAD 200
