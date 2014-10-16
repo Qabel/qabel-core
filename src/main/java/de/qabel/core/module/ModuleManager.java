@@ -2,6 +2,10 @@ package de.qabel.core.module;
 
 import de.qabel.core.storage.StorageConnection;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -74,6 +78,17 @@ public class ModuleManager {
 		m.init();
 		getModules().add(m);
 		m.start();
+	}
+	
+	public void startModule(File jar, String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+		try {
+			ClassLoader cld = URLClassLoader.newInstance(new URL[] { jar.toURI().toURL() }, ClassLoader.getSystemClassLoader() );
+			startModule(Class.forName(className, true, cld));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			// Should not happen!
+			System.exit(1);
+		}
 	}
 	
 	/**
