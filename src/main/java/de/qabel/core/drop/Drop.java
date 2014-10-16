@@ -9,8 +9,10 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.http.DropHTTP;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public class Drop <T extends ModelObject> {
+public class Drop<T extends ModelObject> {
     GsonBuilder gb = null;
     Gson gson = null;
 
@@ -27,27 +29,19 @@ public class Drop <T extends ModelObject> {
      * Uses sendAndForget() for now.
      *
      * TODO: implement
-     *
      */
-    public int send(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
-        return sendAndForget(message, contacts, identity);
+    public int send(DropMessage<ModelObject> message, Contacts contacts) {
+        return sendAndForget(message, contacts);
     }
 
     /**
      * Sends the message and does not wait for acknowledgement
      *
-     * @param message
-     *                Message to send
-     * @param contacts
-     *                Contacts to send message to
-     *
-     * @param identity
-     *                Identity to sign message with
-     *
+     * @param message  Message to send
+     * @param contacts Contacts to send message to
      * @return HTTP status code from the drop-server.
-     *
      */
-    public int sendAndForget(DropMessage<ModelObject> message, Contacts contacts, Identity identity) {
+    public int sendAndForget(DropMessage<ModelObject> message, Contacts contacts) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         int res = 0;
@@ -67,44 +61,38 @@ public class Drop <T extends ModelObject> {
     /**
      * Retrieves a drop message from given URL
      *
-     * @param url
-     *            URL where to retrieve the drop from
-     *
-     * @param contacts
-     *            Contacts to check the signature with
-     *
-     * @return Retrieved, encrypted Dropmessage.
+     * @param url      URL where to retrieve the drop from
+     * @param contacts Contacts to check the signature with
+     * @return Retrieved, encrypted Dropmessages.
      */
-    public DropMessage retrieve(URL url, Contacts contacts){
+    public Collection<DropMessage> retrieve(URL url, Contacts contacts) {
         DropHTTP http = new DropHTTP();
-
-        byte[] cipherMessage = http.receiveMessages(url).getBytes();
+        Collection<String> cipherMessages = http.receiveMessages(url);
+        Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
         String plainJson = null;
-        for (Contact c : contacts.getContacts()) {
-            if(plainJson == null) {
-                plainJson = decryptDrop(cipherMessage,
+
+        for (String cipherMessage : cipherMessages) {
+            for (Contact c : contacts.getContacts()) {
+                plainJson = decryptDrop(cipherMessage.getBytes(),
                         c.getContactOwner().getPrimaryKeyPair(),
                         c.getSignaturePublicKey()
                 );
-            } else {
-                break;
+                if (plainJson == null) {
+                    continue;
+                } else {
+                    plainMessages.add(deserialize(plainJson));
+                    break;
+                }
             }
         }
-        if(plainJson != null) {
-            return deserialize(plainJson);
-        } else {
-            return null;
-        }
+        return plainMessages;
     }
 
     /**
      * Serializes the message
      *
-     * @param message
-     *              DropMessage to serialize
-     *
+     * @param message DropMessage to serialize
      * @return String with message as json
-     *
      */
     private String serialize(DropMessage<ModelObject> message) {
         return gson.toJson(message);
@@ -113,25 +101,19 @@ public class Drop <T extends ModelObject> {
     /**
      * Deserializes the message
      *
-     * @param plainJson
-     *            plain Json String
-     *
+     * @param plainJson plain Json String
      * @return deserialized Dropmessage
      */
-    private DropMessage<ModelObject> deserialize(String plainJson) {
+    private DropMessage deserialize(String plainJson) {
         return gson.fromJson(plainJson, DropMessage.class);
     }
 
     /**
      * Deserializes the message
      *
-     * @param jsonMessage
-     *            plain Json String to encrypt
-     * @param publickey
-     *            Publickey to encrypt the jsonMessage with
-     * @param skp
-     *            Sign key pair to sign the message
-     *
+     * @param jsonMessage plain Json String to encrypt
+     * @param publickey   Publickey to encrypt the jsonMessage with
+     * @param skp         Sign key pair to sign the message
      * @return the cyphertext as byte[]
      */
     private byte[] encryptDrop(String jsonMessage, QblEncPublicKey publickey, QblSignKeyPair skp) {
@@ -141,20 +123,14 @@ public class Drop <T extends ModelObject> {
 
 
     /**
-     *
-     * @param cipher
-     *            Ciphertext to decrypt
-     * @param keypair
-     *            Keypair to decrypt the ciphertext with
-     * @param signkey
-     *            Public sign key to validate the signature
-     *
+     * @param cipher  Ciphertext to decrypt
+     * @param keypair Keypair to decrypt the ciphertext with
+     * @param signkey Public sign key to validate the signature
      * @return The encrypted message as string
      */
-    private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey){
+    private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) {
         CryptoUtils cu = CryptoUtils.getInstance();
         return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
-
     }
 
 }

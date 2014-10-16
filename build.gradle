@@ -20,7 +20,7 @@ dependencies {
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.+'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.+'
 	compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.51'
-    compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
+	compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
 }
 
 task wrapper(type: Wrapper) {
