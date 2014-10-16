@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
-import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
 import de.qabel.core.http.DropHTTP;
 
