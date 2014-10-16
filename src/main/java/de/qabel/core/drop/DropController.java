@@ -3,6 +3,8 @@ package de.qabel.core.drop;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class DropController {
 
@@ -13,25 +15,51 @@ public class DropController {
 	 *           dropController        &gt;       dropListener
 	 * </pre>
 	 */
-	private Map<Class<? extends ModelObject>, ArrayList<DropListener>> dropListeners;
+	private Map<Class<? extends ModelObject>, ArrayList<BlockingQueue<DropMessage<ModelObject>>>> mapBlockingQueues;
 
 	public DropController() {
-		this.dropListeners = new HashMap<Class<? extends ModelObject>, ArrayList<DropListener>>();
+		this.mapBlockingQueues = new HashMap<Class<? extends ModelObject>, ArrayList<BlockingQueue<DropMessage<ModelObject>>>>();
 	}
 
-	public boolean register(ModelObject modelObject, DropListener dropListener) {
-		ArrayList<DropListener> ar = dropListeners.get(modelObject.getClass());
-		if (ar == null) {
-			ar = new ArrayList<DropListener>();
-			dropListeners.put(modelObject.getClass(), ar);
+	/**
+	 * Register for DropMessages with a modelObject
+	 * 
+	 * @param modelObject
+	 *            ModelObject to receive DropMessages for
+	 * @return a queue in which the DropController will put received
+	 *         DropMessages with the selected ModelObject
+	 */
+	public BlockingQueue<DropMessage<ModelObject>> register(
+			ModelObject modelObject) {
+
+		ArrayList<BlockingQueue<DropMessage<ModelObject>>> alBlockingQueue = mapBlockingQueues
+				.get(modelObject.getClass());
+		if (alBlockingQueue == null) {
+			alBlockingQueue = new ArrayList<BlockingQueue<DropMessage<ModelObject>>>();
+			mapBlockingQueues.put(modelObject.getClass(), alBlockingQueue);
 		}
-		ar.add(dropListener);
-		return true;
+
+		BlockingQueue<DropMessage<ModelObject>> bq = new LinkedBlockingQueue<DropMessage<ModelObject>>();
+		alBlockingQueue.add(bq);
+		return bq;
 	}
 
+	/**
+	 * Handles a received DropMessage. Puts this DropMessage into the registered
+	 * Queues.
+	 * 
+	 * @param dm
+	 *            DropMessage which should be handled
+	 */
 	public void handleDrop(DropMessage<? extends ModelObject> dm) {
-		for (DropListener dl : dropListeners.get(dm.getModelObject())) {
-			dl.onDropEvent((DropMessage<ModelObject>) dm);
+		for (BlockingQueue<DropMessage<ModelObject>> bq : mapBlockingQueues
+				.get(dm.getModelObject())) {
+			try {
+				bq.put((DropMessage<ModelObject>) dm);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
