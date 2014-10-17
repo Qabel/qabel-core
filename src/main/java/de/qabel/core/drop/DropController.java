@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServer;
 import de.qabel.core.config.DropServers;
 import de.qabel.core.http.DropHTTP;
@@ -16,6 +17,8 @@ public class DropController {
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 
 	private DropServers mDropServers;
+	
+	private Contacts mContacts;
 	
 	public DropController() {
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
@@ -65,13 +68,14 @@ public class DropController {
 		}
 	}
 	
-	public void receive() {
+	public void retrieve() {
 		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers().getDropServer());
 		for(DropServer server : servers) {
-			DropHTTP http = new DropHTTP();
-			Collection<String> message = http.receiveMessages(server.getUrl());
-			
-			// TODO deserialize message to object and send it to handleDrop
+			Drop drop = new Drop<>();
+			Collection<DropMessage<? extends ModelObject>> results = drop.retrieve(server.getUrl(), getContacts());
+			for(DropMessage<? extends ModelObject> dm : results) {
+				handleDrop(dm);
+			}
 		}
 	}
 
@@ -81,5 +85,13 @@ public class DropController {
 
 	public void setDropServers(DropServers mDropServers) {
 		this.mDropServers = mDropServers;
+	}
+
+	public Contacts getContacts() {
+		return mContacts;
+	}
+
+	public void setContacts(Contacts mContacts) {
+		this.mContacts = mContacts;
 	}
 }
