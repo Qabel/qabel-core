@@ -59,8 +59,8 @@ public class DropController {
 			Method m;
 			try {
 				m = callback.getClass().getMethod("onDropMessage",
-						ModelObject.class);
-				m.invoke(callback, dm.getData());
+						DropMessage.class);
+				m.invoke(callback, dm);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

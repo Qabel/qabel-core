@@ -28,10 +28,13 @@ public class DropListenerTest {
 		mo1.content = "payload data";
 
 		DropController dc = new DropController();
-		BlockingQueue<DropMessage<ModelObject>> bq1 = dc.register(mo1);
-		BlockingQueue<DropMessage<ModelObject>> bq2 = dc.register(mo1);
-		BlockingQueue<DropMessage<ModelObject>> bq3 = dc.register(mo2);
-		
+		DropQueueCallback<TestMO1> bq1 = new DropQueueCallback<TestMO1>();
+		dc.register(TestMO1.class, bq1);
+		DropQueueCallback<TestMO1> bq2 = new DropQueueCallback<TestMO1>();
+		dc.register(TestMO1.class, bq2);
+		DropQueueCallback<TestMO2> bq3 = new DropQueueCallback<TestMO2>();
+		dc.register(TestMO2.class, bq3);
+
 		DropMessage<TestMO1> dm = new DropMessage<TestMO1>();
 		Date date = new Date(1412687357);
 
@@ -43,7 +46,7 @@ public class DropListenerTest {
 		dm.setModelObject(TestMO1.class);
 
 		dc.handleDrop(dm);
-	
+
 		assertEquals(dm, bq1.take());
 		assertEquals(dm, bq2.take());
 		assertNull(bq3.poll(1L, TimeUnit.MILLISECONDS));
