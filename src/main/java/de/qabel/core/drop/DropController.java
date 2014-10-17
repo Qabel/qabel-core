@@ -1,15 +1,22 @@
 package de.qabel.core.drop;
 
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import de.qabel.core.config.DropServer;
+import de.qabel.core.config.DropServers;
+import de.qabel.core.http.DropHTTP;
+
 public class DropController {
 
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 
+	private DropServers mDropServers;
+	
 	public DropController() {
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 	}
@@ -56,5 +63,23 @@ public class DropController {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void receive() {
+		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers().getDropServer());
+		for(DropServer server : servers) {
+			DropHTTP http = new DropHTTP();
+			Collection<String> message = http.receiveMessages(server.getUrl());
+			
+			// TODO deserialize message to object and send it to handleDrop
+		}
+	}
+
+	public DropServers getDropServers() {
+		return mDropServers;
+	}
+
+	public void setDropServers(DropServers mDropServers) {
+		this.mDropServers = mDropServers;
 	}
 }
