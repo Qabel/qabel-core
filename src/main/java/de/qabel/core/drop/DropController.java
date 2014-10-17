@@ -17,9 +17,9 @@ public class DropController {
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 
 	private DropServers mDropServers;
-	
+
 	private Contacts mContacts;
-	
+
 	public DropController() {
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 	}
@@ -67,13 +67,19 @@ public class DropController {
 			}
 		}
 	}
-	
+
+	/**
+	 * retrieves new DropMessages from server and calls the corresponding
+	 * listeners
+	 */
 	public void retrieve() {
-		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers().getDropServer());
-		for(DropServer server : servers) {
+		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
+				.getDropServer());
+		for (DropServer server : servers) {
 			Drop drop = new Drop<>();
-			Collection<DropMessage<? extends ModelObject>> results = drop.retrieve(server.getUrl(), getContacts());
-			for(DropMessage<? extends ModelObject> dm : results) {
+			Collection<DropMessage<? extends ModelObject>> results = drop
+					.retrieve(server.getUrl(), getContacts());
+			for (DropMessage<? extends ModelObject> dm : results) {
 				handleDrop(dm);
 			}
 		}
