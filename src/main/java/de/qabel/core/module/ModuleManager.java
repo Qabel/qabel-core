@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import de.qabel.core.config.Settings;
+import de.qabel.core.drop.DropController;
 
 public class ModuleManager {
 	/**
@@ -105,4 +106,14 @@ public class ModuleManager {
 	public void stopModule(Module module) {
 		module.stopModule();
 	}
+	
+	public DropController getDropController() {
+		return dropController;
+	}
+
+	public void setDropController(DropController dropController) {
+		this.dropController = dropController;
+	}
+
+	private DropController dropController;
 }
