@@ -29,7 +29,7 @@ public class Drop<T extends ModelObject> {
      *
      * TODO: implement
      */
-    public int send(DropMessage<ModelObject> message, Contacts contacts) {
+    public int send(DropMessage<T> message, Contacts contacts) {
         return sendAndForget(message, contacts);
     }
 
@@ -40,7 +40,7 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to send message to
      * @return HTTP status code from the drop-server.
      */
-    public int sendAndForget(DropMessage<ModelObject> message, Contacts contacts) {
+    public int sendAndForget(DropMessage<T> message, Contacts contacts) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         int res = 0;
@@ -93,7 +93,7 @@ public class Drop<T extends ModelObject> {
      * @param message DropMessage to serialize
      * @return String with message as json
      */
-    private String serialize(DropMessage<ModelObject> message) {
+    private String serialize(DropMessage<T> message) {
         return gson.toJson(message);
     }
 
