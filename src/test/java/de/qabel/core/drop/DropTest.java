@@ -87,6 +87,53 @@ public class DropTest {
 
     @Test
     @Ignore
+    public void sendTestSingle() {
+
+        try {
+            identityUrl = new URL(iUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            contactUrl = new URL(cUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        i.setPrimaryKeyPair(keypair);
+        is.getIdentities().add(i);
+
+
+        contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppk);
+        contact.setEncryptionPublicKey(qepk);
+        contact.setSignaturePublicKey(qspk);
+
+
+        Drop d = new Drop();
+
+
+        TestMessage m = new TestMessage();
+        m.content = "baz";
+
+        DropMessage<TestMessage> dm = new DropMessage<TestMessage>();
+        Date date = new Date();
+
+        dm.setTime(date);
+        dm.setSender("foo");
+        dm.setData(m);
+        dm.setAcknowledgeID("bar");
+        dm.setVersion(1);
+        dm.setModelObject(TestMessage.class);
+
+        Assert.assertTrue(d.sendAndForget(dm, contact));
+
+    }
+
+    @Test
+    @Ignore
     public void retrieveTest() {
 
         contact.getDropUrls().add(contactUrl);
