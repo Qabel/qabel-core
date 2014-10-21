@@ -10,6 +10,7 @@ import de.qabel.core.http.DropHTTP;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 public class Drop<T extends ModelObject> {
     GsonBuilder gb = null;
@@ -29,7 +30,7 @@ public class Drop<T extends ModelObject> {
      *
      * TODO: implement
      */
-    public int send(DropMessage<T> message, Contacts contacts) {
+    public int send(DropMessage<T> message, HashSet<Contact> contacts) {
         return sendAndForget(message, contacts);
     }
 
@@ -40,11 +41,11 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to send message to
      * @return HTTP status code from the drop-server.
      */
-    public int sendAndForget(DropMessage<T> message, Contacts contacts) {
+    public int sendAndForget(DropMessage<T> message, HashSet<Contact> contacts) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         int res = 0;
-        for (Contact c : contacts.getContacts()) {
+        for (Contact c : contacts) {
             byte[] cryptedMessage = encryptDrop(
                                     m,
                                     c.getEncryptionPublicKey(),
