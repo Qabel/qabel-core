@@ -16,7 +16,6 @@ public class Drop<T extends ModelObject> {
     GsonBuilder gb = null;
     Gson gson = null;
 
-
     public Drop() {
         gb = new GsonBuilder();
         gb.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
@@ -35,7 +34,30 @@ public class Drop<T extends ModelObject> {
     }
 
     /**
-     * Sends the message and does not wait for acknowledgement
+     * Sends the message to one contact and does not wait for acknowledgement
+     *
+     * @param message Message to send
+     * @param contact Contact to send message to
+     * @return True if one DropServer of the contact returns 200
+     */
+    public boolean sendAndForget(DropMessage<T> message, Contact contact) {
+        DropHTTP http = new DropHTTP();
+        String m = serialize(message);
+        boolean res = false;
+
+        byte[] cryptedMessage = encryptDrop(
+                m, contact.getEncryptionPublicKey(),
+                contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+        );
+        for (URL u : contact.getDropUrls()) {
+            if(http.send(u, cryptedMessage) == 200)
+                res = true;
+        }
+        return res;
+    }
+
+    /**
+     * Sends the message to a collection of contacts and does not wait for acknowledgement
      *
      * @param message  Message to send
      * @param contacts Contacts to send message to
