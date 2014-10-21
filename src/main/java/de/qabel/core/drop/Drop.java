@@ -30,7 +30,7 @@ public class Drop<T extends ModelObject> {
      *
      * TODO: implement
      */
-    public int send(DropMessage<T> message, HashSet<Contact> contacts) {
+    public int send(DropMessage<T> message, Collection<Contact> contacts) {
         return sendAndForget(message, contacts);
     }
 
@@ -41,7 +41,7 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to send message to
      * @return HTTP status code from the drop-server.
      */
-    public int sendAndForget(DropMessage<T> message, HashSet<Contact> contacts) {
+    public int sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         int res = 0;
