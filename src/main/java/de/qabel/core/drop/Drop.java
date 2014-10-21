@@ -10,11 +10,11 @@ import de.qabel.core.http.DropHTTP;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 public class Drop<T extends ModelObject> {
     GsonBuilder gb = null;
     Gson gson = null;
-
 
     public Drop() {
         gb = new GsonBuilder();
@@ -29,22 +29,45 @@ public class Drop<T extends ModelObject> {
      *
      * TODO: implement
      */
-    public int send(DropMessage<T> message, Contacts contacts) {
+    public int send(DropMessage<T> message, Collection<Contact> contacts) {
         return sendAndForget(message, contacts);
     }
 
     /**
-     * Sends the message and does not wait for acknowledgement
+     * Sends the message to one contact and does not wait for acknowledgement
+     *
+     * @param message Message to send
+     * @param contact Contact to send message to
+     * @return true if one DropServers of the contact returns 200
+     */
+    public boolean sendAndForget(DropMessage<T> message, Contact contact) {
+        DropHTTP http = new DropHTTP();
+        String m = serialize(message);
+        boolean res = false;
+
+        byte[] cryptedMessage = encryptDrop(
+                m, contact.getEncryptionPublicKey(),
+                contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+        );
+        for (URL u : contact.getDropUrls()) {
+            if(http.send(u, cryptedMessage) == 200)
+                res = true;
+        }
+        return res;
+    }
+
+    /**
+     * Sends the message to a collection of contacts and does not wait for acknowledgement
      *
      * @param message  Message to send
      * @param contacts Contacts to send message to
      * @return HTTP status code from the drop-server.
      */
-    public int sendAndForget(DropMessage<T> message, Contacts contacts) {
+    public int sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         int res = 0;
-        for (Contact c : contacts.getContacts()) {
+        for (Contact c : contacts) {
             byte[] cryptedMessage = encryptDrop(
                                     m,
                                     c.getEncryptionPublicKey(),
