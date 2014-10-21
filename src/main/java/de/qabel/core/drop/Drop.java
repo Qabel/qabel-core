@@ -38,7 +38,7 @@ public class Drop<T extends ModelObject> {
      *
      * @param message Message to send
      * @param contact Contact to send message to
-     * @return True if one DropServer of the contact returns 200
+     * @return true if one DropServers of the contact returns 200
      */
     public boolean sendAndForget(DropMessage<T> message, Contact contact) {
         DropHTTP http = new DropHTTP();
