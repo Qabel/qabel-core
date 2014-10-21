@@ -555,6 +555,10 @@ public class CryptoUtils {
 			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
+		
+		if (bs.available() < RSA_SIGNATURE_SIZE_BYTE){
+			return null;
+		}
 		// Get RSA encrypted AES key and encrypted data and signature over the
 		// RSA
 		// encrypted AES key and encrypted data
@@ -579,6 +583,10 @@ public class CryptoUtils {
 		bs = new ByteArrayInputStream(encryptedMessage);
 
 		byte[] encryptedAesKey = new byte[ENCRYPTED_AES_KEY_SIZE_BYTE];
+		
+		if (bs.available() < ENCRYPTED_AES_KEY_SIZE_BYTE){
+			return null;
+		}
 		byte[] aesCipherText = new byte[bs.available()
 				- ENCRYPTED_AES_KEY_SIZE_BYTE];
 
