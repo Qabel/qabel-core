@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DropTest {
     String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
@@ -26,7 +28,6 @@ public class DropTest {
 
     Identity i = new Identity("foo", identityUrl);
     Identities is = new Identities();
-    Contacts contacts = new Contacts();
     Contact contact = new Contact(i);
 
     static class TestMessage extends ModelObject {
@@ -62,7 +63,6 @@ public class DropTest {
         contact.setEncryptionPublicKey(qepk);
         contact.setSignaturePublicKey(qspk);
 
-        contacts.getContacts().add(contact);
 
         Drop d = new Drop();
 
@@ -80,6 +80,8 @@ public class DropTest {
         dm.setVersion(1);
         dm.setModelObject(TestMessage.class);
 
+        HashSet<Contact> contacts = new HashSet<Contact>();
+        contacts.add(contact);
         Assert.assertEquals(200, d.sendAndForget(dm, contacts));
     }
 
@@ -93,6 +95,7 @@ public class DropTest {
         contact.setEncryptionPublicKey(qepk);
         contact.setSignaturePublicKey(qspk);
 
+        Contacts contacts = new Contacts();
         contacts.getContacts().add(contact);
 
         try {
