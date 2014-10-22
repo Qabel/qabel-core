@@ -97,7 +97,7 @@ public class MultiPartCryptoTest {
         Identity alice = new Identity(
                 "Alice",
                 new URL(
-                        "http://localhost:8000/123456789012345678901234567890123456789012a"));
+                        "http://localhost:6000/123456789012345678901234567890123456789012a"));
         QblPrimaryKeyPair alicesKey = QblKeyFactory.getInstance()
                 .generateQblPrimaryKeyPair();
         alice.setPrimaryKeyPair(alicesKey);
@@ -105,7 +105,7 @@ public class MultiPartCryptoTest {
         Identity bob = new Identity(
                 "Bob",
                 new URL(
-                        "http://localhost:8000/123456789012345678901234567890123456789012b"));
+                        "http://localhost:6000/123456789012345678901234567890123456789012b"));
         QblPrimaryKeyPair bobsKey = QblKeyFactory.getInstance()
                 .generateQblPrimaryKeyPair();
         bob.setPrimaryKeyPair(bobsKey);
@@ -114,13 +114,13 @@ public class MultiPartCryptoTest {
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
         alicesContact.setEncryptionPublicKey(bobsKey.getQblEncPublicKey());
         alicesContact.setSignaturePublicKey(bobsKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:8000/123456789012345678901234567890123456789012b"));
+        alicesContact.getDropUrls().add(new URL("http://localhost:6000/123456789012345678901234567890123456789012b"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
         bobsContact.setEncryptionPublicKey(alicesKey.getQblEncPublicKey());
         bobsContact.setSignaturePublicKey(alicesKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:8000/123456789012345678901234567890123456789012a"));
+        alicesContact.getDropUrls().add(new URL("http://localhost:6000/123456789012345678901234567890123456789012a"));
 
         Contacts contacts = new Contacts();
         contacts.getContacts().add(alicesContact);
@@ -135,12 +135,12 @@ public class MultiPartCryptoTest {
         DropServer alicesServer = new DropServer();
         alicesServer
                 .setUrl(new URL(
-                        "http://localhost:8000/123456789012345678901234567890123456789012a"));
+                        "http://localhost:6000/123456789012345678901234567890123456789012a"));
 
         DropServer bobsServer = new DropServer();
         bobsServer
                 .setUrl(new URL(
-                        "http://localhost:8000/123456789012345678901234567890123456789012b"));
+                        "http://localhost:6000/123456789012345678901234567890123456789012b"));
 
         servers.getDropServer().add(alicesServer);
         servers.getDropServer().add(bobsServer);
