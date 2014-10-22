@@ -47,7 +47,6 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    @Ignore
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
 
         this.sendMessage();
@@ -66,7 +65,6 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    @Ignore
     public void multiPartCryptoMultiMessageTest() throws InterruptedException {
 
         this.sendMessage();

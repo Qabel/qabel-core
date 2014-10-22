@@ -38,7 +38,6 @@ public class DropHTTPTest {
 
 	// POST 200
 	@Test
-	@Ignore
 	public void postMessageOk() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -52,7 +51,6 @@ public class DropHTTPTest {
 
 	// POST 400
 	@Test
-	@Ignore
 	public void postMessageNotGivenOrInvalid() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -65,7 +63,6 @@ public class DropHTTPTest {
 
 	// POST 413
 	@Test
-	@Ignore
 	public void postMessageTooBig() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -80,7 +77,6 @@ public class DropHTTPTest {
 
 	// GET 200
 	@Test
-    @Ignore
 	public void getRequestShouldGetCompleteDrop() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -93,7 +89,6 @@ public class DropHTTPTest {
 
 	// GET 400
 	@Test
-	@Ignore
 	public void getRequestWithInvalidOrMissingDropIdShouldBe400() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -106,7 +101,6 @@ public class DropHTTPTest {
 
 	// GET 404
 	@Test
-	@Ignore
 	public void getRequestForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -119,7 +113,6 @@ public class DropHTTPTest {
 
 	// GET 200 SINCE
 	@Test
-	@Ignore
 	public void getRequestShouldEntriesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -132,7 +125,6 @@ public class DropHTTPTest {
 
 	// GET 304 SINCE
 	@Test
-	@Ignore
 	public void getRequestWithSinceDateShouldBe304() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -146,7 +138,6 @@ public class DropHTTPTest {
 
 	// GET 404 SINCE
 	@Test
-	@Ignore
 	public void getRequestWithSinceDateForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -160,7 +151,6 @@ public class DropHTTPTest {
 
 	// HEAD 200
 	@Test
-	@Ignore
 	public void shouldContainMessages() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -172,7 +162,6 @@ public class DropHTTPTest {
 
 	// HEAD 400
 	@Test
-	@Ignore
 	public void shouldBeInvalidOrMissingDropId() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -184,7 +173,6 @@ public class DropHTTPTest {
 
 	// HEAD 404
 	@Test
-	@Ignore
 	public void shouldBeEmpty() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -196,7 +184,6 @@ public class DropHTTPTest {
 
 	// HEAD 200 SINCE
 	@Test
-	@Ignore
 	public void shouldContainNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -208,7 +195,6 @@ public class DropHTTPTest {
 
 	// HEAD 304 SINCE
 	@Test
-	@Ignore
 	public void shouldContainNoNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -221,7 +207,6 @@ public class DropHTTPTest {
 
 	// HEAD 404 + SINCE
 	@Test
-	@Ignore
 	public void shouldBeEmptyWithSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();

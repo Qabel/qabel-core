@@ -38,11 +38,9 @@ public class DropTest {
     }
 
     @Test
-    @Ignore
     public void sendAndForgetTest() {  
         URL identityUrl = null;
         URL contactUrl = null;
-        
         try {
             identityUrl = new URL(iUrl);
         } catch (MalformedURLException e) {
@@ -90,7 +88,6 @@ public class DropTest {
     }
 
     @Test
-    @Ignore
     public void sendTestSingle() {    	
         URL identityUrl = null;
         URL contactUrl = null;
