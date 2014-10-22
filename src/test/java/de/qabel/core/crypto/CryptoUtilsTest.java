@@ -91,10 +91,17 @@ public class CryptoUtilsTest {
 		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
 		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
 		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
-		byte[] wrongHmac = Hex.decode("a1aa465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		boolean hmacValidation = cu.validateHmac(text, hmac, key);
-		boolean wrongHmacValidaition = cu.validateHmac(text, wrongHmac, key);
 		assertEquals(hmacValidation, true);
+	}
+	
+	@Test
+	public void invalidHmacValidationTest() {
+		// Test case from http://www.ietf.org/rfc/rfc4231.txt
+		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
+		byte[] wrongHmac = Hex.decode("a1aa465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
+		boolean wrongHmacValidaition = cu.validateHmac(text, wrongHmac, key);
 		assertEquals(wrongHmacValidaition, false);
 	}
 
