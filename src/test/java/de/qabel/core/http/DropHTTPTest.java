@@ -19,21 +19,36 @@ public class DropHTTPTest {
 	private URL workingUrl;
 	private URL tooShortUrl;
 	private URL notExistingUrl;
+    private URL shouldContainMessagesUrl;
+    private URL shouldContainNoNewMessagesSinceDateUrl;
 
 	@Before
 	public void setUp() {
 		try {
 			workingUrl = new URL(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo");
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
 
 			tooShortUrl = new URL("http://localhost:6000/IAmTooShort");
 
 			notExistingUrl = new URL(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq");
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
+
+            shouldContainMessagesUrl = new URL(
+                    "http://localhost:6000/abcdefghijklmnopqrstuvshouldContainMessages");
+
+            shouldContainNoNewMessagesSinceDateUrl = new URL(
+                    "http://localhost:6000/abcdefghshouldContainNoNewMessagesSinceDate");
+
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+        //prepare dropserver content for tests.
+        DropHTTP h = new DropHTTP();
+        h.send(shouldContainMessagesUrl, "shouldContainMessagesTestMessage".getBytes());
+        h.send(shouldContainNoNewMessagesSinceDateUrl, "shouldContainNoNewMessagesSinceDate".getBytes());
+
 	}
 
 	// POST 200
@@ -117,7 +132,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<byte[]> response = dHTTP.receiveMessages(this.workingUrl, 0);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.shouldContainMessagesUrl, 0);
 		// Then
 		assertNotEquals(null, response);
 		assertNotEquals(new ArrayList<String>(), response);
@@ -155,7 +170,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.workingUrl);
+		int responseCode = dHTTP.head(this.shouldContainMessagesUrl);
 		// Then
 		assertEquals(200, responseCode);
 	}
@@ -199,7 +214,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.workingUrl,
+		int responseCode = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUrl,
 				System.currentTimeMillis());
 		// Then
 		assertEquals(304, responseCode);
