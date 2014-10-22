@@ -3,6 +3,8 @@ package de.qabel.core.module;
 import de.qabel.core.storage.StorageConnection;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -13,6 +15,19 @@ import de.qabel.core.config.Settings;
 import de.qabel.core.drop.DropController;
 
 public class ModuleManager {
+	static public class ClassLoader extends URLClassLoader{
+	    public ClassLoader() {
+	        super(new URL[0]);
+	    }
+
+	    @Override
+	    public void addURL(URL url) {
+	        super.addURL(url);
+	    }
+	}
+
+	public final static ClassLoader LOADER = new ClassLoader();
+
 	/**
 	 * <pre>
 	 *           0..*     0..*
@@ -83,7 +98,8 @@ public class ModuleManager {
 	
 	public void startModule(File jar, String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		try {
-			ClassLoader cld = URLClassLoader.newInstance(new URL[] { jar.toURI().toURL() }, ClassLoader.getSystemClassLoader() );
+			ClassLoader cld = LOADER;
+			cld.addURL(jar.toURI().toURL());
 			startModule(Class.forName(className, true, cld));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();

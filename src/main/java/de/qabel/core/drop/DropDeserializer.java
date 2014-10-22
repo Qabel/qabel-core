@@ -9,6 +9,8 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
+import de.qabel.core.module.ModuleManager;
+
 
 public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObject>> {
     @Override
@@ -23,7 +25,7 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
 
         ModelObject m;
         try {
-            ClassLoader loader = ClassLoader.getSystemClassLoader();
+            ClassLoader loader = ModuleManager.LOADER;
 
             @SuppressWarnings("unchecked")
             Class<? extends ModelObject> cls = (Class<? extends ModelObject>) loader
