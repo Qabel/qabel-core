@@ -14,10 +14,7 @@ public class Contact {
 	
 	@SerializedName("public_primary_key")
 	private QblPrimaryPublicKey primaryPublicKey;
-	@SerializedName("public_enc_key")
-	private QblEncPublicKey encryptionPublicKey;
-	@SerializedName("public_sign_key")
-	private QblSignPublicKey signaturePublicKey;
+
 	/**
 	 * The owner identity which owns this Contact.
 	 * Note: This is not the identity which is represented by this contact!
@@ -46,23 +43,23 @@ public class Contact {
 	
 	public QblEncPublicKey getEncryptionPublicKey()
 	{
-		return encryptionPublicKey;
+		return primaryPublicKey.getEncPublicKey();
 	}
 	
 	public void setEncryptionPublicKey(QblEncPublicKey key)
 	{
-		encryptionPublicKey = key;
+		primaryPublicKey.attachEncPublicKey(key);
 	}
 	
 	public QblSignPublicKey getSignaturePublicKey()
 	{
-		return signaturePublicKey;
+		return primaryPublicKey.getSignPublicKey();
 	}
 	
 	public void setSignaturePublicKey(QblSignPublicKey key)
 	{
-		signaturePublicKey = key;
-	}
+		primaryPublicKey.attachSignPublicKey(key);
+	}	
 	
 	public Set<URL> getDropUrls()
 	{
