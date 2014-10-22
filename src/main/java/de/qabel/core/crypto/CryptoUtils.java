@@ -557,6 +557,7 @@ public class CryptoUtils {
 		// TODO: Include header byte
 		
 		if (bs.available() < RSA_SIGNATURE_SIZE_BYTE){
+			logger.debug("Avaliable data is less than RSA signature size!");
 			return null;
 		}
 		// Get RSA encrypted AES key and encrypted data and signature over the
@@ -585,6 +586,7 @@ public class CryptoUtils {
 		byte[] encryptedAesKey = new byte[ENCRYPTED_AES_KEY_SIZE_BYTE];
 		
 		if (bs.available() < ENCRYPTED_AES_KEY_SIZE_BYTE){
+			logger.debug("Avaliable data is less than encrypted AES key size");
 			return null;
 		}
 		byte[] aesCipherText = new byte[bs.available()
@@ -602,6 +604,7 @@ public class CryptoUtils {
 		byte[] aesKey = rsaDecrypt(encryptedAesKey,
 				privKey.getQblEncPrivateKey());
 		if (aesKey != null) {
+			logger.debug("Message is OK!");
 			return new String(decryptSymmetric(aesCipherText, aesKey));
 		}
 		return null;

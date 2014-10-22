@@ -3,6 +3,9 @@ package de.qabel.core.crypto;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * A QblPrimaryPublicKey represents a contact. This primary public key can be
  * used to identify valid encryption and signature sub-keys.
@@ -11,6 +14,9 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 
 	private ArrayList<QblEncPublicKey> encPublicKeys;
 	private ArrayList<QblSignPublicKey> signPublicKeys;
+	
+	private final static Logger logger = LogManager.getLogger(QblPrimaryPublicKey.class
+			.getName());
 
 	QblPrimaryPublicKey(RSAPublicKey publicKey) {
 		super(publicKey);
@@ -25,12 +31,13 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
 	 */
-	boolean attachEncPublicKey(QblEncPublicKey encPublicKey) {
+	public boolean attachEncPublicKey(QblEncPublicKey encPublicKey) {
 		if (CryptoUtils.getInstance().rsaValidateKeySignature(encPublicKey,
 				this)) {
 			encPublicKeys.add(encPublicKey);
 			return true;
 		}
+		logger.debug("Didn't attach QblEncPublicKey due to invalid signature");
 		return false;
 	}
 
@@ -41,12 +48,13 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
 	 */
-	boolean attachSignPublicKey(QblSignPublicKey signPublicKey) {
+	public boolean attachSignPublicKey(QblSignPublicKey signPublicKey) {
 		if (CryptoUtils.getInstance().rsaValidateKeySignature(signPublicKey,
 				this)) {
 			signPublicKeys.add(signPublicKey);
 			return true;
 		}
+		logger.debug("Didn't attach QblSignPublicKey due to invalid signature");
 		return false;
 	}
 	

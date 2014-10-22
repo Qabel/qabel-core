@@ -16,20 +16,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DropTest {
-    String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
-    String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
-    URL identityUrl = null;
-    URL contactUrl = null;
-    QblPrimaryKeyPair keypair = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    QblPrimaryKeyPair qpkp = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
-    QblEncPublicKey qepk = qpkp.getQblEncPublicKey();
-    QblSignPublicKey qspk = qpkp.getQblSignPublicKey();
+    final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
+    final String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
 
-    Identity i = new Identity("foo", identityUrl);
-    Identities is = new Identities();
-    Contact contact = new Contact(i);
+    final QblPrimaryKeyPair qpkpSender = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+    final QblPrimaryPublicKey qppkSender = qpkpSender.getQblPrimaryPublicKey();
+    final QblEncPublicKey qepkSender = qpkpSender.getQblEncPublicKey();
+    final QblSignPublicKey qspkSender = qpkpSender.getQblSignPublicKey();
+        
+    final QblPrimaryKeyPair qpkpRecipient = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+    final QblPrimaryPublicKey qppkRecipient = qpkpRecipient.getQblPrimaryPublicKey();
+    final QblEncPublicKey qepkRecipient = qpkpRecipient.getQblEncPublicKey();
+    final QblSignPublicKey qspkRecipient = qpkpRecipient.getQblSignPublicKey();
 
+    
     static class TestMessage extends ModelObject {
         public String content;
 
@@ -39,8 +39,10 @@ public class DropTest {
 
     @Test
     @Ignore
-    public void sendAndForgetTest() {
-
+    public void sendAndForgetTest() {  
+        URL identityUrl = null;
+        URL contactUrl = null;
+        
         try {
             identityUrl = new URL(iUrl);
         } catch (MalformedURLException e) {
@@ -53,19 +55,19 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        i.setPrimaryKeyPair(keypair);
-        is.getIdentities().add(i);
-
+        Identity i = new Identity("foo", identityUrl);
+        i.setPrimaryKeyPair(qpkpSender);
+        Identities is = new Identities();
+        Contact contact = new Contact(i);
+        is.getIdentities().add(i);        
 
         contact.getDropUrls().add(contactUrl);
 
-        contact.setPrimaryPublicKey(qppk);
-        contact.setEncryptionPublicKey(qepk);
-        contact.setSignaturePublicKey(qspk);
-
+        contact.setPrimaryPublicKey(qppkRecipient);
+        contact.setEncryptionPublicKey(qepkRecipient);
+        contact.setSignaturePublicKey(qspkRecipient);
 
         Drop d = new Drop();
-
 
         TestMessage m = new TestMessage();
         m.content = "baz";
@@ -83,11 +85,15 @@ public class DropTest {
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
         Assert.assertEquals(200, d.sendAndForget(dm, contacts));
+        
+        retrieveTest();
     }
 
     @Test
     @Ignore
-    public void sendTestSingle() {
+    public void sendTestSingle() {    	
+        URL identityUrl = null;
+        URL contactUrl = null;
 
         try {
             identityUrl = new URL(iUrl);
@@ -100,20 +106,17 @@ public class DropTest {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        i.setPrimaryKeyPair(keypair);
-        is.getIdentities().add(i);
-
+        
+        Identity i = new Identity("foo", identityUrl);
+        i.setPrimaryKeyPair(qpkpSender);
+        Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
-
-        contact.setPrimaryPublicKey(qppk);
-        contact.setEncryptionPublicKey(qepk);
-        contact.setSignaturePublicKey(qspk);
-
+        contact.setPrimaryPublicKey(qppkRecipient);
+        contact.setEncryptionPublicKey(qepkRecipient);
+        contact.setSignaturePublicKey(qspkRecipient);
 
         Drop d = new Drop();
-
 
         TestMessage m = new TestMessage();
         m.content = "baz";
@@ -129,32 +132,40 @@ public class DropTest {
         dm.setModelObject(TestMessage.class);
 
         Assert.assertTrue(d.sendAndForget(dm, contact));
-
+        
+        retrieveTest();
     }
 
-    @Test
-    @Ignore
     public void retrieveTest() {
-
-        contact.getDropUrls().add(contactUrl);
-
-        contact.setPrimaryPublicKey(qppk);
-        contact.setEncryptionPublicKey(qepk);
-        contact.setSignaturePublicKey(qspk);
-
-        Contacts contacts = new Contacts();
-        contacts.getContacts().add(contact);
-
+        URL identityUrl = null;
+        URL contactUrl = null;
+        
         try {
             contactUrl = new URL(cUrl);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+
+        Identity i = new Identity("foo", identityUrl);
+        i.setPrimaryKeyPair(qpkpRecipient);
+        Contact contact = new Contact(i);
+
+        contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppkSender);
+        contact.setEncryptionPublicKey(qepkSender);
+        contact.setSignaturePublicKey(qspkSender);
+
+        Contacts contacts = new Contacts();
+        contacts.getContacts().add(contact);
+     
         Drop d = new Drop();
 
-
         Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
-        //We don't have the key (yet), so the Message should be null.
-        Assert.assertNull(result);
+        //We expect at least one drop message from "foo"
+        Assert.assertTrue(result.size() >= 1);
+        for (DropMessage<ModelObject> dm : result){
+        	 Assert.assertEquals("foo", dm.getSender());
+        }
     }
 }
