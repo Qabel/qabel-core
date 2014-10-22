@@ -11,12 +11,9 @@ public class StorageServers {
 	 *           storageServers        &gt;       storageServer
 	 * </pre>
 	 */
-	private Set<StorageServer> storageServer;
+	private final Set<StorageServer> storageServer = new HashSet<StorageServer>();
 
 	public Set<StorageServer> getStorageServer() {
-		if (this.storageServer == null) {
-			this.storageServer = new HashSet<StorageServer>();
-		}
 		return this.storageServer;
 	}
 

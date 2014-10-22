@@ -15,12 +15,9 @@ public class Identities {
 	 *           identities        &gt;       identity
 	 * </pre>
 	 */
-	private Set<Identity> identities;
+	private final Set<Identity> identities = new HashSet<Identity>();
 	
 	public Set<Identity> getIdentities() {
-		if (this.identities == null) {
-			this.identities = new HashSet<Identity>();
-		}
 		return this.identities;
 	}
 

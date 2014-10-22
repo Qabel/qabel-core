@@ -12,12 +12,9 @@ public class Accounts {
 	 *           accounts        &gt;       account
 	 * </pre>
 	 */
-	private Set<Account> account;
+	private final Set<Account> account = new HashSet<Account>();
 
 	public Set<Account> getAccount() {
-		if (this.account == null) {
-			this.account = new HashSet<Account>();
-		}
 		return this.account;
 	}
 

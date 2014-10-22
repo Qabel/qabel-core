@@ -11,12 +11,9 @@ public class StorageVolumes {
 	 *           storageVolumes        &gt;       storageVolume
 	 * </pre>
 	 */
-	private Set<StorageVolume> storageVolume;
+	private final Set<StorageVolume> storageVolume = new HashSet<StorageVolume>();
 
 	public Set<StorageVolume> getStorageVolume() {
-		if (this.storageVolume == null) {
-			this.storageVolume = new HashSet<StorageVolume>();
-		}
 		return this.storageVolume;
 	}
 

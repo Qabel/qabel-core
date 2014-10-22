@@ -11,12 +11,9 @@ public class DropServers {
 	 *           dropServers        &gt;       dropServer
 	 * </pre>
 	 */
-	private Set<DropServer> dropServer;
+	private final Set<DropServer> dropServer = new HashSet<DropServer>();
 
 	public Set<DropServer> getDropServer() {
-		if (this.dropServer == null) {
-			this.dropServer = new HashSet<DropServer>();
-		}
 		return this.dropServer;
 	}
 
