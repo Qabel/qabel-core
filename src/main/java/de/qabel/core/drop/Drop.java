@@ -2,6 +2,7 @@ package de.qabel.core.drop;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.crypto.*;
@@ -10,7 +11,7 @@ import de.qabel.core.http.DropHTTP;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+
 
 public class Drop<T extends ModelObject> {
     GsonBuilder gb = null;
@@ -44,7 +45,6 @@ public class Drop<T extends ModelObject> {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         boolean res = false;
-
         byte[] cryptedMessage = encryptDrop(
                 m, contact.getEncryptionPublicKey(),
                 contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
@@ -89,13 +89,13 @@ public class Drop<T extends ModelObject> {
      */
     public Collection<DropMessage> retrieve(URL url, Contacts contacts) {
         DropHTTP http = new DropHTTP();
-        Collection<String> cipherMessages = http.receiveMessages(url);
+        Collection<byte[]> cipherMessages = http.receiveMessages(url);
         Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
         String plainJson = null;
 
-        for (String cipherMessage : cipherMessages) {
+        for (byte[] cipherMessage : cipherMessages) {
             for (Contact c : contacts.getContacts()) {
-                plainJson = decryptDrop(cipherMessage.getBytes(),
+                plainJson = decryptDrop(cipherMessage,
                         c.getContactOwner().getPrimaryKeyPair(),
                         c.getSignaturePublicKey()
                 );

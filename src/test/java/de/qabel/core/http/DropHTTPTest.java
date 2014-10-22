@@ -85,7 +85,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.workingUrl);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.workingUrl);
 		// Then
 		assertNotEquals(null, response);
 		assertNotEquals(new ArrayList<String>(), response);
@@ -98,7 +98,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.tooShortUrl);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.tooShortUrl);
 		// Then
 		assertNotEquals(null, response);
 		assertEquals(new ArrayList<String>(), response);
@@ -111,7 +111,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.notExistingUrl);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.notExistingUrl);
 		// Then
 		assertNotEquals(null, response);
 		assertEquals(new ArrayList<String>(), response);
@@ -124,7 +124,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.workingUrl, 0);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.workingUrl, 0);
 		// Then
 		assertNotEquals(null, response);
 		assertNotEquals(new ArrayList<String>(), response);
@@ -137,7 +137,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.workingUrl,
+		Collection<byte[]> response = dHTTP.receiveMessages(this.workingUrl,
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, response);
@@ -151,7 +151,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<String> response = dHTTP.receiveMessages(this.notExistingUrl,
+		Collection<byte[]> response = dHTTP.receiveMessages(this.notExistingUrl,
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, response);
