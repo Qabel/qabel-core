@@ -7,5 +7,17 @@ notifications:
   email: false
   irc: "chat.freenode.net#qabel"
 
+install:
+ - redis-server &
+ - sudo apt-get install python-pip
+ - sudo pip install virtualenv
+ - git clone https://github.com/qabel/qabel-drop
+ - virtualenv qabel-drop
+ - source qabel-drop/bin/activate
+ - pip install -r qabel-drop/requirements.txt
+ - cd qabel-drop
+ - ./drop_server.py &
+ - cd ..
+
 script:
  - ./gradlew check
