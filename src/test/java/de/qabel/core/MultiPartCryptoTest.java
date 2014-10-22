@@ -47,7 +47,6 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    @Ignore
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
 
         this.sendMessage();
@@ -62,11 +61,11 @@ public class MultiPartCryptoTest {
         assertTrue(mQueue.size() >= 1);
 
         DropMessage<TestObject> msg = mQueue.take();
-        assertEquals("Test", msg.getData().toString());
+
+        assertEquals("Test", msg.getData().getStr());
     }
 
     @Test
-    @Ignore
     public void multiPartCryptoMultiMessageTest() throws InterruptedException {
 
         this.sendMessage();
@@ -84,20 +83,20 @@ public class MultiPartCryptoTest {
         assertTrue(mQueue.size() >= 4);
 
         DropMessage<TestObject> msg = mQueue.take();
-        assertEquals("Test", msg.getData().toString());
+        assertEquals("Test", msg.getData().getStr());
         msg = mQueue.take();
-        assertEquals("Test", msg.getData().toString());
+        assertEquals("Test", msg.getData().getStr());
         msg = mQueue.take();
-        assertEquals("Test", msg.getData().toString());
+        assertEquals("Test", msg.getData().getStr());
         msg = mQueue.take();
-        assertEquals("Test", msg.getData().toString());
+        assertEquals("Test", msg.getData().getStr());
     }
 
     private void loadContacts() throws MalformedURLException {
         Identity alice = new Identity(
                 "Alice",
                 new URL(
-                        "http://localhost:6000/123456789012345678901234567890123456789012a"));
+                        "http://localhost:6000/12345678901234567890123456789012345678alice"));
         QblPrimaryKeyPair alicesKey = QblKeyFactory.getInstance()
                 .generateQblPrimaryKeyPair();
         alice.setPrimaryKeyPair(alicesKey);
@@ -105,7 +104,7 @@ public class MultiPartCryptoTest {
         Identity bob = new Identity(
                 "Bob",
                 new URL(
-                        "http://localhost:6000/123456789012345678901234567890123456789012b"));
+                        "http://localhost:6000/1234567890123456789012345678901234567890bob"));
         QblPrimaryKeyPair bobsKey = QblKeyFactory.getInstance()
                 .generateQblPrimaryKeyPair();
         bob.setPrimaryKeyPair(bobsKey);
@@ -114,13 +113,13 @@ public class MultiPartCryptoTest {
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
         alicesContact.setEncryptionPublicKey(bobsKey.getQblEncPublicKey());
         alicesContact.setSignaturePublicKey(bobsKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:6000/123456789012345678901234567890123456789012b"));
+        alicesContact.getDropUrls().add(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
         bobsContact.setEncryptionPublicKey(alicesKey.getQblEncPublicKey());
         bobsContact.setSignaturePublicKey(alicesKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:6000/123456789012345678901234567890123456789012a"));
+        alicesContact.getDropUrls().add(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
         contacts.getContacts().add(alicesContact);
@@ -135,12 +134,12 @@ public class MultiPartCryptoTest {
         DropServer alicesServer = new DropServer();
         alicesServer
                 .setUrl(new URL(
-                        "http://localhost:6000/123456789012345678901234567890123456789012a"));
+                        "http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         DropServer bobsServer = new DropServer();
         bobsServer
                 .setUrl(new URL(
-                        "http://localhost:6000/123456789012345678901234567890123456789012b"));
+                        "http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         servers.getDropServer().add(alicesServer);
         servers.getDropServer().add(bobsServer);
@@ -155,6 +154,9 @@ public class MultiPartCryptoTest {
         dm.setData(data);
 
         Date date = new Date();
+
+        dm.setSender("foo");
+        dm.setAcknowledgeID("bar");
         dm.setTime(date);
         dm.setVersion(1);
         dm.setModelObject(TestObject.class);

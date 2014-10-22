@@ -19,26 +19,40 @@ public class DropHTTPTest {
 	private URL workingUrl;
 	private URL tooShortUrl;
 	private URL notExistingUrl;
+    private URL shouldContainMessagesUrl;
+    private URL shouldContainNoNewMessagesSinceDateUrl;
 
 	@Before
 	public void setUp() {
 		try {
 			workingUrl = new URL(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo");
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
 
 			tooShortUrl = new URL("http://localhost:6000/IAmTooShort");
 
 			notExistingUrl = new URL(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopq");
+					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
+
+            shouldContainMessagesUrl = new URL(
+                    "http://localhost:6000/abcdefghijklmnopqrstuvshouldContainMessages");
+
+            shouldContainNoNewMessagesSinceDateUrl = new URL(
+                    "http://localhost:6000/abcdefghshouldContainNoNewMessagesSinceDate");
+
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+        //prepare dropserver content for tests.
+        DropHTTP h = new DropHTTP();
+        h.send(shouldContainMessagesUrl, "shouldContainMessagesTestMessage".getBytes());
+        h.send(shouldContainNoNewMessagesSinceDateUrl, "shouldContainNoNewMessagesSinceDate".getBytes());
+
 	}
 
 	// POST 200
 	@Test
-	@Ignore
 	public void postMessageOk() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -52,7 +66,6 @@ public class DropHTTPTest {
 
 	// POST 400
 	@Test
-	@Ignore
 	public void postMessageNotGivenOrInvalid() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -65,7 +78,6 @@ public class DropHTTPTest {
 
 	// POST 413
 	@Test
-	@Ignore
 	public void postMessageTooBig() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -80,7 +92,6 @@ public class DropHTTPTest {
 
 	// GET 200
 	@Test
-    @Ignore
 	public void getRequestShouldGetCompleteDrop() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -93,7 +104,6 @@ public class DropHTTPTest {
 
 	// GET 400
 	@Test
-	@Ignore
 	public void getRequestWithInvalidOrMissingDropIdShouldBe400() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -106,7 +116,6 @@ public class DropHTTPTest {
 
 	// GET 404
 	@Test
-	@Ignore
 	public void getRequestForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -119,12 +128,11 @@ public class DropHTTPTest {
 
 	// GET 200 SINCE
 	@Test
-	@Ignore
 	public void getRequestShouldEntriesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		Collection<byte[]> response = dHTTP.receiveMessages(this.workingUrl, 0);
+		Collection<byte[]> response = dHTTP.receiveMessages(this.shouldContainMessagesUrl, 0);
 		// Then
 		assertNotEquals(null, response);
 		assertNotEquals(new ArrayList<String>(), response);
@@ -132,7 +140,6 @@ public class DropHTTPTest {
 
 	// GET 304 SINCE
 	@Test
-	@Ignore
 	public void getRequestWithSinceDateShouldBe304() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -146,7 +153,6 @@ public class DropHTTPTest {
 
 	// GET 404 SINCE
 	@Test
-	@Ignore
 	public void getRequestWithSinceDateForEmptyDropShouldBe404() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -160,19 +166,17 @@ public class DropHTTPTest {
 
 	// HEAD 200
 	@Test
-	@Ignore
 	public void shouldContainMessages() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.workingUrl);
+		int responseCode = dHTTP.head(this.shouldContainMessagesUrl);
 		// Then
 		assertEquals(200, responseCode);
 	}
 
 	// HEAD 400
 	@Test
-	@Ignore
 	public void shouldBeInvalidOrMissingDropId() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -184,7 +188,6 @@ public class DropHTTPTest {
 
 	// HEAD 404
 	@Test
-	@Ignore
 	public void shouldBeEmpty() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -196,7 +199,6 @@ public class DropHTTPTest {
 
 	// HEAD 200 SINCE
 	@Test
-	@Ignore
 	public void shouldContainNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
@@ -208,12 +210,11 @@ public class DropHTTPTest {
 
 	// HEAD 304 SINCE
 	@Test
-	@Ignore
 	public void shouldContainNoNewMessagesSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.workingUrl,
+		int responseCode = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUrl,
 				System.currentTimeMillis());
 		// Then
 		assertEquals(304, responseCode);
@@ -221,7 +222,6 @@ public class DropHTTPTest {
 
 	// HEAD 404 + SINCE
 	@Test
-	@Ignore
 	public void shouldBeEmptyWithSinceDate() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
