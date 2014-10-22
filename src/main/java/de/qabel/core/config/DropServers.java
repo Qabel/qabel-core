@@ -16,6 +16,10 @@ public class DropServers {
 	public Set<DropServer> getDropServer() {
 		return this.dropServer;
 	}
+	
+	public boolean add(DropServer dropServer) {
+		return this.dropServer.add(dropServer);
+	}
 
 	@Override
 	public int hashCode() {

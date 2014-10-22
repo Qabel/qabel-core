@@ -16,6 +16,10 @@ public class StorageVolumes {
 	public Set<StorageVolume> getStorageVolume() {
 		return this.storageVolume;
 	}
+	
+	public boolean add(StorageVolume storageVolume) {
+		return this.storageVolume.add(storageVolume);
+	}
 
 	@Override
 	public int hashCode() {

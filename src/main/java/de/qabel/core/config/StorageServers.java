@@ -16,6 +16,10 @@ public class StorageServers {
 	public Set<StorageServer> getStorageServer() {
 		return this.storageServer;
 	}
+	
+	public boolean add(StorageServer storageServer) {
+		return this.storageServer.add(storageServer);
+	}
 
 	@Override
 	public int hashCode() {

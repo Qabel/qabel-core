@@ -20,6 +20,10 @@ public class Identities {
 	public Set<Identity> getIdentities() {
 		return this.identities;
 	}
+	
+	public boolean add(Identity identity) {
+		return this.identities.add(identity);
+	}
 
 	@Override
 	public int hashCode() {

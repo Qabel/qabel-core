@@ -17,6 +17,10 @@ public class Accounts {
 	public Set<Account> getAccount() {
 		return this.account;
 	}
+	
+	public boolean add(Account account) {
+		return this.account.add(account);
+	}
 
 	@Override
 	public int hashCode() {

@@ -123,8 +123,8 @@ public class MultiPartCryptoTest {
         alicesContact.getDropUrls().add(new URL("http://localhost:6000/123456789012345678901234567890123456789012a"));
 
         Contacts contacts = new Contacts();
-        contacts.getContacts().add(alicesContact);
-        contacts.getContacts().add(bobsContact);
+        contacts.add(alicesContact);
+        contacts.add(bobsContact);
 
         dropController.setContacts(contacts);
     }
@@ -142,8 +142,8 @@ public class MultiPartCryptoTest {
                 .setUrl(new URL(
                         "http://localhost:6000/123456789012345678901234567890123456789012b"));
 
-        servers.getDropServer().add(alicesServer);
-        servers.getDropServer().add(bobsServer);
+        servers.add(alicesServer);
+        servers.add(bobsServer);
 
         dropController.setDropServers(servers);
     }

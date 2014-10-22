@@ -19,6 +19,10 @@ public class Contacts {
 	public Set<Contact> getContacts() {
 		return this.contacts;
 	}
+	
+	public boolean add(Contact contact) {
+		return this.contacts.add(contact);
+	}
 
 	@Override
 	public int hashCode() {
