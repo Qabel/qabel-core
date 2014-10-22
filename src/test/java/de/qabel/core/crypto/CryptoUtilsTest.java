@@ -68,12 +68,17 @@ public class CryptoUtilsTest {
 
 	@Test
 	public void symmetricCryptoTest() throws UnsupportedEncodingException {
-		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
-		String plainText = "Hello this a plaintext, which should be encrypted.";
+		// Test case from http://tools.ietf.org/html/rfc3686
+		byte[] key = Hex.decode("F6D66D6BD52D59BB0796365879EFF886C66DD51A5B6A99744B50590C87A23884");
+		byte[] nonce = Hex.decode("00FAAC24C1585EF15A43D875");
+		byte[] counter = Hex.decode("00000001");
+		byte[] plainText = Hex.decode("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
+		byte[] cipherTextExpected = Hex.decode("F05E231B3894612C49EE000B804EB2A9B8306B508F839D6A5530831D9344AF1C");
 
-		byte[] cipherText = cu.encryptSymmetric(plainText.getBytes(), key);
+		byte[] cipherText = cu.encryptSymmetric(plainText, key, nonce);
 		byte[] plainTextTwo = cu.decryptSymmetric(cipherText, key);
-		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
+		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(counter) + Hex.toHexString(cipherTextExpected),Hex.toHexString(cipherText));
+		assertEquals(Hex.toHexString(plainText), Hex.toHexString(plainTextTwo));
 	}
 	
 	@Test

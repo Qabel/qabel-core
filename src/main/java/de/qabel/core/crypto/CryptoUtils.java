@@ -45,6 +45,7 @@ public class CryptoUtils {
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
+	private final static int SYMM_IV_SIZE_BIT = 128;
 	private final static int SYMM_NONCE_SIZE_BIT = 96;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
@@ -399,13 +400,13 @@ public class CryptoUtils {
 	 * @return ciphertext which is the result of the encryption
 	 */
 	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
-		return encryptSymmetric(plainText, key, null);
+		return encryptSymmetric(plainText, key, new byte[0]);
 	}
 	
 	/**
 	 * Returns the encrypted byte[] of the given plaintext, i.e.
-	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
-	 * constant SYMM_TRANSFORMATION
+	 * ciphertext=enc(plaintext,key,IV). The algorithm, mode and padding is
+	 * set in constant SYMM_TRANSFORMATION. IV=(nonce||counter) 
 	 * 
 	 * @param plainText
 	 *		message which will be encrypted
@@ -419,18 +420,23 @@ public class CryptoUtils {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
-
-		if(nonce.length < SYMM_NONCE_SIZE_BIT / 8) {
-			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
-		}
-		iv = new IvParameterSpec(nonce);
-
+		
 		try {
-			cipherText.write(nonce);
-		} catch (IOException e1) {
+			if(nonce.length == SYMM_NONCE_SIZE_BIT / 8) {
+				byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
+				counter[counter.length-1] = 1;
+				cipherText.write(nonce);
+				cipherText.write(counter);
+			} else {
+				cipherText.write(getRandomBytes(SYMM_IV_SIZE_BIT / 8));
+			}
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
+		
+		iv = new IvParameterSpec(cipherText.toByteArray());
+
 		try {
 			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
 			cipherText.write(symmetricCipher.doFinal(plainText));
@@ -467,9 +473,9 @@ public class CryptoUtils {
 	 */
 	synchronized byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_IV_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_NONCE_SIZE_BIT / 8];
+				- SYMM_IV_SIZE_BIT / 8];
 		byte[] plainText = null;
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
@@ -698,12 +704,23 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		if(nonce.length < SYMM_NONCE_SIZE_BIT / 8) {
-			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+
+		try {
+			if(nonce.length == SYMM_NONCE_SIZE_BIT / 8) {
+				byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
+				counter[counter.length-1] = 1;
+				cipherText.write(nonce);
+				cipherText.write(counter);
+			} else {
+				cipherText.write(getRandomBytes(SYMM_IV_SIZE_BIT / 8));
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		iv = new IvParameterSpec(nonce);
+		iv = new IvParameterSpec(cipherText.toByteArray());
+
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
@@ -749,9 +766,9 @@ public class CryptoUtils {
 	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
 			byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_IV_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_NONCE_SIZE_BIT / 8];
+				- SYMM_IV_SIZE_BIT / 8];
 		byte[] plainText = null;
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
