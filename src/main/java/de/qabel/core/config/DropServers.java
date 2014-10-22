@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -14,7 +15,7 @@ public class DropServers {
 	private final Set<DropServer> dropServer = new HashSet<DropServer>();
 
 	public Set<DropServer> getDropServer() {
-		return this.dropServer;
+		return Collections.unmodifiableSet(this.dropServer);
 	}
 	
 	public boolean add(DropServer dropServer) {

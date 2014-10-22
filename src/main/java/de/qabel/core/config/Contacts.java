@@ -17,7 +17,7 @@ public class Contacts {
 	private final Set<Contact> contacts = new HashSet<Contact>();
 
 	public Set<Contact> getContacts() {
-		return this.contacts;
+		return Collections.unmodifiableSet(this.contacts);
 	}
 	
 	public boolean add(Contact contact) {

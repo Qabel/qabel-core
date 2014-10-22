@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -14,7 +15,7 @@ public class StorageServers {
 	private final Set<StorageServer> storageServer = new HashSet<StorageServer>();
 
 	public Set<StorageServer> getStorageServer() {
-		return this.storageServer;
+		return Collections.unmodifiableSet(this.storageServer);
 	}
 	
 	public boolean add(StorageServer storageServer) {

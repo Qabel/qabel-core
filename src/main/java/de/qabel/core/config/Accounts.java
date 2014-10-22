@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -15,7 +16,7 @@ public class Accounts {
 	private final Set<Account> account = new HashSet<Account>();
 
 	public Set<Account> getAccount() {
-		return this.account;
+		return Collections.unmodifiableSet(this.account);
 	}
 	
 	public boolean add(Account account) {
