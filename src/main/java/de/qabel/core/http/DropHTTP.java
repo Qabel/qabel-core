@@ -59,7 +59,7 @@ public class DropHTTP {
 			if (responseCode == 200) {
 				InputStream inputstream = conn.getInputStream();
 				MimeTokenStream stream = new MimeTokenStream();
-				stream.parse(inputstream);
+				stream.parseHeadless(inputstream, conn.getContentType());
 				for (EntityState state = stream.getState();
 					 state != EntityState.T_END_OF_STREAM;
 					 state = stream.next()) {
