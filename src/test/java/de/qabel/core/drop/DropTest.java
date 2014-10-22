@@ -88,6 +88,46 @@ public class DropTest {
     }
 
     @Test
+    public void sendAndForgetAutoTest() {
+        URL identityUrl = null;
+        URL contactUrl = null;
+        try {
+            identityUrl = new URL(iUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            contactUrl = new URL(cUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Identity i = new Identity("foo", identityUrl);
+        i.setPrimaryKeyPair(qpkpSender);
+        Identities is = new Identities();
+        Contact contact = new Contact(i);
+        is.getIdentities().add(i);
+
+        contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppkRecipient);
+        contact.setEncryptionPublicKey(qepkRecipient);
+        contact.setSignaturePublicKey(qspkRecipient);
+
+        Drop<TestMessage> d = new Drop<TestMessage>();
+
+        TestMessage m = new TestMessage();
+        m.content = "baz";
+
+        HashSet<Contact> contacts = new HashSet<Contact>();
+        contacts.add(contact);
+        Assert.assertTrue(d.sendAndForget(m, contact));
+
+        retrieveAutoTest();
+    }
+
+    @Test
     public void sendTestSingle() {    	
         URL identityUrl = null;
         URL contactUrl = null;
@@ -163,6 +203,39 @@ public class DropTest {
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
         	 Assert.assertEquals("foo", dm.getSender());
+        }
+    }
+
+    public void retrieveAutoTest() {
+        URL identityUrl = null;
+        URL contactUrl = null;
+
+        try {
+            contactUrl = new URL(cUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        Identity i = new Identity("foo", identityUrl);
+        i.setPrimaryKeyPair(qpkpRecipient);
+        Contact contact = new Contact(i);
+
+        contact.getDropUrls().add(contactUrl);
+
+        contact.setPrimaryPublicKey(qppkSender);
+        contact.setEncryptionPublicKey(qepkSender);
+        contact.setSignaturePublicKey(qspkSender);
+
+        Contacts contacts = new Contacts();
+        contacts.getContacts().add(contact);
+
+        Drop d = new Drop();
+
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
+        //We expect at least one drop message from "foo"
+        Assert.assertTrue(result.size() >= 1);
+        for (DropMessage<ModelObject> dm : result){
+            Assert.assertEquals("", dm.getSender());
         }
     }
 }

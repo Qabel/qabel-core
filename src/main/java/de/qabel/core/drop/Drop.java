@@ -11,6 +11,7 @@ import de.qabel.core.http.DropHTTP;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 
 public class Drop<T extends ModelObject> {
@@ -76,6 +77,35 @@ public class Drop<T extends ModelObject> {
             for (URL u : c.getDropUrls()) {
                 res = http.send(u, cryptedMessage);
             }
+        }
+        return res;
+    }
+
+    /**
+     * Sends the object to one contact and does not wait for acknowledgement
+     *
+     * @param object Object to send
+     * @param contact Contact to send message to
+     * @return true if one DropServers of the contact returns 200
+     */
+    public boolean sendAndForget(T object, Contact contact) {
+        DropHTTP http = new DropHTTP();
+
+        DropMessage<T> dm = new DropMessage<T>();
+
+        dm.setData(object);
+        dm.setTime(new Date());
+        dm.setModelObject((Class<T>) object.getClass());
+
+        String m = serialize(dm);
+        boolean res = false;
+        byte[] cryptedMessage = encryptDrop(
+                m, contact.getEncryptionPublicKey(),
+                contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+        );
+        for (URL u : contact.getDropUrls()) {
+            if(http.send(u, cryptedMessage) == 200)
+                res = true;
         }
         return res;
     }
