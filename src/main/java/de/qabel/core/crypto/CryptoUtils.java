@@ -652,11 +652,14 @@ public class CryptoUtils {
 	 * 			HMAC which will be verified
 	 * @param key
 	 * 			key for HMAC calculation
-	 * @return result of verification i.e. true/false
+	 * @return result of verification i.e. null/not null
 	 */
 	public boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
-		// TODO isEqual might not be constant in time?!
-		return MessageDigest.isEqual(hmac, calcHmac(text, key));
+		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
+		if(!validation) {
+			logger.debug("HMAC is invalid!");
+		}
+		return validation;
 	}
 	
 	
@@ -778,9 +781,9 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
 			// TODO this exception is thrown if ciphertext or authentication tag was modified
-			e.printStackTrace();
+			logger.debug("Authentication tag is invalid!");
+			return null;
 		}
 		return plainText;
 	}
