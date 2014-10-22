@@ -24,7 +24,7 @@ public class DropHTTP {
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
 		conn.setDoOutput(true); // indicates POST method
 		conn.setDoInput(true);
-		conn.setRequestProperty("Content-Type", "multipart/mixed");
+		conn.setRequestProperty("Content-Type", "application/octet-stream");
 
 		// conn.setFixedLengthStreamingMode();
 		DataOutputStream out;
