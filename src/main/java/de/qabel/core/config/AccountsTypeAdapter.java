@@ -39,7 +39,7 @@ public class AccountsTypeAdapter extends TypeAdapter<Accounts> {
 		in.beginArray();
 		while(in.hasNext()) {
 			account = adapter.read(in);
-			accounts.getAccount().add(account);
+			accounts.add(account);
 		}
 		in.endArray();
 		

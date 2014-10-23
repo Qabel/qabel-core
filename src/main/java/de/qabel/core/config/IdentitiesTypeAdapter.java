@@ -39,7 +39,7 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 		in.beginArray();
 		while(in.hasNext()) {
 			identity = adapter.read(in);
-			identities.getIdentities().add(identity);
+			identities.add(identity);
 		}
 		in.endArray();
 		
