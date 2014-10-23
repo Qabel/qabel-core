@@ -95,8 +95,11 @@ public class Identity {
 
 	public Collection<DropURL> getDrops() {
 		return Collections.unmodifiableCollection(this.drops);
-	}	
-
+	}
+	
+	public String getKeyIdentifier() {
+		return this.primaryKeyPair.getQblPrimaryPublicKey().getReadableKeyIdentifier();
+	}
 
 	@Override
 	public int hashCode() {
