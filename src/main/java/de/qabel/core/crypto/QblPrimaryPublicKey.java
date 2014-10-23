@@ -67,4 +67,37 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 		// TODO: Implement support for multiple sub-keys
 		return signPublicKeys.get(0);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((encPublicKeys == null) ? 0 : encPublicKeys.hashCode());
+		result = prime * result
+				+ ((signPublicKeys == null) ? 0 : signPublicKeys.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QblPrimaryPublicKey other = (QblPrimaryPublicKey) obj;
+		if (encPublicKeys == null) {
+			if (other.encPublicKeys != null)
+				return false;
+		} else if (!encPublicKeys.equals(other.encPublicKeys))
+			return false;
+		if (signPublicKeys == null) {
+			if (other.signPublicKeys != null)
+				return false;
+		} else if (!signPublicKeys.equals(other.signPublicKeys))
+			return false;
+		return true;
+	}
 }
