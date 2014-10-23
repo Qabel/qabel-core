@@ -1,6 +1,5 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -16,14 +15,13 @@ public class Identities {
 	 *           identities        &gt;       identity
 	 * </pre>
 	 */
-	private final Set<Identity> identities = new HashSet<Identity>();
+	private Set<Identity> identities;
 	
 	public Set<Identity> getIdentities() {
-		return Collections.unmodifiableSet(this.identities);
-	}
-	
-	public boolean add(Identity identity) {
-		return this.identities.add(identity);
+		if (this.identities == null) {
+			this.identities = new HashSet<Identity>();
+		}
+		return this.identities;
 	}
 
 	@Override

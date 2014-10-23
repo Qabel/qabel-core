@@ -1,6 +1,5 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -12,14 +11,13 @@ public class StorageVolumes {
 	 *           storageVolumes        &gt;       storageVolume
 	 * </pre>
 	 */
-	private final Set<StorageVolume> storageVolume = new HashSet<StorageVolume>();
+	private Set<StorageVolume> storageVolume;
 
 	public Set<StorageVolume> getStorageVolume() {
-		return Collections.unmodifiableSet(this.storageVolume);
-	}
-	
-	public boolean add(StorageVolume storageVolume) {
-		return this.storageVolume.add(storageVolume);
+		if (this.storageVolume == null) {
+			this.storageVolume = new HashSet<StorageVolume>();
+		}
+		return this.storageVolume;
 	}
 
 	@Override

@@ -57,7 +57,7 @@ public class DropTest {
         i.setPrimaryKeyPair(qpkpSender);
         Identities is = new Identities();
         Contact contact = new Contact(i);
-        is.add(i);        
+        is.getIdentities().add(i);        
 
         contact.getDropUrls().add(contactUrl);
 
@@ -194,8 +194,8 @@ public class DropTest {
         contact.setSignaturePublicKey(qspkSender);
 
         Contacts contacts = new Contacts();
-        contacts.add(contact);
-        
+        contacts.getContacts().add(contact);
+     
         Drop d = new Drop();
 
         Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
