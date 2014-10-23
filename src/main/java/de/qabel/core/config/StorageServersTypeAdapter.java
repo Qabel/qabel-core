@@ -39,7 +39,7 @@ public class StorageServersTypeAdapter extends TypeAdapter<StorageServers> {
 		in.beginArray();
 		while(in.hasNext()) {
 			storageServer = adapter.read(in);
-			storageServers.add(storageServer);
+			storageServers.getStorageServer().add(storageServer);
 		}
 		in.endArray();
 		

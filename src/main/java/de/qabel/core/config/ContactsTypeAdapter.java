@@ -39,7 +39,7 @@ public class ContactsTypeAdapter extends TypeAdapter<Contacts> {
 		in.beginArray();
 		while(in.hasNext()) {
 			contact = adapter.read(in);
-			contacts.add(contact);
+			contacts.getContacts().add(contact);
 		}
 		in.endArray();
 		

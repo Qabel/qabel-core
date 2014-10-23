@@ -1,6 +1,5 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -13,14 +12,13 @@ public class Accounts {
 	 *           accounts        &gt;       account
 	 * </pre>
 	 */
-	private final Set<Account> account = new HashSet<Account>();
+	private Set<Account> account;
 
 	public Set<Account> getAccount() {
-		return Collections.unmodifiableSet(this.account);
-	}
-	
-	public boolean add(Account account) {
-		return this.account.add(account);
+		if (this.account == null) {
+			this.account = new HashSet<Account>();
+		}
+		return this.account;
 	}
 
 	@Override

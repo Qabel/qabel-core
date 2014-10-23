@@ -22,14 +22,14 @@ public class ConfigSerializationTest {
 		syncedSettings.setAccounts(new Accounts());
 		//generate and add an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
-		syncedSettings.getAccounts().add(account);
+		syncedSettings.getAccounts().getAccount().add(account);
 		
 		//generate "drop_servers" array
 		syncedSettings.setDropServers(new DropServers());
 		//generate and add an "drop_servers" entry
 		try {
 			DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
-			syncedSettings.getDropServers().add(dropServer);
+			syncedSettings.getDropServers().getDropServer().add(dropServer);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -39,7 +39,7 @@ public class ConfigSerializationTest {
 		//generate and add an "identities" entry
 		try {
 			Identity identity = new Identity("alias", new URL("https://inbox.qabel.de"));
-			syncedSettings.getIdentities().add(identity);
+			syncedSettings.getIdentities().getIdentities().add(identity);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -49,7 +49,7 @@ public class ConfigSerializationTest {
 		//generate and add a "storage_servers" entry
 		try {
 			StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
-			syncedSettings.getStorageServers().add(storageServer);
+			syncedSettings.getStorageServers().getStorageServer().add(storageServer);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -57,7 +57,7 @@ public class ConfigSerializationTest {
 		//generate "storage_volumes" array
 		syncedSettings.setStorageVolumes(new StorageVolumes());
 		//generate and add a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
+		syncedSettings.getStorageVolumes().getStorageVolume().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 		
 		//
