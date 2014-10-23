@@ -43,4 +43,31 @@ public class QblSignKeyPair extends QblSubKeyPair {
 	public byte[] getPublicKeyFingerprint() {
 		return qblSignPublicKey.getPublicKeyFingerprint();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime
+				* result
+				+ ((qblSignPublicKey == null) ? 0 : qblSignPublicKey.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QblSignKeyPair other = (QblSignKeyPair) obj;
+		if (qblSignPublicKey == null) {
+			if (other.qblSignPublicKey != null)
+				return false;
+		} else if (!qblSignPublicKey.equals(other.qblSignPublicKey))
+			return false;
+		return true;
+	}
 }

@@ -43,4 +43,30 @@ public class QblEncKeyPair extends QblSubKeyPair {
 	byte[] getPublicKeyFingerprint() {
 		return qblEncPublicKey.getPublicKeyFingerprint();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((qblEncPublicKey == null) ? 0 : qblEncPublicKey.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QblEncKeyPair other = (QblEncKeyPair) obj;
+		if (qblEncPublicKey == null) {
+			if (other.qblEncPublicKey != null)
+				return false;
+		} else if (!qblEncPublicKey.equals(other.qblEncPublicKey))
+			return false;
+		return true;
+	}
 }

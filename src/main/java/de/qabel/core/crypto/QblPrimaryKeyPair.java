@@ -151,4 +151,46 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	public byte[] getPublicKeyFingerprint() {
 		return qblPrimaryPublicKey.getPublicKeyFingerprint();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((encKeyPairs == null) ? 0 : encKeyPairs.hashCode());
+		result = prime
+				* result
+				+ ((qblPrimaryPublicKey == null) ? 0 : qblPrimaryPublicKey
+						.hashCode());
+		result = prime * result
+				+ ((signKeyPairs == null) ? 0 : signKeyPairs.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		QblPrimaryKeyPair other = (QblPrimaryKeyPair) obj;
+		if (encKeyPairs == null) {
+			if (other.encKeyPairs != null)
+				return false;
+		} else if (!encKeyPairs.equals(other.encKeyPairs))
+			return false;
+		if (qblPrimaryPublicKey == null) {
+			if (other.qblPrimaryPublicKey != null)
+				return false;
+		} else if (!qblPrimaryPublicKey.equals(other.qblPrimaryPublicKey))
+			return false;
+		if (signKeyPairs == null) {
+			if (other.signKeyPairs != null)
+				return false;
+		} else if (!signKeyPairs.equals(other.signKeyPairs))
+			return false;
+		return true;
+	}
 }
