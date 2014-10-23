@@ -21,7 +21,8 @@ public class Contact {
 	 * Note: This is not the identity which is represented by this contact!
 	 */
 	@SerializedName("my_identity")
-	private final Identity contactOwner;
+	private Identity contactOwner;
+	private String contactOwnerKeyId;
 	@SerializedName("drop_urls")
 	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
 	@SerializedName("module_data")
@@ -42,6 +43,15 @@ public class Contact {
 		return contactOwner;
 	}
 	
+	public void setContactOwner (Identity identity) {
+		this.contactOwner = identity;
+		this.contactOwnerKeyId = identity.getKeyIdentifier();
+	}
+	
+	public String getContactOwnerKeyId() {
+		return this.contactOwnerKeyId;
+	}
+		
 	public QblEncPublicKey getEncryptionPublicKey()
 	{
 		return primaryPublicKey.getEncPublicKey();
@@ -76,6 +86,11 @@ public class Contact {
 	public Contact(Identity owner)
 	{
 		this.contactOwner = owner;
+		this.contactOwnerKeyId = owner.getKeyIdentifier();
+	}
+	
+	protected Contact(String ownerKeyId) {
+		this.contactOwnerKeyId = ownerKeyId;
 	}
 
 	@Override
