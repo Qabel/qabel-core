@@ -19,8 +19,7 @@ public class QblKeySerializationTest {
 		System.out.println("Serialized key: " + gson.toJson(qpkp));
 		QblPrimaryKeyPair deserializedQpkp = gson.fromJson(gson.toJson(qpkp), QblPrimaryKeyPair.class);
 		System.out.println("Deserialized key: " + gson.toJson(deserializedQpkp));
-		assertNull(null);
-		//TODO: make test working - proper equals() method for QblPrimaryKeyPair is needed
-//		asserEquals(qpkp, deserializedQpkp);
+		
+		assertEquals(qpkp, deserializedQpkp);
 	}
 }
