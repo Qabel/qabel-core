@@ -39,7 +39,7 @@ public class DropServersTypeAdapter extends TypeAdapter<DropServers> {
 		in.beginArray();
 		while(in.hasNext()) {
 			dropServer = adapter.read(in);
-			dropServers.getDropServer().add(dropServer);
+			dropServers.add(dropServer);
 		}
 		in.endArray();
 		
