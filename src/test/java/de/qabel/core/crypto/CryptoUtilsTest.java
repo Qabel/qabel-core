@@ -71,13 +71,12 @@ public class CryptoUtilsTest {
 		// Test case from http://tools.ietf.org/html/rfc3686
 		byte[] key = Hex.decode("F6D66D6BD52D59BB0796365879EFF886C66DD51A5B6A99744B50590C87A23884");
 		byte[] nonce = Hex.decode("00FAAC24C1585EF15A43D875");
-		byte[] counter = Hex.decode("00000001");
 		byte[] plainText = Hex.decode("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
 		byte[] cipherTextExpected = Hex.decode("F05E231B3894612C49EE000B804EB2A9B8306B508F839D6A5530831D9344AF1C");
 
 		byte[] cipherText = cu.encryptSymmetric(plainText, key, nonce);
 		byte[] plainTextTwo = cu.decryptSymmetric(cipherText, key);
-		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(counter) + Hex.toHexString(cipherTextExpected),Hex.toHexString(cipherText));
+		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(cipherTextExpected),Hex.toHexString(cipherText));
 		assertEquals(Hex.toHexString(plainText), Hex.toHexString(plainTextTwo));
 	}
 	
@@ -113,11 +112,29 @@ public class CryptoUtilsTest {
 
 	@Test
 	public void autheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
-		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
-		String plainText = "Hello this a plaintext, which should be encrypted.";
-
-		byte[] cipherText = cu.encryptAuthenticatedSymmetric(plainText.getBytes(), key);
+		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
+		byte[] key = Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308");
+		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
+		byte[] plainText = Hex.decode("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255");
+		byte[] cipherTextExpected = Hex.decode("522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad");
+		byte[] authenticationTagExpected = Hex.decode("b094dac5d93471bdec1a502270e3cc6c");
+		
+		byte[] cipherText = cu.encryptAuthenticatedSymmetric(plainText, key, nonce);
 		byte[] plainTextTwo = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
-		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
+		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(cipherTextExpected) + Hex.toHexString(authenticationTagExpected), Hex.toHexString(cipherText));
+		assertEquals(Hex.toHexString(plainText), Hex.toHexString(plainTextTwo));
+	}
+	
+	@Test
+	public void invalidAutheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
+		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
+		byte[] key = Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308");
+		String nonce = "cafebabefacedbaddecaf888";
+		String encryptedPlainText = "522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad";
+		String ivalidAuthenticationTag = "a194dac5d93471bdec1a502270e3cc6c";
+		byte[] cipherText = Hex.decode(nonce + encryptedPlainText + ivalidAuthenticationTag);
+		
+		byte[] plainText = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
+		assertEquals(plainText, null);
 	}
 }

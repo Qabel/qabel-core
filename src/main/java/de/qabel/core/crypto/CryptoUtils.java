@@ -3,6 +3,7 @@ package de.qabel.core.crypto;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
@@ -22,11 +23,16 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.logging.log4j.*;
+import org.bouncycastle.asn1.cms.GCMParameters;
 import org.bouncycastle.crypto.DataLengthException;
+import org.bouncycastle.crypto.params.AEADParameters;
+import org.bouncycastle.crypto.params.KeyParameter;
+import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public class CryptoUtils {
@@ -47,6 +53,7 @@ public class CryptoUtils {
 	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_IV_SIZE_BIT = 128;
 	private final static int SYMM_NONCE_SIZE_BIT = 96;
+	private final static int GCM_TAG_SIZE_BIT = 128;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
@@ -416,26 +423,29 @@ public class CryptoUtils {
 	 * 		random input that is concatenated to a counter
 	 * @return ciphertext which is the result of the encryption
 	 */
+
 	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key, byte[] nonce) {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
-		IvParameterSpec iv;
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
+		IvParameterSpec iv;
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
+		
+		if(nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		}
+		counter[counter.length-1] = 1;
 		
 		try {
-			if(nonce.length == SYMM_NONCE_SIZE_BIT / 8) {
-				byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
-				counter[counter.length-1] = 1;
-				cipherText.write(nonce);
-				cipherText.write(counter);
-			} else {
-				cipherText.write(getRandomBytes(SYMM_IV_SIZE_BIT / 8));
-			}
-		} catch (IOException e) {
+			ivOS.write(nonce);
+			ivOS.write(counter);
+			cipherText.write(nonce);
+		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-		
-		iv = new IvParameterSpec(cipherText.toByteArray());
+
+		iv = new IvParameterSpec(ivOS.toByteArray());
 
 		try {
 			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
@@ -473,22 +483,27 @@ public class CryptoUtils {
 	 */
 	synchronized byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_IV_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_IV_SIZE_BIT / 8];
+				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
+		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
 
+		counter[counter.length-1] = 1;
 		try {
 			bi.read(nonce);
+			ivOS.write(nonce);
+			ivOS.write(counter);
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		iv = new IvParameterSpec(nonce);
+		iv = new IvParameterSpec(ivOS.toByteArray());
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
@@ -705,22 +720,18 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 
-		try {
-			if(nonce.length == SYMM_NONCE_SIZE_BIT / 8) {
-				byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
-				counter[counter.length-1] = 1;
-				cipherText.write(nonce);
-				cipherText.write(counter);
-			} else {
-				cipherText.write(getRandomBytes(SYMM_IV_SIZE_BIT / 8));
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
 		
-		iv = new IvParameterSpec(cipherText.toByteArray());
+		try {
+			cipherText.write(nonce);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
+		iv = new IvParameterSpec(nonce);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
@@ -734,7 +745,6 @@ public class CryptoUtils {
 		}
 
 		try {
-			cipherText.write(iv.getIV());
 			cipherText.write(gcmCipher.doFinal(plainText));
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
@@ -766,9 +776,9 @@ public class CryptoUtils {
 	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
 			byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_IV_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_IV_SIZE_BIT / 8];
+				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
@@ -793,7 +803,7 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		
 		iv = new IvParameterSpec(nonce);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
