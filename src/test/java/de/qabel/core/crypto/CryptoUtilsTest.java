@@ -3,9 +3,7 @@ package de.qabel.core.crypto;
 import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.InvalidKeyException;
-
 import javax.crypto.BadPaddingException;
 
 import org.bouncycastle.util.encoders.Hex;
