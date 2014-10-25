@@ -3,6 +3,7 @@ package de.qabel.core.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.junit.Test;
@@ -11,6 +12,9 @@ import static org.junit.Assert.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import de.qabel.core.crypto.QblKeyFactory;
+import de.qabel.core.crypto.QblPrimaryKeyPair;
 
 public class ConfigSerializationTest {	
 	
@@ -38,7 +42,12 @@ public class ConfigSerializationTest {
 		syncedSettings.setIdentities(new Identities());
 		//generate and add an "identities" entry
 		try {
-			Identity identity = new Identity("alias", new URL("https://inbox.qabel.de"));
+			QblPrimaryKeyPair key;
+			Identity identity;
+			
+			key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+			identity = new Identity("alias", new ArrayList<URL>(), key);
+			identity.getDrops().add(new URL("https://inbox.qabel.de"));
 			syncedSettings.getIdentities().add(identity);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
@@ -71,12 +80,13 @@ public class ConfigSerializationTest {
 		builder.registerTypeAdapter(StorageVolumes.class, new StorageVolumesTypeAdapter());
 		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 		Gson gson = builder.create();
-		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
-		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
-		System.out.println(gson.toJson(syncedSettings));
-		System.out.println(gson.toJson(deserializedSyncedSettings));
 		System.out.println("Local settings: " + gson.toJson(localSettings));
+		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
 		System.out.println("Deserialized local settings: " + gson.toJson(deserializedLocalSettings));
+		
+		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
+		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
+		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 		assertEquals(deserializedLocalSettings, localSettings);

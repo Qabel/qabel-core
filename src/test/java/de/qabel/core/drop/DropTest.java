@@ -10,10 +10,10 @@ import org.junit.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 public class DropTest {
     final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
@@ -53,8 +53,8 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
+        i.getDrops().add(identityUrl);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);        
@@ -103,8 +103,8 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
+        i.getDrops().add(identityUrl);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);
@@ -144,8 +144,8 @@ public class DropTest {
             e.printStackTrace();
         }
         
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
+        i.getDrops().add(identityUrl);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -183,8 +183,8 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpRecipient);
+        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpRecipient);
+        i.getDrops().add(identityUrl);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -216,8 +216,8 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpRecipient);
+        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpRecipient);
+        i.getDrops().add(identityUrl);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
