@@ -5,6 +5,7 @@ import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
+import de.qabel.core.exceptions.QblDropInvalidURL;
 
 import org.junit.*;
 
@@ -39,22 +40,11 @@ public class DropTest {
     }
 
     @Test
-    public void sendAndForgetTest() throws InvalidKeyException {  
-        URL identityUrl = null;
-        URL contactUrl = null;
-        try {
-            identityUrl = new URL(iUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+    public void sendAndForgetTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {  
+        DropURL identityUrl = new DropURL(iUrl);
+        DropURL contactUrl = new DropURL(cUrl);
 
-        try {
-            contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        Collection<URL> drops = new ArrayList<URL>();
+        Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
         Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
@@ -90,22 +80,11 @@ public class DropTest {
     }
 
     @Test
-    public void sendAndForgetAutoTest() throws InvalidKeyException {
-        URL identityUrl = null;
-        URL contactUrl = null;
-        try {
-            identityUrl = new URL(iUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
+        DropURL identityUrl = new DropURL(iUrl);
+        DropURL contactUrl = new DropURL(cUrl);
 
-        try {
-            contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        Collection<URL> drops = new ArrayList<URL>();
+        Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
         Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
@@ -131,23 +110,11 @@ public class DropTest {
     }
 
     @Test
-    public void sendTestSingle() throws InvalidKeyException {    	
-        URL identityUrl = null;
-        URL contactUrl = null;
-
-        try {
-            identityUrl = new URL(iUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {    	
+        DropURL identityUrl = new DropURL(iUrl);
+        DropURL contactUrl = new DropURL(cUrl);
         
-        Collection<URL> drops = new ArrayList<URL>();
+        Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
         Identity i = new Identity("foo", drops, qpkpSender);
         Contact contact = new Contact(i);
@@ -177,17 +144,11 @@ public class DropTest {
         retrieveTest();
     }
 
-    public void retrieveTest() throws InvalidKeyException {
-        URL identityUrl = null;
-        URL contactUrl = null;
+    public void retrieveTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
+        DropURL identityUrl = new DropURL(iUrl);
+        DropURL contactUrl = new DropURL(cUrl);
         
-        try {
-            contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        Collection<URL> drops = new ArrayList<URL>();
+        Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
         Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
@@ -203,7 +164,7 @@ public class DropTest {
         
         Drop d = new Drop();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts.getContacts());
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
@@ -211,17 +172,11 @@ public class DropTest {
         }
     }
 
-    public void retrieveAutoTest() throws InvalidKeyException {
-        URL identityUrl = null;
-        URL contactUrl = null;
+    public void retrieveAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
+        DropURL identityUrl = new DropURL(iUrl);
+        DropURL contactUrl = new DropURL(cUrl);
 
-        try {
-            contactUrl = new URL(cUrl);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        Collection<URL> drops = new ArrayList<URL>();
+        Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
         Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
@@ -237,7 +192,7 @@ public class DropTest {
 
         Drop d = new Drop();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts.getContacts());
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){

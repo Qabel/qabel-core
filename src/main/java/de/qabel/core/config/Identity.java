@@ -1,8 +1,8 @@
 package de.qabel.core.config;
 
 import de.qabel.core.crypto.*;
+import de.qabel.core.drop.DropURL;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +21,7 @@ public class Identity {
 	private int deleted;
 	private String alias;
 	private QblPrimaryKeyPair primaryKeyPair;
-	private Collection<URL> drops = new ArrayList<URL>();
+	private Collection<DropURL> drops = new ArrayList<DropURL>();
 
 	/**
 	 * <pre>
@@ -31,7 +31,7 @@ public class Identity {
 	 * </pre>
 	 */
 	
-	public Identity(String alias, Collection<URL> drops, 
+	public Identity(String alias, Collection<DropURL> drops, 
 			QblPrimaryKeyPair primaryKeyPair) {
 		this.id = 0; //just to set it somehow
 		this.setAlias(alias);
@@ -85,15 +85,15 @@ public class Identity {
 		return this.primaryKeyPair;
 	}
 
-	public void setDrops(Collection<URL> drops) {
+	public void setDrops(Collection<DropURL> drops) {
 		this.drops = drops;
 	}
 
-	public void addDrop(URL drop) {
+	public void addDrop(DropURL drop) {
 		this.drops.add(drop);
 	}
 
-	public Collection<URL> getDrops() {
+	public Collection<DropURL> getDrops() {
 		return Collections.unmodifiableCollection(this.drops);
 	}	
 
