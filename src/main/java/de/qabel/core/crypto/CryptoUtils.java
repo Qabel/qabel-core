@@ -32,7 +32,8 @@ public class CryptoUtils {
 
 	private final static CryptoUtils INSTANCE = new CryptoUtils();
 
-	private final static String CRYPTOGRAPHIC_PROVIDER = "BC";
+	private final static String CRYPTOGRAPHIC_PROVIDER = "BC"; // BouncyCastle
+	// https://github.com/Qabel/qabel-doc/wiki/Components-Crypto
 	private final static String ASYM_KEY_ALGORITHM = "RSA";
 	private final static String MESSAGE_DIGEST_ALGORITHM = "SHA-512";
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
@@ -209,7 +210,7 @@ public class CryptoUtils {
 	 *            Data to sign. Usually a message digest.
 	 * @param signatureKey
 	 *            QblSignKeyPair to extract signature key from
-	 * @return Signature of data
+	 * @return Signature of data. Can be null if error occured.
 	 */
 	private byte[] rsaSign(byte[] data, RSAPrivateKey signatureKey) {
 		byte[] sign = null;
@@ -244,7 +245,7 @@ public class CryptoUtils {
 	 *            Sub-key pair to sign
 	 * @param qpkp
 	 *            Primary key pair to sign with
-	 * @return byte[ ] with the signature
+	 * @return byte[ ] with the signature. Can be null.
 	 */
 	byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
 
@@ -335,7 +336,7 @@ public class CryptoUtils {
 	 *            message to encrypt
 	 * @param reciPubKey
 	 *            public key to encrypt with
-	 * @return encrypted messsage
+	 * @return encrypted messsage. Can be null if error occurred.
 	 */
 	private byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) {
@@ -471,7 +472,7 @@ public class CryptoUtils {
 	 *            encrypted message which will be decrypted
 	 * @param key
 	 *            symmetric key which is used for en- and decryption
-	 * @return plain text which is the result of the decryption
+	 * @return plain text which is the result of the decryption. Can be null if error occurred.
 	 */
 	byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
