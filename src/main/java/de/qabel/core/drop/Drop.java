@@ -15,8 +15,8 @@ import java.util.Date;
 
 
 public class Drop<T extends ModelObject> {
-    GsonBuilder gb = null;
-    Gson gson = null;
+    GsonBuilder gb;
+    Gson gson;
 
     public Drop() {
         gb = new GsonBuilder();
