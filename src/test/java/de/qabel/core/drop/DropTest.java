@@ -203,7 +203,7 @@ public class DropTest {
         
         Drop d = new Drop();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
@@ -237,7 +237,7 @@ public class DropTest {
 
         Drop d = new Drop();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts);
+        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl, contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){

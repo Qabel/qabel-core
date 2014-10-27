@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.qabel.core.config.Contact;
-import de.qabel.core.config.Contacts;
 import de.qabel.core.crypto.*;
 import de.qabel.core.http.DropHTTP;
 
@@ -139,14 +138,14 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to check the signature with
      * @return Retrieved, encrypted Dropmessages.
      */
-    public Collection<DropMessage> retrieve(URL url, Contacts contacts) {
+    public Collection<DropMessage> retrieve(URL url, Collection<Contact> contacts) {
         DropHTTP http = new DropHTTP();
         Collection<byte[]> cipherMessages = http.receiveMessages(url);
         Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
         String plainJson = null;
 
         for (byte[] cipherMessage : cipherMessages) {
-            for (Contact c : contacts.getContacts()) {
+            for (Contact c : contacts) {
                 try {
 					plainJson = decryptDrop(cipherMessage,
 					        c.getContactOwner().getPrimaryKeyPair(),
