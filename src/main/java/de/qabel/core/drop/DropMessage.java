@@ -15,7 +15,7 @@ public class DropMessage<T extends ModelObject>{
     public DropMessage(int version, Date time, String acknowledgeID, String sender, Class<T> modelObject, T data) {
         setVersion(version);
         setTime(time);
-        setSender(sender);
+        setAcknowledgeID(acknowledgeID);
         setSender(sender);
         setModelObject(modelObject);
         setData(data);

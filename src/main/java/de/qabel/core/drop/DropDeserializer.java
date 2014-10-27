@@ -37,6 +37,6 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
             throw new JsonParseException("Couldn't deserialize 'data' entry", e1);
         }
 
-        return new DropMessage<ModelObject>(version, new Date(time), acknowledgeID, sender, classModelObject, m);
+        return new DropMessage<>(version, new Date(time), acknowledgeID, sender, classModelObject, m);
     }
 }
