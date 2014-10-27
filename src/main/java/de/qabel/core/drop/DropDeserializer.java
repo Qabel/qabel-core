@@ -24,6 +24,7 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
         String acknowledgeID = json.getAsJsonObject().get("acknowledgeID").getAsString();
 
         ModelObject m;
+        Class<ModelObject> classModelObject;
         try {
             ClassLoader loader = ModuleManager.LOADER;
 
@@ -31,19 +32,11 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
             Class<? extends ModelObject> cls = (Class<? extends ModelObject>) loader
                     .loadClass(model);
             m = new Gson().fromJson(json.getAsJsonObject().get("data").getAsString(), cls);
+            classModelObject = (Class<ModelObject>) m.getClass();
         } catch (ClassNotFoundException e1) {
-            //not found
-            return null;
+            throw new JsonParseException("Couldn't deserialize 'data' entry", e1);
         }
-        DropMessage<ModelObject> dm = new DropMessage<ModelObject>();
 
-        dm.setVersion(version);
-        dm.setTime(new Date(time));
-        dm.setSender(sender);
-        dm.setData(m);
-        dm.setAcknowledgeID(acknowledgeID);
-        dm.setModelObject((Class<ModelObject>) m.getClass());
-
-        return dm;
+        return new DropMessage<ModelObject>(version, new Date(time), acknowledgeID, sender, classModelObject, m);
     }
 }
