@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 import javax.crypto.BadPaddingException;
 
+import org.bouncycastle.util.encoders.Hex;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,23 +55,6 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptDecryptSymmetricTest()
-			throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
-		byte[] plainTextBytes = plainTextStr.getBytes();
-
-		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
-		byte[] secondPlainTextBytes = cu.decryptSymmetric(cipherTextBytes,
-				keyBytes);
-
-		assertEquals(plainTextStr, new String(secondPlainTextBytes, "UTF-8"));
-	}
-
-	@Test
 	public void decryptHybridWithWrongKeyTest() throws BadPaddingException {
 		// exception.expect(BadPaddingException.class);
 
@@ -82,35 +66,52 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptSymmetricTest() throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
-		byte[] plainTextBytes = plainTextStr.getBytes();
+	public void symmetricCryptoTest() throws UnsupportedEncodingException {
+		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
+		String plainText = "Hello this a plaintext, which should be encrypted.";
 
-		byte[] cipherTextBytes = cu.encryptSymmetric(plainTextBytes, keyBytes);
-
-		assertEquals(plainTextBytes.length + 16, cipherTextBytes.length);
+		byte[] cipherText = cu.encryptSymmetric(plainText.getBytes(), key);
+		byte[] plainTextTwo = cu.decryptSymmetric(cipherText, key);
+		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
+	}
+	
+	@Test
+	public void calcHmacTest() throws UnsupportedEncodingException {
+		// Test case from http://www.ietf.org/rfc/rfc4231.txt
+		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
+		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
+		byte[] hmacResult = cu.calcHmac(text, key);
+		assertArrayEquals(hmac, hmacResult);
+	}
+	
+	@Test
+	public void hmacValidationTest() {
+		// Test case from http://www.ietf.org/rfc/rfc4231.txt
+		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
+		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
+		boolean hmacValidation = cu.validateHmac(text, hmac, key);
+		assertEquals(hmacValidation, true);
+	}
+	
+	@Test
+	public void invalidHmacValidationTest() {
+		// Test case from http://www.ietf.org/rfc/rfc4231.txt
+		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
+		byte[] wrongHmac = Hex.decode("a1aa465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
+		boolean wrongHmacValidaition = cu.validateHmac(text, wrongHmac, key);
+		assertEquals(wrongHmacValidaition, false);
 	}
 
-	@Ignore
 	@Test
-	public void decryptSymmetricTest() throws UnsupportedEncodingException {
-		BigInteger key = new BigInteger(
-				"1122334455667788991011121314151617181920212223242526272829303132",
-				16);
-		byte[] keyBytes = key.toByteArray();
-		BigInteger cipherText = new BigInteger(
-				"7c27d0161cd5480c63535a24229c10fd2ed2b2653976988453ea7309e6eb454402295f0eaa7189e6e7c9aebe6b43bc1fdf573ffdae6c8495a0f6f6165cec20f00b9e",
-				16);
-		byte[] cipherTextBytes = cipherText.toByteArray();
-		String plainTextStr = "Hello this a plaintext, which should be encrypted.";
+	public void autheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
+		byte[] key = Hex.decode("1122334455667788991011121314151617181920212223242526272829303132");
+		String plainText = "Hello this a plaintext, which should be encrypted.";
 
-		byte[] plainTextBytes = cu.decryptSymmetric(cipherTextBytes, keyBytes);
-
-		assertEquals(cipherTextBytes.length, plainTextBytes.length + 16);
-		assertEquals(plainTextStr, new String(plainTextBytes, "UTF-8"));
+		byte[] cipherText = cu.encryptAuthenticatedSymmetric(plainText.getBytes(), key);
+		byte[] plainTextTwo = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
+		assertEquals(Hex.toHexString(plainText.getBytes()), Hex.toHexString(plainTextTwo));
 	}
 }
