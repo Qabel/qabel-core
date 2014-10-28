@@ -4,7 +4,8 @@ import de.qabel.core.crypto.*;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -20,7 +21,7 @@ public class Identity {
 	private int deleted;
 	private String alias;
 	private QblPrimaryKeyPair primaryKeyPair;
-	private List<URL> drops = new ArrayList<URL>();
+	private Collection<URL> drops = new ArrayList<URL>();
 
 	/**
 	 * <pre>
@@ -30,7 +31,7 @@ public class Identity {
 	 * </pre>
 	 */
 	
-	public Identity(String alias, List<URL> drops, 
+	public Identity(String alias, Collection<URL> drops, 
 			QblPrimaryKeyPair primaryKeyPair) {
 		this.id = 0; //just to set it somehow
 		this.setAlias(alias);
@@ -84,12 +85,16 @@ public class Identity {
 		return this.primaryKeyPair;
 	}
 
-	public void setDrops(List<URL> drops) {
+	public void setDrops(Collection<URL> drops) {
 		this.drops = drops;
 	}
 
-	public List<URL> getDrops() {
-		return this.drops;
+	public void addDrop(URL drop) {
+		this.drops.add(drop);
+	}
+
+	public Collection<URL> getDrops() {
+		return Collections.unmodifiableCollection(this.drops);
 	}	
 
 

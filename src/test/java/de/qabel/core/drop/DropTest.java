@@ -53,8 +53,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
-        i.getDrops().add(identityUrl);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);        
@@ -103,8 +104,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
-        i.getDrops().add(identityUrl);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);
@@ -144,8 +146,9 @@ public class DropTest {
             e.printStackTrace();
         }
         
-        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpSender);
-        i.getDrops().add(identityUrl);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -183,8 +186,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpRecipient);
-        i.getDrops().add(identityUrl);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -216,8 +220,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", new ArrayList<URL>(), qpkpRecipient);
-        i.getDrops().add(identityUrl);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);

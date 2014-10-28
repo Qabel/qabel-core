@@ -4,6 +4,7 @@ package de.qabel.core.config;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 import org.junit.Test;
@@ -43,11 +44,13 @@ public class ConfigSerializationTest {
 		//generate and add an "identities" entry
 		try {
 			QblPrimaryKeyPair key;
+			Collection<URL> drops; 
 			Identity identity;
 			
 			key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-			identity = new Identity("alias", new ArrayList<URL>(), key);
-			identity.getDrops().add(new URL("https://inbox.qabel.de"));
+			drops = new ArrayList<URL>();
+			drops.add(new URL("https://inbox.qabel.de"));
+			identity = new Identity("alias", drops, key);
 			syncedSettings.getIdentities().add(identity);
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
