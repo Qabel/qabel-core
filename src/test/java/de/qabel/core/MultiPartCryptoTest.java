@@ -4,8 +4,8 @@ import de.qabel.core.config.*;
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
-
 import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -15,6 +15,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 
 public class MultiPartCryptoTest {
@@ -93,21 +95,19 @@ public class MultiPartCryptoTest {
     }
 
     private void loadContacts() throws MalformedURLException {
-        Identity alice = new Identity(
-                "Alice",
+        QblPrimaryKeyPair alicesKey =
+        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+        Collection<URL> alicesDrops = new ArrayList<URL>();
+        alicesDrops.add(
                 new URL(
                         "http://localhost:6000/12345678901234567890123456789012345678alice"));
-        QblPrimaryKeyPair alicesKey = QblKeyFactory.getInstance()
-                .generateQblPrimaryKeyPair();
-        alice.setPrimaryKeyPair(alicesKey);
+        Identity alice = new Identity("Alice", alicesDrops, alicesKey);
 
-        Identity bob = new Identity(
-                "Bob",
-                new URL(
-                        "http://localhost:6000/1234567890123456789012345678901234567890bob"));
-        QblPrimaryKeyPair bobsKey = QblKeyFactory.getInstance()
-                .generateQblPrimaryKeyPair();
-        bob.setPrimaryKeyPair(bobsKey);
+        QblPrimaryKeyPair bobsKey =
+        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+        Identity bob = new Identity("Bob", new ArrayList<URL>(), bobsKey);
+        bob.addDrop(new URL(
+        		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact alicesContact = new Contact(alice);
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());

@@ -10,10 +10,10 @@ import org.junit.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Set;
 
 public class DropTest {
     final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
@@ -53,8 +53,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);        
@@ -103,8 +104,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Identities is = new Identities();
         Contact contact = new Contact(i);
         is.add(i);
@@ -144,8 +146,9 @@ public class DropTest {
             e.printStackTrace();
         }
         
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpSender);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpSender);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -183,8 +186,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpRecipient);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);
@@ -216,8 +220,9 @@ public class DropTest {
             e.printStackTrace();
         }
 
-        Identity i = new Identity("foo", identityUrl);
-        i.setPrimaryKeyPair(qpkpRecipient);
+        Collection<URL> drops = new ArrayList<URL>();
+        drops.add(identityUrl);
+        Identity i = new Identity("foo", drops, qpkpRecipient);
         Contact contact = new Contact(i);
 
         contact.getDropUrls().add(contactUrl);

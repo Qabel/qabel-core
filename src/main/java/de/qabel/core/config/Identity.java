@@ -3,7 +3,9 @@ package de.qabel.core.config;
 import de.qabel.core.crypto.*;
 
 import java.net.URL;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -19,7 +21,7 @@ public class Identity {
 	private int deleted;
 	private String alias;
 	private QblPrimaryKeyPair primaryKeyPair;
-	private URL inbox;
+	private Collection<URL> drops = new ArrayList<URL>();
 
 	/**
 	 * <pre>
@@ -29,11 +31,12 @@ public class Identity {
 	 * </pre>
 	 */
 	
-	public Identity(String alias, URL inbox) {
+	public Identity(String alias, Collection<URL> drops, 
+			QblPrimaryKeyPair primaryKeyPair) {
 		this.id = 0; //just to set it somehow
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
-		this.setInbox(inbox);
+		this.setDrops(drops);
 	}
 	
 	public int getId() {
@@ -82,12 +85,16 @@ public class Identity {
 		return this.primaryKeyPair;
 	}
 
-	public void setInbox(URL inbox) {
-		this.inbox = inbox;
+	public void setDrops(Collection<URL> drops) {
+		this.drops = drops;
 	}
 
-	public URL getInbox() {
-		return this.inbox;
+	public void addDrop(URL drop) {
+		this.drops.add(drop);
+	}
+
+	public Collection<URL> getDrops() {
+		return Collections.unmodifiableCollection(this.drops);
 	}	
 
 
@@ -99,7 +106,7 @@ public class Identity {
 		result = prime * result + created;
 		result = prime * result + deleted;
 		result = prime * result + id;
-		result = prime * result + ((inbox == null) ? 0 : inbox.hashCode());
+		result = prime * result + ((drops == null) ? 0 : drops.hashCode());
 		result = prime * result + updated;
 		return result;
 	}
@@ -124,10 +131,10 @@ public class Identity {
 			return false;
 		if (id != other.id)
 			return false;
-		if (inbox == null) {
-			if (other.inbox != null)
+		if (drops == null) {
+			if (other.drops != null)
 				return false;
-		} else if (!inbox.equals(other.inbox))
+		} else if (!drops.equals(other.drops))
 			return false;
 		if (updated != other.updated)
 			return false;
