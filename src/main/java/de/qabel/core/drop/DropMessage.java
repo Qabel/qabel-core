@@ -5,7 +5,7 @@ import java.util.Date;
 public class DropMessage<T extends ModelObject>{
     private int version = 1;
     private long time = 1L;
-    private String acknowledgeID = "";
+    private String acknowledgeID = "0";
     private String sender = "";
     private Class<T> modelObject;
     private T data;
