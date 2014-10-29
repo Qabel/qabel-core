@@ -494,6 +494,9 @@ public class CryptoUtils {
 	 *            String message to encrypt
 	 * @param recipient
 	 *            Recipient to encrypt message for
+	 * @param signatureKey
+	 *            private key to sign message with
+	 * 
 	 * @return hybrid encrypted String message
 	 */
 	public byte[] encryptHybridAndSign(String message,
@@ -522,7 +525,10 @@ public class CryptoUtils {
 	 *            hybrid encrypted String message
 	 * @param privKey
 	 *            private key to encrypt String message with
-	 * @return decrypted String message or null if message is undecryptable
+	 * @param signatureKey
+	 *            public key to validate signature with
+	 * @return decrypted String message or null if message is undecryptable or
+	 *         signature is invalid
 	 */
 	public String decryptHybridAndValidateSignature(byte[] cipherText,
 			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
