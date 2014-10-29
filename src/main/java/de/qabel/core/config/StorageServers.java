@@ -12,14 +12,14 @@ public class StorageServers {
 	 *           storageServers        &gt;       storageServer
 	 * </pre>
 	 */
-	private final Set<StorageServer> storageServer = new HashSet<StorageServer>();
+	private final Set<StorageServer> storageServers = new HashSet<StorageServer>();
 
-	public Set<StorageServer> getStorageServer() {
-		return Collections.unmodifiableSet(this.storageServer);
+	public Set<StorageServer> getStorageServers() {
+		return Collections.unmodifiableSet(this.storageServers);
 	}
 	
 	public boolean add(StorageServer storageServer) {
-		return this.storageServer.add(storageServer);
+		return this.storageServers.add(storageServer);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class StorageServers {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((storageServer == null) ? 0 : storageServer.hashCode());
+				+ ((storageServers == null) ? 0 : storageServers.hashCode());
 		return result;
 	}
 
@@ -40,10 +40,10 @@ public class StorageServers {
 		if (getClass() != obj.getClass())
 			return false;
 		StorageServers other = (StorageServers) obj;
-		if (storageServer == null) {
-			if (other.storageServer != null)
+		if (storageServers == null) {
+			if (other.storageServers != null)
 				return false;
-		} else if (!storageServer.equals(other.storageServer))
+		} else if (!storageServers.equals(other.storageServers))
 			return false;
 		return true;
 	}

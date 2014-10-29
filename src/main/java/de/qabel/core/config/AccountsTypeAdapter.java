@@ -15,7 +15,7 @@ public class AccountsTypeAdapter extends TypeAdapter<Accounts> {
 	public void write(JsonWriter out, Accounts value) throws IOException {
 		out.beginArray();
 		Gson gson = new Gson();
-		Set<Account> set = value.getAccount();
+		Set<Account> set = value.getAccounts();
 		TypeAdapter<Account> adapter = gson.getAdapter(Account.class);
 		for(Account account : set) {
 			adapter.write(out, account);

@@ -15,7 +15,7 @@ public class StorageServersTypeAdapter extends TypeAdapter<StorageServers> {
 	public void write(JsonWriter out, StorageServers value) throws IOException {
 		out.beginArray();
 		Gson gson = new Gson();
-		Set<StorageServer> set = value.getStorageServer();
+		Set<StorageServer> set = value.getStorageServers();
 		TypeAdapter<StorageServer> adapter = gson.getAdapter(StorageServer.class);
 		for(StorageServer storageServer : set) {
 			adapter.write(out, storageServer);
