@@ -17,11 +17,11 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
     public DropMessage<ModelObject> deserialize(JsonElement json, Type type,
                                                 JsonDeserializationContext context) throws JsonParseException {
 
-        int version          = json.getAsJsonObject().get("version")      .getAsInt();
-        int time             = json.getAsJsonObject().get("time")         .getAsInt();
-        String sender        = json.getAsJsonObject().get("sender")       .getAsString();
-        String model         = json.getAsJsonObject().get("model")        .getAsString();
-        String acknowledgeID = json.getAsJsonObject().get("acknowledgeID").getAsString();
+        int version          = json.getAsJsonObject().get("version")       .getAsInt();
+        int time             = json.getAsJsonObject().get("time_stamp")    .getAsInt();
+        String sender        = json.getAsJsonObject().get("sender")        .getAsString();
+        String model         = json.getAsJsonObject().get("model_object")  .getAsString();
+        String acknowledgeID = json.getAsJsonObject().get("acknowledge_id").getAsString();
 
         ModelObject m;
         Class<ModelObject> classModelObject;

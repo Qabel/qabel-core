@@ -42,7 +42,9 @@ public class DropMessageGsonTest {
         json = gson.toJson(a);
         assertNotNull(json);
 
+		System.out.println("Serialized message: " + gson.toJson(a));
         DropMessage<TestMessage> deserializedJson = gson.fromJson(json, DropMessage.class);
+		System.out.println("Deserialized message: " + gson.toJson(deserializedJson));
         assertEquals("baz", deserializedJson.getData().content);
         assertEquals("foo", deserializedJson.getSender());
         assertEquals("bar", deserializedJson.getAcknowledgeID());
