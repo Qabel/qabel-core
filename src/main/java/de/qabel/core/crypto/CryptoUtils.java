@@ -427,7 +427,11 @@ public class CryptoUtils {
 		if(nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
-		counter[counter.length-1] = 1;
+		
+		// Set counter to 1
+		if(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length-1] = 1;
+		}
 		
 		try {
 			ivOS.write(nonce);
@@ -485,7 +489,11 @@ public class CryptoUtils {
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
 
-		counter[counter.length-1] = 1;
+		// Set counter to 1
+		if(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length-1] = 1;
+		}
+		
 		try {
 			bi.read(nonce);
 			ivOS.write(nonce);
@@ -713,7 +721,7 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 
-		if(nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+		if(nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
 		
@@ -761,9 +769,9 @@ public class CryptoUtils {
 	 * @param cipherText
 	 *            Ciphertext which will be decrypted
 	 * @param key
-	 *            Symmetric key which will be used for decryption and
-	 *            verification
-	 * @return Plaintext
+	 * 			Symmetric key which will be used for decryption and verification
+	 * @return
+	 * 			Plaintext or null if validation of authentication tag fails
 	 */
 
 	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
