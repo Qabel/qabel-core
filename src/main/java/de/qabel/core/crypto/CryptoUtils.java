@@ -59,6 +59,7 @@ public class CryptoUtils {
 	private Cipher asymmetricCipher;
 	private Cipher gcmCipher;
 	private Signature signer;
+	private Mac hmac;
 
 	private CryptoUtils() {
 
@@ -81,6 +82,7 @@ public class CryptoUtils {
 					CRYPTOGRAPHIC_PROVIDER);
 			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
+			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
 			throw new RuntimeException("Cannot find selected algorithm!", e);
@@ -599,19 +601,11 @@ public class CryptoUtils {
 	 * @return HMAC of text under key
 	 */
 	public synchronized byte[] calcHmac(byte[] text, byte[] key) {
-		Mac hmac;
 		byte[] result = null;
 		try {
-			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
 			hmac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
 			result = hmac.doFinal(text);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
