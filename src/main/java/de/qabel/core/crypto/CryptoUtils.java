@@ -83,13 +83,13 @@ public class CryptoUtils {
 					CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
-			e.printStackTrace();
+			throw new RuntimeException("Cannot find selected algorithm!", e);
 		} catch (NoSuchPaddingException e) {
 			logger.error("Cannot find selected padding! " + e.getMessage());
-			e.printStackTrace();
+			throw new RuntimeException("Cannot find selected padding!", e);
 		} catch (NoSuchProviderException e) {
 			logger.error("Cannot find selected provider! " + e.getMessage());
-			e.printStackTrace();
+			throw new RuntimeException("Cannot find selected provider!", e);
 		}
 	}
 
@@ -530,8 +530,9 @@ public class CryptoUtils {
 	 * @return decrypted String message or null if message is undecryptable or
 	 *         signature is invalid
 	 */
-	public synchronized String decryptHybridAndValidateSignature(byte[] cipherText,
-			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
+	public synchronized String decryptHybridAndValidateSignature(
+			byte[] cipherText, QblPrimaryKeyPair privKey,
+			QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
 
@@ -629,7 +630,8 @@ public class CryptoUtils {
 	 *            key for HMAC calculation
 	 * @return result of verification i.e. null/not null
 	 */
-	public synchronized boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
+	public synchronized boolean validateHmac(byte[] text, byte[] hmac,
+			byte[] key) {
 		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
 		if (!validation) {
 			logger.debug("HMAC is invalid!");
@@ -649,7 +651,8 @@ public class CryptoUtils {
 	 *            authentication
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
-	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
+	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText,
+			byte[] key) {
 		SecretKeySpec symmetricKey;
 		IvParameterSpec nonce;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
