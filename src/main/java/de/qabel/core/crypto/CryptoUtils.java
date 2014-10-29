@@ -102,7 +102,7 @@ public class CryptoUtils {
 	 * 
 	 * @return KeyPair
 	 */
-	KeyPair generateKeyPair() {
+	synchronized KeyPair generateKeyPair() {
 		return keyGen.generateKeyPair();
 	}
 
@@ -113,7 +113,7 @@ public class CryptoUtils {
 	 *            Number of random bytes
 	 * @return byte[ ] with random bytes
 	 */
-	byte[] getRandomBytes(int numBytes) {
+	synchronized byte[] getRandomBytes(int numBytes) {
 		byte[] ranBytes = new byte[numBytes];
 		secRandom.nextBytes(ranBytes);
 		return ranBytes;
@@ -126,7 +126,7 @@ public class CryptoUtils {
 	 *            byte[ ] to get the digest from
 	 * @return byte[ ] with SHA512 digest
 	 */
-	public byte[] getSHA512sum(byte[] bytes) {
+	public synchronized byte[] getSHA512sum(byte[] bytes) {
 		byte[] digest = messageDigest.digest(bytes);
 		return digest;
 	}
@@ -139,7 +139,7 @@ public class CryptoUtils {
 	 * @return SHA512 digest as as String in the following format:
 	 *         "00:11:aa:bb:..."
 	 */
-	public String getSHA512sumHumanReadable(byte[] bytes) {
+	public synchronized String getSHA512sumHumanReadable(byte[] bytes) {
 		byte[] digest = getSHA512sum(bytes);
 
 		StringBuilder sb = new StringBuilder(191);
@@ -159,7 +159,7 @@ public class CryptoUtils {
 	 *            Input String
 	 * @return byte[ ] with SHA512 digest
 	 */
-	public byte[] getSHA512sum(String plain) {
+	public synchronized byte[] getSHA512sum(String plain) {
 		return getSHA512sum(plain.getBytes());
 	}
 
@@ -171,7 +171,7 @@ public class CryptoUtils {
 	 * @return SHA512 digest as as String in the following format:
 	 *         "00:11:aa:bb:..."
 	 */
-	public String getSHA512sumHumanReadable(String plain) {
+	public synchronized String getSHA512sumHumanReadable(String plain) {
 		return getSHA512sumHumanReadable(plain.getBytes());
 	}
 
@@ -249,7 +249,7 @@ public class CryptoUtils {
 	 *            Primary key pair to sign with
 	 * @return byte[ ] with the signature. Can be null.
 	 */
-	byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
+	synchronized byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
 
 		if (qkp == null || qpkp == null) {
 			return null;
@@ -313,7 +313,7 @@ public class CryptoUtils {
 	 *            Primary public key to validate signature with
 	 * @return is signature valid
 	 */
-	boolean rsaValidateKeySignature(QblSubPublicKey subKey,
+	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
 			QblPrimaryPublicKey primaryKey) {
 
 		if (subKey == null || primaryKey == null) {
@@ -396,7 +396,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return ciphertext which is the result of the encryption
 	 */
-	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
+	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key) {
 		byte[] rand;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		IvParameterSpec nonce;
@@ -446,7 +446,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return plaintext which is the result of the decryption
 	 */
-	byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
+	synchronized byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
@@ -499,7 +499,7 @@ public class CryptoUtils {
 	 * 
 	 * @return hybrid encrypted String message
 	 */
-	public byte[] encryptHybridAndSign(String message,
+	public synchronized byte[] encryptHybridAndSign(String message,
 			QblEncPublicKey recipient, QblSignKeyPair signatureKey) {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
@@ -530,7 +530,7 @@ public class CryptoUtils {
 	 * @return decrypted String message or null if message is undecryptable or
 	 *         signature is invalid
 	 */
-	public String decryptHybridAndValidateSignature(byte[] cipherText,
+	public synchronized String decryptHybridAndValidateSignature(byte[] cipherText,
 			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
@@ -598,7 +598,7 @@ public class CryptoUtils {
 	 *            key for HMAC calculation
 	 * @return HMAC of text under key
 	 */
-	public byte[] calcHmac(byte[] text, byte[] key) {
+	public synchronized byte[] calcHmac(byte[] text, byte[] key) {
 		Mac hmac;
 		byte[] result = null;
 		try {
@@ -629,7 +629,7 @@ public class CryptoUtils {
 	 *            key for HMAC calculation
 	 * @return result of verification i.e. null/not null
 	 */
-	public boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
+	public synchronized boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
 		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
 		if (!validation) {
 			logger.debug("HMAC is invalid!");
@@ -649,7 +649,7 @@ public class CryptoUtils {
 	 *            authentication
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
-	public byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
+	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
 		SecretKeySpec symmetricKey;
 		IvParameterSpec nonce;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
@@ -696,7 +696,7 @@ public class CryptoUtils {
 	 *            verification
 	 * @return Plaintext
 	 */
-	public byte[] decryptAuthenticatedSymmetricAndValidateTag(
+	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
 			byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
