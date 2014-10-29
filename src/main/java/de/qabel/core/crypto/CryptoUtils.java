@@ -20,7 +20,6 @@ import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
@@ -29,7 +28,6 @@ import javax.crypto.spec.SecretKeySpec;
 import org.apache.logging.log4j.*;
 import org.bouncycastle.crypto.DataLengthException;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.util.encoders.Hex;
 
 public class CryptoUtils {
 
@@ -58,6 +56,9 @@ public class CryptoUtils {
 	private SecureRandom secRandom;
 	private MessageDigest messageDigest;
 	private Cipher symmetricCipher;
+	private Cipher asymmetricCipher;
+	private Cipher gcmCipher;
+	private Signature signer;
 
 	private CryptoUtils() {
 
@@ -73,6 +74,12 @@ public class CryptoUtils {
 			messageDigest = MessageDigest.getInstance(MESSAGE_DIGEST_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			symmetricCipher = Cipher.getInstance(SYMM_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
+			asymmetricCipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
+					CRYPTOGRAPHIC_PROVIDER);
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
+			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
@@ -219,25 +226,15 @@ public class CryptoUtils {
 	 */
 	private byte[] rsaSign(byte[] data, RSAPrivateKey signatureKey) {
 		byte[] sign = null;
-
-		Signature signer;
 		try {
-			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
-					CRYPTOGRAPHIC_PROVIDER);
 			signer.initSign(signatureKey);
 			signer.update(data);
 			sign = signer.sign();
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key!");
 			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			logger.error(SIGNATURE_ALGORITHM + " not found!");
-			e.printStackTrace();
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 		return sign;
@@ -294,22 +291,14 @@ public class CryptoUtils {
 			RSAPublicKey signatureKey) {
 		boolean isValid = false;
 		try {
-			Signature signer = Signature.getInstance(SIGNATURE_ALGORITHM,
-					CRYPTOGRAPHIC_PROVIDER);
 			signer.initVerify(signatureKey);
 			signer.update(data);
 			isValid = signer.verify(signature);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key!");
 			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			logger.error(SIGNATURE_ALGORITHM + " not found!");
-			e.printStackTrace();
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 		return isValid;
@@ -347,11 +336,9 @@ public class CryptoUtils {
 			QblEncPublicKey reciPubKey) {
 		byte[] cipherText = null;
 		try {
-			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
-					CRYPTOGRAPHIC_PROVIDER);
-			cipher.init(Cipher.ENCRYPT_MODE, reciPubKey.getRSAPublicKey(),
-					secRandom);
-			cipherText = cipher.doFinal(message);
+			asymmetricCipher.init(Cipher.ENCRYPT_MODE,
+					reciPubKey.getRSAPublicKey(), secRandom);
+			cipherText = asymmetricCipher.doFinal(message);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid RSA public key!");
 			e.printStackTrace();
@@ -360,15 +347,6 @@ public class CryptoUtils {
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			logger.error("Bad padding!");
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Algorithm " + RSA_CIPHER_ALGORITM + " not found!");
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			logger.error("Padding " + RSA_CIPHER_ALGORITM + " not found!");
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		}
 		return cipherText;
@@ -386,24 +364,13 @@ public class CryptoUtils {
 	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) {
 		byte[] plaintext = null;
 		try {
-			Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
-					CRYPTOGRAPHIC_PROVIDER);
-			cipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
-			plaintext = cipher.doFinal(cipherText);
+			asymmetricCipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
+			plaintext = asymmetricCipher.doFinal(cipherText);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid RSA private key!");
 			e.printStackTrace();
 		} catch (IllegalBlockSizeException e) {
 			logger.error("Illegal block size!");
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Algorithm " + RSA_CIPHER_ALGORITM + " not found!");
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			logger.error("Padding " + RSA_CIPHER_ALGORITM + " not found!");
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			logger.error("Cannot find selected provider! " + e.getMessage());
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			// This exception should occur if cipherText is decrypted with wrong
@@ -561,8 +528,8 @@ public class CryptoUtils {
 			QblPrimaryKeyPair privKey, QblSignPublicKey signatureKey) {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
-		
-		if (bs.available() < RSA_SIGNATURE_SIZE_BYTE){
+
+		if (bs.available() < RSA_SIGNATURE_SIZE_BYTE) {
 			logger.debug("Avaliable data is less than RSA signature size!");
 			return null;
 		}
@@ -590,8 +557,8 @@ public class CryptoUtils {
 		bs = new ByteArrayInputStream(encryptedMessage);
 
 		byte[] encryptedAesKey = new byte[ENCRYPTED_AES_KEY_SIZE_BYTE];
-		
-		if (bs.available() < ENCRYPTED_AES_KEY_SIZE_BYTE){
+
+		if (bs.available() < ENCRYPTED_AES_KEY_SIZE_BYTE) {
 			logger.debug("Avaliable data is less than encrypted AES key size");
 			return null;
 		}
@@ -615,18 +582,19 @@ public class CryptoUtils {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Calculates HMAC of input.
+	 * 
 	 * @param text
-	 * 			input text
+	 *            input text
 	 * @param key
-	 * 			key for HMAC calculation 
+	 *            key for HMAC calculation
 	 * @return HMAC of text under key
 	 */
 	public byte[] calcHmac(byte[] text, byte[] key) {
 		Mac hmac;
-		byte [] result = null;
+		byte[] result = null;
 		try {
 			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
 			hmac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
@@ -643,59 +611,46 @@ public class CryptoUtils {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Simple verification of HMAC
+	 * 
 	 * @param text
-	 * 			original input text
+	 *            original input text
 	 * @param hmac
-	 * 			HMAC which will be verified
+	 *            HMAC which will be verified
 	 * @param key
-	 * 			key for HMAC calculation
+	 *            key for HMAC calculation
 	 * @return result of verification i.e. null/not null
 	 */
 	public boolean validateHmac(byte[] text, byte[] hmac, byte[] key) {
 		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
-		if(!validation) {
+		if (!validation) {
 			logger.debug("HMAC is invalid!");
 		}
 		return validation;
 	}
-	
-	
+
 	/**
-	 * Encryptes plaintext in GCM Mode to get an authenticated encryption.
-	 * It's an alternative to encrypt-then-(H)MAC in CTR mode. It will be
-	 * tested and reviewed which AE will be used.
+	 * Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
+	 * an alternative to encrypt-then-(H)MAC in CTR mode. It will be tested and
+	 * reviewed which AE will be used.
+	 * 
 	 * @param plainText
-	 * 			Plaintext which will be encrypted 
+	 *            Plaintext which will be encrypted
 	 * @param key
-	 * 			Symmetric key which will be used for encryption and authentication
-	 * @return
-	 * 			Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 *            Symmetric key which will be used for encryption and
+	 *            authentication
+	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
 	public byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
-		Cipher gcmCipher = null;
 		SecretKeySpec symmetricKey;
 		IvParameterSpec nonce;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
-		
-		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+
 		nonce = new IvParameterSpec(getRandomBytes(SYMM_NONCE_SIZE_BIT / 8));
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
-		
+
 		try {
 			gcmCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
 		} catch (InvalidKeyException e) {
@@ -705,7 +660,7 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		try {
 			cipherText.write(nonce.getIV());
 			cipherText.write(gcmCipher.doFinal(plainText));
@@ -722,20 +677,21 @@ public class CryptoUtils {
 
 		return cipherText.toByteArray();
 	}
-	
+
 	/**
 	 * Decryptes ciphertext in GCM Mode and verifies the integrity and
-	 * authentication. As well as encryptAuthenticatedSymmetric() it
-	 * will be tested which AE will be used. 
+	 * authentication. As well as encryptAuthenticatedSymmetric() it will be
+	 * tested which AE will be used.
+	 * 
 	 * @param cipherText
-	 * 			Ciphertext which will be decrypted 
+	 *            Ciphertext which will be decrypted
 	 * @param key
-	 * 			Symmetric key which will be used for decryption and verification
-	 * @return
-	 * 			Plaintext
+	 *            Symmetric key which will be used for decryption and
+	 *            verification
+	 * @return Plaintext
 	 */
-	public byte[] decryptAuthenticatedSymmetricAndValidateTag(byte[] cipherText, byte[] key) {
-		Cipher gcmCipher = null;
+	public byte[] decryptAuthenticatedSymmetricAndValidateTag(
+			byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
@@ -745,20 +701,7 @@ public class CryptoUtils {
 		SecretKeySpec symmetricKey;
 
 		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
-		} catch (NoSuchAlgorithmException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (NoSuchProviderException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (NoSuchPaddingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-		
-		try {
-			bi.read(rand);	
+			bi.read(rand);
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -781,7 +724,8 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (BadPaddingException e) {
-			// TODO this exception is thrown if ciphertext or authentication tag was modified
+			// TODO this exception is thrown if ciphertext or authentication tag
+			// was modified
 			logger.debug("Authentication tag is invalid!");
 			return null;
 		}
