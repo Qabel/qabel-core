@@ -424,7 +424,7 @@ public class CryptoUtils {
 		IvParameterSpec iv;
 		byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
 		
-		if(nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+		if(nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
 		
