@@ -232,10 +232,8 @@ public class CryptoUtils {
 			sign = signer.sign();
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key!");
-			e.printStackTrace();
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
-			e.printStackTrace();
 		}
 		return sign;
 	}
@@ -268,9 +266,10 @@ public class CryptoUtils {
 	 * @param signPublicKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
+	 * @throws InvalidKeyException 
 	 */
 	private boolean validateSignature(byte[] message, byte[] signature,
-			QblSignPublicKey signPublicKey) {
+			QblSignPublicKey signPublicKey) throws InvalidKeyException {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaValidateSignature(sha512Sum, signature,
 				signPublicKey.getRSAPublicKey());
@@ -286,20 +285,20 @@ public class CryptoUtils {
 	 * @param signatureKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
+	 * @throws InvalidKeyException 
 	 */
 	private boolean rsaValidateSignature(byte[] data, byte[] signature,
-			RSAPublicKey signatureKey) {
+			RSAPublicKey signatureKey) throws InvalidKeyException {
 		boolean isValid = false;
 		try {
 			signer.initVerify(signatureKey);
 			signer.update(data);
 			isValid = signer.verify(signature);
 		} catch (InvalidKeyException e) {
-			logger.error("Invalid key!");
-			e.printStackTrace();
+			logger.error("Invalid RSA public key!");
+			throw new InvalidKeyException("Invalid RSA public key!");
 		} catch (SignatureException e) {
 			logger.error("Signature exception!");
-			e.printStackTrace();
 		}
 		return isValid;
 	}
@@ -312,9 +311,10 @@ public class CryptoUtils {
 	 * @param primaryKey
 	 *            Primary public key to validate signature with
 	 * @return is signature valid
+	 * @throws InvalidKeyException 
 	 */
 	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
-			QblPrimaryPublicKey primaryKey) {
+			QblPrimaryPublicKey primaryKey) throws InvalidKeyException {
 
 		if (subKey == null || primaryKey == null) {
 			return false;
@@ -331,9 +331,10 @@ public class CryptoUtils {
 	 * @param reciPubKey
 	 *            public key to encrypt with
 	 * @return encrypted messsage. Can be null if error occurred.
+	 * @throws InvalidKeyException 
 	 */
 	private byte[] rsaEncryptForRecipient(byte[] message,
-			QblEncPublicKey reciPubKey) {
+			QblEncPublicKey reciPubKey) throws InvalidKeyException {
 		byte[] cipherText = null;
 		try {
 			asymmetricCipher.init(Cipher.ENCRYPT_MODE,
@@ -341,13 +342,11 @@ public class CryptoUtils {
 			cipherText = asymmetricCipher.doFinal(message);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid RSA public key!");
-			e.printStackTrace();
+			throw new InvalidKeyException("Invalid RSA public key!");
 		} catch (IllegalBlockSizeException e) {
 			logger.error("Illegal block size!");
-			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			logger.error("Bad padding!");
-			e.printStackTrace();
 		}
 		return cipherText;
 	}
@@ -360,18 +359,18 @@ public class CryptoUtils {
 	 * @param privKey
 	 *            private key to decrypt with
 	 * @return decrypted ciphertext, or null if undecryptable
+	 * @throws InvalidKeyException 
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) {
+	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
 			asymmetricCipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
 			plaintext = asymmetricCipher.doFinal(cipherText);
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid RSA private key!");
-			e.printStackTrace();
+			throw new InvalidKeyException("Invalid RSA private key!");
 		} catch (IllegalBlockSizeException e) {
 			logger.error("Illegal block size!");
-			e.printStackTrace();
 		} catch (BadPaddingException e) {
 			// This exception should occur if cipherText is decrypted with wrong
 			// private key
@@ -498,9 +497,10 @@ public class CryptoUtils {
 	 *            private key to sign message with
 	 * 
 	 * @return hybrid encrypted String message
+	 * @throws InvalidKeyException 
 	 */
 	public synchronized byte[] encryptHybridAndSign(String message,
-			QblEncPublicKey recipient, QblSignKeyPair signatureKey) {
+			QblEncPublicKey recipient, QblSignKeyPair signatureKey) throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
 
@@ -510,7 +510,6 @@ public class CryptoUtils {
 			bs.write(createSignature(bs.toByteArray(), signatureKey));
 		} catch (IOException e) {
 			logger.error("IOException while writing to ByteArrayOutputStream");
-			e.printStackTrace();
 		}
 		return bs.toByteArray();
 	}
@@ -529,10 +528,11 @@ public class CryptoUtils {
 	 *            public key to validate signature with
 	 * @return decrypted String message or null if message is undecryptable or
 	 *         signature is invalid
+	 * @throws InvalidKeyException 
 	 */
 	public synchronized String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
-			QblSignPublicKey signatureKey) {
+			QblSignPublicKey signatureKey) throws InvalidKeyException {
 		ByteArrayInputStream bs = new ByteArrayInputStream(cipherText);
 		// TODO: Include header byte
 
@@ -551,7 +551,6 @@ public class CryptoUtils {
 			bs.read(rsaSignature);
 		} catch (IOException e) {
 			logger.error("IOException while reading from ByteArrayInputStream");
-			e.printStackTrace();
 		}
 
 		// Validate signature over RSA encrypted AES key and encrypted data

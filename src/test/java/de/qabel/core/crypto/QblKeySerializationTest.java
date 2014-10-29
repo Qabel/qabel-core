@@ -2,6 +2,8 @@ package de.qabel.core.crypto;
 
 import static org.junit.Assert.*;
 
+import java.security.InvalidKeyException;
+
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -24,7 +26,7 @@ public class QblKeySerializationTest {
 	}
 	
 	@Test
-	public void qblPrimaryPublicKeyTest() {
+	public void qblPrimaryPublicKeyTest() throws InvalidKeyException {
 		QblKeyFactory kf = QblKeyFactory.getInstance();
 		QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
 		QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();

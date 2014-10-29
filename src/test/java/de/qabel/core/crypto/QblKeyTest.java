@@ -4,6 +4,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.InvalidKeyException;
+
 import org.junit.Test;
 
 public class QblKeyTest {
@@ -51,7 +53,7 @@ public class QblKeyTest {
 	}
 
 	@Test
-	public void subKeySignatureValidTest() {
+	public void subKeySignatureValidTest() throws InvalidKeyException {
 		QblPrimaryKeyPair qkp1 = new QblPrimaryKeyPair();
 
 		// Validate signature of signature and encryption sub public keys
@@ -64,7 +66,7 @@ public class QblKeyTest {
 	}
 
 	@Test
-	public void subKeySignatureInvalidTest() {
+	public void subKeySignatureInvalidTest() throws InvalidKeyException {
 		QblPrimaryKeyPair qkp1 = new QblPrimaryKeyPair();
 		QblPrimaryKeyPair qkp2 = new QblPrimaryKeyPair();
 

@@ -5,11 +5,12 @@ import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
-import de.qabel.core.crypto.QblPrimaryKeyPair;
+
 import org.junit.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class DropTest {
     }
 
     @Test
-    public void sendAndForgetTest() {  
+    public void sendAndForgetTest() throws InvalidKeyException {  
         URL identityUrl = null;
         URL contactUrl = null;
         try {
@@ -89,7 +90,7 @@ public class DropTest {
     }
 
     @Test
-    public void sendAndForgetAutoTest() {
+    public void sendAndForgetAutoTest() throws InvalidKeyException {
         URL identityUrl = null;
         URL contactUrl = null;
         try {
@@ -130,7 +131,7 @@ public class DropTest {
     }
 
     @Test
-    public void sendTestSingle() {    	
+    public void sendTestSingle() throws InvalidKeyException {    	
         URL identityUrl = null;
         URL contactUrl = null;
 
@@ -176,7 +177,7 @@ public class DropTest {
         retrieveTest();
     }
 
-    public void retrieveTest() {
+    public void retrieveTest() throws InvalidKeyException {
         URL identityUrl = null;
         URL contactUrl = null;
         
@@ -210,7 +211,7 @@ public class DropTest {
         }
     }
 
-    public void retrieveAutoTest() {
+    public void retrieveAutoTest() throws InvalidKeyException {
         URL identityUrl = null;
         URL contactUrl = null;
 

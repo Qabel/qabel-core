@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 
 import javax.crypto.BadPaddingException;
 
@@ -35,7 +36,7 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptHybridTest() throws BadPaddingException {
+	public void encryptHybridTest() throws BadPaddingException, InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
 				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
 
@@ -46,7 +47,7 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void encryptHybridTestInvalidSignature() {
+	public void encryptHybridTestInvalidSignature() throws InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
 				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
 
@@ -55,7 +56,7 @@ public class CryptoUtilsTest {
 	}
 
 	@Test
-	public void decryptHybridWithWrongKeyTest() throws BadPaddingException {
+	public void decryptHybridWithWrongKeyTest() throws BadPaddingException, InvalidKeyException {
 		// exception.expect(BadPaddingException.class);
 
 		byte[] ciphertext = cu.encryptHybridAndSign(jsonTestString,

@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.security.InvalidKeyException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 
@@ -30,8 +31,9 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 * @param encPublicKey
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
+	 * @throws InvalidKeyException 
 	 */
-	public boolean attachEncPublicKey(QblEncPublicKey encPublicKey) {
+	public boolean attachEncPublicKey(QblEncPublicKey encPublicKey) throws InvalidKeyException {
 		if (CryptoUtils.getInstance().rsaValidateKeySignature(encPublicKey,
 				this)) {
 			encPublicKeys.add(encPublicKey);
@@ -47,8 +49,9 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	 * @param signPublicKey
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
+	 * @throws InvalidKeyException 
 	 */
-	public boolean attachSignPublicKey(QblSignPublicKey signPublicKey) {
+	public boolean attachSignPublicKey(QblSignPublicKey signPublicKey) throws InvalidKeyException {
 		if (CryptoUtils.getInstance().rsaValidateKeySignature(signPublicKey,
 				this)) {
 			signPublicKeys.add(signPublicKey);
