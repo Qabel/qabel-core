@@ -18,7 +18,7 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
                                                 JsonDeserializationContext context) throws JsonParseException {
 
         int version          = json.getAsJsonObject().get("version")       .getAsInt();
-        int time             = json.getAsJsonObject().get("time_stamp")    .getAsInt();
+        long time             = json.getAsJsonObject().get("time_stamp")    .getAsLong();
         String sender        = json.getAsJsonObject().get("sender")        .getAsString();
         String model         = json.getAsJsonObject().get("model_object")  .getAsString();
         String acknowledgeID = json.getAsJsonObject().get("acknowledge_id").getAsString();
