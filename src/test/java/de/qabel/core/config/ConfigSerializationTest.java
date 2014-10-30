@@ -26,14 +26,10 @@ public class ConfigSerializationTest {
 	public void settingsTest() throws QblDropInvalidURL, MalformedURLException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
-		//generate "accounts" array
-		syncedSettings.setAccounts(new Accounts());
 		//generate and add an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
 		syncedSettings.getAccounts().add(account);
 		
-		//generate "drop_servers" array
-		syncedSettings.setDropServers(new DropServers());
 		//generate and add an "drop_servers" entry
 		DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
 		syncedSettings.getDropServers().add(dropServer);
@@ -51,8 +47,6 @@ public class ConfigSerializationTest {
 		identity = new Identity("alias", drops, key);
 		syncedSettings.getIdentities().add(identity);
 		
-		//generate "storage_servers" array
-		syncedSettings.setStorageServers(new StorageServers());
 		//generate and add a "storage_servers" entry
 		try {
 			StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
@@ -61,32 +55,33 @@ public class ConfigSerializationTest {
 			e.printStackTrace();
 		}
 		
-		//generate "storage_volumes" array
-		syncedSettings.setStorageVolumes(new StorageVolumes());
 		//generate and add a "storage_volumes" entry
 		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 		
-		//
-		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
 		
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(Accounts.class, new AccountsTypeAdapter());
-		builder.registerTypeAdapter(DropServers.class, new DropServersTypeAdapter());
-		builder.registerTypeAdapter(Identities.class, new IdentitiesTypeAdapter());
-		builder.registerTypeAdapter(StorageServers.class, new StorageServersTypeAdapter());
-		builder.registerTypeAdapter(StorageVolumes.class, new StorageVolumesTypeAdapter());
-		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		builder.registerTypeAdapter(SyncedSettings.class, new SyncedSettingsTypeAdapter());
 		Gson gson = builder.create();
-		System.out.println("Local settings: " + gson.toJson(localSettings));
-		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
-		System.out.println("Deserialized local settings: " + gson.toJson(deserializedLocalSettings));
 		
 		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
 		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
 		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
+	}
+	
+	@Test
+	public void localSettingsTest() {
+		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
+		
+		GsonBuilder builder = new GsonBuilder();
+		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		Gson gson = builder.create();
+		System.out.println("Local settings: " + gson.toJson(localSettings));
+		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
+		System.out.println("Deserialized local settings: " + gson.toJson(deserializedLocalSettings));
+		
 		assertEquals(deserializedLocalSettings, localSettings);
 	}
 	
@@ -130,4 +125,5 @@ public class ConfigSerializationTest {
 			e.printStackTrace();
 		}
 	}
+	
 }
