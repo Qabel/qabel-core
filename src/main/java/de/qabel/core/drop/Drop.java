@@ -9,15 +9,21 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.http.DropHTTP;
 
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class Drop<T extends ModelObject> {
     GsonBuilder gb;
     Gson gson;
 
+    private final static Logger logger = LogManager.getLogger(Drop.class.getName());
+    
     public Drop() {
         gb = new GsonBuilder();
         gb.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
@@ -46,14 +52,19 @@ public class Drop<T extends ModelObject> {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         boolean res = false;
-        byte[] cryptedMessage = encryptDrop(
-                m, contact.getEncryptionPublicKey(),
-                contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
-        );
-        for (URL u : contact.getDropUrls()) {
-            if(http.send(u, cryptedMessage) == 200)
-                res = true;
-        }
+        byte[] cryptedMessage;
+		try {
+			cryptedMessage = encryptDrop(
+			        m, contact.getEncryptionPublicKey(),
+			        contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+			);
+			for (URL u : contact.getDropUrls()) {
+	            if(http.send(u, cryptedMessage) == 200)
+	                res = true;
+	        }
+		} catch (InvalidKeyException e) {
+			logger.error("Invalid key in contact. Cannot send message!");
+		}        
         return res;
     }
 
@@ -69,14 +80,19 @@ public class Drop<T extends ModelObject> {
         String m = serialize(message);
         int res = 0;
         for (Contact c : contacts) {
-            byte[] cryptedMessage = encryptDrop(
-                                    m,
-                                    c.getEncryptionPublicKey(),
-                                    c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
-            );
-            for (URL u : c.getDropUrls()) {
-                res = http.send(u, cryptedMessage);
-            }
+            byte[] cryptedMessage;
+			try {
+				cryptedMessage = encryptDrop(
+				                        m,
+				                        c.getEncryptionPublicKey(),
+				                        c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+				);
+				for (URL u : c.getDropUrls()) {
+					res = http.send(u, cryptedMessage);
+		        }
+			} catch (InvalidKeyException e) {
+				logger.error("Invalid key in contact. Cannot send message!");
+			}           
         }
         return res;
     }
@@ -99,14 +115,20 @@ public class Drop<T extends ModelObject> {
 
         String m = serialize(dm);
         boolean res = false;
-        byte[] cryptedMessage = encryptDrop(
-                m, contact.getEncryptionPublicKey(),
-                contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
-        );
-        for (URL u : contact.getDropUrls()) {
-            if(http.send(u, cryptedMessage) == 200)
-                res = true;
-        }
+        byte[] cryptedMessage;
+		try {
+			cryptedMessage = encryptDrop(
+			        m, contact.getEncryptionPublicKey(),
+			        contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+			);
+			 for (URL u : contact.getDropUrls()) {
+		            if(http.send(u, cryptedMessage) == 200)
+		                res = true;
+		        }
+		} catch (InvalidKeyException e) {
+			logger.error("Invalid key in contact. Cannot send message!");
+		}
+       
         return res;
     }
 
@@ -125,10 +147,14 @@ public class Drop<T extends ModelObject> {
 
         for (byte[] cipherMessage : cipherMessages) {
             for (Contact c : contacts.getContacts()) {
-                plainJson = decryptDrop(cipherMessage,
-                        c.getContactOwner().getPrimaryKeyPair(),
-                        c.getSignaturePublicKey()
-                );
+                try {
+					plainJson = decryptDrop(cipherMessage,
+					        c.getContactOwner().getPrimaryKeyPair(),
+					        c.getSignaturePublicKey()
+					);
+				} catch (InvalidKeyException e) {
+					// TODO Invalid keys in Contacts are currently ignored
+				}
                 if (plainJson == null) {
                     continue;
                 } else {
@@ -167,8 +193,9 @@ public class Drop<T extends ModelObject> {
      * @param publickey   Publickey to encrypt the jsonMessage with
      * @param skp         Sign key pair to sign the message
      * @return the cyphertext as byte[]
+     * @throws InvalidKeyException 
      */
-    private byte[] encryptDrop(String jsonMessage, QblEncPublicKey publickey, QblSignKeyPair skp) {
+    private byte[] encryptDrop(String jsonMessage, QblEncPublicKey publickey, QblSignKeyPair skp) throws InvalidKeyException {
         CryptoUtils cu = CryptoUtils.getInstance();
         return cu.encryptHybridAndSign(jsonMessage, publickey, skp);
     }
@@ -179,8 +206,9 @@ public class Drop<T extends ModelObject> {
      * @param keypair Keypair to decrypt the ciphertext with
      * @param signkey Public sign key to validate the signature
      * @return The encrypted message as string
+     * @throws InvalidKeyException 
      */
-    private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) {
+    private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {
         CryptoUtils cu = CryptoUtils.getInstance();
         return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
     }

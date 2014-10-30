@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -38,7 +39,7 @@ public class MultiPartCryptoTest {
     private DropQueueCallback<TestObject> mQueue;
 
     @Before
-    public void setUp() throws MalformedURLException {
+    public void setUp() throws MalformedURLException, InvalidKeyException {
         dropController = new DropController();
 
         loadContacts();
@@ -94,7 +95,7 @@ public class MultiPartCryptoTest {
         assertEquals("Test", msg.getData().getStr());
     }
 
-    private void loadContacts() throws MalformedURLException {
+    private void loadContacts() throws MalformedURLException, InvalidKeyException {
         QblPrimaryKeyPair alicesKey =
         		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
         Collection<URL> alicesDrops = new ArrayList<URL>();

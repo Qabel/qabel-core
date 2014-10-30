@@ -2,6 +2,7 @@ package de.qabel.core.crypto;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
@@ -10,6 +11,9 @@ import java.security.spec.RSAPublicKeySpec;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -17,6 +21,10 @@ import com.google.gson.stream.JsonWriter;
 
 public class QblPrimaryPublicKeyTypeAdapter extends TypeAdapter<QblPrimaryPublicKey> {
 
+	private final static Logger logger = LogManager.getLogger(QblPrimaryPublicKeyTypeAdapter.class
+			.getName());
+
+	
 	@Override
 	public void write(JsonWriter out, QblPrimaryPublicKey value) throws IOException {
 		out.beginObject();
@@ -86,8 +94,12 @@ public class QblPrimaryPublicKeyTypeAdapter extends TypeAdapter<QblPrimaryPublic
 		}
 		in.endObject();
 		if(!(primaryPublicKey == null || encPublicKey == null || signPublicKey == null)) {
-			primaryPublicKey.attachEncPublicKey(encPublicKey);
-			primaryPublicKey.attachSignPublicKey(signPublicKey);
+			try {
+				primaryPublicKey.attachEncPublicKey(encPublicKey);
+				primaryPublicKey.attachSignPublicKey(signPublicKey);
+			} catch (InvalidKeyException e) {
+				logger.error("Read public key is invalid!");			
+			}
 		}
 		
 		return primaryPublicKey;

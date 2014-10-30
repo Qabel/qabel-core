@@ -3,6 +3,7 @@ package de.qabel.core.config;
 import de.qabel.core.crypto.*;
 
 import java.net.*;
+import java.security.InvalidKeyException;
 import java.util.*;
 
 import com.google.gson.annotations.SerializedName;
@@ -46,7 +47,7 @@ public class Contact {
 		return primaryPublicKey.getEncPublicKey();
 	}
 	
-	public void setEncryptionPublicKey(QblEncPublicKey key)
+	public void setEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachEncPublicKey(key);
 	}
@@ -56,7 +57,7 @@ public class Contact {
 		return primaryPublicKey.getSignPublicKey();
 	}
 	
-	public void setSignaturePublicKey(QblSignPublicKey key)
+	public void setSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachSignPublicKey(key);
 	}	
