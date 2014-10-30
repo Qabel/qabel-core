@@ -5,17 +5,17 @@ import java.util.Date;
 import com.google.gson.annotations.SerializedName;
 
 public class DropMessage<T extends ModelObject>{
-	@SerializedName("version")
+    @SerializedName("version")
     private int version = 1;
-	@SerializedName("time_stamp")
+    @SerializedName("time_stamp")
     private long time = 1L;
-	@SerializedName("acknowledge_id")
+    @SerializedName("acknowledge_id")
     private String acknowledgeID = "0";
-	@SerializedName("sender")
+    @SerializedName("sender")
     private String sender = "";
-	@SerializedName("model_object")
+    @SerializedName("model_object")
     private Class<T> modelObject;
-	@SerializedName("data")
+    @SerializedName("data")
     private T data;
 
 
