@@ -78,7 +78,7 @@ public class DropController {
 		for (DropServer server : servers) {
 			Drop drop = new Drop<>();
 			Collection<DropMessage<? extends ModelObject>> results = drop
-					.retrieve(server.getUrl(), getContacts());
+					.retrieve(server.getUrl(), getContacts().getContacts());
 			for (DropMessage<? extends ModelObject> dm : results) {
 				handleDrop(dm);
 			}
