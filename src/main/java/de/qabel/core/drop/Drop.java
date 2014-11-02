@@ -40,7 +40,8 @@ public class Drop<T extends ModelObject> {
      * @param contact Contact to send message to
      * @return true if one DropServers of the contact returns 200
      */
-    public boolean send(DropMessage<T> message, Contact contact) {
+    public boolean send(DropMessage<? extends ModelObject> message,
+    		Contact contact) {
         return (sendAndForget(message, contact));
     }
 
@@ -53,7 +54,7 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to send message to
      * @return DropResult object
      */
-    public DropResult send(DropMessage<T> message,
+    public DropResult send(DropMessage<? extends ModelObject> message,
     		Collection<Contact> contacts) {
         return sendAndForget(message, contacts);
     }
@@ -65,7 +66,8 @@ public class Drop<T extends ModelObject> {
      * @param contact Contact to send message to
      * @return true if one DropServers of the contact returns 200
      */
-    public boolean sendAndForget(DropMessage<T> message, Contact contact) {
+    public boolean sendAndForget(DropMessage<? extends ModelObject> message,
+    		Contact contact) {
         DropHTTP http = new DropHTTP();
         String m = serialize(message);
         boolean res = false;
@@ -92,9 +94,8 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to send message to
      * @return DropResult object
      */
-    public DropResult sendAndForget(DropMessage<T> message,
+    public DropResult sendAndForget(DropMessage<? extends ModelObject> message,
     		Collection<Contact> contacts) {
-    	DropResult result;
     	boolean ok = true;;
     	List<DropResultPair> pairs;
     	
@@ -109,9 +110,8 @@ public class Drop<T extends ModelObject> {
         	}
         	pairs.add(pair);
         }
-        result = new DropResult(ok, pairs);
 
-        return (result);
+        return (new DropResult(ok, pairs));
     }
 
     /**
@@ -156,11 +156,14 @@ public class Drop<T extends ModelObject> {
      * @param contacts Contacts to check the signature with
      * @return Retrieved, encrypted Dropmessages.
      */
-    public Collection<DropMessage> retrieve(URL url, Collection<Contact> contacts) {
+    public Collection<DropMessage<? extends ModelObject>> retrieve(URL url,
+            Collection<Contact> contacts) {
         DropHTTP http = new DropHTTP();
         Collection<byte[]> cipherMessages = http.receiveMessages(url);
-        Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
+        Collection<DropMessage<? extends ModelObject>> plainMessages;
         String plainJson = null;
+
+        plainMessages = new ArrayList<DropMessage<? extends ModelObject>>();
 
         for (byte[] cipherMessage : cipherMessages) {
             for (Contact c : contacts) {
@@ -189,7 +192,7 @@ public class Drop<T extends ModelObject> {
      * @param message DropMessage to serialize
      * @return String with message as json
      */
-    private String serialize(DropMessage<T> message) {
+    private String serialize(DropMessage<? extends ModelObject> message) {
         return gson.toJson(message);
     }
 
