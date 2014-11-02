@@ -12,14 +12,14 @@ public class StorageVolumes {
 	 *           storageVolumes        &gt;       storageVolume
 	 * </pre>
 	 */
-	private final Set<StorageVolume> storageVolume = new HashSet<StorageVolume>();
+	private final Set<StorageVolume> storageVolumes = new HashSet<StorageVolume>();
 
-	public Set<StorageVolume> getStorageVolume() {
-		return Collections.unmodifiableSet(this.storageVolume);
+	public Set<StorageVolume> getStorageVolumes() {
+		return Collections.unmodifiableSet(this.storageVolumes);
 	}
 	
 	public boolean add(StorageVolume storageVolume) {
-		return this.storageVolume.add(storageVolume);
+		return this.storageVolumes.add(storageVolume);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class StorageVolumes {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((storageVolume == null) ? 0 : storageVolume.hashCode());
+				+ ((storageVolumes == null) ? 0 : storageVolumes.hashCode());
 		return result;
 	}
 
@@ -40,10 +40,10 @@ public class StorageVolumes {
 		if (getClass() != obj.getClass())
 			return false;
 		StorageVolumes other = (StorageVolumes) obj;
-		if (storageVolume == null) {
-			if (other.storageVolume != null)
+		if (storageVolumes == null) {
+			if (other.storageVolumes != null)
 				return false;
-		} else if (!storageVolume.equals(other.storageVolume))
+		} else if (!storageVolumes.equals(other.storageVolumes))
 			return false;
 		return true;
 	}

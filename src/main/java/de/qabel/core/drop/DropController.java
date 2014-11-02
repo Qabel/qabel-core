@@ -74,7 +74,7 @@ public class DropController {
 	 */
 	public void retrieve() {
 		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
-				.getDropServer());
+				.getDropServers());
 		for (DropServer server : servers) {
 			Drop drop = new Drop<>();
 			Collection<DropMessage<? extends ModelObject>> results = drop

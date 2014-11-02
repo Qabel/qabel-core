@@ -13,21 +13,21 @@ public class Accounts {
 	 *           accounts        &gt;       account
 	 * </pre>
 	 */
-	private final Set<Account> account = new HashSet<Account>();
+	private final Set<Account> accounts = new HashSet<Account>();
 
-	public Set<Account> getAccount() {
-		return Collections.unmodifiableSet(this.account);
+	public Set<Account> getAccounts() {
+		return Collections.unmodifiableSet(this.accounts);
 	}
 	
 	public boolean add(Account account) {
-		return this.account.add(account);
+		return this.accounts.add(account);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((account == null) ? 0 : account.hashCode());
+		result = prime * result + ((accounts == null) ? 0 : accounts.hashCode());
 		return result;
 	}
 
@@ -40,10 +40,10 @@ public class Accounts {
 		if (getClass() != obj.getClass())
 			return false;
 		Accounts other = (Accounts) obj;
-		if (account == null) {
-			if (other.account != null)
+		if (accounts == null) {
+			if (other.accounts != null)
 				return false;
-		} else if (!account.equals(other.account))
+		} else if (!accounts.equals(other.accounts))
 			return false;
 		return true;
 	}

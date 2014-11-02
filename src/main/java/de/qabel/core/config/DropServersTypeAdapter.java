@@ -15,7 +15,7 @@ public class DropServersTypeAdapter extends TypeAdapter<DropServers> {
 	public void write(JsonWriter out, DropServers value) throws IOException {
 		out.beginArray();
 		Gson gson = new Gson();
-		Set<DropServer> set = value.getDropServer();
+		Set<DropServer> set = value.getDropServers();
 		TypeAdapter<DropServer> adapter = gson.getAdapter(DropServer.class);
 		for(DropServer dropServer : set) {
 			adapter.write(out, dropServer);

@@ -12,14 +12,14 @@ public class DropServers {
 	 *           dropServers        &gt;       dropServer
 	 * </pre>
 	 */
-	private final Set<DropServer> dropServer = new HashSet<DropServer>();
+	private final Set<DropServer> dropServers = new HashSet<DropServer>();
 
-	public Set<DropServer> getDropServer() {
-		return Collections.unmodifiableSet(this.dropServer);
+	public Set<DropServer> getDropServers() {
+		return Collections.unmodifiableSet(this.dropServers);
 	}
 	
 	public boolean add(DropServer dropServer) {
-		return this.dropServer.add(dropServer);
+		return this.dropServers.add(dropServer);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class DropServers {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((dropServer == null) ? 0 : dropServer.hashCode());
+				+ ((dropServers == null) ? 0 : dropServers.hashCode());
 		return result;
 	}
 
@@ -40,10 +40,10 @@ public class DropServers {
 		if (getClass() != obj.getClass())
 			return false;
 		DropServers other = (DropServers) obj;
-		if (dropServer == null) {
-			if (other.dropServer != null)
+		if (dropServers == null) {
+			if (other.dropServers != null)
 				return false;
-		} else if (!dropServer.equals(other.dropServer))
+		} else if (!dropServers.equals(other.dropServers))
 			return false;
 		return true;
 	}

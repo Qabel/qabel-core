@@ -15,7 +15,7 @@ public class StorageVolumesTypeAdapter extends TypeAdapter<StorageVolumes> {
 	public void write(JsonWriter out, StorageVolumes value) throws IOException {
 		out.beginArray();
 		Gson gson = new Gson();
-		Set<StorageVolume> set = value.getStorageVolume();
+		Set<StorageVolume> set = value.getStorageVolumes();
 		TypeAdapter<StorageVolume> adapter = gson.getAdapter(StorageVolume.class);
 		for(StorageVolume storageVolume : set) {
 			adapter.write(out, storageVolume);
