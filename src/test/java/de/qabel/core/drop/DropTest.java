@@ -74,7 +74,7 @@ public class DropTest {
 
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
-        Assert.assertEquals(true, d.sendAndForget(dm, contacts).ok);
+        Assert.assertEquals(true, d.sendAndForget(dm, contacts).isOk());
         
         retrieveTest();
     }

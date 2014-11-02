@@ -22,27 +22,7 @@ public class Drop<T extends ModelObject> {
     GsonBuilder gb;
     Gson gson;
 
-    
     private final static Logger logger = LogManager.getLogger(Drop.class.getName());
-    
-    public class DropResultPair {
-        Contact contact;
-        boolean ok;
-
-        DropResultPair(Contact contact, boolean ok) {
-            this.contact = contact;
-            this.ok = ok;
-        }
-    }
-
-    public class DropResult {
-       boolean ok = false;
-       List<DropResultPair> pairs;
-       
-       public DropResult() {
-    	   this.pairs = new ArrayList<DropResultPair>();
-       }
-    }
     
     public Drop() {
         gb = new GsonBuilder();
@@ -115,18 +95,21 @@ public class Drop<T extends ModelObject> {
     public DropResult sendAndForget(DropMessage<T> message,
     		Collection<Contact> contacts) {
     	DropResult result;
+    	boolean ok = true;;
+    	List<DropResultPair> pairs;
+    	
+    	pairs = new ArrayList<DropResultPair>();
         
-        result = new DropResult();
-        result.ok = true;
         for (Contact contact : contacts) {
         	DropResultPair pair;
         	
         	pair = new DropResultPair(contact, this.sendAndForget(message, contact));
-        	if (pair.ok == false) {
-        		result.ok = pair.ok;
+        	if (pair.isOk() == false) {
+        		ok = pair.isOk();
         	}
-        	result.pairs.add(pair);
+        	pairs.add(pair);
         }
+        result = new DropResult(ok, pairs);
 
         return (result);
     }
@@ -216,7 +199,7 @@ public class Drop<T extends ModelObject> {
      * @param plainJson plain Json String
      * @return deserialized Dropmessage
      */
-    private DropMessage deserialize(String plainJson) {
+    private DropMessage<T> deserialize(String plainJson) {
         return gson.fromJson(plainJson, DropMessage.class);
     }
 
