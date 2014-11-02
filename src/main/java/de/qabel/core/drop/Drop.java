@@ -17,7 +17,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 public class Drop<T extends ModelObject> {
     GsonBuilder gb;
     Gson gson;
@@ -32,7 +31,8 @@ public class Drop<T extends ModelObject> {
     }
 
     /**
-     * Sends the message and waits for acknowledgement.
+     * Sends the message to a collection of contacts and add acknowledgement id
+     * to the acknowledge handling list
      * Uses sendAndForget() for now.
      *
      * TODO: implement
@@ -46,7 +46,8 @@ public class Drop<T extends ModelObject> {
     }
 
     /**
-     * Sends the message and waits for acknowledgement.
+     * Sends the message to one contact and add acknowledgement id to the
+     * acknowledge handling list
      * Uses sendAndForget() for now.
      *
      * TODO: implement
@@ -60,7 +61,7 @@ public class Drop<T extends ModelObject> {
     }
 
     /**
-     * Sends the message to one contact and does not wait for acknowledgement
+     * Sends the message to one contact
      *
      * @param message Message to send
      * @param contact Contact to send message to
@@ -88,7 +89,7 @@ public class Drop<T extends ModelObject> {
     }
 
     /**
-     * Sends the message to a collection of contacts and does not wait for acknowledgement
+     * Sends the message to a collection of contacts
      *
      * @param message  Message to send
      * @param contacts Contacts to send message to
