@@ -6,6 +6,8 @@ import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
 
+import javax.xml.bind.DatatypeConverter;
+
 /**
  * Abstract super class for all Qbl...PublicKey types 
  *
@@ -51,6 +53,26 @@ abstract class QblPublicKey {
 	 */
 	byte[] getPublicKeyFingerprint() {
 		return publicKeyFingerprint;
+	}
+	
+	/**
+	* Get the key identifier of this public key
+	*
+	* @return key identifier
+	*/	
+	public byte[] getKeyIdentifier() {
+		byte[] publicFingerPrint = getPublicKeyFingerprint();
+		return Arrays.copyOfRange(publicFingerPrint,
+				publicFingerPrint.length - 8, publicFingerPrint.length);
+	}
+
+	/**
+	 * Get the key identifier of this public key in a human readable HEX string
+	 *
+	 * @return key identifier as readable HEX string
+	 */
+	public String getReadableKeyIdentifier() {
+		return DatatypeConverter.printHexBinary(getKeyIdentifier());
 	}
 
 	/**
