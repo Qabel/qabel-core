@@ -1,8 +1,8 @@
 package de.qabel.core.config;
 
 import de.qabel.core.crypto.*;
+import de.qabel.core.drop.DropURL;
 
-import java.net.*;
 import java.security.InvalidKeyException;
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class Contact {
 	@SerializedName("my_identity")
 	private final Identity contactOwner;
 	@SerializedName("drop_urls")
-	private final Set<URL> dropUrls = new HashSet<URL>(); //TODO: Have drop urls management with add/remove/edit events etc.
+	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
 	@SerializedName("module_data")
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
@@ -62,7 +62,7 @@ public class Contact {
 		primaryPublicKey.attachSignPublicKey(key);
 	}	
 	
-	public Set<URL> getDropUrls()
+	public Collection<DropURL> getDropUrls()
 	{
 		return dropUrls;
 	}

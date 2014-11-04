@@ -16,11 +16,13 @@ import com.google.gson.GsonBuilder;
 
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
+import de.qabel.core.drop.DropURL;
+import de.qabel.core.exceptions.QblDropInvalidURL;
 
 public class ConfigSerializationTest {	
 	
 	@Test
-	public void settingsTest() {
+	public void settingsTest() throws QblDropInvalidURL, MalformedURLException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
 		//generate "accounts" array
@@ -32,29 +34,21 @@ public class ConfigSerializationTest {
 		//generate "drop_servers" array
 		syncedSettings.setDropServers(new DropServers());
 		//generate and add an "drop_servers" entry
-		try {
-			DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
-			syncedSettings.getDropServers().add(dropServer);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
+		syncedSettings.getDropServers().add(dropServer);
 		
 		//generate "identities" array
 		syncedSettings.setIdentities(new Identities());
 		//generate and add an "identities" entry
-		try {
-			QblPrimaryKeyPair key;
-			Collection<URL> drops; 
-			Identity identity;
+		QblPrimaryKeyPair key;
+		Collection<DropURL> drops; 
+		Identity identity;
 			
-			key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-			drops = new ArrayList<URL>();
-			drops.add(new URL("https://inbox.qabel.de"));
-			identity = new Identity("alias", drops, key);
-			syncedSettings.getIdentities().add(identity);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+		drops = new ArrayList<DropURL>();
+		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
+		identity = new Identity("alias", drops, key);
+		syncedSettings.getIdentities().add(identity);
 		
 		//generate "storage_servers" array
 		syncedSettings.setStorageServers(new StorageServers());

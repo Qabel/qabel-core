@@ -57,8 +57,8 @@ public class Drop<T extends ModelObject> {
 			        m, contact.getEncryptionPublicKey(),
 			        contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
 			);
-			for (URL u : contact.getDropUrls()) {
-	            if(http.send(u, cryptedMessage) == 200)
+			for (DropURL u : contact.getDropUrls()) {
+	            if(http.send(u.getUrl(), cryptedMessage) == 200)
 	                res = true;
 	        }
 		} catch (InvalidKeyException e) {
@@ -86,8 +86,8 @@ public class Drop<T extends ModelObject> {
 				                        c.getEncryptionPublicKey(),
 				                        c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
 				);
-				for (URL u : c.getDropUrls()) {
-					res = http.send(u, cryptedMessage);
+				for (DropURL u : c.getDropUrls()) {
+					res = http.send(u.getUrl(), cryptedMessage);
 		        }
 			} catch (InvalidKeyException e) {
 				logger.error("Invalid key in contact. Cannot send message!");
@@ -120,8 +120,8 @@ public class Drop<T extends ModelObject> {
 			        m, contact.getEncryptionPublicKey(),
 			        contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
 			);
-			 for (URL u : contact.getDropUrls()) {
-		            if(http.send(u, cryptedMessage) == 200)
+			 for (DropURL u : contact.getDropUrls()) {
+		            if(http.send(u.getUrl(), cryptedMessage) == 200)
 		                res = true;
 		        }
 		} catch (InvalidKeyException e) {

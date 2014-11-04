@@ -4,6 +4,7 @@ import de.qabel.core.config.*;
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
+import de.qabel.core.exceptions.QblDropInvalidURL;
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -39,7 +40,7 @@ public class MultiPartCryptoTest {
     private DropQueueCallback<TestObject> mQueue;
 
     @Before
-    public void setUp() throws MalformedURLException, InvalidKeyException {
+    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
         dropController = new DropController();
 
         loadContacts();
@@ -95,32 +96,32 @@ public class MultiPartCryptoTest {
         assertEquals("Test", msg.getData().getStr());
     }
 
-    private void loadContacts() throws MalformedURLException, InvalidKeyException {
+    private void loadContacts() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
         QblPrimaryKeyPair alicesKey =
         		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-        Collection<URL> alicesDrops = new ArrayList<URL>();
+        Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
         alicesDrops.add(
-                new URL(
+                new DropURL(
                         "http://localhost:6000/12345678901234567890123456789012345678alice"));
         Identity alice = new Identity("Alice", alicesDrops, alicesKey);
 
         QblPrimaryKeyPair bobsKey =
         		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-        Identity bob = new Identity("Bob", new ArrayList<URL>(), bobsKey);
-        bob.addDrop(new URL(
+        Identity bob = new Identity("Bob", new ArrayList<DropURL>(), bobsKey);
+        bob.addDrop(new DropURL(
         		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact alicesContact = new Contact(alice);
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
         alicesContact.setEncryptionPublicKey(bobsKey.getQblEncPublicKey());
         alicesContact.setSignaturePublicKey(bobsKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
         bobsContact.setEncryptionPublicKey(alicesKey.getQblEncPublicKey());
         bobsContact.setSignaturePublicKey(alicesKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
         contacts.add(alicesContact);
@@ -133,14 +134,10 @@ public class MultiPartCryptoTest {
         DropServers servers = new DropServers();
 
         DropServer alicesServer = new DropServer();
-        alicesServer
-                .setUrl(new URL(
-                        "http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesServer.setUrl(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         DropServer bobsServer = new DropServer();
-        bobsServer
-                .setUrl(new URL(
-                        "http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         servers.add(alicesServer);
         servers.add(bobsServer);
