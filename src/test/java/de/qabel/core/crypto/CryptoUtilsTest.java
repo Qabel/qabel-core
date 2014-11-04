@@ -7,7 +7,6 @@ import java.security.InvalidKeyException;
 import javax.crypto.BadPaddingException;
 
 import org.bouncycastle.util.encoders.Hex;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

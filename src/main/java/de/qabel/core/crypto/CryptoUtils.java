@@ -391,7 +391,7 @@ public class CryptoUtils {
 	/**
 	 * Returns the encrypted byte[] of the given plaintext, i.e.
 	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
-	 * constant SYMM_TRANSFORMATION
+	 * constant SYMM_TRANSFORMATION. A random value is used for the nonce.
 	 * 
 	 * @param plainText
 	 *            message which will be encrypted
@@ -400,39 +400,40 @@ public class CryptoUtils {
 	 * @return ciphertext which is the result of the encryption
 	 */
 	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
-		return encryptSymmetric(plainText, key, new byte[0]);
+		return encryptSymmetric(plainText, key, null);
 	}
-	
+
 	/**
 	 * Returns the encrypted byte[] of the given plaintext, i.e.
-	 * ciphertext=enc(plaintext,key,IV). The algorithm, mode and padding is
-	 * set in constant SYMM_TRANSFORMATION. IV=(nonce||counter) 
+	 * ciphertext=enc(plaintext,key,IV). The algorithm, mode and padding is set
+	 * in constant SYMM_TRANSFORMATION. IV=(nonce||counter)
 	 * 
 	 * @param plainText
-	 *		message which will be encrypted
+	 *            message which will be encrypted
 	 * @param key
-	 *		symmetric key which is used for en- and decryption
+	 *            symmetric key which is used for en- and decryption
 	 * @param nonce
-	 * 		random input that is concatenated to a counter
+	 *            random input that is concatenated to a counter
 	 * @return ciphertext which is the result of the encryption
 	 */
 
-	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key, byte[] nonce) {
+	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key,
+			byte[] nonce) {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
-		byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
-		
-		if(nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
+
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
-		
-		// Set counter to 1
-		if(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT > 0) {
-			counter[counter.length-1] = 1;
+
+		// Set counter to 1, if nonce is smaller than IV
+		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length - 1] = 1;
 		}
-		
+
 		try {
 			ivOS.write(nonce);
 			ivOS.write(counter);
@@ -481,7 +482,7 @@ public class CryptoUtils {
 	synchronized byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
-		byte[] counter = new byte[(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT)/8];
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
 				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
@@ -489,11 +490,11 @@ public class CryptoUtils {
 		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
 
-		// Set counter to 1
-		if(SYMM_IV_SIZE_BIT-SYMM_NONCE_SIZE_BIT > 0) {
-			counter[counter.length-1] = 1;
+		// Set counter to 1, if nonce is smaller than IV
+		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length - 1] = 1;
 		}
-		
+
 		try {
 			bi.read(nonce);
 			ivOS.write(nonce);
@@ -672,44 +673,48 @@ public class CryptoUtils {
 		}
 		return validation;
 	}
-	
+
 	/**
-	 * Encryptes plaintext in GCM Mode to get an authenticated encryption.
-	 * It's an alternative to encrypt-then-(H)MAC in CTR mode. It will be
-	 * tested and reviewed which AE will be used.
+	 * Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
+	 * an alternative to encrypt-then-(H)MAC in CTR mode. A random value is used
+	 * for the nonce.
+	 * 
 	 * @param plainText
-	 * 		Plaintext which will be encrypted 
+	 *            Plaintext which will be encrypted
 	 * @param key
-	 * 		Symmetric key which will be used for encryption and authentication
-	 * @return
-	 * 		Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 *            Symmetric key which will be used for encryption and
+	 *            authentication
+	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
-	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key) {
+	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText,
+			byte[] key) {
 		return encryptAuthenticatedSymmetric(plainText, key, null);
 	}
-	
+
 	/**
 	 * Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
 	 * an alternative to encrypt-then-(H)MAC in CTR mode. It will be tested and
 	 * reviewed which AE will be used.
 	 * 
 	 * @param plainText
-	 * 		Plaintext which will be encrypted 
+	 *            Plaintext which will be encrypted
 	 * @param key
-	 * 		Symmetric key which will be used for encryption and authentication
+	 *            Symmetric key which will be used for encryption and
+	 *            authentication
 	 * @param nonce
-	 * 		random input that is concatenated to a counter
-	 * @return
-	 * 		Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 *            random input that is concatenated to a counter
+	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
-	synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText, byte[] key, byte[] nonce) {
+	synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText,
+			byte[] key, byte[] nonce) {
 		Cipher gcmCipher = null;
 		SecretKeySpec symmetricKey;
 		IvParameterSpec iv;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
-		
+
 		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -721,10 +726,10 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 
-		if(nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
 		}
-		
+
 		try {
 			cipherText.write(nonce);
 		} catch (IOException e1) {
@@ -769,9 +774,9 @@ public class CryptoUtils {
 	 * @param cipherText
 	 *            Ciphertext which will be decrypted
 	 * @param key
-	 * 			Symmetric key which will be used for decryption and verification
-	 * @return
-	 * 			Plaintext or null if validation of authentication tag fails
+	 *            Symmetric key which will be used for decryption and
+	 *            verification
+	 * @return Plaintext or null if validation of authentication tag fails
 	 */
 
 	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
@@ -785,7 +790,8 @@ public class CryptoUtils {
 		SecretKeySpec symmetricKey;
 
 		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION, CRYPTOGRAPHIC_PROVIDER);
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
 		} catch (NoSuchAlgorithmException e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
@@ -796,15 +802,15 @@ public class CryptoUtils {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-		
+
 		try {
-			bi.read(nonce);	
+			bi.read(nonce);
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		iv = new IvParameterSpec(nonce);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
