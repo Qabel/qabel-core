@@ -3,6 +3,7 @@ package de.qabel.core.config;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -87,5 +88,46 @@ public class ConfigSerializationTest {
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 		assertEquals(deserializedLocalSettings, localSettings);
+	}
+	
+	@Test
+	public void contactTest() {
+		Contact contact;
+		Contact deserializedContact;
+		QblKeyFactory kf = QblKeyFactory.getInstance();
+		try {
+			
+			Identity i = new Identity("alias", new ArrayList<DropURL>(), kf.generateQblPrimaryKeyPair());
+			i.addDrop(new DropURL("http://inbox1.qabel.de"));
+			contact = new Contact(i);
+			QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
+			
+			contact.setPrimaryPublicKey(qpkp.getQblPrimaryPublicKey());
+			contact.setEncryptionPublicKey(qpkp.getQblEncPublicKey());
+			contact.setSignaturePublicKey(qpkp.getQblSignPublicKey());
+			contact.getDropUrls().add(new DropURL("http://drop.url.de"));
+			
+			GsonBuilder builder = new GsonBuilder();
+			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
+			Gson gson = builder.create();
+			System.out.println("Serialized contact: " + gson.toJson(contact));
+			deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
+			System.out.println("Deserialized contact: " + gson.toJson(deserializedContact));
+			
+			//this has to be set by the caller for deserialization:
+			deserializedContact.setContactOwner(i);
+			
+			assertEquals(contact, deserializedContact);
+			
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeyException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QblDropInvalidURL e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
