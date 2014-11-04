@@ -45,7 +45,8 @@ public class CryptoUtils {
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
-	private final static int SYMM_NONCE_SIZE_BIT = 128;
+	private final static int SYMM_IV_SIZE_BIT = 128;
+	private final static int SYMM_NONCE_SIZE_BIT = 96;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
@@ -268,7 +269,7 @@ public class CryptoUtils {
 	 * @param signPublicKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private boolean validateSignature(byte[] message, byte[] signature,
 			QblSignPublicKey signPublicKey) throws InvalidKeyException {
@@ -287,7 +288,7 @@ public class CryptoUtils {
 	 * @param signatureKey
 	 *            Public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private boolean rsaValidateSignature(byte[] data, byte[] signature,
 			RSAPublicKey signatureKey) throws InvalidKeyException {
@@ -313,7 +314,7 @@ public class CryptoUtils {
 	 * @param primaryKey
 	 *            Primary public key to validate signature with
 	 * @return is signature valid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
 			QblPrimaryPublicKey primaryKey) throws InvalidKeyException {
@@ -333,7 +334,7 @@ public class CryptoUtils {
 	 * @param reciPubKey
 	 *            public key to encrypt with
 	 * @return encrypted messsage. Can be null if error occurred.
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	private byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) throws InvalidKeyException {
@@ -361,9 +362,10 @@ public class CryptoUtils {
 	 * @param privKey
 	 *            private key to decrypt with
 	 * @return decrypted ciphertext, or null if undecryptable
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey) throws InvalidKeyException {
+	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
+			throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
 			asymmetricCipher.init(Cipher.DECRYPT_MODE, privKey, secRandom);
@@ -389,7 +391,7 @@ public class CryptoUtils {
 	/**
 	 * Returns the encrypted byte[] of the given plaintext, i.e.
 	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
-	 * constant SYMM_TRANSFORMATION
+	 * constant SYMM_TRANSFORMATION. A random value is used for the nonce.
 	 * 
 	 * @param plainText
 	 *            message which will be encrypted
@@ -397,24 +399,54 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return ciphertext which is the result of the encryption
 	 */
-	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key) {
-		byte[] rand;
+	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
+		return encryptSymmetric(plainText, key, null);
+	}
+
+	/**
+	 * Returns the encrypted byte[] of the given plaintext, i.e.
+	 * ciphertext=enc(plaintext,key,IV). The algorithm, mode and padding is set
+	 * in constant SYMM_TRANSFORMATION. IV=(nonce||counter)
+	 * 
+	 * @param plainText
+	 *            message which will be encrypted
+	 * @param key
+	 *            symmetric key which is used for en- and decryption
+	 * @param nonce
+	 *            random input that is concatenated to a counter
+	 * @return ciphertext which is the result of the encryption
+	 */
+
+	synchronized byte[] encryptSymmetric(byte[] plainText, byte[] key,
+			byte[] nonce) {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
-		IvParameterSpec nonce;
-
-		rand = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
-		nonce = new IvParameterSpec(rand);
-
 		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
+		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
+		IvParameterSpec iv;
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
+
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		}
+
+		// Set counter to 1, if nonce is smaller than IV
+		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length - 1] = 1;
+		}
 
 		try {
-			cipherText.write(rand);
+			ivOS.write(nonce);
+			ivOS.write(counter);
+			cipherText.write(nonce);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
+		iv = new IvParameterSpec(ivOS.toByteArray());
+
 		try {
-			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
+			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
 			cipherText.write(symmetricCipher.doFinal(plainText));
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -449,26 +481,35 @@ public class CryptoUtils {
 	 */
 	synchronized byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
 				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
-		IvParameterSpec nonce;
+		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
+		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
 
+		// Set counter to 1, if nonce is smaller than IV
+		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+			counter[counter.length - 1] = 1;
+		}
+
 		try {
-			bi.read(rand);
+			bi.read(nonce);
+			ivOS.write(nonce);
+			ivOS.write(counter);
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		nonce = new IvParameterSpec(rand);
+		iv = new IvParameterSpec(ivOS.toByteArray());
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
+			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, iv);
 			plainText = symmetricCipher.doFinal(encryptedPlainText);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -499,10 +540,11 @@ public class CryptoUtils {
 	 *            private key to sign message with
 	 * 
 	 * @return hybrid encrypted String message
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	public synchronized byte[] encryptHybridAndSign(String message,
-			QblEncPublicKey recipient, QblSignKeyPair signatureKey) throws InvalidKeyException {
+			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
+			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
 
@@ -530,7 +572,7 @@ public class CryptoUtils {
 	 *            public key to validate signature with
 	 * @return decrypted String message or null if message is undecryptable or
 	 *         signature is invalid
-	 * @throws InvalidKeyException 
+	 * @throws InvalidKeyException
 	 */
 	public synchronized String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
@@ -621,7 +663,7 @@ public class CryptoUtils {
 	 *            HMAC which will be verified
 	 * @param key
 	 *            key for HMAC calculation
-	 * @return result of verification i.e. null/not null
+	 * @return result of verification i.e. true/false
 	 */
 	public synchronized boolean validateHmac(byte[] text, byte[] hmac,
 			byte[] key) {
@@ -634,8 +676,8 @@ public class CryptoUtils {
 
 	/**
 	 * Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
-	 * an alternative to encrypt-then-(H)MAC in CTR mode. It will be tested and
-	 * reviewed which AE will be used.
+	 * an alternative to encrypt-then-(H)MAC in CTR mode. A random value is used
+	 * for the nonce.
 	 * 
 	 * @param plainText
 	 *            Plaintext which will be encrypted
@@ -646,15 +688,60 @@ public class CryptoUtils {
 	 */
 	public synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText,
 			byte[] key) {
+		return encryptAuthenticatedSymmetric(plainText, key, null);
+	}
+
+	/**
+	 * Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
+	 * an alternative to encrypt-then-(H)MAC in CTR mode. It will be tested and
+	 * reviewed which AE will be used.
+	 * 
+	 * @param plainText
+	 *            Plaintext which will be encrypted
+	 * @param key
+	 *            Symmetric key which will be used for encryption and
+	 *            authentication
+	 * @param nonce
+	 *            random input that is concatenated to a counter
+	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 */
+	synchronized byte[] encryptAuthenticatedSymmetric(byte[] plainText,
+			byte[] key, byte[] nonce) {
+		Cipher gcmCipher = null;
 		SecretKeySpec symmetricKey;
-		IvParameterSpec nonce;
+		IvParameterSpec iv;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
-		nonce = new IvParameterSpec(getRandomBytes(SYMM_NONCE_SIZE_BIT / 8));
+		try {
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		}
+
+		try {
+			cipherText.write(nonce);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		iv = new IvParameterSpec(nonce);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			gcmCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, nonce);
+			gcmCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -664,7 +751,6 @@ public class CryptoUtils {
 		}
 
 		try {
-			cipherText.write(nonce.getIV());
 			cipherText.write(gcmCipher.doFinal(plainText));
 		} catch (IllegalBlockSizeException e) {
 			// TODO Auto-generated catch block
@@ -690,31 +776,46 @@ public class CryptoUtils {
 	 * @param key
 	 *            Symmetric key which will be used for decryption and
 	 *            verification
-	 * @return Plaintext
+	 * @return Plaintext or null if validation of authentication tag fails
 	 */
+
 	public synchronized byte[] decryptAuthenticatedSymmetricAndValidateTag(
 			byte[] cipherText, byte[] key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] rand = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
 				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
-		IvParameterSpec nonce;
+		IvParameterSpec iv;
 		SecretKeySpec symmetricKey;
 
 		try {
-			bi.read(rand);
+			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+					CRYPTOGRAPHIC_PROVIDER);
+		} catch (NoSuchAlgorithmException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (NoSuchProviderException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (NoSuchPaddingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+		try {
+			bi.read(nonce);
 			bi.read(encryptedPlainText);
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 
-		nonce = new IvParameterSpec(rand);
+		iv = new IvParameterSpec(nonce);
 		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			gcmCipher.init(Cipher.DECRYPT_MODE, symmetricKey, nonce);
+			gcmCipher.init(Cipher.DECRYPT_MODE, symmetricKey, iv);
 			plainText = gcmCipher.doFinal(encryptedPlainText);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
