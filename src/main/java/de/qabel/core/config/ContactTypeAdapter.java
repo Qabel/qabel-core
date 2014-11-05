@@ -61,7 +61,6 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		String contactOwnerKeyId = null;
 		QblPrimaryPublicKey qppk = null;
 		Collection<DropURL> dropURLs = null;
-		
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {

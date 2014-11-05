@@ -8,14 +8,6 @@ import com.google.gson.annotations.SerializedName;
 public class SyncedSettings {
 	/**
 	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- Contacts
-	 *           syncedSettings        &lt;       contacts
-	 * </pre>
-	 */
-	private Contacts contacts;
-	/**
-	 * <pre>
 	 *           1     0..*
 	 * SyncedSettings ------------------------- SyncedModuleSettings
 	 *           syncedSettings        &lt;       syncedModuleSettings
@@ -69,19 +61,10 @@ public class SyncedSettings {
 	
 	public SyncedSettings() {
 		this.accounts = new Accounts();
-		this.contacts = new Contacts();
 		this.dropServers = new DropServers();
 		this.identities = new Identities();
 		this.storageServers = new StorageServers();
 		this.storageVolumes = new StorageVolumes();
-	}
-	
-	public void setContacts(Contacts value) {
-		this.contacts = value;
-	}
-
-	public Contacts getContacts() {
-		return this.contacts;
 	}
 
 	public Set<SyncedModuleSettings> getSyncedModuleSettings() {

@@ -1,8 +1,6 @@
 package de.qabel.core.config;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -18,23 +16,14 @@ public class Identities {
 	 *           identities        &gt;       identity
 	 * </pre>
 	 */
-	private final Map<String, Identity> identities = new HashMap<String, Identity>();
+	private final Set<Identity> identities = new HashSet<Identity>();
 	
 	public Set<Identity> getIdentities() {
-		return Collections.unmodifiableSet(new HashSet<Identity>(this.identities.values()));
+		return Collections.unmodifiableSet(this.identities);
 	}
 	
 	public boolean add(Identity identity) {
-		if(this.identities.containsKey(identity.getKeyIdentifier())) {
-			return false;
-		} else {
-			this.identities.put(identity.getKeyIdentifier(), identity);
-			return true;
-		}
-	}
-	
-	public Identity getIdentityByKeyIdentifier(String keyIdentifier) {
-		return this.identities.get(keyIdentifier);
+		return this.identities.add(identity);
 	}
 
 	@Override

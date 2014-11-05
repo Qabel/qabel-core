@@ -14,8 +14,9 @@ public class ContactsTypeAdapter extends TypeAdapter<Contacts> {
 	@Override
 	public void write(JsonWriter out, Contacts value) throws IOException {
 		out.beginArray();
+		Gson gson = new Gson();
 		Set<Contact> set = value.getContacts();
-		TypeAdapter<Contact> adapter = new ContactTypeAdapter();
+		TypeAdapter<Contact> adapter = gson.getAdapter(Contact.class);
 		for(Contact contact : set) {
 			adapter.write(out, contact);
 		}
@@ -30,8 +31,9 @@ public class ContactsTypeAdapter extends TypeAdapter<Contacts> {
 			return null;
 		}
 		
+		Gson gson = new Gson();
 		Contacts contacts = new Contacts();
-		TypeAdapter<Contact> adapter = new ContactTypeAdapter();
+		TypeAdapter<Contact> adapter = gson.getAdapter(Contact.class);
 		Contact contact = null; 
 		
 		in.beginArray();
