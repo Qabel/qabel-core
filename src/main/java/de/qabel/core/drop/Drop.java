@@ -12,6 +12,7 @@ import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,27 @@ public class Drop<T extends ModelObject> {
     GsonBuilder gb;
     Gson gson;
 
+    
     private final static Logger logger = LogManager.getLogger(Drop.class.getName());
+    
+    public class DropResultPair {
+        Contact contact;
+        boolean ok;
+
+        DropResultPair(Contact contact, boolean ok) {
+            this.contact = contact;
+            this.ok = ok;
+        }
+    }
+
+    public class DropResult {
+       boolean ok = false;
+       List<DropResultPair> pairs;
+       
+       public DropResult() {
+    	   this.pairs = new ArrayList<DropResultPair>();
+       }
+    }
     
     public Drop() {
         gb = new GsonBuilder();
@@ -35,8 +56,25 @@ public class Drop<T extends ModelObject> {
      * Uses sendAndForget() for now.
      *
      * TODO: implement
+     * @param message Message to send
+     * @param contact Contact to send message to
+     * @return true if one DropServers of the contact returns 200
      */
-    public int send(DropMessage<T> message, Collection<Contact> contacts) {
+    public boolean send(DropMessage<T> message, Contact contact) {
+        return (sendAndForget(message, contact));
+    }
+
+    /**
+     * Sends the message and waits for acknowledgement.
+     * Uses sendAndForget() for now.
+     *
+     * TODO: implement
+     * @param message  Message to send
+     * @param contacts Contacts to send message to
+     * @return DropResult object
+     */
+    public DropResult send(DropMessage<T> message,
+    		Collection<Contact> contacts) {
         return sendAndForget(message, contacts);
     }
 
@@ -72,28 +110,25 @@ public class Drop<T extends ModelObject> {
      *
      * @param message  Message to send
      * @param contacts Contacts to send message to
-     * @return HTTP status code from the drop-server.
+     * @return DropResult object
      */
-    public int sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
-        DropHTTP http = new DropHTTP();
-        String m = serialize(message);
-        int res = 0;
-        for (Contact c : contacts) {
-            byte[] cryptedMessage;
-			try {
-				cryptedMessage = encryptDrop(
-				                        m,
-				                        c.getEncryptionPublicKey(),
-				                        c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
-				);
-				for (DropURL u : c.getDropUrls()) {
-					res = http.send(u.getUrl(), cryptedMessage);
-		        }
-			} catch (InvalidKeyException e) {
-				logger.error("Invalid key in contact. Cannot send message!");
-			}           
+    public DropResult sendAndForget(DropMessage<T> message,
+    		Collection<Contact> contacts) {
+    	DropResult result;
+        
+        result = new DropResult();
+        result.ok = true;
+        for (Contact contact : contacts) {
+        	DropResultPair pair;
+        	
+        	pair = new DropResultPair(contact, this.sendAndForget(message, contact));
+        	if (pair.ok == false) {
+        		result.ok = pair.ok;
+        	}
+        	result.pairs.add(pair);
         }
-        return res;
+
+        return (result);
     }
 
     /**

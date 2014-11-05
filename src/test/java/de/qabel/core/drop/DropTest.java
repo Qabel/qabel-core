@@ -74,7 +74,7 @@ public class DropTest {
 
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
-        Assert.assertEquals(200, d.sendAndForget(dm, contacts));
+        Assert.assertEquals(true, d.sendAndForget(dm, contacts).ok);
         
         retrieveTest();
     }
@@ -110,9 +110,21 @@ public class DropTest {
     }
 
     @Test
-    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {    	
+    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
         DropURL identityUrl = new DropURL(iUrl);
         DropURL contactUrl = new DropURL(cUrl);
+
+        try {
+            identityUrl = new DropURL(iUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            contactUrl = new DropURL(cUrl);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         
         Collection<DropURL> drops = new ArrayList<DropURL>();
         drops.add(identityUrl);
@@ -168,7 +180,7 @@ public class DropTest {
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
-        	 Assert.assertEquals("foo", dm.getSender());
+            Assert.assertEquals("foo", dm.getSender());
         }
     }
 
