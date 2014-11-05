@@ -20,7 +20,6 @@ public class Identity {
 	private int created;
 	private int deleted;
 	private String alias;
-	@SerializedName("keys")
 	private QblPrimaryKeyPair primaryKeyPair;
 	private Collection<DropURL> drops = new ArrayList<DropURL>();
 
