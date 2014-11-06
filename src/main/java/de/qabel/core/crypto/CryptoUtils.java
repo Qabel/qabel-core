@@ -18,8 +18,10 @@ import java.security.interfaces.RSAPublicKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -42,6 +44,7 @@ public class CryptoUtils {
 	private final static int SYMM_IV_SIZE_BIT = 128;
 	private final static int SYMM_NONCE_SIZE_BIT = 96;
 	private final static int AES_KEY_SIZE_BYTE = 32;
+	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
 	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
@@ -54,6 +57,7 @@ public class CryptoUtils {
 	private Cipher gcmCipher;
 	private Signature signer;
 	private Mac hmac;
+	private KeyGenerator keyGenerator;
 
 	public CryptoUtils() {
 
@@ -72,6 +76,9 @@ public class CryptoUtils {
 			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
+			keyGenerator = KeyGenerator.getInstance(SYMM_KEY_ALGORITHM, 
+					CRYPTOGRAPHIC_PROVIDER);
+			keyGenerator.init(AES_KEY_SIZE_BIT);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
 			throw new RuntimeException("Cannot find selected algorithm!", e);
@@ -324,7 +331,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return ciphertext which is the result of the encryption
 	 */
-	byte[] encryptSymmetric(byte[] plainText, byte[] key) {
+	byte[] encryptSymmetric(byte[] plainText, SecretKey key) {
 		return encryptSymmetric(plainText, key, null);
 	}
 
@@ -342,10 +349,9 @@ public class CryptoUtils {
 	 * @return ciphertext which is the result of the encryption
 	 */
 
-	byte[] encryptSymmetric(byte[] plainText, byte[] key,
+	byte[] encryptSymmetric(byte[] plainText, SecretKey key,
 			byte[] nonce) {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
-		SecretKeySpec symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
 		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
@@ -371,7 +377,7 @@ public class CryptoUtils {
 		iv = new IvParameterSpec(ivOS.toByteArray());
 
 		try {
-			symmetricCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
+			symmetricCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			cipherText.write(symmetricCipher.doFinal(plainText));
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -404,7 +410,7 @@ public class CryptoUtils {
 	 *            symmetric key which is used for en- and decryption
 	 * @return plaintext which is the result of the decryption
 	 */
-	byte[] decryptSymmetric(byte[] cipherText, byte[] key) {
+	byte[] decryptSymmetric(byte[] cipherText, SecretKey key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
@@ -413,7 +419,6 @@ public class CryptoUtils {
 		byte[] plainText = null;
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
-		SecretKeySpec symmetricKey;
 
 		// Set counter to 1, if nonce is smaller than IV
 		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
@@ -431,10 +436,9 @@ public class CryptoUtils {
 		}
 
 		iv = new IvParameterSpec(ivOS.toByteArray());
-		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			symmetricCipher.init(Cipher.DECRYPT_MODE, symmetricKey, iv);
+			symmetricCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = symmetricCipher.doFinal(encryptedPlainText);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -471,10 +475,10 @@ public class CryptoUtils {
 			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
 			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
-		byte[] aesKey = getRandomBytes(AES_KEY_SIZE_BYTE);
+		SecretKey aesKey = keyGenerator.generateKey();
 
 		try {
-			bs.write(rsaEncryptForRecipient(aesKey, recipient));
+			bs.write(rsaEncryptForRecipient(aesKey.getEncoded(), recipient));
 			bs.write(encryptSymmetric(message.getBytes(), aesKey));
 			bs.write(createSignature(bs.toByteArray(), signatureKey));
 		} catch (IOException e) {
@@ -549,11 +553,12 @@ public class CryptoUtils {
 		}
 
 		// Decrypt RSA encrypted AES key and decrypt encrypted data with AES key
-		byte[] aesKey = rsaDecrypt(encryptedAesKey,
+		byte[] rawAesKey = rsaDecrypt(encryptedAesKey,
 				privKey.getQblEncPrivateKey());
-		if (aesKey != null) {
+		if (rawAesKey != null) {
 			logger.debug("Message is OK!");
-			return new String(decryptSymmetric(aesCipherText, aesKey));
+			return new String(decryptSymmetric(aesCipherText, 
+					new SecretKeySpec(rawAesKey, SYMM_KEY_ALGORITHM)));
 		}
 		return null;
 	}
@@ -567,10 +572,10 @@ public class CryptoUtils {
 	 *            key for HMAC calculation
 	 * @return HMAC of text under key
 	 */
-	public byte[] calcHmac(byte[] text, byte[] key) {
+	public byte[] calcHmac(byte[] text, SecretKey key) {
 		byte[] result = null;
 		try {
-			hmac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
+			hmac.init(key);
 			result = hmac.doFinal(text);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
@@ -590,8 +595,7 @@ public class CryptoUtils {
 	 *            key for HMAC calculation
 	 * @return result of verification i.e. true/false
 	 */
-	public boolean validateHmac(byte[] text, byte[] hmac,
-			byte[] key) {
+	public boolean validateHmac(byte[] text, byte[] hmac, SecretKey key) {
 		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
 		if (!validation) {
 			logger.debug("HMAC is invalid!");
@@ -612,7 +616,7 @@ public class CryptoUtils {
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
 	public byte[] encryptAuthenticatedSymmetric(byte[] plainText,
-			byte[] key) {
+			SecretKey key) {
 		return encryptAuthenticatedSymmetric(plainText, key, null);
 	}
 
@@ -630,10 +634,8 @@ public class CryptoUtils {
 	 *            random input that is concatenated to a counter
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
 	 */
-	byte[] encryptAuthenticatedSymmetric(byte[] plainText,
-			byte[] key, byte[] nonce) {
-		Cipher gcmCipher = null;
-		SecretKeySpec symmetricKey;
+	public byte[] encryptAuthenticatedSymmetric(byte[] plainText,
+			SecretKey key, byte[] nonce) {
 		IvParameterSpec iv;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
@@ -663,10 +665,9 @@ public class CryptoUtils {
 		}
 
 		iv = new IvParameterSpec(nonce);
-		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			gcmCipher.init(Cipher.ENCRYPT_MODE, symmetricKey, iv);
+			gcmCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -705,14 +706,13 @@ public class CryptoUtils {
 	 */
 
 	public byte[] decryptAuthenticatedSymmetricAndValidateTag(
-			byte[] cipherText, byte[] key) {
+			byte[] cipherText, SecretKey key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
 		byte[] encryptedPlainText = new byte[cipherText.length
 				- SYMM_NONCE_SIZE_BIT / 8];
 		byte[] plainText = null;
 		IvParameterSpec iv;
-		SecretKeySpec symmetricKey;
 
 		try {
 			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
@@ -737,10 +737,9 @@ public class CryptoUtils {
 		}
 
 		iv = new IvParameterSpec(nonce);
-		symmetricKey = new SecretKeySpec(key, SYMM_KEY_ALGORITHM);
 
 		try {
-			gcmCipher.init(Cipher.DECRYPT_MODE, symmetricKey, iv);
+			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = gcmCipher.doFinal(encryptedPlainText);
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
