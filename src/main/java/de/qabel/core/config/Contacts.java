@@ -24,6 +24,15 @@ public class Contacts {
 		return this.contacts.add(contact);
 	}
 
+	/**
+	 * Removes contact from list of contacts
+	 * @param contact
+	 * @return true if contact was contained in list, false if not
+	 */
+	public boolean remove(Contact contact) {
+		return this.contacts.remove(contact);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

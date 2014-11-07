@@ -46,6 +46,15 @@ public class Identities {
 	}
 
 	/**
+	 * Removes identity from list of identities
+	 * @param identity
+	 * @return true if identity was contained in list, false if not
+	 */
+	public boolean remove(Identity identity) {
+		return (identity != null && this.identities.remove(identity.getKeyIdentifier()) != null);
+	}
+
+	/**
 	 * Get Identity by key identifier (right most 64 bit of the identity's public fingerprint)
 	 * @param keyIdentifier
 	 * @return identity to which the key identifier is mapped or null if there is no mapping for this key identifier

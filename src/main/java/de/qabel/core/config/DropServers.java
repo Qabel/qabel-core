@@ -22,6 +22,15 @@ public class DropServers {
 		return this.dropServers.add(dropServer);
 	}
 
+	/**
+	 * Removes dropServer from list of dropServers
+	 * @param dropServer
+	 * @return true if dropServer was contained in list, false if not
+	 */
+	public boolean remove(DropServer dropServer) {
+		return this.dropServers.remove(dropServer);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

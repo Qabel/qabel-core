@@ -22,6 +22,15 @@ public class StorageServers {
 		return this.storageServers.add(storageServer);
 	}
 
+	/**
+	 * Removes storageServer from list of storageServers
+	 * @param storageServer
+	 * @return true if storageServer was contained in list, false if not
+	 */
+	public boolean remove(StorageServer storageServer) {
+		return this.storageServers.remove(storageServer);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

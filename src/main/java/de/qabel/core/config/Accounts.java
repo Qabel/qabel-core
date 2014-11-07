@@ -23,6 +23,15 @@ public class Accounts {
 		return this.accounts.add(account);
 	}
 
+	/**
+	 * Removes account from list of accounts
+	 * @param account
+	 * @return true if account was contained in list, false if not
+	 */
+	public boolean remove(Account account) {
+		return this.accounts.remove(account);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
