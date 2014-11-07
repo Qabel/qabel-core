@@ -1,12 +1,24 @@
 package de.qabel.core.config;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#account
+ */
 public class Account {
 	private int id;
 	private int updated;
 	private int created;
 	private int deleted;
+	/**
+	 * Provider of the account
+	 */
 	private String provider;
+	/**
+	 * User of the account
+	 */
 	private String user;
+	/**
+	 * Authentication of the account
+	 */
 	private String auth;
 	/**
 	 * <pre>
@@ -17,6 +29,12 @@ public class Account {
 	 */
 	private Accounts accounts;
 	
+	/**
+	 * Creates an instance of Account
+	 * @param provider
+	 * @param user
+	 * @param auth
+	 */
 	public Account(String provider, String user, String auth) {
 		this.setProvider(provider);
 		this.setUser(user);
@@ -58,33 +76,53 @@ public class Account {
 		return this.deleted;
 	}
 
-
+	/**
+	 * Sets the provider of the account
+	 * @param value
+	 */
 	public void setProvider(String value) {
 		this.provider = value;
 	}
 
+	/**
+	 * Returns the provider of the account
+	 * @return provider
+	 */
 	public String getProvider() {
 		return this.provider;
 	}
 
-
+	/**
+	 * Sets the user of the account
+	 * @param value
+	 */
 	public void setUser(String value) {
 		this.user = value;
 	}
 
+	/**
+	 * Returns the user of the account
+	 * @return user
+	 */
 	public String getUser() {
 		return this.user;
 	}
 
-
+	/**
+	 * Sets the authentication of the account
+	 * @param value
+	 */
 	public void setAuth(String value) {
 		this.auth = value;
 	}
 
+	/**
+	 * Returns the authentication of the account
+	 * @return auth
+	 */
 	public String getAuth() {
 		return this.auth;
 	}
-
 
 	public void setAccounts(Accounts value) {
 		this.accounts = value;
@@ -143,7 +181,4 @@ public class Account {
 			return false;
 		return true;
 	}
-	
-	
-
 }
