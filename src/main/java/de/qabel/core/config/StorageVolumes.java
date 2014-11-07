@@ -22,6 +22,15 @@ public class StorageVolumes {
 		return this.storageVolumes.add(storageVolume);
 	}
 
+	/**
+	 * Removes storageVolume from list of storageVolumes
+	 * @param storageVolume
+	 * @return true if storageVolume was contained in list, false if not
+	 */
+	public boolean remove(StorageVolume storageVolume) {
+		return this.storageVolumes.remove(storageVolume);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
