@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-servers
+ */
 public class StorageServers {
 	/**
 	 * <pre>
@@ -14,10 +17,19 @@ public class StorageServers {
 	 */
 	private final Set<StorageServer> storageServers = new HashSet<StorageServer>();
 
+	/**
+	 * Returns an unmodifiable set of contained storage servers
+	 * @return Set<StorageServer>
+	 */
 	public Set<StorageServer> getStorageServers() {
 		return Collections.unmodifiableSet(this.storageServers);
 	}
 	
+	/**
+	 * Adds a storage server
+	 * @param storageServer
+	 * @return true if successfully added, false if already contained
+	 */
 	public boolean add(StorageServer storageServer) {
 		return this.storageServers.add(storageServer);
 	}
