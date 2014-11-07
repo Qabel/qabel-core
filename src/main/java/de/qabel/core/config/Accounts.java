@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts
+ */
 public class Accounts {
 	
 	/**
@@ -15,6 +18,10 @@ public class Accounts {
 	 */
 	private final Set<Account> accounts = new HashSet<Account>();
 
+	/**
+	 * Returns unmodifiable set of contained accounts
+	 * @return Set<Account>
+	 */
 	public Set<Account> getAccounts() {
 		return Collections.unmodifiableSet(this.accounts);
 	}
