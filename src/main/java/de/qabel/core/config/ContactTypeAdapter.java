@@ -43,6 +43,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		
 		out.name("module_data");
 		out.beginObject();
+		//TODO: write module data
 		out.endObject();
 		out.endObject();
 		
