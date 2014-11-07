@@ -66,6 +66,9 @@ public class SyncedSettings {
 	@SerializedName("storage_volumes")
 	private StorageVolumes storageVolumes;
 	
+	/**
+	 * Creates an instance of SyncedSettings
+	 */
 	public SyncedSettings() {
 		this.accounts = new Accounts();
 		this.contacts = new Contacts();
@@ -75,6 +78,10 @@ public class SyncedSettings {
 		this.storageVolumes = new StorageVolumes();
 	}
 
+	/**
+	 * Returns a set of module specific synced settings
+	 * @return Set<SyncedModuleSettings>
+	 */
 	public Set<SyncedModuleSettings> getSyncedModuleSettings() {
 		if (this.syncedModuleSettings == null) {
 			this.syncedModuleSettings = new HashSet<SyncedModuleSettings>();
@@ -82,52 +89,98 @@ public class SyncedSettings {
 		return this.syncedModuleSettings;
 	}
 
+	/**
+	 * Sets identities
+	 * @param value
+	 */
 	public void setIdentities(Identities value) {
 		this.identities = value;
 	}
 
+	/**
+	 * Returns identities
+	 * @return Identities
+	 */
 	public Identities getIdentities() {
 		return this.identities;
 	}
 
+	/**
+	 * Returns contacts
+	 * @return Contacts
+	 */
 	public Contacts getContacts() {
 		return this.contacts;
 	}
 
+	/**
+	 * Sets contacts
+	 * @param value
+	 */
 	public void setContacts(Contacts value) {
 		this.contacts = value;
 	}
 
+	/**
+	 * Sets accounts
+	 * @param value
+	 */
 	public void setAccounts(Accounts value) {
 		this.accounts = value;
 	}
 
+	/**
+	 * Returns accounts
+	 * @return Accounts
+	 */
 	public Accounts getAccounts() {
 		return this.accounts;
 	}
 
+	/**
+	 * Sets dropServers
+	 * @param value
+	 */
 	public void setDropServers(DropServers value) {
 		this.dropServers = value;
 	}
 
+	/**
+	 * Returns dropServers
+	 * @return DropServers
+	 */
 	public DropServers getDropServers() {
 		return this.dropServers;
 	}
 
-
+	/**
+	 * Sets storageServers
+	 * @param value
+	 */
 	public void setStorageServers(StorageServers value) {
 		this.storageServers = value;
 	}
 
+	/**
+	 * Returns storageServers
+	 * @return StorageServers
+	 */
 	public StorageServers getStorageServers() {
 		return this.storageServers;
 	}
 
-
+	/**
+	 * Sets storageVolumes
+	 * @param value
+	 */
 	public void setStorageVolumes(StorageVolumes value) {
 		this.storageVolumes = value;
 	}
 
+	/**
+	 * Returns storageVolumes
+	 * @return StorageVolumes
+	 */
 	public StorageVolumes getStorageVolumes() {
 		return this.storageVolumes;
 	}
