@@ -30,7 +30,14 @@ public class SyncedSettings {
 	 * </pre>
 	 */
 	private Accounts accounts;
-	
+	/**
+	 * <pre>
+	 *           1     1
+	 * SyncedSettings ------------------------- Contacts
+	 *           syncedSettings        &gt;       contacts
+	 * </pre>
+	 */
+	private Contacts contacts;
 	/**
 	 * <pre>
 	 *           1     1
@@ -61,6 +68,7 @@ public class SyncedSettings {
 	
 	public SyncedSettings() {
 		this.accounts = new Accounts();
+		this.contacts = new Contacts();
 		this.dropServers = new DropServers();
 		this.identities = new Identities();
 		this.storageServers = new StorageServers();
@@ -82,6 +90,13 @@ public class SyncedSettings {
 		return this.identities;
 	}
 
+	public Contacts getContacts() {
+		return this.contacts;
+	}
+
+	public void setContacts(Contacts value) {
+		this.contacts = value;
+	}
 
 	public void setAccounts(Accounts value) {
 		this.accounts = value;
