@@ -2,14 +2,27 @@ package de.qabel.core.config;
 
 import java.net.URL;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-server
+ */
 public class StorageServer {
 	private int id;
 	private int updated;
 	private int created;
 	private int deleted;
+	/**
+	 * Url of the storage server
+	 */
 	private URL url;
+	/**
+	 * Credential for optional, additional access regulation
+	 */
 	private String auth;
-	
+	/**
+	 * Creates an instance of StorageServer
+	 * @param url
+	 * @param auth
+	 */
 	public StorageServer(URL url, String auth) {
 		this.setUrl(url);
 		this.setAuth(auth);
@@ -47,18 +60,34 @@ public class StorageServer {
 		this.deleted = deleted;
 	}
 
+	/**
+	 * Returns the url of the storage server
+	 * @return URL
+	 */
 	public URL getUrl() {
 		return url;
 	}
 
+	/**
+	 * Sets the url of the storage server
+	 * @param url
+	 */
 	public void setUrl(URL url) {
 		this.url = url;
 	}
 
+	/**
+	 * Returns the authentication of the storage server
+	 * @return auth
+	 */
 	public String getAuth() {
 		return auth;
 	}
 
+	/**
+	 * Sets the authentication of the storage server
+	 * @param auth
+	 */
 	public void setAuth(String auth) {
 		this.auth = auth;
 	}
