@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#drop-servers
+ */
 public class DropServers {
 	/**
 	 * <pre>
@@ -14,10 +17,19 @@ public class DropServers {
 	 */
 	private final Set<DropServer> dropServers = new HashSet<DropServer>();
 
+	/**
+	 * Returns unmodifiable set of contained drop servers
+	 * @return
+	 */
 	public Set<DropServer> getDropServers() {
 		return Collections.unmodifiableSet(this.dropServers);
 	}
 	
+	/**
+	 * Adds a drop server
+	 * @param dropServer
+	 * @return true if successfully added, false if already contained
+	 */
 	public boolean add(DropServer dropServer) {
 		return this.dropServers.add(dropServer);
 	}
