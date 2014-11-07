@@ -5,6 +5,9 @@ import java.util.HashSet;
 
 import de.qabel.core.module.ModuleManager;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#settings-client-notes
+ */
 public class Settings {
 	/**
 	 * <pre>
@@ -15,10 +18,18 @@ public class Settings {
 	 */
 	private LocalSettings localSettings;
 
+	/**
+	 * Sets the local settings
+	 * @param value
+	 */
 	public void setLocalSettings(LocalSettings value) {
 		this.localSettings = value;
 	}
 
+	/**
+	 * Returns the local settings
+	 * @return localSettings
+	 */
 	public LocalSettings getLocalSettings() {
 		return this.localSettings;
 	}
@@ -32,6 +43,10 @@ public class Settings {
 	 */
 	private SyncedSettings syncedSettings;
 
+	/**
+	 * Returns the synced settings
+	 * @return SyncedSettings
+	 */
 	public SyncedSettings getSyncedSettings() {
 		return this.syncedSettings;
 	}
@@ -45,6 +60,10 @@ public class Settings {
 	 */
 	private Set<ModuleManager> moduleManager;
 
+	/**
+	 * Returns a set of module manager
+	 * @return
+	 */
 	public Set<ModuleManager> getModuleManager() {
 		if (this.moduleManager == null) {
 			this.moduleManager = new HashSet<ModuleManager>();
