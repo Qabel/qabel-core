@@ -19,19 +19,26 @@ public class Identity {
 	private int updated;
 	private int created;
 	private int deleted;
+	/**
+	 * Alias name of the identity
+	 */
 	private String alias;
+	/**
+	 * Primary key pair of the identity
+	 */
 	@SerializedName("keys")
 	private QblPrimaryKeyPair primaryKeyPair;
+	/**
+	 * List of drop urls of the identity
+	 */
 	private Collection<DropURL> drops = new ArrayList<DropURL>();
 
 	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * Identity ------------------------- Identities
-	 *           identity        &lt;       identities
-	 * </pre>
+	 * Creates an instance of Identity
+	 * @param alias
+	 * @param drops
+	 * @param primaryKeyPair
 	 */
-	
 	public Identity(String alias, Collection<DropURL> drops, 
 			QblPrimaryKeyPair primaryKeyPair) {
 		this.id = 0; //just to set it somehow
@@ -68,36 +75,69 @@ public class Identity {
 		return this.deleted;
 	}
 
+	/**
+	 * Sets the alias name of the identity
+	 * @param value
+	 */
 	public void setAlias(String value) {
 		this.alias = value;
 	}
 
+	/**
+	 * Returns the alias name of the identity
+	 * @return alias
+	 */
 	public String getAlias() {
 		return this.alias;
 	}
 
+	/**
+	 * Sets the primary key pair of the identity
+	 * @param key
+	 */
 	public void setPrimaryKeyPair(QblPrimaryKeyPair key)
 	{
 		this.primaryKeyPair = key;
 	}
 	
+	/**
+	 * Returns the primary key pair of the identity
+	 * @return QblPrimaryKeyPair
+	 */
 	public QblPrimaryKeyPair getPrimaryKeyPair()
 	{
 		return this.primaryKeyPair;
 	}
 
+	/**
+	 * Sets the list of drop urls of the identity
+	 * @param drops
+	 */
 	public void setDrops(Collection<DropURL> drops) {
 		this.drops = drops;
 	}
 
+	/**
+	 * Adds a drop url to the identity
+	 * @param drop
+	 */
 	public void addDrop(DropURL drop) {
 		this.drops.add(drop);
 	}
 
+	/**
+	 * Returns unmodifiable collection of the identity's drop urls
+	 * @return Collection<DropURL>
+	 */
 	public Collection<DropURL> getDrops() {
 		return Collections.unmodifiableCollection(this.drops);
 	}
 	
+	/**
+	 * Returns the key identifier of the identity.
+	 * The key identifier consists of the right-most 64 bit of the identity's public fingerprint
+	 * @return key identifier
+	 */
 	public String getKeyIdentifier() {
 		return this.primaryKeyPair.getQblPrimaryPublicKey().getReadableKeyIdentifier();
 	}

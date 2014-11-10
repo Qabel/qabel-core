@@ -16,10 +16,19 @@ public class Contacts {
 	 */
 	private final Set<Contact> contacts = new HashSet<Contact>();
 
+	/**
+	 * Returns unmodifiable set of contained contacts
+	 * @return Set<Contact>
+	 */
 	public Set<Contact> getContacts() {
 		return Collections.unmodifiableSet(this.contacts);
 	}
 	
+	/**
+	 * Adds a contact
+	 * @param contact
+	 * @return true if contact is added, false if contact is already in list
+	 */
 	public boolean add(Contact contact) {
 		return this.contacts.add(contact);
 	}

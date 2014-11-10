@@ -2,19 +2,40 @@ package de.qabel.core.config;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volume
+ */
 public class StorageVolume {
 	private int id;
 	private int updated;
 	private int created;
 	private int deleted;
+	/**
+	 * ID of the storage server
+	 */
 	@SerializedName("storage_server_id")
 	private int storageServerId;
+	/**
+	 * identifier of the storage volume on the server
+	 */
 	@SerializedName("public_identifier")
 	private String publicIdentifier;
+	/**
+	 * Credential granting write permission to the storage volume
+	 */
 	private String token;
+	/**
+	 * Credential granting the permission to delete the whole storage volume
+	 */
 	@SerializedName("revoke_token")
 	private String revokeToken;
 	
+	/**
+	 * Creates an instance of StorageVolume
+	 * @param publicIdentifier
+	 * @param token
+	 * @param revokeToken
+	 */
 	public StorageVolume(String publicIdentifier, String token, String revokeToken) {
 		this.setPublicIdentifier(publicIdentifier);
 		this.setToken(token);
@@ -53,34 +74,66 @@ public class StorageVolume {
 		this.deleted = deleted;
 	}
 
+	/**
+	 * Returns ID of the storage server
+	 * @return storageServerId
+	 */
 	public int getStorageServerId() {
 		return storageServerId;
 	}
 
+	/**
+	 * Sets the ID of the storage server
+	 * @param storageServerId
+	 */
 	public void setStorageServerId(int storageServerId) {
 		this.storageServerId = storageServerId;
 	}
 
+	/**
+	 * Returns the public identifier of the storage volume
+	 * @return publicIdentifier
+	 */
 	public String getPublicIdentifier() {
 		return publicIdentifier;
 	}
 
+	/**
+	 * Sets the public identifier of the storage volume
+	 * @param publicIdentifier
+	 */
 	public void setPublicIdentifier(String publicIdentifier) {
 		this.publicIdentifier = publicIdentifier;
 	}
 
+	/**
+	 * Returns the token of the storage volume
+	 * @return token
+	 */
 	public String getToken() {
 		return token;
 	}
 
+	/**
+	 * Sets the token of the storage volume
+	 * @param token
+	 */
 	public void setToken(String token) {
 		this.token = token;
 	}
 
+	/**
+	 * Returns the revoke token of the storage volume
+	 * @return revokeToken
+	 */
 	public String getRevokeToken() {
 		return revokeToken;
 	}
 
+	/**
+	 * Sets the revoke token of the storage volume
+	 * @param revokeToken
+	 */
 	public void setRevokeToken(String revokeToken) {
 		this.revokeToken = revokeToken;
 	}

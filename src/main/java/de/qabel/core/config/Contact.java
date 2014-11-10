@@ -12,83 +12,149 @@ import com.google.gson.annotations.SerializedName;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact {
-	
+	/**
+	 * Primary public key of the contact
+	 */
 	@SerializedName("public_primary_key")
 	private QblPrimaryPublicKey primaryPublicKey;
 
 	/**
-	 * The owner identity which owns this Contact.
+	 * The owner identity which owns this contact.
 	 * Note: This is not the identity which is represented by this contact!
 	 */
 	@SerializedName("my_identity")
 	private Identity contactOwner;
+	/**
+	 * The key identifier of the identity the contact belongs to.
+	 * A key identifier is defined as the right-most 64 bit of the identity's public fingerprint
+	 */
 	private String contactOwnerKeyId;
+	/**
+	 * List of drop urls of the contact
+	 */
 	@SerializedName("drop_urls")
 	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
+	/**
+	 * List of module specific settings for the contact
+	 */
 	@SerializedName("module_data")
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
+	/**
+	 * Returns the primary public key of the contact
+	 * @return QblPrimaryPublicKey
+	 */
 	public QblPrimaryPublicKey getPrimaryPublicKey()
 	{
 		return primaryPublicKey;
 	}
 	
+	/**
+	 * Sets the primary public key of the contacts
+	 * @param key
+	 */
 	public void setPrimaryPublicKey(QblPrimaryPublicKey key)
 	{
 		primaryPublicKey = key;
 	}
 	
+	/**
+	 * Returns the identity which owns the contact
+	 * @return contactOwner
+	 */
 	public Identity getContactOwner()
 	{
 		return contactOwner;
 	}
 	
+	/**
+	 * Sets the contact owning identity
+	 * @param identity
+	 */
 	public void setContactOwner (Identity identity) {
 		this.contactOwner = identity;
 		this.contactOwnerKeyId = identity.getKeyIdentifier();
 	}
 	
+	/**
+	 * Returns the key identifier of the contact owning identity
+	 * @return contactOwnerKeyId
+	 */
 	public String getContactOwnerKeyId() {
 		return this.contactOwnerKeyId;
 	}
-		
+	
+	/**
+	 * Returns the public encryption key of the contact
+	 * @return QblEncPublicKey
+	 */
 	public QblEncPublicKey getEncryptionPublicKey()
 	{
 		return primaryPublicKey.getEncPublicKey();
 	}
 	
+	/**
+	 * Sets the public encryption key of the contact
+	 * @param key
+	 * @throws InvalidKeyException
+	 */
 	public void setEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachEncPublicKey(key);
 	}
 	
+	/**
+	 * Returns the public signing key of the contact
+	 * @return QblSignPublicKey
+	 */
 	public QblSignPublicKey getSignaturePublicKey()
 	{
 		return primaryPublicKey.getSignPublicKey();
 	}
 	
+	/**
+	 * Sets the public signing key of the contact
+	 * @param key
+	 * @throws InvalidKeyException
+	 */
 	public void setSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachSignPublicKey(key);
 	}	
 	
+	/**
+	 * Returns a collection of the drop urls of the contact
+	 * @return Collection<DropURL>
+	 */
 	public Collection<DropURL> getDropUrls()
 	{
 		return dropUrls;
 	}
 	
+	/**
+	 * Returns a set of the module specific settings of the contact
+	 * @return Set<AbstractModuleSettings>
+	 */
 	public Set<AbstractModuleSettings> getModuleSettings()
 	{
 		return moduleSettings;
 	}
 	
-	
+	/**
+	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
+	 * @param owner
+	 */
 	public Contact(Identity owner)
 	{
 		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
 	}
 	
+	/**
+	 * Creates an instance of Contact and sets the contactOwnerId.
+	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
+	 * @param ownerKeyId
+	 */
 	protected Contact(String ownerKeyId) {
 		this.contactOwnerKeyId = ownerKeyId;
 	}

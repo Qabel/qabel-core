@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.HashSet;
 
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volumes
+ */
 public class StorageVolumes {
 	/**
 	 * <pre>
@@ -14,10 +17,19 @@ public class StorageVolumes {
 	 */
 	private final Set<StorageVolume> storageVolumes = new HashSet<StorageVolume>();
 
+	/**
+	 * Returns an unmodifiable set of contained storage volumes
+	 * @return Set<StorageVolume>
+	 */
 	public Set<StorageVolume> getStorageVolumes() {
 		return Collections.unmodifiableSet(this.storageVolumes);
 	}
 	
+	/**
+	 * Adds a storage volume
+	 * @param storageVolume
+	 * @return true if successfully added, false if already contained
+	 */
 	public boolean add(StorageVolume storageVolume) {
 		return this.storageVolumes.add(storageVolume);
 	}

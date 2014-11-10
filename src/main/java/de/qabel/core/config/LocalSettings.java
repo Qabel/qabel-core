@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.google.gson.annotations.SerializedName;
-
+/**
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
+ */
 public class LocalSettings {
 	/**
 	 * <pre>
@@ -13,18 +15,34 @@ public class LocalSettings {
 	 * LocalSettings ------------------------> LocaleModuleSettings
 	 *           localSettings        &gt;       localeModuleSettings
 	 * </pre>
+	 * Set of module specific local settings
 	 */
 	private Set<LocaleModuleSettings> localeModuleSettings;
+	/**
+	 * Poll interval of the client
+	 */
 	@SerializedName("poll_interval")
 	private long pollInterval;
+	/**
+	 * Date of the last time the core asked the drop servers for new messages
+	 */
 	@SerializedName("drop_last_update")
 	private Date dropLastUpdate;
 	
+	/**
+	 * Creates an instance of LocalSettings
+	 * @param pollInterval
+	 * @param dropLastUpdate
+	 */
 	public LocalSettings(long pollInterval, Date dropLastUpdate) {
 		this.setPollInterval(pollInterval);
 		this.setdropLastUpdate(dropLastUpdate);
 	}
 
+	/**
+	 * Returns a set of module specific local settings
+	 * @return Set<LocaleModuleSettings>
+	 */
 	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
 		if (this.localeModuleSettings == null) {
 			this.localeModuleSettings = new HashSet<LocaleModuleSettings>();
@@ -32,20 +50,34 @@ public class LocalSettings {
 		return this.localeModuleSettings;
 	}
 
-
+	/**
+	 * Sets the poll interval
+	 * @param value
+	 */
 	public void setPollInterval(long value) {
 		this.pollInterval = value;
 	}
 
+	/**
+	 * Returns the poll interval
+	 * @return
+	 */
 	public long getPollInterval() {
 		return this.pollInterval;
 	}
 
-
+	/**
+	 * Sets the date of last drop update
+	 * @param value
+	 */
 	public void setdropLastUpdate(Date value) {
 		this.dropLastUpdate = value;
 	}
 
+	/**
+	 * Returns the date of last drop update
+	 * @return Date
+	 */
 	public Date getLastUpdate() {
 		return this.dropLastUpdate;
 	}
