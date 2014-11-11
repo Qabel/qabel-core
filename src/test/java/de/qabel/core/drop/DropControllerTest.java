@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 
-public class DropTest {
+public class DropControllerTest {
     final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
     final String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
 
@@ -57,7 +57,7 @@ public class DropTest {
         contact.setEncryptionPublicKey(qepkRecipient);
         contact.setSignaturePublicKey(qspkRecipient);
 
-        Drop d = new Drop();
+        DropController d = new DropController();
 
         TestMessage m = new TestMessage();
         m.content = "baz";
@@ -74,7 +74,7 @@ public class DropTest {
 
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
-        Assert.assertEquals(200, d.sendAndForget(dm, contacts));
+        Assert.assertTrue(d.sendAndForget(dm, contacts));
         
         retrieveTest();
     }
@@ -97,7 +97,7 @@ public class DropTest {
         contact.setEncryptionPublicKey(qepkRecipient);
         contact.setSignaturePublicKey(qspkRecipient);
 
-        Drop<TestMessage> d = new Drop<TestMessage>();
+        DropController d = new DropController();
 
         TestMessage m = new TestMessage();
         m.content = "baz";
@@ -124,7 +124,7 @@ public class DropTest {
         contact.setEncryptionPublicKey(qepkRecipient);
         contact.setSignaturePublicKey(qspkRecipient);
 
-        Drop d = new Drop();
+        DropController d = new DropController();
 
         TestMessage m = new TestMessage();
         m.content = "baz";
@@ -161,10 +161,10 @@ public class DropTest {
 
         Contacts contacts = new Contacts();
         contacts.add(contact);
-        
-        Drop d = new Drop();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
+        DropController d = new DropController();
+
+        Collection<DropMessage> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
@@ -190,9 +190,9 @@ public class DropTest {
         Contacts contacts = new Contacts();
         contacts.add(contact);
 
-        Drop d = new Drop();
+        DropController d = new DropController();
 
-        Collection<DropMessage<ModelObject>> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
+        Collection<DropMessage> result = d.retrieve(contactUrl.getUrl(), contacts.getContacts());
         //We expect at least one drop message from "foo"
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<ModelObject> dm : result){
