@@ -3,8 +3,6 @@ package de.qabel.core.config;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.google.gson.annotations.SerializedName;
-
 public class SyncedSettings {
 	/**
 	 * <pre>
@@ -45,7 +43,6 @@ public class SyncedSettings {
 	 *           syncedSettings        &gt;       dropServers
 	 * </pre>
 	 */
-	@SerializedName("drop_servers")
 	private DropServers dropServers;
 	/**
 	 * <pre>
@@ -54,7 +51,6 @@ public class SyncedSettings {
 	 *           syncedSettings        &gt;       storageServers
 	 * </pre>
 	 */
-	@SerializedName("storage_servers")
 	private StorageServers storageServers;
 	/**
 	 * <pre>
@@ -63,7 +59,6 @@ public class SyncedSettings {
 	 *           syncedSettings        &gt;       storageVolumes
 	 * </pre>
 	 */
-	@SerializedName("storage_volumes")
 	private StorageVolumes storageVolumes;
 	
 	/**
