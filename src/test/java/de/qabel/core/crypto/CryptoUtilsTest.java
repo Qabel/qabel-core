@@ -15,10 +15,10 @@ import de.qabel.core.crypto.CryptoUtils;
 
 public class CryptoUtilsTest {
 
-	CryptoUtils cu = CryptoUtils.getInstance();
-	QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
-	QblPrimaryKeyPair qpkp2 = new QblPrimaryKeyPair();
-	String jsonTestString = "{\"version\":1,\"time\":100,\"sender\":20,\"model\":\"de.example.qabel.MailMessage\",\"data\":\"{\"sender\":\"a@a.com\",\"content\":\"hello world\",\"recipient\":\"b@b.com\"}\"}";
+	final CryptoUtils cu = new CryptoUtils();
+	final QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
+	final QblPrimaryKeyPair qpkp2 = new QblPrimaryKeyPair();
+	final String jsonTestString = "{\"version\":1,\"time\":100,\"sender\":20,\"model\":\"de.example.qabel.MailMessage\",\"data\":\"{\"sender\":\"a@a.com\",\"content\":\"hello world\",\"recipient\":\"b@b.com\"}\"}";
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();

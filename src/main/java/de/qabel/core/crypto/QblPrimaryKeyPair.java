@@ -20,7 +20,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	QblPrimaryKeyPair() {
 		super();
 
-		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
+		KeyPair keyPair = QblKeyFactory.getInstance().generateKeyPair();
 		super.setRSAPrivateKey((RSAPrivateKey) keyPair.getPrivate());
 		qblPrimaryPublicKey = new QblPrimaryPublicKey(
 				(RSAPublicKey) keyPair.getPublic());
@@ -71,7 +71,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	public void attachSignKeyPair(QblSignKeyPair qskp) {
-		qskp.setQblPrimaryKeySignature(CryptoUtils.getInstance()
+		qskp.setQblPrimaryKeySignature(QblKeyFactory.getInstance()
 				.rsaSignKeyPair(qskp, this));
 		signKeyPairs.add(qskp);
 	}
@@ -85,7 +85,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	public void attachEncKeyPair(QblEncKeyPair qekp) {
-		qekp.setQblPrimaryKeySignature(CryptoUtils.getInstance()
+		qekp.setQblPrimaryKeySignature(QblKeyFactory.getInstance()
 				.rsaSignKeyPair(qekp, this));
 		encKeyPairs.add(qekp);
 	}

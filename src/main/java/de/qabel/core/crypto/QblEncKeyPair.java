@@ -14,7 +14,7 @@ public class QblEncKeyPair extends QblSubKeyPair {
 
 	QblEncKeyPair() {
 		super();
-		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
+		KeyPair keyPair = QblKeyFactory.getInstance().generateKeyPair();
 		super.setRSAPrivateKey((RSAPrivateKey) keyPair.getPrivate());
 		qblEncPublicKey = new QblEncPublicKey(
 				(RSAPublicKey) keyPair.getPublic());

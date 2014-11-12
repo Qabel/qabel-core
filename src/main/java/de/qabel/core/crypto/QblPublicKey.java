@@ -1,7 +1,5 @@
 package de.qabel.core.crypto;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -20,7 +18,8 @@ abstract class QblPublicKey {
 	QblPublicKey(RSAPublicKey publicKey) {
 		super();
 		this.publicKey = publicKey;
-		genFingerprint();
+		publicKeyFingerprint = 
+				QblKeyFactory.getInstance().getFingerprint(publicKey);
 	}
 
 	/**
@@ -73,23 +72,6 @@ abstract class QblPublicKey {
 	 */
 	public String getReadableKeyIdentifier() {
 		return DatatypeConverter.printHexBinary(getKeyIdentifier());
-	}
-
-	/**
-	 * Generates the public key fingerprint as a SHA512 digest
-	 * of the public key modulus and exponent
-	 */
-	private void genFingerprint() {
-		ByteArrayOutputStream bs = new ByteArrayOutputStream();
-		try {
-			bs.write((getPublicExponent().toByteArray()));
-			bs.write((getModulus().toByteArray()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		publicKeyFingerprint = CryptoUtils.getInstance().getSHA512sum(
-				bs.toByteArray());
 	}
 
 	@Override

@@ -14,7 +14,7 @@ public class QblSignKeyPair extends QblSubKeyPair {
 
 	QblSignKeyPair() {
 		super();
-		KeyPair keyPair = CryptoUtils.getInstance().generateKeyPair();
+		KeyPair keyPair = QblKeyFactory.getInstance().generateKeyPair();
 		super.setRSAPrivateKey((RSAPrivateKey) keyPair.getPrivate());
 		qblSignPublicKey = new QblSignPublicKey(
 				(RSAPublicKey) keyPair.getPublic());
