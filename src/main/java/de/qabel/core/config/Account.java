@@ -10,14 +10,17 @@ public class Account {
 	private int deleted;
 	/**
 	 * Provider of the account
+	 * Field name in serialized json: "provider"
 	 */
 	private String provider;
 	/**
 	 * User of the account
+	 * Field name in serialized json: "user"
 	 */
 	private String user;
 	/**
 	 * Authentication of the account
+	 * Field name in serialized json: "auth"
 	 */
 	private String auth;
 	
