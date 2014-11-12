@@ -10,6 +10,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- SyncedModuleSettings
 	 *           syncedSettings        &lt;       syncedModuleSettings
 	 * </pre>
+	 * Field name in serialized json: "module_data"
 	 */
 	private Set<SyncedModuleSettings> syncedModuleSettings;
 	/**
@@ -18,6 +19,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- Identities
 	 *           syncedSettings        &gt;       identities
 	 * </pre>
+	 * Field name in serialized json: "identities"
 	 */
 	private Identities identities;
 	/**
@@ -26,6 +28,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- Accounts
 	 *           syncedSettings        &gt;       accounts
 	 * </pre>
+	 * Field name in serialized json: "accounts"
 	 */
 	private Accounts accounts;
 	/**
@@ -34,6 +37,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- Contacts
 	 *           syncedSettings        &gt;       contacts
 	 * </pre>
+	 * Field name in serialized json: "contacts"
 	 */
 	private Contacts contacts;
 	/**
@@ -42,6 +46,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- DropServers
 	 *           syncedSettings        &gt;       dropServers
 	 * </pre>
+	 * Field name in serialized json: "drop_servers"
 	 */
 	private DropServers dropServers;
 	/**
@@ -50,6 +55,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- StorageServers
 	 *           syncedSettings        &gt;       storageServers
 	 * </pre>
+	 * Field name in serialized json: "storage_servers"
 	 */
 	private StorageServers storageServers;
 	/**
@@ -58,6 +64,7 @@ public class SyncedSettings {
 	 * SyncedSettings ------------------------- StorageVolumes
 	 *           syncedSettings        &gt;       storageVolumes
 	 * </pre>
+	 * Field name in serialized json: "storage_volumes"
 	 */
 	private StorageVolumes storageVolumes;
 	
