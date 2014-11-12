@@ -142,10 +142,11 @@ public class DropController {
 		for (Contact c : contacts) {
 			byte[] cryptedMessage;
 			try {
+				//TODO: Adapt to List returned by getSignKeyPairs
 				cryptedMessage = encryptDrop(
 						m,
 						c.getEncryptionPublicKey(),
-						c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
+						c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0)
 				);
 				for (DropURL u : c.getDropUrls()) {
 					if(http.send(u.getUrl(), cryptedMessage) == 200)
