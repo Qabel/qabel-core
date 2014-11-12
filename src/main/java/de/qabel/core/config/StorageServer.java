@@ -12,10 +12,12 @@ public class StorageServer {
 	private int deleted;
 	/**
 	 * Url of the storage server
+	 * Field name in serialized json: "url"
 	 */
 	private URL url;
 	/**
 	 * Credential for optional, additional access regulation
+	 * Field name in serialized json: "auth"
 	 */
 	private String auth;
 	/**
