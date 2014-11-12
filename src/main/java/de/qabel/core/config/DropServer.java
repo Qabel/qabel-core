@@ -12,14 +12,17 @@ public class DropServer {
 	private int deleted;
 	/**
 	 * URL to the drop service without the drop id
+	 * Field name in serialized json: "url"
 	 */
 	private URL url;
 	/**
 	 * Authentication for the drop server (Credential for optional, additional access regulation)
+	 * Field name in serialized json: "auth"
 	 */	
 	private String auth;
 	/**
 	 * Status flag of the drop server
+	 * Field name in serialized json: "active"
 	 */
 	private boolean active;
 	/**
