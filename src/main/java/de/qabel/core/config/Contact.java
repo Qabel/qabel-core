@@ -12,6 +12,7 @@ import java.util.*;
 public class Contact {
 	/**
 	 * Primary public key of the contact
+	 * Field name in serialized json: "keys"
 	 */
 	private QblPrimaryPublicKey primaryPublicKey;
 	/**
@@ -22,14 +23,17 @@ public class Contact {
 	/**
 	 * The key identifier of the identity the contact belongs to.
 	 * A key identifier is defined as the right-most 64 bit of the identity's public fingerprint
+	 * Field name in serialized json: "my_identity"
 	 */
 	private String contactOwnerKeyId;
 	/**
 	 * List of drop urls of the contact
+	 * Field name in serialized json: "drop_urls"
 	 */
 	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
 	/**
 	 * List of module specific settings for the contact
+	 * Field name in serialized json: "module_data"
 	 */
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
