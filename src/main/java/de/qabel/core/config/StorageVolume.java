@@ -12,20 +12,24 @@ public class StorageVolume {
 	private int deleted;
 	/**
 	 * ID of the storage server
+	 * Field name in serialized json: "storage_server_id"
 	 */
 	@SerializedName("storage_server_id")
 	private int storageServerId;
 	/**
 	 * identifier of the storage volume on the server
+	 * Field name in serialized json: "public_identifier"
 	 */
 	@SerializedName("public_identifier")
 	private String publicIdentifier;
 	/**
 	 * Credential granting write permission to the storage volume
+	 * Field name in serialized json: "token"
 	 */
 	private String token;
 	/**
 	 * Credential granting the permission to delete the whole storage volume
+	 * Field name in serialized json: "revoke_token"
 	 */
 	@SerializedName("revoke_token")
 	private String revokeToken;
