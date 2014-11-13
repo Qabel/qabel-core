@@ -33,6 +33,25 @@ public class StorageHTTP {
 	}
 
 	/**
+	 * Probes the given StorageServer with the publicIdentifier.
+	 * @param baseUrl The baseUrl of a StorageServer.
+	 * @param publicIdentifier The public identifier we want to probe.
+	 * @return HTTPResult
+	 * @throws IOException If something went wrong with the connection
+	 */
+	public HTTPResult probeStorageVolume(URL baseUrl, String publicIdentifier) throws IOException {
+		URL url = addPathToURL(baseUrl, publicIdentifier);
+		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
+		HTTPResult result = new HTTPResult();
+		connection.setRequestMethod("GET");
+		int responseCode = connection.getResponseCode();
+		result.setResponseCode(responseCode);
+		result.setOk(responseCode == 200);
+		connection.disconnect();
+		return result;
+	}
+
+	/**
 	 * Setups the connection to the given url.
 	 * @param url The whole url to the Qabel Storage Volume.
 	 * @return The open connection.
