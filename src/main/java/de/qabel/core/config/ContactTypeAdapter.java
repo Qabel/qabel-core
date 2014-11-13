@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,6 +43,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		
 		out.name("module_data");
 		out.beginObject();
+		//TODO: write module data
 		out.endObject();
 		out.endObject();
 		

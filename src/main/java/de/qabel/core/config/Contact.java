@@ -6,38 +6,35 @@ import de.qabel.core.drop.DropURL;
 import java.security.InvalidKeyException;
 import java.util.*;
 
-import com.google.gson.annotations.SerializedName;
-
 /** 
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact {
 	/**
 	 * Primary public key of the contact
+	 * Field name in serialized json: "keys"
 	 */
-	@SerializedName("public_primary_key")
 	private QblPrimaryPublicKey primaryPublicKey;
-
 	/**
 	 * The owner identity which owns this contact.
 	 * Note: This is not the identity which is represented by this contact!
 	 */
-	@SerializedName("my_identity")
 	private Identity contactOwner;
 	/**
 	 * The key identifier of the identity the contact belongs to.
 	 * A key identifier is defined as the right-most 64 bit of the identity's public fingerprint
+	 * Field name in serialized json: "my_identity"
 	 */
 	private String contactOwnerKeyId;
 	/**
 	 * List of drop urls of the contact
+	 * Field name in serialized json: "drop_urls"
 	 */
-	@SerializedName("drop_urls")
 	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
 	/**
 	 * List of module specific settings for the contact
+	 * Field name in serialized json: "module_data"
 	 */
-	@SerializedName("module_data")
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
 	/**
@@ -120,7 +117,7 @@ public class Contact {
 	public void setSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachSignPublicKey(key);
-	}	
+	}
 	
 	/**
 	 * Returns a collection of the drop urls of the contact

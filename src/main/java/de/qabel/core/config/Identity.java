@@ -21,15 +21,18 @@ public class Identity {
 	private int deleted;
 	/**
 	 * Alias name of the identity
+	 * Field name in serialized json: "alias"
 	 */
 	private String alias;
 	/**
 	 * Primary key pair of the identity
+	 * Field name in serialized json: "keys"
 	 */
 	@SerializedName("keys")
 	private QblPrimaryKeyPair primaryKeyPair;
 	/**
 	 * List of drop urls of the identity
+	 * Field name in serialized json: "drops"
 	 */
 	private Collection<DropURL> drops = new ArrayList<DropURL>();
 

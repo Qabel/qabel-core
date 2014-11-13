@@ -10,24 +10,19 @@ public class Account {
 	private int deleted;
 	/**
 	 * Provider of the account
+	 * Field name in serialized json: "provider"
 	 */
 	private String provider;
 	/**
 	 * User of the account
+	 * Field name in serialized json: "user"
 	 */
 	private String user;
 	/**
 	 * Authentication of the account
+	 * Field name in serialized json: "auth"
 	 */
 	private String auth;
-	/**
-	 * <pre>
-	 *           0..*     0..1
-	 * Account ------------------------- Accounts
-	 *           account        &lt;       accounts
-	 * </pre>
-	 */
-	private Accounts accounts;
 	
 	/**
 	 * Creates an instance of Account
@@ -122,14 +117,6 @@ public class Account {
 	 */
 	public String getAuth() {
 		return this.auth;
-	}
-
-	public void setAccounts(Accounts value) {
-		this.accounts = value;
-	}
-
-	public Accounts getAccounts() {
-		return this.accounts;
 	}
 
 	@Override

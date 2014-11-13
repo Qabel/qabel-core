@@ -16,15 +16,18 @@ public class LocalSettings {
 	 *           localSettings        &gt;       localeModuleSettings
 	 * </pre>
 	 * Set of module specific local settings
+	 * Field name in serialized json: "module_data"
 	 */
 	private Set<LocaleModuleSettings> localeModuleSettings;
 	/**
 	 * Poll interval of the client
+	 * Field name in serialized json: "poll_interval"
 	 */
 	@SerializedName("poll_interval")
 	private long pollInterval;
 	/**
 	 * Date of the last time the core asked the drop servers for new messages
+	 * Field name in serialized json: "drop_last_update"
 	 */
 	@SerializedName("drop_last_update")
 	private Date dropLastUpdate;
