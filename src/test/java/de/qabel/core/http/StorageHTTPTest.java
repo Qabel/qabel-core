@@ -20,8 +20,8 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class StorageHTTPTest {
 	private URL url;
-	private StorageVolume storageVolume;
-	private String publicIdentifier, token;
+	private StorageVolume storageVolume, delStorageVolume;
+	private String publicIdentifier, token, delPublicIdentifier, delToken, delRevokeToken;
 	private byte[] file;
 
 	@Before
@@ -44,6 +44,14 @@ public class StorageHTTPTest {
 		file = new String(text).getBytes();
 
 		storageHTTP.upload(url, publicIdentifier, "retrieveTest", token, file);
+
+		HTTPResult resultDelete = storageHTTP.createNewStorageVolume(url);
+		Assume.assumeTrue(resultDelete.isOk());
+		delStorageVolume = (StorageVolume) result.getData();
+		delPublicIdentifier = delStorageVolume.getPublicIdentifier();
+		delToken = delStorageVolume.getToken();
+		delRevokeToken = delStorageVolume.getRevokeToken();
+		storageHTTP.upload(url, delPublicIdentifier, "deleteBlobTest", delToken, file);
 	}
 
 	@Test
@@ -183,5 +191,73 @@ public class StorageHTTPTest {
 		HTTPResult result = storageHTTP.retrieveBlob(url, "foo" + publicIdentifier, "retrieveTest");
 		//Then
 		assertEquals(404, result.getResponseCode());
+	}
+
+	@Test
+	public void deleteBlobFromStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		//Then
+		assertTrue(result.isOk());
+		assertEquals(204, result.getResponseCode());
+	}
+
+	@Test
+	@Ignore //400 Doesn't exists in the qabel-storage delete
+	public void deleteWithMissingVolumeIdFromStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, null, "deleteBlobTest", delRevokeToken);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(400, result.getResponseCode());
+	}
+
+	@Test
+	public void deleteWithMissingRevokeTokenFromStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", null);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(401, result.getResponseCode());
+	}
+
+	@Test
+	public void deleteWithInvalidRevokeTokenFromStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken + "Foo");
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(403, result.getResponseCode());
+	}
+
+	@Test
+	@Ignore //404 Doesn't exists in the qabel-storage delete
+	public void deleteWithNotExisitingVolumeIdFromStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, "foo" + delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(404, result.getResponseCode());
+	}
+
+	@Test
+	public void deleteStorage() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "", delRevokeToken);
+		//Then
+		assertTrue(result.isOk());
+		assertEquals(204, result.getResponseCode());
 	}
 }

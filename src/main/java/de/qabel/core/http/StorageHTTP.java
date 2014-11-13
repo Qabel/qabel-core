@@ -101,6 +101,28 @@ public class StorageHTTP {
 	}
 
 	/**
+	 * Deletes a blob or the whole Qabel Storage Volume.
+	 * @param baseUrl The baseUrl of a StorageServer.
+	 * @param publicIdentifier Where the file should be received from.
+	 * @param blobName The blob name, which should be downloaded.
+	 * @param revokeToken The token, which is required to delete a blob or a qabel storage volume.
+	 * @throws IOException If something went wrong with the connection
+	 * @return HTTPResult
+	 */
+	public HTTPResult delete(URL baseUrl, String publicIdentifier, String blobName, String revokeToken) throws IOException {
+		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
+		HTTPResult result = new HTTPResult();
+		connection.setRequestProperty("X-Qabel-Token", revokeToken);
+		connection.setRequestMethod("DELETE");
+		int responseCode = connection.getResponseCode();
+		result.setResponseCode(responseCode);
+		result.setOk(responseCode == 204);
+		connection.disconnect();
+		return result;
+	}
+
+	/**
 	 * Setups the connection to the given url.
 	 * @param url The whole url to the Qabel Storage Volume.
 	 * @return The open connection.
