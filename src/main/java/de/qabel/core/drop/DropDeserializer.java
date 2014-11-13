@@ -31,7 +31,7 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
             @SuppressWarnings("unchecked")
             Class<? extends ModelObject> cls = (Class<? extends ModelObject>) loader
                     .loadClass(model);
-            m = new Gson().fromJson(json.getAsJsonObject().get("data").getAsString(), cls);
+            m = new Gson().fromJson(json.getAsJsonObject().get("data").getAsJsonObject(), cls);
             classModelObject = (Class<ModelObject>) m.getClass();
         } catch (ClassNotFoundException e1) {
             throw new JsonParseException("Couldn't deserialize 'data' entry", e1);
