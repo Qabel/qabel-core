@@ -52,6 +52,55 @@ public class StorageHTTP {
 	}
 
 	/**
+	 * Uploads the given file to the url (baseUrl + publicIdentifier + blobName).
+	 * @param baseUrl The baseUrl of a StorageServer.
+	 * @param publicIdentifier Where the file should be uploaded to.
+	 * @param blobName The file/blob name for the upload.
+	 * @param token The token, which is required to upload files to the publicIdentifier.
+	 * @param file The file in bytes, which the user wants to upload.
+	 * @return HTTPResult
+	 * @throws IOException If something went wrong with the connection
+	 */
+	public HTTPResult upload(URL baseUrl, String publicIdentifier, String blobName, String token, byte[] file) throws IOException {
+		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
+		connection.setRequestProperty("X-Qabel-Token", token);
+		connection.setDoOutput(true);
+		DataOutputStream out;
+		HTTPResult result = new HTTPResult();
+		out = new DataOutputStream(connection.getOutputStream());
+		out.write(file);
+		out.flush();
+		out.close();
+		int responseCode = connection.getResponseCode();
+		result.setResponseCode(responseCode);
+		result.setOk(responseCode == 200);
+		connection.disconnect();
+		return result;
+	}
+
+	/**
+	 * Retrieves a blob/file from the url (baseUrl + publicIdentifier + blobName).
+	 * @param baseUrl  The baseUrl of a StorageServer.
+	 * @param publicIdentifier Where the file should be received from.
+	 * @param blobName The blob name, which should be downloaded.
+	 * @return HTTPResult
+	 * @throws IOException If something went wrong with the connection
+	 */
+	public HTTPResult retrieveBlob(URL baseUrl, String publicIdentifier, String blobName) throws IOException {
+		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
+		HTTPResult result = new HTTPResult();
+		connection.setRequestMethod("GET");
+		int responseCode = connection.getResponseCode();
+		result.setResponseCode(responseCode);
+		result.setOk(responseCode == 200);
+		result.setData(connection.getInputStream());
+		connection.disconnect();
+		return result;
+	}
+
+	/**
 	 * Setups the connection to the given url.
 	 * @param url The whole url to the Qabel Storage Volume.
 	 * @return The open connection.

@@ -9,16 +9,20 @@ import org.junit.Test;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 public class StorageHTTPTest {
 	private URL url;
 	private StorageVolume storageVolume;
 	private String publicIdentifier, token;
+	private byte[] file;
 
 	@Before
 	public void setUp() throws IOException {
@@ -34,6 +38,12 @@ public class StorageHTTPTest {
 
 		publicIdentifier = storageVolume.getPublicIdentifier();
 		token = storageVolume.getToken();
+
+		char[] text = new char[42];
+		Arrays.fill(text, 'a');
+		file = new String(text).getBytes();
+
+		storageHTTP.upload(url, publicIdentifier, "retrieveTest", token, file);
 	}
 
 	@Test
@@ -85,5 +95,93 @@ public class StorageHTTPTest {
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(400, result.getResponseCode());
+	}
+
+	@Test
+	public void uploadToQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", token, file);
+		//Then
+		assertTrue(result.isOk());
+		assertEquals(200, result.getResponseCode());
+	}
+
+	@Test
+	@Ignore //400 http status does not exist in qabel-storage (also not in the protocol_update branch)
+	public void uploadWithMissingQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.upload(url, null, "foo", token, file);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(400, result.getResponseCode());
+	}
+
+	@Test
+	public void uploadWithMissingTokenToQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", null, file);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(401, result.getResponseCode());
+	}
+
+	@Test
+	public void uploadWithInvalidTokenToQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", "foo" + token, file);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(403, result.getResponseCode());
+	}
+
+	@Test
+	public void uploadToNotExistingQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.upload(url, "foo" + publicIdentifier, "foo", token, file);
+		//Then
+		assertFalse(result.isOk());
+		assertEquals(404, result.getResponseCode());
+	}
+
+	@Test
+	public void retrieveBlobFromQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.retrieveBlob(url, publicIdentifier, "retrieveTest");
+		//Then
+		assertEquals(200, result.getResponseCode());
+	}
+
+	@Test
+	@Ignore //Get HTTP response Code: 500
+	public void retrieveBlobFromMissingQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.retrieveBlob(url, null, "retrieveTest");
+		//Then
+		assertEquals(400, result.getResponseCode());
+	}
+
+	@Test
+	@Ignore //Get HTTP response Code: 500
+	public void retrieveBlobFromInvalidQabelStorageVolume() throws IOException {
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		HTTPResult result = storageHTTP.retrieveBlob(url, "foo" + publicIdentifier, "retrieveTest");
+		//Then
+		assertEquals(404, result.getResponseCode());
 	}
 }
