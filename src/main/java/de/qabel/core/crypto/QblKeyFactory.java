@@ -80,7 +80,7 @@ public class QblKeyFactory {
 	 *            Primary key pair to sign with
 	 * @return byte[ ] with the signature. Can be null.
 	 */
-	byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
+	synchronized byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
 
 		if (qkp == null || qpkp == null) {
 			return null;
@@ -98,7 +98,7 @@ public class QblKeyFactory {
 	 * @return is signature valid
 	 * @throws InvalidKeyException
 	 */
-	boolean rsaValidateKeySignature(QblSubPublicKey subKey,
+	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
 			QblPrimaryPublicKey primaryKey) throws InvalidKeyException {
 
 		if (subKey == null || primaryKey == null) {
@@ -112,7 +112,7 @@ public class QblKeyFactory {
 	 * Generates the public key fingerprint as a SHA512 digest
 	 * of the public key modulus and exponent
 	 */
-	byte[] getFingerprint(RSAPublicKey publicKey) {
+	synchronized byte[] getFingerprint(RSAPublicKey publicKey) {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		try {
 			bs.write((publicKey.getPublicExponent().toByteArray()));
