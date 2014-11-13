@@ -17,7 +17,7 @@ public class DropSerializer<T extends ModelObject> implements JsonSerializer<Dro
         obj.addProperty("sender",         src.getSender());
         obj.addProperty("acknowledge_id", src.getAcknowledgeID());
         obj.addProperty("model_object",   model);
-        obj.addProperty("data",           gson.toJson(src.getData()));
+        obj.add("data",                   gson.toJsonTree(src.getData()));
 
         return obj;
     }
