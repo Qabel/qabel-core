@@ -1,8 +1,15 @@
 package de.qabel.core.crypto;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Security;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -11,6 +18,7 @@ import java.security.spec.RSAPublicKeySpec;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
  * QblKeyFactory allows to generate new QblPrimaryKeyPairs and create QblPrivate
@@ -20,18 +28,33 @@ import org.apache.logging.log4j.Logger;
 public class QblKeyFactory {
 
 	private final static QblKeyFactory INSTANCE = new QblKeyFactory();
+	
+	private final static String CRYPTOGRAPHIC_PROVIDER = "BC"; // BouncyCastle
 	private final static String KEY_ALGORITHM = "RSA";
+	private final static int RSA_KEY_SIZE_BIT = 2048;
 	private KeyFactory keyFactory;
+	private KeyPairGenerator keyPairGen;
+	private CryptoUtils cryptoUtils;
 
 	private final static Logger logger = LogManager
 			.getLogger(QblKeyFactory.class.getName());
 
 	private QblKeyFactory() {
 		try {
+			Security.addProvider(new BouncyCastleProvider());
+			
+			cryptoUtils = new CryptoUtils();
+			
 			keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+			keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM,
+					CRYPTOGRAPHIC_PROVIDER);
+			keyPairGen.initialize(RSA_KEY_SIZE_BIT);
 		} catch (NoSuchAlgorithmException e) {
 			logger.error("Cannot find selected algorithm! " + e.getMessage());
-			e.printStackTrace();
+			throw new RuntimeException("Cannot find selected algorithm!", e);
+		} catch (NoSuchProviderException e) {
+			logger.error("Cannot find selected provider! " + e.getMessage());
+			throw new RuntimeException("Cannot find selected provider!", e);
 		}
 	}
 
@@ -39,6 +62,68 @@ public class QblKeyFactory {
 		return QblKeyFactory.INSTANCE;
 	}
 
+	/**
+	 * Returns a new KeyPair
+	 * 
+	 * @return KeyPair
+	 */
+	KeyPair generateKeyPair() {
+		return keyPairGen.generateKeyPair();
+	}
+	
+	/**
+	 * Signs a sub-key pair with a primary key
+	 * 
+	 * @param qkp
+	 *            Sub-key pair to sign
+	 * @param qpkp
+	 *            Primary key pair to sign with
+	 * @return byte[ ] with the signature. Can be null.
+	 */
+	synchronized byte[] rsaSignKeyPair(QblKeyPair qkp, QblPrimaryKeyPair qpkp) {
+
+		if (qkp == null || qpkp == null) {
+			return null;
+		}
+		return cryptoUtils.rsaSign(qkp.getPublicKeyFingerprint(), qpkp.getRSAPrivateKey());
+	}
+
+	/**
+	 * Validates a signature from a sub-public key with a primary public key
+	 * 
+	 * @param subKey
+	 *            Sub-public key to validate
+	 * @param primaryKey
+	 *            Primary public key to validate signature with
+	 * @return is signature valid
+	 * @throws InvalidKeyException
+	 */
+	synchronized boolean rsaValidateKeySignature(QblSubPublicKey subKey,
+			QblPrimaryPublicKey primaryKey) throws InvalidKeyException {
+
+		if (subKey == null || primaryKey == null) {
+			return false;
+		}
+		return cryptoUtils.rsaValidateSignature(subKey.getPublicKeyFingerprint(),
+				subKey.getPrimaryKeySignature(), primaryKey.getRSAPublicKey());
+	}
+	
+	/**
+	 * Generates the public key fingerprint as a SHA512 digest
+	 * of the public key modulus and exponent
+	 */
+	synchronized byte[] getFingerprint(RSAPublicKey publicKey) {
+		ByteArrayOutputStream bs = new ByteArrayOutputStream();
+		try {
+			bs.write((publicKey.getPublicExponent().toByteArray()));
+			bs.write((publicKey.getModulus().toByteArray()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return cryptoUtils.getSHA512sum(bs.toByteArray());
+	}
+	
 	/**
 	 * Creates a new RSAPrivate key
 	 * 

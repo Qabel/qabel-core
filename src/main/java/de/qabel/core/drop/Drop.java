@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
 public class Drop<T extends ModelObject> {
     GsonBuilder gb;
     Gson gson;
+    CryptoUtils cryptoUtils;
 
     private final static Logger logger = LogManager.getLogger(Drop.class.getName());
     
@@ -28,6 +29,7 @@ public class Drop<T extends ModelObject> {
         gb.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
         gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
         gson = gb.create();
+        cryptoUtils = new CryptoUtils();
     }
 
     /**
@@ -195,8 +197,7 @@ public class Drop<T extends ModelObject> {
      * @throws InvalidKeyException 
      */
     private byte[] encryptDrop(String jsonMessage, QblEncPublicKey publickey, QblSignKeyPair skp) throws InvalidKeyException {
-        CryptoUtils cu = CryptoUtils.getInstance();
-        return cu.encryptHybridAndSign(jsonMessage, publickey, skp);
+        return cryptoUtils.encryptHybridAndSign(jsonMessage, publickey, skp);
     }
 
 
@@ -208,8 +209,7 @@ public class Drop<T extends ModelObject> {
      * @throws InvalidKeyException 
      */
     private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {
-        CryptoUtils cu = CryptoUtils.getInstance();
-        return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
+        return cryptoUtils.decryptHybridAndValidateSignature(cipher, keypair, signkey);
     }
 
 }
