@@ -4,7 +4,9 @@ import static org.junit.Assert.*;
 
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
+
 import javax.crypto.BadPaddingException;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Rule;
@@ -14,6 +16,8 @@ import org.junit.rules.ExpectedException;
 import de.qabel.core.crypto.CryptoUtils;
 
 public class CryptoUtilsTest {
+	
+	private final static String SYMM_KEY_ALGORITHM = "AES";
 
 	final CryptoUtils cu = new CryptoUtils();
 	final QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
@@ -66,7 +70,8 @@ public class CryptoUtilsTest {
 	@Test
 	public void symmetricCryptoTest() throws UnsupportedEncodingException {
 		// Test case from http://tools.ietf.org/html/rfc3686
-		byte[] key = Hex.decode("F6D66D6BD52D59BB0796365879EFF886C66DD51A5B6A99744B50590C87A23884");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("F6D66D6BD52D59BB0796365879EFF886C66DD51A5B6A99744B50590C87A23884")
+				,SYMM_KEY_ALGORITHM);
 		byte[] nonce = Hex.decode("00FAAC24C1585EF15A43D875");
 		byte[] plainText = Hex.decode("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
 		byte[] cipherTextExpected = Hex.decode("F05E231B3894612C49EE000B804EB2A9B8306B508F839D6A5530831D9344AF1C");
@@ -80,7 +85,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void calcHmacTest() throws UnsupportedEncodingException {
 		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
 		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
 		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		byte[] hmacResult = cu.calcHmac(text, key);
@@ -90,7 +95,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void hmacValidationTest() {
 		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
 		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
 		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		boolean hmacValidation = cu.validateHmac(text, hmac, key);
@@ -100,7 +105,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void invalidHmacValidationTest() {
 		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		byte[] key = Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
 		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
 		byte[] wrongHmac = Hex.decode("a1aa465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
 		boolean wrongHmacValidaition = cu.validateHmac(text, wrongHmac, key);
@@ -110,7 +115,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void autheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
 		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
-		byte[] key = Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
 		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
 		byte[] plainText = Hex.decode("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255");
 		byte[] cipherTextExpected = Hex.decode("522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad");
@@ -125,7 +130,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void invalidAutheticatedSymmetricCryptoTest() throws UnsupportedEncodingException {
 		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
-		byte[] key = Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308");
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
 		String nonce = "cafebabefacedbaddecaf888";
 		String encryptedPlainText = "522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad";
 		String ivalidAuthenticationTag = "a194dac5d93471bdec1a502270e3cc6c";
