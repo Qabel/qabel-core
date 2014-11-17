@@ -36,6 +36,19 @@ public class MultiPartCryptoTest {
         }
     }
 
+	class UnwantedTestObject extends ModelObject {
+		public UnwantedTestObject() { }
+		private String str;
+
+		public String getStr() {
+			return str;
+		}
+
+		public void setStr(String str) {
+			this.str = str;
+		}
+	}
+
     private DropController dropController;
     private DropQueueCallback<TestObject> mQueue;
 
@@ -54,6 +67,7 @@ public class MultiPartCryptoTest {
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
 
         this.sendMessage();
+		this.sendUnwantedMessage();
 
         try {
             Thread.sleep(2000);
@@ -72,9 +86,11 @@ public class MultiPartCryptoTest {
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException {
 
+		this.sendUnwantedMessage();
         this.sendMessage();
         this.sendMessage();
         this.sendMessage();
+		this.sendUnwantedMessage();
         this.sendMessage();
 
         try {
@@ -164,4 +180,24 @@ public class MultiPartCryptoTest {
         // Send hello world to all contacts.
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
     }
+
+	private void sendUnwantedMessage() {
+		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>();
+		UnwantedTestObject data = new UnwantedTestObject();
+		data.setStr("Test");
+		dm.setData(data);
+
+		Date date = new Date();
+
+		dm.setSender("foo");
+		dm.setAcknowledgeID("bar");
+		dm.setTime(date);
+		dm.setVersion(1);
+		dm.setModelObject(UnwantedTestObject.class);
+
+		DropController drop = new DropController();
+
+		// Send an unknown drop message to all contacts.
+		drop.sendAndForget(dm, dropController.getContacts().getContacts());
+	}
 }
