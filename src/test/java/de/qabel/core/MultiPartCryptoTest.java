@@ -5,10 +5,8 @@ import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
-import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
