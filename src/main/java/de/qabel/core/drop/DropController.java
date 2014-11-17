@@ -194,13 +194,13 @@ public class DropController {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
-		String plainJson = null;
 
 		List<Contact> ccc = new ArrayList<Contact>(contacts);
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
 			for (Contact c : contacts) {
+				String plainJson = null;
 				try {
 					plainJson = decryptDrop(cipherMessage,
 							c.getContactOwner().getPrimaryKeyPair(),
