@@ -159,7 +159,7 @@ public class MultiPartCryptoTest {
         dm.setVersion(1);
         dm.setModelObject(TestObject.class);
 
-        Drop<TestObject> drop = new Drop<TestObject>();
+        DropController drop = new DropController();
 
         // Send hello world to all contacts.
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
