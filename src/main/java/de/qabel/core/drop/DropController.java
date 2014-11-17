@@ -147,7 +147,7 @@ public class DropController {
 						res = true;
 				}
 			} catch (InvalidKeyException e) {
-				logger.error("Invalid key in contact. Cannot send message!");
+				logger.error("Invalid key in contact. Cannot send message!", e);
 			}
 		}
 		return res;
