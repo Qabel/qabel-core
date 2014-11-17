@@ -71,8 +71,7 @@ public class DropController {
 						DropMessage.class);
 				m.invoke(callback, dm);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error during handling drop", e);
 			}
 		}
 	}
