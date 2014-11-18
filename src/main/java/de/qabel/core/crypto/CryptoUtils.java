@@ -371,9 +371,8 @@ public class CryptoUtils {
 			ivOS.write(nonce);
 			ivOS.write(counter);
 			cipherText.write(nonce);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Encryption: Nonce cannot be written to the ciphertext stream: ", e);
 		}
 
 		iv = new IvParameterSpec(ivOS.toByteArray());
@@ -382,17 +381,15 @@ public class CryptoUtils {
 			symmetricCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			cipherText.write(symmetricCipher.doFinal(plainText));
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Encryption: Wrong parameters for file encryption.", e);
 		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// CTR means stream cipher, so this should not be thrown
+			logger.error(e);
 		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// We do not use padding, so this should not be thrown
+			logger.error(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Encryption: Output Stream cannot be written to.", e);
 		}
 
 		return cipherText.toByteArray();
@@ -431,9 +428,8 @@ public class CryptoUtils {
 			ivOS.write(nonce);
 			ivOS.write(counter);
 			bi.read(encryptedPlainText);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.error("Decryption: Ciphertext could not be read: ", e);
 		}
 
 		iv = new IvParameterSpec(ivOS.toByteArray());
@@ -442,14 +438,13 @@ public class CryptoUtils {
 			symmetricCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = symmetricCipher.doFinal(encryptedPlainText);
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Decryption: Wrong parameters for decryption.", e);
 		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// CTR mode means stream cipher, so this should not be thrown
+			logger.error(e);
 		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// We do not use padding, so this should not be thrown
+			logger.error(e);
 		}
 		return plainText;
 	}
@@ -658,9 +653,9 @@ public class CryptoUtils {
 
 		try {
 			cipherText.write(nonce);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			// Should not happen since it is generated just before
+			logger.error(e);
 		}
 
 		iv = new IvParameterSpec(nonce);
@@ -668,21 +663,19 @@ public class CryptoUtils {
 		try {
 			gcmCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Encryption: Wrong parameters for encryption cipher.", e);
 		}
 
 		try {
 			cipherText.write(gcmCipher.doFinal(plainText));
 		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
 		} catch (BadPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// We do not use padding , so this should not be thrown
+			logger.error(e);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// Will not happen since cipherText is not modified outside of this function
+			logger.error(e);
 		}
 
 		return cipherText.toByteArray();
@@ -729,9 +722,8 @@ public class CryptoUtils {
 		try {
 			bi.read(nonce);
 			bi.read(encryptedPlainText);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		} catch (IOException e) {
+			logger.debug("Decryption: Ciphertext can not be read.", e);
 		}
 
 		iv = new IvParameterSpec(nonce);
@@ -740,15 +732,13 @@ public class CryptoUtils {
 			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = gcmCipher.doFinal(encryptedPlainText);
 		} catch (InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Decryption: Wrong parameters for decryption.", e);
+			return null;
 		} catch (IllegalBlockSizeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.debug("Decryption: Ciphertext was encrypted with wrong block size.", e);
+			return null;
 		} catch (BadPaddingException e) {
-			// TODO this exception is thrown if ciphertext or authentication tag
-			// was modified
-			logger.debug("Authentication tag is invalid!");
+			logger.error("Decryption: Authentication tag is invalid!", e);
 			return null;
 		}
 		return plainText;
