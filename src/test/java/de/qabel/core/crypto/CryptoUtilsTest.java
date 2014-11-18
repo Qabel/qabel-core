@@ -2,9 +2,15 @@ package de.qabel.core.crypto;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
-
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javax.crypto.BadPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -23,6 +29,7 @@ public class CryptoUtilsTest {
 	final QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
 	final QblPrimaryKeyPair qpkp2 = new QblPrimaryKeyPair();
 	final String jsonTestString = "{\"version\":1,\"time\":100,\"sender\":20,\"model\":\"de.example.qabel.MailMessage\",\"data\":\"{\"sender\":\"a@a.com\",\"content\":\"hello world\",\"recipient\":\"b@b.com\"}\"}";
+	String testFileName = "src/test/java/de/qabel/core/crypto/testFile";
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
@@ -138,5 +145,30 @@ public class CryptoUtilsTest {
 		
 		byte[] plainText = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
 		assertEquals(plainText, null);
+	}
+
+	@Test
+	public void fileEncryptionTest() throws IOException, InvalidKeyException {
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
+		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
+		File testFile = new File(testFileName);
+		FileOutputStream cipherStream = new FileOutputStream(testFileName + ".enc");
+
+		cu.encryptFileAuthenticatedSymmetric(testFile, (OutputStream) cipherStream, key, nonce);
+
+		assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".enc"))),
+				Hex.toHexString(cu.encryptAuthenticatedSymmetric(
+						Files.readAllBytes(Paths.get(testFileName)), key, nonce)));
+	}
+
+	@Test
+	public void fileDecryptionTest() throws IOException, InvalidKeyException {
+		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
+		FileInputStream cipherStream = new FileInputStream(new File(testFileName + ".enc"));
+
+		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileName + ".dec", key);
+
+		assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
+				Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".dec"))));
 	}
 }

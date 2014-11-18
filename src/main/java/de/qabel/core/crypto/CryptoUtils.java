@@ -2,7 +2,14 @@ package de.qabel.core.crypto;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -41,6 +48,7 @@ public class CryptoUtils {
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
+	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
 	private final static int SYMM_IV_SIZE_BYTE = 16;
 	private final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
@@ -716,5 +724,163 @@ public class CryptoUtils {
 			return null;
 		}
 		return plainText;
+	}
+
+	/**
+	 * Encrypts a File to an OutputStream. The OutputStream gets the result
+	 * immediately while encrypting. The step size of every seperate decryption
+	 * step is defined in SYMM_ALT_READ_SIZE_BYTE.
+	 * 
+	 * @param file
+	 *            Input file that will be encrypted
+	 * @param outputStream
+	 *            OutputStream where ciphertext is streamed to
+	 * @param key
+	 *            Key which is used to en-/decrypt
+	 * @return true if encryption worked as expected, else false
+	 * @throws InvalidKeyException
+	 *             if key is invalid
+	 */
+	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
+			throws InvalidKeyException {
+		return encryptFileAuthenticatedSymmetric(file, outputStream, key, null);
+	}
+
+	/**
+	 * Encrypts a File to an OutputStream. The OutputStream gets the result
+	 * immediately while encrypting. The step size of every seperate decryption
+	 * step is defined in SYMM_ALT_READ_SIZE_BYTE. Nonce of size
+	 * SYMM_NONCE_SIZE_BIT is taken as nonce directly, else a random nonce is
+	 * generated.
+	 * 
+	 * @param file
+	 *            Input file that will be encrypted
+	 * @param outputStream
+	 *            OutputStream where ciphertext is streamed to
+	 * @param key
+	 *            Key which is used to en-/decrypt
+	 * @param nonce
+	 *            Random value which is concatenated to a counter
+	 * @return true if encryption worked as expected, else false
+	 * @throws InvalidKeyException
+	 *             if key is invalid
+	 */
+	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
+			throws InvalidKeyException {
+		IvParameterSpec iv;
+		DataOutputStream cipherText = new DataOutputStream(outputStream);
+		FileInputStream fileInputStream;
+		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
+		int readBytes;
+
+		try {
+			fileInputStream = new FileInputStream(file);
+		} catch (FileNotFoundException e) {
+			logger.debug("Encryption: File for encryption was not found.", e);
+			return false;
+		}
+
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
+		}
+
+		iv = new IvParameterSpec(nonce);
+
+		try {
+			gcmCipher.init(Cipher.ENCRYPT_MODE, key, iv);
+		} catch (InvalidAlgorithmParameterException e) {
+			logger.debug("Encryption: Wrong parameters for file encryption cipher.", e);
+			return false;
+		}
+
+		try {
+			cipherText.write(nonce);
+			while ((readBytes = fileInputStream.read(temp, 0,
+					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+				cipherText.write(gcmCipher.update(temp, 0, readBytes));
+			}
+			cipherText.write(gcmCipher.doFinal());
+			fileInputStream.close();
+		} catch (IllegalBlockSizeException e) {
+			// Should not happen
+			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
+		} catch (BadPaddingException e) {
+			// We do not use padding, so this should not be thrown
+			logger.error(e);
+		} catch (IOException e) {
+			logger.debug("Encryption: Input/output Stream cannot be written/read to/from.", e);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Decryptes ciphertext from an InputStream to a file. The decrypted content
+	 * is written to the file immediately. If decryption was successful a file
+	 * is returned, if authentication tag validation fails or another error
+	 * occurs null is returned.
+	 * 
+	 * @param inputStream
+	 *            InputStream from where the ciphertext is read
+	 * @param pathName
+	 *            Pathname where the decrypted file will be stored
+	 * @param key
+	 *            Key which is used to en-/decrypt the file
+	 * @return The decrypted file or null if authentication tag validation
+	 *         failed or another error occured
+	 * @throws InvalidKeyException
+	 *             if key is invalid
+	 */
+	File decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, String pathName, SecretKey key)
+			throws InvalidKeyException {
+		FileOutputStream fileOutput = null;
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
+		IvParameterSpec iv;
+		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
+		int readBytes;
+
+		if (pathName == null) {
+			// TODO generate a temp folder where files can be stored
+			logger.debug("TODO generate a temp folder where files can be stored");
+		}
+
+		try {
+			fileOutput = new FileOutputStream(pathName);
+		} catch (FileNotFoundException e) {
+			logger.debug("Decryption: File " + pathName + " was not found/can not be written to.", e);
+			// TODO like above: create temp file
+		}
+
+		try {
+			inputStream.read(nonce);
+		} catch (IOException e) {
+			logger.debug("Decryption: Ciphertext (in this case the nonce) can not be read.", e);
+			return null;
+		}
+
+		iv = new IvParameterSpec(nonce);
+		try {
+			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
+			while ((readBytes = inputStream.read(temp, 0,
+					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+				fileOutput.write(gcmCipher.update(temp, 0, readBytes));
+			}
+			fileOutput.write(gcmCipher.doFinal());
+			fileOutput.close();
+		} catch (InvalidAlgorithmParameterException e) {
+			logger.debug("Decryption: Wrong parameters for file decryption.", e);
+			return null;
+		} catch (IllegalBlockSizeException e) {
+			logger.debug("Decryption: File was encrypted with wrong block size.", e);
+			return null;
+		} catch (BadPaddingException e) {
+			logger.error("Decryption: Authentication tag is invalid!", e);
+			return null;
+		} catch (IOException e) {
+			logger.debug("Decryption: Input/output Stream cannot be written/read to/from.", e);
+			return null;
+		}
+
+		return new File(pathName);
 	}
 }
