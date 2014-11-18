@@ -64,6 +64,11 @@ public class DropController {
 		Set<DropCallback<? extends ModelObject>> typeCallbacks = mCallbacks
 				.get(cls);
 
+		if (typeCallbacks == null) {
+			logger.debug("Received drop message of type " + cls.getCanonicalName() + " which we do not listen for.");
+			return;
+		}
+
 		for (DropCallback<? extends ModelObject> callback : typeCallbacks) {
 			Method m;
 			try {
