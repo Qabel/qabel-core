@@ -330,8 +330,10 @@ public class CryptoUtils {
 	 * @param key
 	 *            symmetric key which is used for en- and decryption
 	 * @return ciphertext which is the result of the encryption
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-	byte[] encryptSymmetric(byte[] plainText, SecretKey key) {
+	byte[] encryptSymmetric(byte[] plainText, SecretKey key) throws InvalidKeyException {
 		return encryptSymmetric(plainText, key, null);
 	}
 
@@ -347,10 +349,10 @@ public class CryptoUtils {
 	 * @param nonce
 	 *            random input that is concatenated to a counter
 	 * @return ciphertext which is the result of the encryption
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-
-	byte[] encryptSymmetric(byte[] plainText, SecretKey key,
-			byte[] nonce) {
+	byte[] encryptSymmetric(byte[] plainText, SecretKey key, byte[] nonce) throws InvalidKeyException {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
@@ -379,9 +381,6 @@ public class CryptoUtils {
 		try {
 			symmetricCipher.init(Cipher.ENCRYPT_MODE, key, iv);
 			cipherText.write(symmetricCipher.doFinal(plainText));
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -409,8 +408,10 @@ public class CryptoUtils {
 	 * @param key
 	 *            symmetric key which is used for en- and decryption
 	 * @return plaintext which is the result of the decryption
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-	byte[] decryptSymmetric(byte[] cipherText, SecretKey key) {
+	byte[] decryptSymmetric(byte[] cipherText, SecretKey key) throws InvalidKeyException {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		byte[] counter = new byte[(SYMM_IV_SIZE_BYTE - SYMM_NONCE_SIZE_BYTE)];
@@ -440,9 +441,6 @@ public class CryptoUtils {
 		try {
 			symmetricCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = symmetricCipher.doFinal(encryptedPlainText);
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -571,17 +569,13 @@ public class CryptoUtils {
 	 * @param key
 	 *            key for HMAC calculation
 	 * @return HMAC of text under key
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-	public byte[] calcHmac(byte[] text, SecretKey key) {
-		byte[] result = null;
-		try {
-			hmac.init(key);
-			result = hmac.doFinal(text);
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result;
+
+	public byte[] calcHmac(byte[] text, SecretKey key) throws InvalidKeyException {
+		hmac.init(key);
+		return hmac.doFinal(text);
 	}
 
 	/**
@@ -594,8 +588,10 @@ public class CryptoUtils {
 	 * @param key
 	 *            key for HMAC calculation
 	 * @return result of verification i.e. true/false
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-	public boolean validateHmac(byte[] text, byte[] hmac, SecretKey key) {
+	public boolean validateHmac(byte[] text, byte[] hmac, SecretKey key) throws InvalidKeyException {
 		boolean validation = MessageDigest.isEqual(hmac, calcHmac(text, key));
 		if (!validation) {
 			logger.debug("HMAC is invalid!");
@@ -614,9 +610,10 @@ public class CryptoUtils {
 	 *            Symmetric key which will be used for encryption and
 	 *            authentication
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
-	public byte[] encryptAuthenticatedSymmetric(byte[] plainText,
-			SecretKey key) {
+	public byte[] encryptAuthenticatedSymmetric(byte[] plainText, SecretKey key) throws InvalidKeyException {
 		return encryptAuthenticatedSymmetric(plainText, key, null);
 	}
 
@@ -633,9 +630,11 @@ public class CryptoUtils {
 	 * @param nonce
 	 *            random input that is concatenated to a counter
 	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
 	public byte[] encryptAuthenticatedSymmetric(byte[] plainText,
-			SecretKey key, byte[] nonce) {
+			SecretKey key, byte[] nonce) throws InvalidKeyException {
 		IvParameterSpec iv;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
@@ -668,9 +667,6 @@ public class CryptoUtils {
 
 		try {
 			gcmCipher.init(Cipher.ENCRYPT_MODE, key, iv);
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -703,10 +699,12 @@ public class CryptoUtils {
 	 *            Symmetric key which will be used for decryption and
 	 *            verification
 	 * @return Plaintext or null if validation of authentication tag fails
+	 * @throws InvalidKeyException
+	 *             if key is invalid
 	 */
 
 	public byte[] decryptAuthenticatedSymmetricAndValidateTag(
-			byte[] cipherText, SecretKey key) {
+			byte[] cipherText, SecretKey key) throws InvalidKeyException {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		byte[] encryptedPlainText = new byte[cipherText.length
@@ -741,9 +739,6 @@ public class CryptoUtils {
 		try {
 			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
 			plainText = gcmCipher.doFinal(encryptedPlainText);
-		} catch (InvalidKeyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (InvalidAlgorithmParameterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
