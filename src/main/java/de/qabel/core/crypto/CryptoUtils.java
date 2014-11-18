@@ -633,20 +633,6 @@ public class CryptoUtils {
 		IvParameterSpec iv;
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 
-		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
-					CRYPTOGRAPHIC_PROVIDER);
-		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchProviderException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
 		}
@@ -704,20 +690,6 @@ public class CryptoUtils {
 				- SYMM_NONCE_SIZE_BYTE];
 		byte[] plainText = null;
 		IvParameterSpec iv;
-
-		try {
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
-					CRYPTOGRAPHIC_PROVIDER);
-		} catch (NoSuchAlgorithmException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (NoSuchProviderException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		} catch (NoSuchPaddingException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
 
 		try {
 			bi.read(nonce);
