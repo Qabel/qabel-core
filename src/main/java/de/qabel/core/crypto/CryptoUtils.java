@@ -41,8 +41,8 @@ public class CryptoUtils {
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
-	private final static int SYMM_IV_SIZE_BIT = 128;
-	private final static int SYMM_NONCE_SIZE_BIT = 96;
+	private final static int SYMM_IV_SIZE_BYTE = 16;
+	private final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
@@ -354,14 +354,14 @@ public class CryptoUtils {
 		ByteArrayOutputStream cipherText = new ByteArrayOutputStream();
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
-		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
+		byte[] counter = new byte[(SYMM_IV_SIZE_BYTE - SYMM_NONCE_SIZE_BYTE)];
 
-		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
-			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
 		}
 
 		// Set counter to 1, if nonce is smaller than IV
-		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+		if (SYMM_IV_SIZE_BYTE - SYMM_NONCE_SIZE_BYTE > 0) {
 			counter[counter.length - 1] = 1;
 		}
 
@@ -412,16 +412,16 @@ public class CryptoUtils {
 	 */
 	byte[] decryptSymmetric(byte[] cipherText, SecretKey key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
-		byte[] counter = new byte[(SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT) / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
+		byte[] counter = new byte[(SYMM_IV_SIZE_BYTE - SYMM_NONCE_SIZE_BYTE)];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_NONCE_SIZE_BIT / 8];
+				- SYMM_NONCE_SIZE_BYTE];
 		byte[] plainText = null;
 		ByteArrayOutputStream ivOS = new ByteArrayOutputStream();
 		IvParameterSpec iv;
 
 		// Set counter to 1, if nonce is smaller than IV
-		if (SYMM_IV_SIZE_BIT - SYMM_NONCE_SIZE_BIT > 0) {
+		if (SYMM_IV_SIZE_BYTE - SYMM_NONCE_SIZE_BYTE > 0) {
 			counter[counter.length - 1] = 1;
 		}
 
@@ -653,8 +653,8 @@ public class CryptoUtils {
 			e.printStackTrace();
 		}
 
-		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BIT / 8) {
-			nonce = getRandomBytes(SYMM_NONCE_SIZE_BIT / 8);
+		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
+			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
 		}
 
 		try {
@@ -708,9 +708,9 @@ public class CryptoUtils {
 	public byte[] decryptAuthenticatedSymmetricAndValidateTag(
 			byte[] cipherText, SecretKey key) {
 		ByteArrayInputStream bi = new ByteArrayInputStream(cipherText);
-		byte[] nonce = new byte[SYMM_NONCE_SIZE_BIT / 8];
+		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		byte[] encryptedPlainText = new byte[cipherText.length
-				- SYMM_NONCE_SIZE_BIT / 8];
+				- SYMM_NONCE_SIZE_BYTE];
 		byte[] plainText = null;
 		IvParameterSpec iv;
 
