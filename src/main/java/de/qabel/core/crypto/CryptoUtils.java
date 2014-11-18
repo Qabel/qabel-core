@@ -604,7 +604,8 @@ public class CryptoUtils {
 	 * @param key
 	 *            Symmetric key which will be used for encryption and
 	 *            authentication
-	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag
+	 * @return Ciphertext, in format: IV|enc(plaintext)|authentication tag or
+	 *         null if an error occurs
 	 * @throws InvalidKeyException
 	 *             if key is invalid
 	 */
@@ -677,7 +678,8 @@ public class CryptoUtils {
 	 * @param key
 	 *            Symmetric key which will be used for decryption and
 	 *            verification
-	 * @return Plaintext or null if validation of authentication tag fails
+	 * @return Plaintext or null if validation of authentication tag fails or
+	 *         another error occurs
 	 * @throws InvalidKeyException
 	 *             if key is invalid
 	 */
