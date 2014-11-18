@@ -40,7 +40,7 @@ public class CryptoUtils {
 	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
-	private final static String SYMM_ALT_TRANSFORMATION = "AES/GCM/NoPadding";
+	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_IV_SIZE_BYTE = 16;
 	private final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
@@ -71,12 +71,12 @@ public class CryptoUtils {
 					CRYPTOGRAPHIC_PROVIDER);
 			asymmetricCipher = Cipher.getInstance(RSA_CIPHER_ALGORITM,
 					CRYPTOGRAPHIC_PROVIDER);
-			gcmCipher = Cipher.getInstance(SYMM_ALT_TRANSFORMATION,
+			gcmCipher = Cipher.getInstance(SYMM_GCM_TRANSFORMATION,
 					CRYPTOGRAPHIC_PROVIDER);
 			signer = Signature.getInstance(SIGNATURE_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			hmac = Mac.getInstance(HMAC_ALGORITHM, CRYPTOGRAPHIC_PROVIDER);
-			keyGenerator = KeyGenerator.getInstance(SYMM_KEY_ALGORITHM, 
+			keyGenerator = KeyGenerator.getInstance(SYMM_KEY_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
 			keyGenerator.init(AES_KEY_SIZE_BIT);
 		} catch (NoSuchAlgorithmException e) {
