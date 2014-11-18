@@ -269,7 +269,7 @@ public class DropController {
 	 * @param cipher  Ciphertext to decrypt
 	 * @param keypair Keypair to decrypt the ciphertext with
 	 * @param signkey Public sign key to validate the signature
-	 * @return The encrypted message as string
+	 * @return The encrypted message as string or null if decryption error occurred.
 	 * @throws InvalidKeyException
 	 */
 	private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {
