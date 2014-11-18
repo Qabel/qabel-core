@@ -119,7 +119,8 @@ public class DropController {
 	 *
 	 * TODO: implement
 	 */
-	public boolean send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts) {
+	public DropResult send(DropMessage<? extends ModelObject> message,
+			Collection<Contact> contacts) {
 		return sendAndForget(message, contacts);
 	}
 
@@ -130,27 +131,17 @@ public class DropController {
 	 * @param contacts Contacts to send message to
 	 * @return HTTP status code from the drop-server.
 	 */
-	public <T extends ModelObject> boolean sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
-		DropHTTP http = new DropHTTP();
-		String m = serialize(message);
-		boolean res = false;
-		for (Contact c : contacts) {
-			byte[] cryptedMessage;
-			try {
-				cryptedMessage = encryptDrop(
-						m,
-						c.getEncryptionPublicKey(),
-						c.getContactOwner().getPrimaryKeyPair().getSignKeyPairs()
-				);
-				for (DropURL u : c.getDropUrls()) {
-					if(http.send(u.getUrl(), cryptedMessage) == 200)
-						res = true;
-				}
-			} catch (InvalidKeyException e) {
-				logger.error("Invalid key in contact. Cannot send message!");
-			}
+	public <T extends ModelObject> DropResult sendAndForget(
+			DropMessage<T> message, Collection<Contact> contacts) {
+		DropResult result;
+		
+		result = new DropResult();
+
+		for (Contact contact : contacts) {
+			result.addContactResult(this.sendAndForget(message, contact));
 		}
-		return res;
+
+		return (result);
 	}
 
 	/**
@@ -160,7 +151,8 @@ public class DropController {
 	 * @param contact Contact to send message to
 	 * @return true if one DropServers of the contact returns 200
 	 */
-	public <T extends ModelObject> boolean sendAndForget(T object, Contact contact) {
+	public <T extends ModelObject> DropResultContact sendAndForget(T object,
+			Contact contact) {
 		DropHTTP http = new DropHTTP();
 
 		DropMessage<T> dm = new DropMessage<T>();
@@ -169,7 +161,7 @@ public class DropController {
 		dm.setTime(new Date());
 		dm.setModelObject((Class<T>) object.getClass());
 
-		return sendAndForget(dm, Arrays.asList(contact));
+		return sendAndForget(dm, contact);
 	}
 
 	/**
@@ -177,10 +169,29 @@ public class DropController {
 	 *
 	 * @param message Message to send
 	 * @param contact Contact to send message to
-	 * @return true if one DropServers of the contact returns 200
+	 * @return Object of DropResultContact
 	 */
-	public <T extends ModelObject> boolean sendAndForget(DropMessage<T> message, Contact contact) {
-		return sendAndForget(message, Arrays.asList(contact));
+	public <T extends ModelObject> DropResultContact sendAndForget(
+			DropMessage<T> message, Contact contact) {
+		DropResultContact result;
+		DropHTTP http;
+		byte[] cryptedMessage;
+
+		result = new DropResultContact(contact);
+		http = new DropHTTP();
+
+		try {
+			cryptedMessage = encryptDrop(serialize(message),
+					contact.getEncryptionPublicKey(),
+					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs());
+			for (DropURL u : contact.getDropUrls()) {
+				result.addErrorCode(http.send(u.getUrl(), cryptedMessage));
+			}
+		} catch (InvalidKeyException e) {
+			logger.error("Invalid key in contact. Cannot send message!");
+		}
+		
+		return (result);
 	}
 
 	/**
@@ -190,7 +201,8 @@ public class DropController {
 	 * @param contacts Contacts to check the signature with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage> retrieve(URL url, Collection<Contact> contacts) {
+	public Collection<DropMessage> retrieve(URL url,
+			Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
@@ -202,10 +214,8 @@ public class DropController {
 		for (byte[] cipherMessage : cipherMessages) {
 			for (Contact c : contacts) {
 				try {
-					plainJson = decryptDrop(cipherMessage,
-							c.getContactOwner().getPrimaryKeyPair(),
-							c.getSignaturePublicKey()
-					);
+					plainJson = decryptDrop(cipherMessage, c.getContactOwner()
+							.getPrimaryKeyPair(), c.getSignaturePublicKey());
 				} catch (InvalidKeyException e) {
 					// TODO Invalid keys in Contacts are currently ignored
 				}
