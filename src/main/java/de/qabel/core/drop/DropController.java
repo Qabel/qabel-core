@@ -207,7 +207,10 @@ public class DropController {
 							c.getSignaturePublicKey()
 					);
 				} catch (InvalidKeyException e) {
-					// TODO Invalid keys in Contacts are currently ignored
+					// Don't handle key exception as it will be 
+					// likely that a message can't be 
+					// decrypted by all but the secret 
+					// decryption key of the contact owner!
 				}
 				if (plainJson == null) {
 					continue;
