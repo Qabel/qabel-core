@@ -44,6 +44,8 @@ public class ConfigSerializationTest {
 		Identity identity;
 			
 		key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+		key.generateEncKeyPair();
+		key.generateSignKeyPair();
 		drops = new ArrayList<DropURL>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
