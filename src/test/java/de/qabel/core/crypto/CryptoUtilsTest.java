@@ -46,7 +46,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void encryptHybridTest() throws BadPaddingException, InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
+				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
 
 		assertEquals(
 				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKey()),
@@ -57,7 +57,7 @@ public class CryptoUtilsTest {
 	@Test
 	public void encryptHybridTestInvalidSignature() throws InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
+				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
 
 		assertNull(cu.decryptHybridAndValidateSignature(cipherText, qpkp,
 				qpkp2.getQblSignPublicKey()));
@@ -68,7 +68,7 @@ public class CryptoUtilsTest {
 		// exception.expect(BadPaddingException.class);
 
 		byte[] ciphertext = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs());
+				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
 		assertNull(cu.decryptHybridAndValidateSignature(ciphertext, qpkp2,
 				qpkp.getQblSignPublicKey()));
 

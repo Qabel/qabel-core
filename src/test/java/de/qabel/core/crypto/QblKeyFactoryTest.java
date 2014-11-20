@@ -65,22 +65,22 @@ public class QblKeyFactoryTest {
 		assertEquals(primaryPublicExponent, qpkp.getQblPrimaryPublicKey()
 				.getPublicExponent());
 
-		assertEquals(encModulus, qpkp.getEncKeyPairs().getRSAPrivateKey()
+		assertEquals(encModulus, qpkp.getEncKeyPairs().get(0).getRSAPrivateKey()
 				.getModulus());
-		assertEquals(encModulus, qpkp.getEncKeyPairs().getQblEncPublicKey()
+		assertEquals(encModulus, qpkp.getEncKeyPairs().get(0).getQblEncPublicKey()
 				.getModulus());
-		assertEquals(encPrivateExponent, qpkp.getEncKeyPairs()
+		assertEquals(encPrivateExponent, qpkp.getEncKeyPairs().get(0)
 				.getRSAPrivateKey().getPrivateExponent());
-		assertEquals(encPublicExponent, qpkp.getEncKeyPairs()
+		assertEquals(encPublicExponent, qpkp.getEncKeyPairs().get(0)
 				.getQblEncPublicKey().getPublicExponent());
 
-		assertEquals(signModulus, qpkp.getSignKeyPairs().getRSAPrivateKey()
+		assertEquals(signModulus, qpkp.getSignKeyPairs().get(0).getRSAPrivateKey()
 				.getModulus());
-		assertEquals(signModulus, qpkp.getSignKeyPairs().getQblSignPublicKey()
+		assertEquals(signModulus, qpkp.getSignKeyPairs().get(0).getQblSignPublicKey()
 				.getModulus());
-		assertEquals(signPrivateExponent, qpkp.getSignKeyPairs()
+		assertEquals(signPrivateExponent, qpkp.getSignKeyPairs().get(0)
 				.getRSAPrivateKey().getPrivateExponent());
-		assertEquals(signPublicExponent, qpkp.getSignKeyPairs()
+		assertEquals(signPublicExponent, qpkp.getSignKeyPairs().get(0)
 				.getQblSignPublicKey().getPublicExponent());
 	}
 
