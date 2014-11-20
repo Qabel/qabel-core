@@ -15,8 +15,10 @@ import static org.junit.Assert.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import de.qabel.core.crypto.QblEncPublicKey;
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
+import de.qabel.core.crypto.QblSignPublicKey;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
@@ -96,10 +98,15 @@ public class ConfigSerializationTest {
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 			contact = new Contact(i);
 			QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
-			
+			qpkp.generateEncKeyPair();
+			qpkp.generateSignKeyPair();
 			contact.setPrimaryPublicKey(qpkp.getQblPrimaryPublicKey());
-			contact.addEncryptionPublicKey(qpkp.getQblEncPublicKey());
-			contact.addSignaturePublicKey(qpkp.getQblSignPublicKey());
+			for(QblEncPublicKey key : qpkp.getQblEncPublicKeys()) {
+				contact.addEncryptionPublicKey(key);
+			}
+			for(QblSignPublicKey key : qpkp.getQblSignPublicKeys()) {
+				contact.addSignaturePublicKey(key);
+			}
 			contact.getDropUrls().add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			
 			GsonBuilder builder = new GsonBuilder();
