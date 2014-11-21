@@ -199,6 +199,11 @@ public class Contact {
 				return false;
 		} else if (!contactOwner.equals(other.contactOwner))
 			return false;
+		if (primaryPublicKey == null) {
+			if (other.primaryPublicKey != null)
+				return false;
+		} else if (!primaryPublicKey.equals(other.primaryPublicKey))
+			return false;
 		if (dropUrls == null) {
 			if (other.dropUrls != null)
 				return false;
