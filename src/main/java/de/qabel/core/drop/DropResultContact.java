@@ -5,7 +5,7 @@ import java.util.Arrays;
 import de.qabel.core.config.Contact;
 
 /**
- * Class DropResultPair: Save the return value of a contact
+ * Class DropResultContact: Save the return value of a contact
  *
  */
 public class DropResultContact {
