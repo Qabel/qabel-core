@@ -179,6 +179,11 @@ public class Identity {
 			return false;
 		if (id != other.id)
 			return false;
+		if (primaryKeyPair == null) {
+			if (other.primaryKeyPair != null)
+				return false;
+		} else if (!primaryKeyPair.equals(other.primaryKeyPair))
+			return false;
 		if (drops == null) {
 			if (other.drops != null)
 				return false;
