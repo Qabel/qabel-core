@@ -218,7 +218,10 @@ public class DropController {
 				if (plainJson == null) {
 					continue;
 				} else {
-					plainMessages.add(deserialize(plainJson));
+					DropMessage msg = deserialize(plainJson);
+					if (msg != null) {
+						plainMessages.add(msg);
+					}
 					break;
 				}
 			}
@@ -240,10 +243,17 @@ public class DropController {
 	 * Deserializes the message
 	 *
 	 * @param plainJson plain Json String
-	 * @return deserialized Dropmessage
+	 * @return deserialized Dropmessage or null if deserialization error occurred.
 	 */
 	private DropMessage deserialize(String plainJson) {
-		return gson.fromJson(plainJson, DropMessage.class);
+		try {
+			return gson.fromJson(plainJson, DropMessage.class);
+		}
+		catch (RuntimeException e) {
+			// Mainly be caused by illegal json syntax
+			logger.warn("Error while deserializing drop message:\n"+plainJson, e);
+			return null;
+		}
 	}
 
 	/**
@@ -265,7 +275,7 @@ public class DropController {
 	 * @param cipher  Ciphertext to decrypt
 	 * @param keypair Keypair to decrypt the ciphertext with
 	 * @param signkey Public sign key to validate the signature
-	 * @return The encrypted message as string
+	 * @return The encrypted message as string or null if decryption error occurred.
 	 * @throws InvalidKeyException
 	 */
 	private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {
