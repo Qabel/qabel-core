@@ -28,6 +28,8 @@ public class ConfigSerializationTest {
 		
 		//generate and add an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
+		account.setCreated(new java.util.Date().getTime());
+		
 		syncedSettings.getAccounts().add(account);
 		
 		//generate and add an "drop_servers" entry
@@ -67,6 +69,8 @@ public class ConfigSerializationTest {
 		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
 		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
 		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
+		assertEquals(0, 
+		        gson.toJson(syncedSettings).compareTo(gson.toJson(deserializedSyncedSettings)));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
