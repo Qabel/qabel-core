@@ -1,39 +1,74 @@
 package de.qabel.core.config;
 
+/**
+ * Class SyncSettingItem: Class to store common setting for synced item
+ */
 public class SyncSettingItem {
     private int id;
     private Long created;
     private Long updated;
     private Long deleted;
 
+    /**
+     * Get id of the item
+     * @return Id of the item
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Set id of the item
+     * @param Id of the item
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Get created date of the item
+     * @return Created date of the item
+     */
     public Long getCreated() {
         return created;
     }
 
+    /**
+     * Set created date of the item
+     * @param Created date of the item
+     */
     public void setCreated(Long created) {
         this.created = created;
     }
 
+    /**
+     * Get updated date of the item
+     * @return Updated date of the item
+     */
     public Long getUpdated() {
         return updated;
     }
 
+    /**
+     * Set updated date of the item
+     * @param Updated date of the item
+     */
     public void setUpdated(Long updated) {
         this.updated = updated;
     }
 
+    /**
+     * Get delete date of the item
+     * @return Delete date of the item
+     */
     public Long getDeleted() {
         return deleted;
     }
 
+    /**
+     * Set delete date of the item
+     * @param Delete date of the item
+     */
     public void setDeleted(Long deleted) {
         this.deleted = deleted;
     }
