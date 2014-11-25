@@ -1,9 +1,9 @@
 package de.qabel.core.http;
 
-public class HTTPResult {
+public class HTTPResult<T> {
 	int responseCode = 0;
 	boolean ok = false;
-	Object data;
+	T data;
 
 	public boolean isOk() {
 		return ok;
@@ -21,11 +21,11 @@ public class HTTPResult {
 		this.responseCode = responseCode;
 	}
 
-	public Object getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Object data) {
+	public void setData(T data) {
 		this.data = data;
 	}
 }

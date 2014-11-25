@@ -15,8 +15,8 @@ public class StorageHTTP {
 	 * @return HTTPResult
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult createNewStorageVolume(URL url) throws IOException {
-		HTTPResult result = new HTTPResult();
+	public HTTPResult<StorageVolume> createNewStorageVolume(URL url) throws IOException {
+		HTTPResult<StorageVolume> result = new HTTPResult<>();
 		url = addPathToURL(url, "_new");
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		connection.setDoOutput(true);
@@ -87,10 +87,10 @@ public class StorageHTTP {
 	 * @return HTTPResult
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult retrieveBlob(URL baseUrl, String publicIdentifier, String blobName) throws IOException {
+	public HTTPResult<InputStream> retrieveBlob(URL baseUrl, String publicIdentifier, String blobName) throws IOException {
 		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult result = new HTTPResult();
+		HTTPResult<InputStream> result = new HTTPResult<>();
 		connection.setRequestMethod("GET");
 		int responseCode = connection.getResponseCode();
 		result.setResponseCode(responseCode);

@@ -31,9 +31,9 @@ public class StorageHTTPTest {
 			e.printStackTrace();
 		}
 		StorageHTTP storageHTTP = new StorageHTTP();
-		HTTPResult result = storageHTTP.createNewStorageVolume(url);
+		HTTPResult<StorageVolume> result = storageHTTP.createNewStorageVolume(url);
 		Assume.assumeTrue(result.isOk());
-		storageVolume = (StorageVolume) result.getData();
+		storageVolume = result.getData();
 
 		publicIdentifier = storageVolume.getPublicIdentifier();
 		token = storageVolume.getToken();
@@ -45,9 +45,9 @@ public class StorageHTTPTest {
 
 		storageHTTP.upload(url, publicIdentifier, "retrieveTest", token, blob);
 
-		HTTPResult resultDelete = storageHTTP.createNewStorageVolume(url);
+		HTTPResult<StorageVolume> resultDelete = storageHTTP.createNewStorageVolume(url);
 		Assume.assumeTrue(resultDelete.isOk());
-		delStorageVolume = (StorageVolume) resultDelete.getData();
+		delStorageVolume = resultDelete.getData();
 		delPublicIdentifier = delStorageVolume.getPublicIdentifier();
 		delToken = delStorageVolume.getToken();
 		delRevokeToken = delStorageVolume.getRevokeToken();
