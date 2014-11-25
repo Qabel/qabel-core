@@ -18,9 +18,9 @@ install:
  - cd qabel-drop
  - ./drop_server.py &
  - cd ..
- - git clone https://github.com/jasinai/qabel-storage.git
+ - git clone https://github.com/Qabel/qabel-storage.git
  - cd qabel-storage
- - git checkout -b updateForTestingInQabelCore origin/updateForTestingInQabelCore
+ - git checkout -b protocol_update origin/protocol_update
  - npm install
  - node app.js &
  - cd ..
