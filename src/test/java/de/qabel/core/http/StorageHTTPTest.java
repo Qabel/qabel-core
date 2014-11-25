@@ -3,6 +3,7 @@ package de.qabel.core.http;
 import de.qabel.core.config.StorageVolume;
 import org.junit.Assume;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -13,15 +14,13 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertArrayEquals;
 
 public class StorageHTTPTest {
 	private URL url;
 	private StorageVolume storageVolume, delStorageVolume;
-	private String publicIdentifier, token, delPublicIdentifier, delToken, delRevokeToken;
+	private String publicIdentifier, token, revokeToken, delPublicIdentifier, delToken, delRevokeToken;
 	private byte[] blob;
 
 	@Before
@@ -38,6 +37,7 @@ public class StorageHTTPTest {
 
 		publicIdentifier = storageVolume.getPublicIdentifier();
 		token = storageVolume.getToken();
+		revokeToken = storageVolume.getRevokeToken();
 
 		char[] text = new char[42];
 		Arrays.fill(text, 'a');
@@ -47,11 +47,20 @@ public class StorageHTTPTest {
 
 		HTTPResult resultDelete = storageHTTP.createNewStorageVolume(url);
 		Assume.assumeTrue(resultDelete.isOk());
-		delStorageVolume = (StorageVolume) result.getData();
+		delStorageVolume = (StorageVolume) resultDelete.getData();
 		delPublicIdentifier = delStorageVolume.getPublicIdentifier();
 		delToken = delStorageVolume.getToken();
 		delRevokeToken = delStorageVolume.getRevokeToken();
 		storageHTTP.upload(url, delPublicIdentifier, "deleteBlobTest", delToken, blob);
+	}
+
+	@After
+	public void tearDown() throws IOException{
+		//Given
+		StorageHTTP storageHTTP = new StorageHTTP();
+		//When
+		storageHTTP.delete(url, publicIdentifier, "", revokeToken);
+		storageHTTP.delete(url, delPublicIdentifier, "", delRevokeToken);
 	}
 
 	@Test
@@ -68,6 +77,7 @@ public class StorageHTTPTest {
 		assertFalse(storageVolume.getPublicIdentifier().equals(""));
 		assertFalse(storageVolume.getRevokeToken().equals(""));
 		assertFalse(storageVolume.getToken().equals(""));
+		storageHTTP.delete(url, storageVolume.getPublicIdentifier(), "", storageVolume.getRevokeToken());
 	}
 
 	@Test
