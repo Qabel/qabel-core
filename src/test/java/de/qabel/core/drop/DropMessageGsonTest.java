@@ -24,7 +24,7 @@ public class DropMessageGsonTest {
 	
 	GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
-        builder.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 	
 	Gson gson = builder.create();
@@ -40,7 +40,7 @@ public class DropMessageGsonTest {
 	
 	GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
-        builder.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 	
 	Gson gson = builder.create();
@@ -67,7 +67,7 @@ public class DropMessageGsonTest {
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
-        builder.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 
         Gson gson = builder.create();

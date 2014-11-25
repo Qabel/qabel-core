@@ -28,7 +28,7 @@ public class DropController {
 	public DropController() {
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 		gb = new GsonBuilder();
-		gb.registerTypeAdapter(DropMessage.class, new DropSerializer<ModelObject>());
+		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
 	}
