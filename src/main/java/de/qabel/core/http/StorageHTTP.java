@@ -40,7 +40,7 @@ public class StorageHTTP {
 	 * @throws IOException If something went wrong with the connection
 	 */
 	public HTTPResult probeStorageVolume(URL baseUrl, String publicIdentifier) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier);
+		URL url = addPathToURL(baseUrl, publicIdentifier + "/");
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		HTTPResult result = new HTTPResult();
 		connection.setRequestMethod("GET");
@@ -62,7 +62,7 @@ public class StorageHTTP {
 	 * @throws IOException If something went wrong with the connection
 	 */
 	public HTTPResult upload(URL baseUrl, String publicIdentifier, String blobName, String token, byte[] blob) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		connection.setRequestProperty("X-Qabel-Token", token);
 		connection.setDoOutput(true);
@@ -88,7 +88,7 @@ public class StorageHTTP {
 	 * @throws IOException If something went wrong with the connection
 	 */
 	public HTTPResult retrieveBlob(URL baseUrl, String publicIdentifier, String blobName) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		HTTPResult result = new HTTPResult();
 		connection.setRequestMethod("GET");
@@ -110,7 +110,7 @@ public class StorageHTTP {
 	 * @return HTTPResult
 	 */
 	public HTTPResult delete(URL baseUrl, String publicIdentifier, String blobName, String revokeToken) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + blobName);
+		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		HTTPResult result = new HTTPResult();
 		connection.setRequestProperty("X-Qabel-Token", revokeToken);
@@ -160,7 +160,7 @@ public class StorageHTTP {
 		JsonParser jsonParser = new JsonParser();
 		JsonObject jo = (JsonObject) jsonParser.parse(response);
 
-		String public_token = jo.get("public").getAsString() + "/";
+		String public_token = jo.get("public").getAsString();
 		String revoke_token = jo.get("revoke_token").getAsString();
 		String private_token = jo.get("token").getAsString();
 		return new StorageVolume(public_token, private_token, revoke_token);
