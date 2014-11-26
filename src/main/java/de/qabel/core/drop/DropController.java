@@ -76,8 +76,7 @@ public class DropController {
 						DropMessage.class);
 				m.invoke(callback, dm);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error during handling drop", e);
 			}
 		}
 	}
@@ -153,7 +152,7 @@ public class DropController {
 						res = true;
 				}
 			} catch (InvalidKeyException e) {
-				logger.error("Invalid key in contact. Cannot send message!");
+				logger.error("Invalid key in contact. Cannot send message!", e);
 			}
 		}
 		return res;
@@ -200,20 +199,23 @@ public class DropController {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
-		String plainJson = null;
 
 		List<Contact> ccc = new ArrayList<Contact>(contacts);
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
 			for (Contact c : contacts) {
+				String plainJson = null;
 				try {
 					plainJson = decryptDrop(cipherMessage,
 							c.getContactOwner().getPrimaryKeyPair(),
 							c.getSignaturePublicKey()
 					);
 				} catch (InvalidKeyException e) {
-					// TODO Invalid keys in Contacts are currently ignored
+					// Don't handle key exception as it will be 
+					// likely that a message can't be 
+					// decrypted by all but the secret 
+					// decryption key of the contact owner!
 				}
 				if (plainJson == null) {
 					continue;
