@@ -133,6 +133,35 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void storageServersEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(StorageServers.class);
+
+		UrlTestFactory urlFactory = new UrlTestFactory();
+
+		StorageServer a1 = new StorageServer(urlFactory.create(), "auth1");
+		StorageServer a2 = new StorageServer(urlFactory.create(), "auth2");
+		StorageServer c1 = new StorageServer(urlFactory.create(), "auth3");
+
+		StorageServers a = new StorageServers();
+		StorageServers b = new StorageServers();
+		StorageServers c = new StorageServers();
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
