@@ -190,6 +190,12 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void abstractModuleSettingsEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(StorageVolumes.class);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
