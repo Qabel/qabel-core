@@ -104,6 +104,35 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void identitiesEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(Identities.class);
+
+		IdentityTestFactory identityFactory = new IdentityTestFactory();
+
+		Identity a1 = identityFactory.create();
+		Identity a2 = identityFactory.create();
+		Identity c1 = identityFactory.create();
+
+		Identities a = new Identities();
+		Identities b = new Identities();
+		Identities c = new Identities();
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
