@@ -1,5 +1,7 @@
 package de.qabel.core.config;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 import org.meanbean.test.Configuration;
 import org.meanbean.test.ConfigurationBuilder;
@@ -14,6 +16,33 @@ public class ConfigEqualsTest {
 	public void accountEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		tester.testEqualsMethod(new AccountEquivalentTestFactory());
+	}
+
+	@Test
+	public void accountsEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(Accounts.class);
+
+		Accounts a = new Accounts();
+		Accounts b = new Accounts();
+		Accounts c = new Accounts();
+
+		Account a1 = new Account("provider1", "user1", "auth1");
+		Account a2 = new Account("provider2", "user2", "auth2");
+		Account c1 = new Account("provider3", "user3", "auth3");
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
 	}
 
 	@Test
