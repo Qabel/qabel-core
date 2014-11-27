@@ -8,6 +8,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -68,9 +69,9 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.createNewStorageVolume(url);
+		HTTPResult<StorageVolume> result = storageHTTP.createNewStorageVolume(url);
 		//Then
-		StorageVolume storageVolume = (StorageVolume) result.getData();
+		StorageVolume storageVolume = result.getData();
 		assertNotNull(storageVolume);
 		assertTrue(result.isOk());
 		assertEquals(201, result.getResponseCode());
@@ -85,7 +86,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.probeStorageVolume(url, publicIdentifier);
+		HTTPResult<?> result = storageHTTP.probeStorageVolume(url, publicIdentifier);
 		//Then
 		assertTrue(result.isOk());
 		assertEquals(200, result.getResponseCode());
@@ -97,7 +98,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.probeStorageVolume(url, "foo" + publicIdentifier);
+		HTTPResult<?> result = storageHTTP.probeStorageVolume(url, "foo" + publicIdentifier);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
@@ -109,7 +110,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.probeStorageVolume(url, "");
+		HTTPResult<?> result = storageHTTP.probeStorageVolume(url, "");
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(400, result.getResponseCode());
@@ -120,7 +121,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", token, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, publicIdentifier, "foo", token, blob);
 		//Then
 		assertTrue(result.isOk());
 		assertEquals(200, result.getResponseCode());
@@ -132,7 +133,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.upload(url, null, "foo", token, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, null, "foo", token, blob);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(400, result.getResponseCode());
@@ -143,7 +144,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", null, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, publicIdentifier, "foo", null, blob);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(401, result.getResponseCode());
@@ -154,7 +155,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.upload(url, publicIdentifier, "foo", "foo" + token, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, publicIdentifier, "foo", "foo" + token, blob);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(403, result.getResponseCode());
@@ -165,7 +166,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.upload(url, "foo" + publicIdentifier, "foo", token, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, "foo" + publicIdentifier, "foo", token, blob);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
@@ -176,7 +177,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.retrieveBlob(url, publicIdentifier, "retrieveTest");
+		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, publicIdentifier, "retrieveTest");
 		//Then
 		assertEquals(200, result.getResponseCode());
 	}
@@ -187,7 +188,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.retrieveBlob(url, null, "retrieveTest");
+		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, null, "retrieveTest");
 		//Then
 		assertEquals(400, result.getResponseCode());
 	}
@@ -198,7 +199,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.retrieveBlob(url, "foo" + publicIdentifier, "retrieveTest");
+		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, "foo" + publicIdentifier, "retrieveTest");
 		//Then
 		assertEquals(404, result.getResponseCode());
 	}
@@ -208,7 +209,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken);
 		//Then
 		assertTrue(result.isOk());
 		assertEquals(204, result.getResponseCode());
@@ -220,7 +221,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, null, "deleteBlobTest", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(url, null, "deleteBlobTest", delRevokeToken);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(400, result.getResponseCode());
@@ -231,7 +232,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", null);
+		HTTPResult<?> result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", null);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(401, result.getResponseCode());
@@ -242,7 +243,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken + "Foo");
+		HTTPResult<?> result = storageHTTP.delete(url, delPublicIdentifier, "deleteBlobTest", delRevokeToken + "Foo");
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(403, result.getResponseCode());
@@ -254,7 +255,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, "foo" + delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(url, "foo" + delPublicIdentifier, "deleteBlobTest", delRevokeToken);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
@@ -265,7 +266,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult result = storageHTTP.delete(url, delPublicIdentifier, "", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(url, delPublicIdentifier, "", delRevokeToken);
 		//Then
 		assertTrue(result.isOk());
 		assertEquals(204, result.getResponseCode());
