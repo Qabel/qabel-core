@@ -1,6 +1,7 @@
 package de.qabel.core.http;
 
 import de.qabel.core.config.StorageVolume;
+import org.apache.commons.io.IOUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.After;
@@ -179,6 +180,7 @@ public class StorageHTTPTest {
 		//When
 		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, publicIdentifier, "retrieveTest");
 		//Then
+		assertEquals(new String(blob), IOUtils.toString(result.getData(), "UTF-8"));
 		assertEquals(200, result.getResponseCode());
 	}
 
