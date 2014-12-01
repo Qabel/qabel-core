@@ -5,8 +5,8 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
-public class DropSerializer<T extends ModelObject> implements JsonSerializer<DropMessage<T>> {
-    public JsonElement serialize (DropMessage<T> src, Type typeOfSrc, JsonSerializationContext context) {
+public class DropSerializer implements JsonSerializer<DropMessage<? extends ModelObject>> {
+    public JsonElement serialize (DropMessage<? extends ModelObject> src, Type typeOfSrc, JsonSerializationContext context) {
 
         JsonObject obj = new JsonObject();
         Gson gson = new Gson();
