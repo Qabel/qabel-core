@@ -22,6 +22,7 @@ install:
  - cd qabel-storage
  - git checkout -b protocol_update origin/protocol_update
  - npm install
+ - mkdir data
  - node app.js &
  - cd ..
 
