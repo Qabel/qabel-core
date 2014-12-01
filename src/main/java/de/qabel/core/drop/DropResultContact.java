@@ -32,8 +32,7 @@ public class DropResultContact {
 			this.success = true;
 		}
 		
-		this.errorCode  = Arrays.copyOf(this.errorCode, this.errorCode.length + 1);
-		this.errorCode[this.errorCode.length - 1] = errorCode;
+		this.errorCode = this.addElement(this.errorCode, errorCode);
 		
 		return (this.success);
 	}
