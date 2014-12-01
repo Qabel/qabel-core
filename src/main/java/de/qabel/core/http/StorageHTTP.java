@@ -95,7 +95,9 @@ public class StorageHTTP {
 		int responseCode = connection.getResponseCode();
 		result.setResponseCode(responseCode);
 		result.setOk(responseCode == 200);
-		result.setData(connection.getInputStream());
+		if (result.isOk()) {
+			result.setData(connection.getInputStream());
+		}
 		return result;
 	}
 
