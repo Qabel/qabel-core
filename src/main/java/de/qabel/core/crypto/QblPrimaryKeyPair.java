@@ -77,7 +77,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	/**
 	 * Generates a new QblSignKeyPair
 	 */
-	void generateSignKeyPair() {
+	public void generateSignKeyPair() {
 		QblSignKeyPair qskp = new QblSignKeyPair();
 		attachSignKeyPair(qskp);
 	}
@@ -93,7 +93,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	/**
 	 * Generates a new QblEncKeyPair
 	 */
-	void generateEncKeyPair() {
+	public void generateEncKeyPair() {
 		QblEncKeyPair qekp = new QblEncKeyPair();
 		attachEncKeyPair(qekp);
 	}

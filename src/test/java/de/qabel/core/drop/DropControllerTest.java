@@ -54,8 +54,8 @@ public class DropControllerTest {
         contact.getDropUrls().add(contactUrl);
 
         contact.setPrimaryPublicKey(qppkRecipient);
-        contact.setEncryptionPublicKey(qepkRecipient);
-        contact.setSignaturePublicKey(qspkRecipient);
+        contact.addEncryptionPublicKey(qepkRecipient);
+        contact.addSignaturePublicKey(qspkRecipient);
 
         DropController d = new DropController();
 
@@ -94,8 +94,8 @@ public class DropControllerTest {
         contact.getDropUrls().add(contactUrl);
 
         contact.setPrimaryPublicKey(qppkRecipient);
-        contact.setEncryptionPublicKey(qepkRecipient);
-        contact.setSignaturePublicKey(qspkRecipient);
+        contact.addEncryptionPublicKey(qepkRecipient);
+        contact.addSignaturePublicKey(qspkRecipient);
 
         DropController d = new DropController();
 
@@ -121,8 +121,8 @@ public class DropControllerTest {
 
         contact.getDropUrls().add(contactUrl);
         contact.setPrimaryPublicKey(qppkRecipient);
-        contact.setEncryptionPublicKey(qepkRecipient);
-        contact.setSignaturePublicKey(qspkRecipient);
+        contact.addEncryptionPublicKey(qepkRecipient);
+        contact.addSignaturePublicKey(qspkRecipient);
 
         DropController d = new DropController();
 
@@ -156,8 +156,8 @@ public class DropControllerTest {
         contact.getDropUrls().add(contactUrl);
 
         contact.setPrimaryPublicKey(qppkSender);
-        contact.setEncryptionPublicKey(qepkSender);
-        contact.setSignaturePublicKey(qspkSender);
+        contact.addEncryptionPublicKey(qepkSender);
+        contact.addSignaturePublicKey(qspkSender);
 
         Contacts contacts = new Contacts();
         contacts.add(contact);
@@ -184,8 +184,8 @@ public class DropControllerTest {
         contact.getDropUrls().add(contactUrl);
 
         contact.setPrimaryPublicKey(qppkSender);
-        contact.setEncryptionPublicKey(qepkSender);
-        contact.setSignaturePublicKey(qspkSender);
+        contact.addEncryptionPublicKey(qepkSender);
+        contact.addSignaturePublicKey(qspkSender);
 
         Contacts contacts = new Contacts();
         contacts.add(contact);
