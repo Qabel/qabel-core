@@ -36,13 +36,13 @@ public class StorageHTTP {
 	 * Probes the given StorageServer with the publicIdentifier.
 	 * @param baseUrl The baseUrl of a StorageServer.
 	 * @param publicIdentifier The public identifier we want to probe.
-	 * @return HTTPResult
+	 * @return HTTPResult with empty data
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult probeStorageVolume(URL baseUrl, String publicIdentifier) throws IOException {
+	public HTTPResult<?> probeStorageVolume(URL baseUrl, String publicIdentifier) throws IOException {
 		URL url = addPathToURL(baseUrl, publicIdentifier + "/");
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult result = new HTTPResult();
+		HTTPResult<?> result = new HTTPResult<>();
 		connection.setRequestMethod("GET");
 		int responseCode = connection.getResponseCode();
 		result.setResponseCode(responseCode);
@@ -58,16 +58,16 @@ public class StorageHTTP {
 	 * @param blobName The blob/blob name for the upload.
 	 * @param token The token, which is required to upload files to the publicIdentifier.
 	 * @param blob The blob in bytes, which the user wants to upload.
-	 * @return HTTPResult
+	 * @return HTTPResult with empty data
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult upload(URL baseUrl, String publicIdentifier, String blobName, String token, byte[] blob) throws IOException {
+	public HTTPResult<?> upload(URL baseUrl, String publicIdentifier, String blobName, String token, byte[] blob) throws IOException {
 		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		connection.setRequestProperty("X-Qabel-Token", token);
 		connection.setDoOutput(true);
 		DataOutputStream out;
-		HTTPResult result = new HTTPResult();
+		HTTPResult<?> result = new HTTPResult<>();
 		out = new DataOutputStream(connection.getOutputStream());
 		out.write(blob);
 		out.flush();
@@ -106,12 +106,12 @@ public class StorageHTTP {
 	 * @param blobName The blob name, which should be downloaded.
 	 * @param revokeToken The token, which is required to delete a blob or a qabel storage volume.
 	 * @throws IOException If something went wrong with the connection
-	 * @return HTTPResult
+	 * @return HTTPResult  with empty data
 	 */
-	public HTTPResult delete(URL baseUrl, String publicIdentifier, String blobName, String revokeToken) throws IOException {
+	public HTTPResult<?> delete(URL baseUrl, String publicIdentifier, String blobName, String revokeToken) throws IOException {
 		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult result = new HTTPResult();
+		HTTPResult<?> result = new HTTPResult<>();
 		connection.setRequestProperty("X-Qabel-Token", revokeToken);
 		connection.setRequestMethod("DELETE");
 		int responseCode = connection.getResponseCode();
