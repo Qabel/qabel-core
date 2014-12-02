@@ -46,6 +46,35 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void contactsEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(Contacts.class);
+
+		ContactTestFactory contactFactory = new ContactTestFactory();
+
+		Contact a1 = contactFactory.create();
+		Contact a2 = contactFactory.create();
+		Contact c1 = contactFactory.create();
+
+		Contacts a = new Contacts();
+		Contacts b = new Contacts();
+		Contacts c = new Contacts();
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
