@@ -162,6 +162,34 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void storageVolumesEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(StorageVolumes.class);
+
+		StorageVolumeTestFactory volumeFactory = new StorageVolumeTestFactory();
+		StorageVolume a1 = volumeFactory.create();
+		StorageVolume a2 = volumeFactory.create();
+		StorageVolume c1 = volumeFactory.create();
+
+		StorageVolumes a = new StorageVolumes();
+		StorageVolumes b = new StorageVolumes();
+		StorageVolumes c = new StorageVolumes();
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
