@@ -211,6 +211,12 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void localSettingsEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(new LocalSettingsEquivalentTestFactory());
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
