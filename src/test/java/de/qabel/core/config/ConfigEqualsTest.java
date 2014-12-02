@@ -6,6 +6,7 @@ import org.meanbean.test.ConfigurationBuilder;
 import org.meanbean.test.EqualsMethodTester;
 
 import de.qabel.core.crypto.QblPrimaryKeyPairTestFactory;
+import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
 
 public class ConfigEqualsTest {
 
@@ -33,5 +34,19 @@ public class ConfigEqualsTest {
 			.overrideFactory("url", new UrlTestFactory())
 			.build();
 		tester.testEqualsMethod(new DropServerEquivalentTestFactory(), config);
+	}
+
+	@Test
+	public void contactEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		Configuration config = new ConfigurationBuilder()
+			.iterations(10)
+			.overrideFactory("primaryPublicKey", new QblPrimaryPublicKeyTestFactory())
+			.overrideFactory("contactOwner", new IdentityTestFactory())
+			.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
+			.ignoreProperty("signaturePublicKey") // is already checked as part of primaryPublicKey
+			.ignoreProperty("encryptionPublicKey") // is already checked as part of primaryPublicKey
+			.build();
+		tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
 	}
 }
