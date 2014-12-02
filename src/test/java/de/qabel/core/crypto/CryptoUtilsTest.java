@@ -152,23 +152,40 @@ public class CryptoUtilsTest {
 		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
 		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
 		File testFile = new File(testFileName);
-		FileOutputStream cipherStream = new FileOutputStream(testFileName + ".enc");
+		File testFileEnc = new File(testFileName + ".enc");
+		
+		cu.encryptFileAuthenticatedSymmetric(testFile, new FileOutputStream(testFileEnc), key, nonce);
 
-		cu.encryptFileAuthenticatedSymmetric(testFile, (OutputStream) cipherStream, key, nonce);
-
-		assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".enc"))),
-				Hex.toHexString(cu.encryptAuthenticatedSymmetric(
-						Files.readAllBytes(Paths.get(testFileName)), key, nonce)));
+		try {
+			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".enc"))),
+					Hex.toHexString(cu.encryptAuthenticatedSymmetric(
+							Files.readAllBytes(Paths.get(testFileName)), key, nonce)));
+		} finally {
+			// tidy-up
+			testFileEnc.delete();
+		}
 	}
 
 	@Test
 	public void fileDecryptionTest() throws IOException, InvalidKeyException {
 		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
-		FileInputStream cipherStream = new FileInputStream(new File(testFileName + ".enc"));
+		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
+		File testFileEnc = new File(testFileName + ".enc");
+		File testFileDec = new File(testFileName + ".dec");
+		
+		// create encrypted file for decryption test
+		cu.encryptFileAuthenticatedSymmetric(new File(testFileName), new FileOutputStream(testFileEnc), key, nonce);
 
-		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileName + ".dec", key);
+		FileInputStream cipherStream = new FileInputStream(testFileEnc);
+		
+		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec.getAbsolutePath(), key);
 
-		assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
-				Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".dec"))));
+		try {
+			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
+					Hex.toHexString(Files.readAllBytes(testFileDec.toPath())));
+		} finally {
+			testFileEnc.delete();
+			testFileDec.delete();
+		}
 	}
 }
