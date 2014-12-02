@@ -58,4 +58,10 @@ public class ConfigEqualsTest {
 			.build();
 		tester.testEqualsMethod(new StorageServerEquivalentTestFactory(), config);
 	}
+
+	@Test
+	public void storageVolumeEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(new StorageVolumeEquivalentTestFactory());
+	}
 }
