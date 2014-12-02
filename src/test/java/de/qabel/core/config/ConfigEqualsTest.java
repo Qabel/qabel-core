@@ -196,6 +196,21 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void syncedSettingsEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		Configuration config = new ConfigurationBuilder()
+			.overrideFactory("accounts", new AccountsTestFactory())
+			.overrideFactory("contacts", new ContactsTestFactory())
+			.overrideFactory("dropServers", new DropServersTestFactory())
+			.overrideFactory("identities", new IdentitiesTestFactory())
+			.overrideFactory("storageServers", new StorageServersTestFactory())
+			.overrideFactory("storageVolumes", new StorageVolumesTestFactory())
+			.iterations(5)
+			.build();
+		tester.testEqualsMethod(new SyncedSettingsEquivalentTestFactory(), config);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
