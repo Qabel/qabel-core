@@ -75,6 +75,35 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
+	public void dropServersEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		tester.testEqualsMethod(DropServers.class);
+
+		DropServerTestFactory dropServerFactory = new DropServerTestFactory();
+
+		DropServer a1 = dropServerFactory.create();
+		DropServer a2 = dropServerFactory.create();
+		DropServer c1 = dropServerFactory.create();
+
+		DropServers a = new DropServers();
+		DropServers b = new DropServers();
+		DropServers c = new DropServers();
+
+		a.add(a1);
+		a.add(a2);
+
+		b.add(a1);
+		b.add(a2);
+
+		c.add(a1);
+		c.add(c1);
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+		assertNotEquals(b, c);
+	}
+
+	@Test
 	public void identityEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
