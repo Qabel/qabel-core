@@ -49,4 +49,13 @@ public class ConfigEqualsTest {
 			.build();
 		tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
 	}
+
+	@Test
+	public void storageServerEqualsTest () {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		Configuration config = new ConfigurationBuilder()
+			.overrideFactory("url", new UrlTestFactory())
+			.build();
+		tester.testEqualsMethod(new StorageServerEquivalentTestFactory(), config);
+	}
 }
