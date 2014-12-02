@@ -6,6 +6,7 @@ import de.qabel.core.drop.DropURL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -34,7 +35,7 @@ public class Identity {
 	 * List of drop urls of the identity
 	 * Field name in serialized json: "drops"
 	 */
-	private Collection<DropURL> drops = new ArrayList<DropURL>();
+	private List<DropURL> drops = new ArrayList<DropURL>();
 
 	/**
 	 * Creates an instance of Identity
@@ -117,7 +118,7 @@ public class Identity {
 	 * @param drops
 	 */
 	public void setDrops(Collection<DropURL> drops) {
-		this.drops = drops;
+		this.drops = new ArrayList<DropURL>(drops);
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class Identity {
 	 * @return Collection<DropURL>
 	 */
 	public Collection<DropURL> getDrops() {
-		return Collections.unmodifiableCollection(this.drops);
+		return Collections.unmodifiableList(this.drops);
 	}
 	
 	/**
