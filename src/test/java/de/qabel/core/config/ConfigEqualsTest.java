@@ -26,4 +26,12 @@ public class ConfigEqualsTest {
 		tester.testEqualsMethod(new IdentityEquivalentTestFactory(), config);
 	}
 
+	@Test
+	public void dropServerEqualsTest() {
+		EqualsMethodTester tester = new EqualsMethodTester();
+		Configuration config = new ConfigurationBuilder()
+			.overrideFactory("url", new UrlTestFactory())
+			.build();
+		tester.testEqualsMethod(new DropServerEquivalentTestFactory(), config);
+	}
 }
