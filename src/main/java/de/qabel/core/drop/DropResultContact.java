@@ -27,6 +27,13 @@ public class DropResultContact {
 		return;
 	}
 
+	/**
+	 * Add an received error code to the error code list
+	 * 
+	 * @param errorCode
+	 *            Received error code
+	 * @return true when you have received error code 200 one time
+	 */
 	boolean addErrorCode(int errorCode) {
 		if (errorCode == 200) {
 			this.success = true;

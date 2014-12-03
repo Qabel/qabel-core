@@ -30,7 +30,13 @@ public class DropResult {
 		this.results = results;
 	}
 
-	void addContactResult(DropResultContact result) {
+	/**
+	 * Add one result
+	 * 
+	 * @param pair
+	 *            Object of DropResultContact
+	 */
+	public void addContactResult(DropResultContact result) {
 		this.results.add(result);
 		
 		this.checked = true;
@@ -39,6 +45,7 @@ public class DropResult {
 			this.success = false;
 		}
 	}
+
 	/**
 	 * Return the overview state of the complete shipping
 	 * 
