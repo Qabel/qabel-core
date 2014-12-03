@@ -61,14 +61,4 @@ public class DropResult {
 		return (Collections.unmodifiableList(this.results));
 	}
 
-	/**
-	 * Add one result
-	 * 
-	 * @param pair
-	 *            Object of DropResultContact
-	 */
-	public void addContact(DropResultContact result) {
-		this.results.add(result);
-	}
-
 }
