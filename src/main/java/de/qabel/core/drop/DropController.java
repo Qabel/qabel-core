@@ -116,8 +116,11 @@ public class DropController {
 	/**
 	 * Sends the message and waits for acknowledgement.
 	 * Uses sendAndForget() for now.
-	 *
+	 * 
 	 * TODO: implement
+	 * @param message  Message to send
+	 * @param contacts Contacts to send message to
+	 * @return DropResult which tell you the state of the sending
 	 */
 	public DropResult send(DropMessage<? extends ModelObject> message,
 			Collection<Contact> contacts) {
@@ -129,7 +132,7 @@ public class DropController {
 	 *
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
-	 * @return HTTP status code from the drop-server.
+	 * @return DropResult which tell you the state of the sending
 	 */
 	public <T extends ModelObject> DropResult sendAndForget(
 			DropMessage<T> message, Collection<Contact> contacts) {
@@ -149,7 +152,7 @@ public class DropController {
 	 *
 	 * @param object Object to send
 	 * @param contact Contact to send message to
-	 * @return true if one DropServers of the contact returns 200
+	 * @return DropResultContact which tell you the state of the sending
 	 */
 	public <T extends ModelObject> DropResultContact sendAndForget(T object,
 			Contact contact) {
@@ -169,7 +172,7 @@ public class DropController {
 	 *
 	 * @param message Message to send
 	 * @param contact Contact to send message to
-	 * @return Object of DropResultContact
+	 * @return DropResultContact which tell you the state of the sending
 	 */
 	public <T extends ModelObject> DropResultContact sendAndForget(
 			DropMessage<T> message, Contact contact) {
