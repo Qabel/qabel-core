@@ -5,7 +5,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -94,7 +93,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Doesn't work, get 500 and Error: ENOENT, no such file or directory
 	public void probeNotExistingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -106,7 +104,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Does work, because "GET /data/ 200" is ok with the current qabel-storage
 	public void probeMissingPubIdQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -129,7 +126,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 http status does not exist in qabel-storage (also not in the protocol_update branch)
 	public void uploadWithMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -185,7 +181,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
 	public void retrieveBlobFromMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -196,7 +191,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
 	public void retrieveBlobFromInvalidQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -218,7 +212,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 Doesn't exists in the qabel-storage delete
 	public void deleteWithMissingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -252,7 +245,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //404 Doesn't exists in the qabel-storage delete
 	public void deleteWithNotExisitingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
