@@ -24,4 +24,13 @@ public class ConfigHashCodeTest {
 		.build();
 		tester.testHashCodeMethod(new ContactEquivalentTestFactory(), config);
 	}
+
+	@Test
+	public void dropServerHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		Configuration config = new ConfigurationBuilder()
+		.overrideFactory("url", new UrlTestFactory())
+		.build();
+		tester.testHashCodeMethod(new DropServerEquivalentTestFactory(), config);
+	}
 }
