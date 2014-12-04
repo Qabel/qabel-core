@@ -101,4 +101,18 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory());
 	}
+
+	@Test
+	public void syncedSettingsHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		Configuration config = new ConfigurationBuilder()
+			.overrideFactory("accounts", new AccountsTestFactory())
+			.overrideFactory("contacts", new ContactsTestFactory())
+			.overrideFactory("dropServers", new DropServersTestFactory())
+			.overrideFactory("identities", new IdentitiesTestFactory())
+			.overrideFactory("storageServers", new StorageServersTestFactory())
+			.overrideFactory("storageVolumes", new StorageVolumesTestFactory())
+			.build();
+		tester.testHashCodeMethod(new SyncedSettingsEquivalentTestFactory(), config);
+	}
 }
