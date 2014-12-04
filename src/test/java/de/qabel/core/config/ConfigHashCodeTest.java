@@ -89,4 +89,10 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		tester.testHashCodeMethod(new StorageServersEquivalentTestFactory());
 	}
+
+	@Test
+	public void storageVolumesHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		tester.testHashCodeMethod(new StorageVolumesEquivalentTestFactory());
+	}
 }
