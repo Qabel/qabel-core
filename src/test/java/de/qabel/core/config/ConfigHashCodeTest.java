@@ -53,4 +53,10 @@ public class ConfigHashCodeTest {
 		.build();
 		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
 	}
+
+	@Test
+	public void storageVolumeHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		tester.testHashCodeMethod(new StorageVolumeEquivalentTestFactory());
+	}
 }
