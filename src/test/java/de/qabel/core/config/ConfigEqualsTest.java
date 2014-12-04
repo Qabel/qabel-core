@@ -139,11 +139,11 @@ public class ConfigEqualsTest {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		tester.testEqualsMethod(StorageServers.class);
 
-		UrlTestFactory urlFactory = new UrlTestFactory();
+		StorageServerTestFactory serverFactory = new StorageServerTestFactory();
 
-		StorageServer a1 = new StorageServer(urlFactory.create(), "auth1");
-		StorageServer a2 = new StorageServer(urlFactory.create(), "auth2");
-		StorageServer c1 = new StorageServer(urlFactory.create(), "auth3");
+		StorageServer a1 = serverFactory.create();
+		StorageServer a2 = serverFactory.create();
+		StorageServer c1 = serverFactory.create();
 
 		StorageServers a = new StorageServers();
 		StorageServers b = new StorageServers();
