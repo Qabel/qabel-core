@@ -122,8 +122,7 @@ public class DropController {
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
 	 */
-	public DropResult send(DropMessage<? extends ModelObject> message,
-			Collection<Contact> contacts) {
+	public DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts) {
 		return sendAndForget(message, contacts);
 	}
 
@@ -134,8 +133,7 @@ public class DropController {
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
 	 */
-	public <T extends ModelObject> DropResult sendAndForget(
-			DropMessage<T> message, Collection<Contact> contacts) {
+	public <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
 		DropResult result;
 		
 		result = new DropResult();
@@ -144,7 +142,7 @@ public class DropController {
 			result.addContactResult(this.sendAndForget(message, contact));
 		}
 
-		return (result);
+		return result;
 	}
 
 	/**
@@ -154,8 +152,7 @@ public class DropController {
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(T object,
-			Contact contact) {
+	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact) {
 		DropHTTP http = new DropHTTP();
 
 		DropMessage<T> dm = new DropMessage<T>();
@@ -174,8 +171,7 @@ public class DropController {
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(
-			DropMessage<T> message, Contact contact) {
+	public <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact) {
 		DropResultContact result;
 		DropHTTP http;
 		byte[] cryptedMessage;
@@ -194,7 +190,7 @@ public class DropController {
 			logger.error("Invalid key in contact. Cannot send message!");
 		}
 		
-		return (result);
+		return result;
 	}
 
 	/**
@@ -204,8 +200,7 @@ public class DropController {
 	 * @param contacts Contacts to check the signature with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage> retrieve(URL url,
-			Collection<Contact> contacts) {
+	public Collection<DropMessage> retrieve(URL url, Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
@@ -217,8 +212,8 @@ public class DropController {
 		for (byte[] cipherMessage : cipherMessages) {
 			for (Contact c : contacts) {
 				try {
-					plainJson = decryptDrop(cipherMessage, c.getContactOwner()
-							.getPrimaryKeyPair(), c.getSignaturePublicKey());
+					plainJson = decryptDrop(cipherMessage,
+							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
 				} catch (InvalidKeyException e) {
 					// TODO Invalid keys in Contacts are currently ignored
 				}
