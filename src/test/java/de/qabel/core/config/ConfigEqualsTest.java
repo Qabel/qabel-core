@@ -23,13 +23,15 @@ public class ConfigEqualsTest {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		tester.testEqualsMethod(Accounts.class);
 
+		AccountTestFactory accountFactory = new AccountTestFactory();
+
+		Account a1 = accountFactory.create();
+		Account a2 = accountFactory.create();
+		Account c1 = accountFactory.create();
+
 		Accounts a = new Accounts();
 		Accounts b = new Accounts();
 		Accounts c = new Accounts();
-
-		Account a1 = new Account("provider1", "user1", "auth1");
-		Account a2 = new Account("provider2", "user2", "auth2");
-		Account c1 = new Account("provider3", "user3", "auth3");
 
 		a.add(a1);
 		a.add(a2);
