@@ -44,4 +44,13 @@ public class ConfigHashCodeTest {
 		.build();
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}
+
+	@Test
+	public void storageServerHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		Configuration config = new ConfigurationBuilder()
+		.overrideFactory("url", new UrlTestFactory())
+		.build();
+		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
+	}
 }
