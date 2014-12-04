@@ -53,10 +53,10 @@ public class DropResult {
 	 */
 	public boolean isSuccess() {
 		if (this.checked == false) {
-			return (false);
+			return false;
 		}
 
-		return (this.success);
+		return this.success;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class DropResult {
 	 * @return List of all results
 	 */
 	public List<DropResultContact> getList() {
-		return (Collections.unmodifiableList(this.results));
+		return Collections.unmodifiableList(this.results);
 	}
 
 }

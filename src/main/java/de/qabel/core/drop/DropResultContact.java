@@ -23,8 +23,6 @@ public class DropResultContact {
 	 */
 	DropResultContact(Contact contact) {
 		this.contact = contact;
-		
-		return;
 	}
 
 	/**
@@ -41,7 +39,7 @@ public class DropResultContact {
 		
 		this.errorCode = this.addElement(this.errorCode, errorCode);
 		
-		return (this.success);
+		return this.success;
 	}
 
 	/**
@@ -59,7 +57,7 @@ public class DropResultContact {
 	 * @return Error code
 	 */
 	public int[] getErrorCode() {
-		return (this.errorCode);
+		return this.errorCode;
 	}
 
 	/**
@@ -68,7 +66,7 @@ public class DropResultContact {
 	 * @return Return state
 	 */
 	public boolean isSuccess() {
-		return (this.success);
+		return this.success;
 	}
 
 	private int[] addElement(int[] array, int element) {
