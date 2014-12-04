@@ -77,4 +77,10 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		tester.testHashCodeMethod(new DropServersEquivalentTestFactory());
 	}
+
+	@Test
+	public void identitiesHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory());
+	}
 }
