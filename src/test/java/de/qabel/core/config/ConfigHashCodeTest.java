@@ -65,4 +65,10 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		tester.testHashCodeMethod(new AccountsEquivalentTestFactory());
 	}
+
+	@Test
+	public void contactsHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		tester.testHashCodeMethod(new ContactsEquivalentTestFactory());
+	}
 }
