@@ -95,4 +95,10 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		tester.testHashCodeMethod(new StorageVolumesEquivalentTestFactory());
 	}
+
+	@Test
+	public void localSettingsHashCodeTest() {
+		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
+		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory());
+	}
 }
