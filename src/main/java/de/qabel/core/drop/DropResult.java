@@ -2,6 +2,7 @@ package de.qabel.core.drop;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,14 +21,25 @@ public class DropResult {
 	/**
 	 * Constructor
 	 * 
-	 * @param success
-	 *            State of the shipping
 	 * @param results
 	 *            List of all results
 	 */
-	public DropResult(boolean success, List<DropResultContact> results) {
-		this.success = success;
+	public DropResult(List<DropResultContact> results) {
+		Iterator<DropResultContact> iterator;
+		
 		this.results = results;
+		
+		iterator = this.results.iterator();
+		while (iterator.hasNext()) {
+			DropResultContact item;
+			
+			this.checked = true;
+			
+			item = iterator.next();
+			if (item.isSuccess() == false) {
+				this.success = false;
+			}
+		}
 	}
 
 	/**
