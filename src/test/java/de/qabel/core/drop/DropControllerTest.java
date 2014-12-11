@@ -74,7 +74,7 @@ public class DropControllerTest {
 
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
-        Assert.assertTrue(d.sendAndForget(dm, contacts));
+        Assert.assertTrue(d.sendAndForget(dm, contacts).isSuccess());
         
         retrieveTest();
     }
@@ -104,7 +104,7 @@ public class DropControllerTest {
 
         HashSet<Contact> contacts = new HashSet<Contact>();
         contacts.add(contact);
-        Assert.assertTrue(d.sendAndForget(m, contact));
+        Assert.assertTrue(d.sendAndForget(m, contact).isSuccess());
 
         retrieveAutoTest();
     }
@@ -139,7 +139,7 @@ public class DropControllerTest {
         dm.setVersion(1);
         dm.setModelObject(TestMessage.class);
 
-        Assert.assertTrue(d.sendAndForget(dm, contact));
+        Assert.assertTrue(d.sendAndForget(dm, contact).isSuccess());
         
         retrieveTest();
     }
