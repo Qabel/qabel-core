@@ -14,9 +14,13 @@ import java.util.List;
 public class QblPrimaryKeyPair extends QblKeyPair {
 
 	private QblPrimaryPublicKey qblPrimaryPublicKey;
-	private ArrayList<QblEncKeyPair> encKeyPairs;
-	private ArrayList<QblSignKeyPair> signKeyPairs;
-
+	private List<QblEncKeyPair> encKeyPairs;
+	private List<RSAPrivateKey> encPrivateKeys;
+	private List<QblEncPublicKey> encPublicKeys;
+	private List<QblSignKeyPair> signKeyPairs;
+	private List<RSAPrivateKey> signPrivateKeys;
+	private List<QblSignPublicKey> signPublicKeys;
+	
 	QblPrimaryKeyPair() {
 		super();
 
@@ -26,8 +30,12 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 				(RSAPublicKey) keyPair.getPublic());
 
 		encKeyPairs = new ArrayList<QblEncKeyPair>();
+		encPublicKeys = new ArrayList<QblEncPublicKey>();
+		encPrivateKeys = new ArrayList<RSAPrivateKey>();
 		signKeyPairs = new ArrayList<QblSignKeyPair>();
-
+		signPublicKeys = new ArrayList<QblSignPublicKey>();
+		signPrivateKeys = new ArrayList<RSAPrivateKey>();
+		
 		generateEncKeyPair();
 		generateSignKeyPair();
 	}
@@ -39,7 +47,11 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		qblPrimaryPublicKey = new QblPrimaryPublicKey(publicKey);
 
 		encKeyPairs = new ArrayList<QblEncKeyPair>();
+		encPublicKeys = new ArrayList<QblEncPublicKey>();
+		encPrivateKeys = new ArrayList<RSAPrivateKey>();
 		signKeyPairs = new ArrayList<QblSignKeyPair>();
+		signPublicKeys = new ArrayList<QblSignPublicKey>();
+		signPrivateKeys = new ArrayList<RSAPrivateKey>();
 	}
 
 	QblPrimaryKeyPair(RSAPrivateKey privateKey, RSAPublicKey publicKey,
@@ -65,7 +77,7 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	/**
 	 * Generates a new QblSignKeyPair
 	 */
-	void generateSignKeyPair() {
+	public void generateSignKeyPair() {
 		QblSignKeyPair qskp = new QblSignKeyPair();
 		attachSignKeyPair(qskp);
 	}
@@ -74,12 +86,14 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		qskp.setQblPrimaryKeySignature(QblKeyFactory.getInstance()
 				.rsaSignKeyPair(qskp, this));
 		signKeyPairs.add(qskp);
+		signPrivateKeys.add(qskp.getRSAPrivateKey());
+		signPublicKeys.add(qskp.getQblSignPublicKey());
 	}
 
 	/**
 	 * Generates a new QblEncKeyPair
 	 */
-	void generateEncKeyPair() {
+	public void generateEncKeyPair() {
 		QblEncKeyPair qekp = new QblEncKeyPair();
 		attachEncKeyPair(qekp);
 	}
@@ -88,14 +102,16 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		qekp.setQblPrimaryKeySignature(QblKeyFactory.getInstance()
 				.rsaSignKeyPair(qekp, this));
 		encKeyPairs.add(qekp);
+		encPrivateKeys.add(qekp.getRSAPrivateKey());
+		encPublicKeys.add(qekp.getQblEncPublicKey());
 	}
 
-	public QblEncKeyPair getEncKeyPairs() {
-		return encKeyPairs.get(0);
+	public List<QblEncKeyPair> getEncKeyPairs() {
+		return encKeyPairs;
 	}
 
-	public QblSignKeyPair getSignKeyPairs() {
-		return signKeyPairs.get(0);
+	public List<QblSignKeyPair> getSignKeyPairs() {
+		return signKeyPairs;
 	}
 
 	/**
@@ -112,9 +128,18 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return encryption public key
 	 */
+	@Deprecated
 	public QblEncPublicKey getQblEncPublicKey() {
-		// TODO: Implement support for multiple sub-keys
 		return encKeyPairs.get(0).getQblEncPublicKey();
+	}
+	
+	/**
+	 * Returns all encryption public keys
+	 * 
+	 * @return encryption public keys
+	 */
+	public List<QblEncPublicKey> getQblEncPublicKeys() {
+		return encPublicKeys;
 	}
 
 	/**
@@ -122,9 +147,18 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return signature public key
 	 */
+	@Deprecated
 	public QblSignPublicKey getQblSignPublicKey() {
-		// TODO: Implement support for multiple sub-keys
 		return signKeyPairs.get(0).getQblSignPublicKey();
+	}
+	
+	/**
+	 * Returns all signature public keys
+	 * 
+	 * @return signature public keys
+	 */
+	public List<QblSignPublicKey> getQblSignPublicKeys() {
+		return signPublicKeys;
 	}
 
 	/**
@@ -132,9 +166,18 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return encryption private key
 	 */
+	@Deprecated
 	public RSAPrivateKey getQblEncPrivateKey() {
-		// TODO: Implement support for multiple sub-keys
 		return encKeyPairs.get(0).getRSAPrivateKey();
+	}
+	
+	/**
+	 * Returns all encryption private keys
+	 * 
+	 * @return encryption private keys
+	 */
+	public List<RSAPrivateKey> getQblEncPrivateKeys() {
+		return encPrivateKeys;
 	}
 
 	/**
@@ -142,9 +185,18 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	 * 
 	 * @return signature private key
 	 */
+	@Deprecated
 	public RSAPrivateKey getQblSignPrivateKey() {
-		// TODO: Implement support for multiple sub-keys
 		return signKeyPairs.get(0).getRSAPrivateKey();
+	}
+	
+	/**
+	 * Returns all signature private keys
+	 * 
+	 * @return signature private keys
+	 */
+	public List<RSAPrivateKey> getQblSignPrivateKeys() {
+		return signPrivateKeys;
 	}
 
 	@Override

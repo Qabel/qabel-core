@@ -28,7 +28,7 @@ public class DropController {
 	public DropController() {
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 		gb = new GsonBuilder();
-		gb.registerTypeAdapter(DropMessage.class, new DropSerializer<ModelObject>());
+		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
 	}
@@ -64,6 +64,11 @@ public class DropController {
 		Set<DropCallback<? extends ModelObject>> typeCallbacks = mCallbacks
 				.get(cls);
 
+		if (typeCallbacks == null) {
+			logger.debug("Received drop message of type " + cls.getCanonicalName() + " which we do not listen for.");
+			return;
+		}
+
 		for (DropCallback<? extends ModelObject> callback : typeCallbacks) {
 			Method m;
 			try {
@@ -71,8 +76,7 @@ public class DropController {
 						DropMessage.class);
 				m.invoke(callback, dm);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Error during handling drop", e);
 			}
 		}
 	}
@@ -180,9 +184,10 @@ public class DropController {
 		http = new DropHTTP();
 
 		try {
+			//TODO: Adapt to List returned by getSignKeyPairs
 			cryptedMessage = encryptDrop(serialize(message),
 					contact.getEncryptionPublicKey(),
-					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs());
+					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
 			for (DropURL u : contact.getDropUrls()) {
 				result.addErrorCode(http.send(u.getUrl(), cryptedMessage));
 			}
@@ -204,23 +209,29 @@ public class DropController {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
-		String plainJson = null;
 
 		List<Contact> ccc = new ArrayList<Contact>(contacts);
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
 			for (Contact c : contacts) {
+				String plainJson = null;
 				try {
 					plainJson = decryptDrop(cipherMessage,
 							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
 				} catch (InvalidKeyException e) {
-					// TODO Invalid keys in Contacts are currently ignored
+					// Don't handle key exception as it will be 
+					// likely that a message can't be 
+					// decrypted by all but the secret 
+					// decryption key of the contact owner!
 				}
 				if (plainJson == null) {
 					continue;
 				} else {
-					plainMessages.add(deserialize(plainJson));
+					DropMessage msg = deserialize(plainJson);
+					if (msg != null) {
+						plainMessages.add(msg);
+					}
 					break;
 				}
 			}
@@ -242,10 +253,17 @@ public class DropController {
 	 * Deserializes the message
 	 *
 	 * @param plainJson plain Json String
-	 * @return deserialized Dropmessage
+	 * @return deserialized Dropmessage or null if deserialization error occurred.
 	 */
 	private DropMessage deserialize(String plainJson) {
-		return gson.fromJson(plainJson, DropMessage.class);
+		try {
+			return gson.fromJson(plainJson, DropMessage.class);
+		}
+		catch (RuntimeException e) {
+			// Mainly be caused by illegal json syntax
+			logger.warn("Error while deserializing drop message:\n"+plainJson, e);
+			return null;
+		}
 	}
 
 	/**
@@ -267,7 +285,7 @@ public class DropController {
 	 * @param cipher  Ciphertext to decrypt
 	 * @param keypair Keypair to decrypt the ciphertext with
 	 * @param signkey Public sign key to validate the signature
-	 * @return The encrypted message as string
+	 * @return The encrypted message as string or null if decryption error occurred.
 	 * @throws InvalidKeyException
 	 */
 	private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {

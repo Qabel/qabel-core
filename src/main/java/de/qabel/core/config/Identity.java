@@ -12,13 +12,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity
  */
-
-
-public class Identity {
-	private final int id;
-	private int updated;
-	private int created;
-	private int deleted;
+public class Identity extends SyncSettingItem {
 	/**
 	 * Alias name of the identity
 	 * Field name in serialized json: "alias"
@@ -44,44 +38,12 @@ public class Identity {
 	 */
 	public Identity(String alias, Collection<DropURL> drops, 
 			QblPrimaryKeyPair primaryKeyPair) {
-		this.id = 0; //just to set it somehow
+		this.setId(0); //just to set it somehow
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
 		this.setDrops(drops);
 	}
 	
-	public int getId() {
-		return this.id;
-	}
-
-	public void setUpdated(int value) {
-		this.updated = value;
-	}
-
-	public int getUpdated() {
-		return this.updated;
-	}
-
-	public void setCreated(int value) {
-		this.created = value;
-	}
-
-	public int getCreated() {
-		return this.created;
-	}
-
-	public void setDeleted(int value) {
-		this.deleted = value;
-	}
-
-	public int getDeleted() {
-		return this.deleted;
-	}
-
-	/**
-	 * Sets the alias name of the identity
-	 * @param value
-	 */
 	public void setAlias(String value) {
 		this.alias = value;
 	}
@@ -149,17 +111,20 @@ public class Identity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		
+		result = super.hashCode();
+		
 		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
-		result = prime * result + created;
-		result = prime * result + deleted;
-		result = prime * result + id;
 		result = prime * result + ((drops == null) ? 0 : drops.hashCode());
-		result = prime * result + updated;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		if (super.equals(obj) == false) {
+		    return (false);
+		}
+
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -172,19 +137,12 @@ public class Identity {
 				return false;
 		} else if (!alias.equals(other.alias))
 			return false;
-		if (created != other.created)
-			return false;
-		if (deleted != other.deleted)
-			return false;
-		if (id != other.id)
-			return false;
 		if (drops == null) {
 			if (other.drops != null)
 				return false;
 		} else if (!drops.equals(other.drops))
 			return false;
-		if (updated != other.updated)
-			return false;
+
 		return true;
 	}
 }

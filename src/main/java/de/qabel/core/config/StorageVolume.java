@@ -5,11 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volume
  */
-public class StorageVolume {
-	private int id;
-	private int updated;
-	private int created;
-	private int deleted;
+public class StorageVolume extends SyncSettingItem {
 	/**
 	 * ID of the storage server
 	 * Field name in serialized json: "storage_server_id"
@@ -44,38 +40,6 @@ public class StorageVolume {
 		this.setPublicIdentifier(publicIdentifier);
 		this.setToken(token);
 		this.setRevokeToken(revokeToken);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(int updated) {
-		this.updated = updated;
-	}
-
-	public int getCreated() {
-		return created;
-	}
-
-	public void setCreated(int created) {
-		this.created = created;
-	}
-
-	public int getDeleted() {
-		return deleted;
-	}
-
-	public void setDeleted(int deleted) {
-		this.deleted = deleted;
 	}
 
 	/**
@@ -146,9 +110,9 @@ public class StorageVolume {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + created;
-		result = prime * result + deleted;
-		result = prime * result + id;
+		
+		result = super.hashCode();
+		
 		result = prime
 				* result
 				+ ((publicIdentifier == null) ? 0 : publicIdentifier.hashCode());
@@ -156,12 +120,15 @@ public class StorageVolume {
 				+ ((revokeToken == null) ? 0 : revokeToken.hashCode());
 		result = prime * result + storageServerId;
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
-		result = prime * result + updated;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		if (super.equals(obj) == false) {
+		    return (false);
+		}
+
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -169,12 +136,6 @@ public class StorageVolume {
 		if (getClass() != obj.getClass())
 			return false;
 		StorageVolume other = (StorageVolume) obj;
-		if (created != other.created)
-			return false;
-		if (deleted != other.deleted)
-			return false;
-		if (id != other.id)
-			return false;
 		if (publicIdentifier == null) {
 			if (other.publicIdentifier != null)
 				return false;
@@ -192,8 +153,7 @@ public class StorageVolume {
 				return false;
 		} else if (!token.equals(other.token))
 			return false;
-		if (updated != other.updated)
-			return false;
+
 		return true;
 	}
 

@@ -2,6 +2,7 @@ package de.qabel.core.drop;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,8 +16,40 @@ public class DropMessageGsonTest {
 
     }
 
+    @Test(expected = NullPointerException.class)
+    public void invalidJsonDeserializeTest()
+    {
+	// 'time' got a wrong value
+	String json = "{\"version\":1,\"time\":\"asdf\",\"sender\":\"foo\",\"acknowledgeID\":\"1234\",\"model\":\"de.qabel.core.drop.DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
+	
+	GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
+        builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
+	
+	Gson gson = builder.create();
+	
+	gson.fromJson(json, DropMessage.class);
+    }
+    
+    @Test(expected = JsonSyntaxException.class)
+    public void invalidJsonDeserializeTest2()
+    {
+	// 'time' got a missing value, i.e. wrong syntax
+	String json = "{\"version\":1,\"time\":,\"sender\":\"foo\",\"acknowledgeID\":\"1234\",\"model\":\"de.qabel.core.drop.DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
+	
+	GsonBuilder builder = new GsonBuilder();
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
+        builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
+	
+	Gson gson = builder.create();
+	
+	gson.fromJson(json, DropMessage.class);
+    }
+    
     @Test
-    public <T extends ModelObject> void serializeTest() {
+    public void serializeTest() {
 
 
         TestMessage m = new TestMessage();
@@ -33,8 +66,8 @@ public class DropMessageGsonTest {
         a.setModelObject(TestMessage.class);
 
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<T>());
-        builder.registerTypeAdapter(DropMessage.class, new DropSerializer<T>());
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<TestMessage>());
+        builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 
         Gson gson = builder.create();

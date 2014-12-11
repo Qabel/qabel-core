@@ -15,8 +15,10 @@ import static org.junit.Assert.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import de.qabel.core.crypto.QblEncPublicKey;
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
+import de.qabel.core.crypto.QblSignPublicKey;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
@@ -28,6 +30,8 @@ public class ConfigSerializationTest {
 		
 		//generate and add an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
+		account.setCreated(new java.util.Date().getTime());
+		
 		syncedSettings.getAccounts().add(account);
 		
 		//generate and add an "drop_servers" entry
@@ -42,6 +46,8 @@ public class ConfigSerializationTest {
 		Identity identity;
 			
 		key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+		key.generateEncKeyPair();
+		key.generateSignKeyPair();
 		drops = new ArrayList<DropURL>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
@@ -67,6 +73,8 @@ public class ConfigSerializationTest {
 		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
 		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
 		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
+		assertEquals(0, 
+		        gson.toJson(syncedSettings).compareTo(gson.toJson(deserializedSyncedSettings)));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
@@ -96,10 +104,15 @@ public class ConfigSerializationTest {
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 			contact = new Contact(i);
 			QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
-			
+			qpkp.generateEncKeyPair();
+			qpkp.generateSignKeyPair();
 			contact.setPrimaryPublicKey(qpkp.getQblPrimaryPublicKey());
-			contact.setEncryptionPublicKey(qpkp.getQblEncPublicKey());
-			contact.setSignaturePublicKey(qpkp.getQblSignPublicKey());
+			for(QblEncPublicKey key : qpkp.getQblEncPublicKeys()) {
+				contact.addEncryptionPublicKey(key);
+			}
+			for(QblSignPublicKey key : qpkp.getQblSignPublicKeys()) {
+				contact.addSignaturePublicKey(key);
+			}
 			contact.getDropUrls().add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			
 			GsonBuilder builder = new GsonBuilder();

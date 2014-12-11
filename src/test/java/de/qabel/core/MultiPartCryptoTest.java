@@ -5,10 +5,8 @@ import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
-import junit.framework.Assert;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -36,6 +34,19 @@ public class MultiPartCryptoTest {
         }
     }
 
+	class UnwantedTestObject extends ModelObject {
+		public UnwantedTestObject() { }
+		private String str;
+
+		public String getStr() {
+			return str;
+		}
+
+		public void setStr(String str) {
+			this.str = str;
+		}
+	}
+
     private DropController dropController;
     private DropQueueCallback<TestObject> mQueue;
 
@@ -54,6 +65,7 @@ public class MultiPartCryptoTest {
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
 
         this.sendMessage();
+		this.sendUnwantedMessage();
 
         try {
             Thread.sleep(2000);
@@ -72,9 +84,11 @@ public class MultiPartCryptoTest {
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException {
 
+		this.sendUnwantedMessage();
         this.sendMessage();
         this.sendMessage();
         this.sendMessage();
+		this.sendUnwantedMessage();
         this.sendMessage();
 
         try {
@@ -113,14 +127,14 @@ public class MultiPartCryptoTest {
 
         Contact alicesContact = new Contact(alice);
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
-        alicesContact.setEncryptionPublicKey(bobsKey.getQblEncPublicKey());
-        alicesContact.setSignaturePublicKey(bobsKey.getQblSignPublicKey());
+        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKey());
+        alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKey());
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
-        bobsContact.setEncryptionPublicKey(alicesKey.getQblEncPublicKey());
-        bobsContact.setSignaturePublicKey(alicesKey.getQblSignPublicKey());
+        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKey());
+        bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKey());
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
@@ -164,4 +178,24 @@ public class MultiPartCryptoTest {
         // Send hello world to all contacts.
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
     }
+
+	private void sendUnwantedMessage() {
+		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>();
+		UnwantedTestObject data = new UnwantedTestObject();
+		data.setStr("Test");
+		dm.setData(data);
+
+		Date date = new Date();
+
+		dm.setSender("foo");
+		dm.setAcknowledgeID("bar");
+		dm.setTime(date);
+		dm.setVersion(1);
+		dm.setModelObject(UnwantedTestObject.class);
+
+		DropController drop = new DropController();
+
+		// Send an unknown drop message to all contacts.
+		drop.sendAndForget(dm, dropController.getContacts().getContacts());
+	}
 }

@@ -3,6 +3,7 @@ package de.qabel.core.crypto;
 import java.security.InvalidKeyException;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,8 +14,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class QblPrimaryPublicKey extends QblPublicKey {
 
-	private ArrayList<QblEncPublicKey> encPublicKeys;
-	private ArrayList<QblSignPublicKey> signPublicKeys;
+	private List<QblEncPublicKey> encPublicKeys;
+	private List<QblSignPublicKey> signPublicKeys;
 	
 	private final static Logger logger = LogManager.getLogger(QblPrimaryPublicKey.class
 			.getName());
@@ -61,14 +62,22 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 		return false;
 	}
 	
+	@Deprecated
 	public QblEncPublicKey getEncPublicKey(){
-		// TODO: Implement support for multiple sub-keys
 		return encPublicKeys.get(0);
 	}
 	
+	public List<QblEncPublicKey> getEncPublicKeys(){
+		return encPublicKeys;
+	}
+
+	@Deprecated
 	public QblSignPublicKey getSignPublicKey(){
-		// TODO: Implement support for multiple sub-keys
 		return signPublicKeys.get(0);
+	}
+
+	public List<QblSignPublicKey> getSignPublicKeys(){
+		return signPublicKeys;
 	}
 
 	@Override

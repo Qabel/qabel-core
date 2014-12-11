@@ -8,6 +8,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -36,27 +38,35 @@ public class QblPrimaryPublicKeyTypeAdapter extends TypeAdapter<QblPrimaryPublic
 		out.value(value.getPublicExponent().toString());
 		out.endObject();
 		
-		QblEncPublicKey encPublicKey = value.getEncPublicKey();
-		out.name("public_enc_key");
-		out.beginObject();
-		out.name("modulus");
-		out.value(encPublicKey.getModulus().toString());
-		out.name("exponent");
-		out.value(encPublicKey.getPublicExponent().toString());
-		out.name("signature");
-		out.value(getStringFromByteArray(encPublicKey.getPrimaryKeySignature()));
-		out.endObject();
+		List<QblEncPublicKey> encPublicKeys = value.getEncPublicKeys();
+		out.name("public_enc_keys");
+		out.beginArray();
+		for(QblEncPublicKey key : encPublicKeys) {
+			out.beginObject();
+			out.name("modulus");
+			out.value(key.getModulus().toString());
+			out.name("exponent");
+			out.value(key.getPublicExponent().toString());
+			out.name("signature");
+			out.value(getStringFromByteArray(key.getPrimaryKeySignature()));
+			out.endObject();
+		}
+		out.endArray();
 		
-		QblSignPublicKey signPublicKey = value.getSignPublicKey();
-		out.name("public_sign_key");
-		out.beginObject();
-		out.name("modulus");
-		out.value(signPublicKey.getModulus().toString());
-		out.name("exponent");
-		out.value(signPublicKey.getPublicExponent().toString());
-		out.name("signature");
-		out.value(getStringFromByteArray(signPublicKey.getPrimaryKeySignature()));		
-		out.endObject();
+		List<QblSignPublicKey> signPublicKeys = value.getSignPublicKeys();
+		out.name("public_sign_keys");
+		out.beginArray();
+		for(QblSignPublicKey key : signPublicKeys) {
+			out.beginObject();
+			out.name("modulus");
+			out.value(key.getModulus().toString());
+			out.name("exponent");
+			out.value(key.getPublicExponent().toString());
+			out.name("signature");
+			out.value(getStringFromByteArray(key.getPrimaryKeySignature()));		
+			out.endObject();
+		}
+		out.endArray();
 		
 		out.endObject();		
 		
@@ -66,8 +76,8 @@ public class QblPrimaryPublicKeyTypeAdapter extends TypeAdapter<QblPrimaryPublic
 	@Override
 	public QblPrimaryPublicKey read(JsonReader in) throws IOException {
 		QblPrimaryPublicKey primaryPublicKey = null;
-		QblEncPublicKey encPublicKey = null;
-		QblSignPublicKey signPublicKey = null;
+		List<QblEncPublicKey> encPublicKeys = null;
+		List<QblSignPublicKey> signPublicKeys = null;
 		if(in.peek() == JsonToken.NULL) {
 			in.nextNull();
 			return null;
@@ -80,23 +90,37 @@ public class QblPrimaryPublicKeyTypeAdapter extends TypeAdapter<QblPrimaryPublic
 				primaryPublicKey = readPrimaryPublicKey(in);
 				in.endObject();
 				break;
-			case "public_enc_key":
-				in.beginObject();
-				encPublicKey = readEncPublicKey(in);
-				in.endObject();
+			case "public_enc_keys":
+				encPublicKeys = new ArrayList<QblEncPublicKey>();
+				in.beginArray();
+				while(in.hasNext()) {
+					in.beginObject();
+					encPublicKeys.add(readEncPublicKey(in));
+					in.endObject();
+				}
+				in.endArray();
 				break;
-			case "public_sign_key":
-				in.beginObject();
-				signPublicKey = readSignPublicKey(in);
-				in.endObject();
+			case "public_sign_keys":
+				signPublicKeys = new ArrayList<QblSignPublicKey>();
+				in.beginArray();
+				while(in.hasNext()) {
+					in.beginObject();
+					signPublicKeys.add(readSignPublicKey(in));
+					in.endObject();
+				}
+				in.endArray();
 				break;				
 			}
 		}
 		in.endObject();
-		if(!(primaryPublicKey == null || encPublicKey == null || signPublicKey == null)) {
+		if(!(primaryPublicKey == null || encPublicKeys == null || signPublicKeys == null)) {
 			try {
-				primaryPublicKey.attachEncPublicKey(encPublicKey);
-				primaryPublicKey.attachSignPublicKey(signPublicKey);
+				for(QblEncPublicKey key : encPublicKeys) {
+					primaryPublicKey.attachEncPublicKey(key);
+				}
+				for(QblSignPublicKey key : signPublicKeys) {
+					primaryPublicKey.attachSignPublicKey(key);
+				}
 			} catch (InvalidKeyException e) {
 				logger.error("Read public key is invalid!");			
 			}
