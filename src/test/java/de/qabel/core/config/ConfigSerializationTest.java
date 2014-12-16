@@ -30,7 +30,6 @@ public class ConfigSerializationTest {
 		
 		//generate and add an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
-		account.setCreated(new java.util.Date().getTime());
 		
 		syncedSettings.getAccounts().add(account);
 		
