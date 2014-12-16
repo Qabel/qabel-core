@@ -112,6 +112,9 @@ public class SyncSettingItem {
         if (this.deleted != other.deleted) {
         	return (false);
         }
+        if (this.id != other.id) {
+        	return false;
+        }
 
         return true;
     }

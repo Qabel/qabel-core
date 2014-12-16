@@ -106,10 +106,6 @@ public class DropServer extends SyncSettingItem {
 		    return (false);
 		}
 
-		if (super.equals(obj) == false) {
-		    return (false);
-		}
-
 		if (this == obj)
 			return true;
 		if (obj == null)
