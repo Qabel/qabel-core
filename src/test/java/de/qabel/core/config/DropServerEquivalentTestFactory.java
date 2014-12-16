@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import java.net.URL;
+import java.util.Date;
 
 import org.meanbean.lang.EquivalentFactory;
 
@@ -11,6 +12,8 @@ import org.meanbean.lang.EquivalentFactory;
  */
 class DropServerEquivalentTestFactory implements EquivalentFactory<DropServer> {
 	URL url;
+	long created = new Date().getTime();
+
 	DropServerEquivalentTestFactory() {
 		url = (new UrlTestFactory()).create();
 	}
@@ -18,7 +21,7 @@ class DropServerEquivalentTestFactory implements EquivalentFactory<DropServer> {
 	@Override
 	public DropServer create() {
 		DropServer server = new DropServer(url, "auth", true);
-		
+		server.setCreated(created);
 		return server;
 	}
 }

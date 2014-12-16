@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import java.net.URL;
+import java.util.Date;
 
 import org.meanbean.lang.EquivalentFactory;
 
@@ -11,6 +12,7 @@ import org.meanbean.lang.EquivalentFactory;
  */
 class StorageServerEquivalentTestFactory implements EquivalentFactory<StorageServer> {
 	URL url;
+	long created = new Date().getTime();
 
 	StorageServerEquivalentTestFactory() {
 		url = new UrlTestFactory().create();
@@ -18,6 +20,8 @@ class StorageServerEquivalentTestFactory implements EquivalentFactory<StorageSer
 
 	@Override
 	public StorageServer create() {
-		return new StorageServer(url, "auth");
+		StorageServer server = new StorageServer(url, "auth");
+		server.setCreated(created);
+		return server;
 	}
 }

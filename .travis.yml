@@ -9,7 +9,7 @@ notifications:
 
 install:
  - redis-server &
- - sudo apt-get install python-pip
+ - sudo apt-get install python-pip npm nodejs
  - sudo pip install virtualenv
  - git clone https://github.com/qabel/qabel-drop
  - virtualenv qabel-drop
@@ -17,6 +17,13 @@ install:
  - pip install -r qabel-drop/requirements.txt
  - cd qabel-drop
  - ./drop_server.py &
+ - cd ..
+ - git clone https://github.com/Qabel/qabel-storage.git
+ - cd qabel-storage
+ - git checkout -b protocol_update origin/protocol_update
+ - npm install
+ - mkdir data
+ - node app.js &
  - cd ..
 
 script:

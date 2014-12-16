@@ -5,11 +5,7 @@ import java.net.URL;
 /** 
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#drop-server
  */
-public class DropServer {
-	private int id;
-	private int updated;
-	private int created;
-	private int deleted;
+public class DropServer extends SyncSettingItem {
 	/**
 	 * URL to the drop service without the drop id
 	 * Field name in serialized json: "url"
@@ -41,41 +37,6 @@ public class DropServer {
 	 */
 	public DropServer() {
 		
-	}
-
-	public void setId(int value) {
-		this.id = value;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-
-	public void setUpdated(int value) {
-		this.updated = value;
-	}
-
-	public int getUpdated() {
-		return this.updated;
-	}
-
-
-	public void setCreated(int value) {
-		this.created = value;
-	}
-
-	public int getCreated() {
-		return this.created;
-	}
-
-
-	public void setDeleted(int value) {
-		this.deleted = value;
-	}
-
-	public int getDeleted() {
-		return this.deleted;
 	}
 
 	/**
@@ -130,24 +91,28 @@ public class DropServer {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		
+		result = super.hashCode();
+		
 		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
-		result = prime * result + created;
-		result = prime * result + deleted;
-		result = prime * result + id;
-		result = prime * result + updated;
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		if (super.equals(obj) == false) {
+		    return (false);
+		}
+
 		if (this == obj)
 			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
+
 		DropServer other = (DropServer) obj;
 		if (active != other.active)
 			return false;
@@ -155,14 +120,6 @@ public class DropServer {
 			if (other.auth != null)
 				return false;
 		} else if (!auth.equals(other.auth))
-			return false;
-		if (created != other.created)
-			return false;
-		if (deleted != other.deleted)
-			return false;
-		if (id != other.id)
-			return false;
-		if (updated != other.updated)
 			return false;
 		if (url == null) {
 			if (other.url != null)
