@@ -182,6 +182,10 @@ public class Contact {
 				+ ((contactOwner == null) ? 0 : contactOwner.hashCode());
 		result = prime * result
 				+ ((dropUrls == null) ? 0 : dropUrls.hashCode());
+		result = prime * result
+				+ ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
+		result = prime * result
+				+ ((moduleSettings == null) ? 0 : moduleSettings.hashCode());
 		return result;
 	}
 
