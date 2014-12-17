@@ -117,6 +117,7 @@ public class Identity extends SyncSettingItem {
 		
 		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
 		result = prime * result + ((drops == null) ? 0 : drops.hashCode());
+		result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
 		return result;
 	}
 
