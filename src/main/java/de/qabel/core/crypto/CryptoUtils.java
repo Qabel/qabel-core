@@ -740,9 +740,10 @@ public class CryptoUtils {
 	 * @return true if encryption worked as expected, else false
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws FileNotFoundException 
 	 */
 	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
-			throws InvalidKeyException {
+			throws InvalidKeyException, FileNotFoundException {
 		return encryptFileAuthenticatedSymmetric(file, outputStream, key, null);
 	}
 
@@ -764,21 +765,34 @@ public class CryptoUtils {
 	 * @return true if encryption worked as expected, else false
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws FileNotFoundException 
 	 */
 	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
-			throws InvalidKeyException {
+			throws InvalidKeyException, FileNotFoundException {
+		FileInputStream fileInputStream = new FileInputStream(file);
+		return this.encryptStreamAuthenticatedSymmetric(fileInputStream, outputStream, key, nonce);
+	}	
+	
+	/**
+	 * Encrypts an InputStream to an OutputStream. The OutputStream gets the result
+	 * immediately while encrypting. The step size of every separate decryption
+	 * step is defined in SYMM_GCM_READ_SIZE_BYTE. Nonce of size
+	 * SYMM_NONCE_SIZE_BIT is taken as nonce directly, else a random nonce is
+	 * generated.
+	 * 
+	 * @param inputStream InputStream that will be encrypted
+	 * @param outputStream OutputStream where ciphertext is streamed to
+	 * @param key Key which is used to en-/decrypt
+	 * @param nonce Random value which is concatenated to a counter
+	 * @return true if encryption worked as expected, else false
+	 * @throws InvalidKeyException if key is invalid
+	 */
+	boolean encryptStreamAuthenticatedSymmetric(InputStream inputStream, OutputStream outputStream,
+			SecretKey key, byte[] nonce) throws InvalidKeyException {
 		IvParameterSpec iv;
 		DataOutputStream cipherText = new DataOutputStream(outputStream);
-		FileInputStream fileInputStream;
 		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
 		int readBytes;
-
-		try {
-			fileInputStream = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			logger.debug("Encryption: File for encryption was not found.", e);
-			return false;
-		}
 
 		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
@@ -795,12 +809,11 @@ public class CryptoUtils {
 
 		try {
 			cipherText.write(nonce);
-			while ((readBytes = fileInputStream.read(temp, 0,
-					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+			while ((readBytes = inputStream.read(temp)) > 0) {
 				cipherText.write(gcmCipher.update(temp, 0, readBytes));
 			}
 			cipherText.write(gcmCipher.doFinal());
-			fileInputStream.close();
+			inputStream.close();
 		} catch (IllegalBlockSizeException e) {
 			// Should not happen
 			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
