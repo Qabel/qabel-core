@@ -742,7 +742,7 @@ public class CryptoUtils {
 	 *             if key is invalid
 	 * @throws FileNotFoundException 
 	 */
-	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
+	public boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
 			throws InvalidKeyException, FileNotFoundException {
 		return encryptFileAuthenticatedSymmetric(file, outputStream, key, null);
 	}
@@ -767,7 +767,7 @@ public class CryptoUtils {
 	 *             if key is invalid
 	 * @throws FileNotFoundException 
 	 */
-	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
+	public boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
 			throws InvalidKeyException, FileNotFoundException {
 		FileInputStream fileInputStream = new FileInputStream(file);
 		return this.encryptStreamAuthenticatedSymmetric(fileInputStream, outputStream, key, nonce);
@@ -787,7 +787,7 @@ public class CryptoUtils {
 	 * @return true if encryption worked as expected, else false
 	 * @throws InvalidKeyException if key is invalid
 	 */
-	boolean encryptStreamAuthenticatedSymmetric(InputStream inputStream, OutputStream outputStream,
+	public boolean encryptStreamAuthenticatedSymmetric(InputStream inputStream, OutputStream outputStream,
 			SecretKey key, byte[] nonce) throws InvalidKeyException {
 		IvParameterSpec iv;
 		DataOutputStream cipherText = new DataOutputStream(outputStream);
@@ -844,7 +844,7 @@ public class CryptoUtils {
 	 * @throws InvalidKeyException
 	 *             if key is invalid
 	 */
-	File decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, String pathName, SecretKey key)
+	public File decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, String pathName, SecretKey key)
 			throws InvalidKeyException {
 		FileOutputStream fileOutput = null;
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
