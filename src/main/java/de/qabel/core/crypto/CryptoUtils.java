@@ -883,4 +883,13 @@ public class CryptoUtils {
 
 		return new File(pathName);
 	}
+	
+	/**
+	 * Generates a new symmetric key for encryption.
+	 * 
+	 * @return new symmetric key.
+	 */
+	public SecretKey generateSymmetricKey() {
+		return keyGenerator.generateKey();
+	}
 }
