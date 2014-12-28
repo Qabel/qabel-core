@@ -61,7 +61,7 @@ public class ConfigSerializationTest {
 		}
 		
 		//generate and add a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
+		syncedSettings.getStorageVolumes().add(new StorageVolume(new StorageServer(new URL("https://storage.qabel.de"), "auth"), "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 		
 		

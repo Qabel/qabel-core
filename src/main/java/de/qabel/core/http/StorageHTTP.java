@@ -2,10 +2,14 @@ package de.qabel.core.http;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import de.qabel.core.config.StorageServer;
 import de.qabel.core.config.StorageVolume;
 
 import java.io.*;
 import java.net.*;
+
+import org.apache.commons.io.IOUtils;
 
 public class StorageHTTP {
 
@@ -15,9 +19,9 @@ public class StorageHTTP {
 	 * @return HTTPResult
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult<StorageVolume> createNewStorageVolume(URL url) throws IOException {
+	public HTTPResult<StorageVolume> createNewStorageVolume(StorageServer server) throws IOException {
 		HTTPResult<StorageVolume> result = new HTTPResult<>();
-		url = addPathToURL(url, "_new");
+		URL url = addPathToURL(server.getUrl(), "_new");
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
@@ -26,7 +30,7 @@ public class StorageHTTP {
 		if(responseCode == 201) {
 			result.setOk(true);
 			String response = parsePostResponse(connection.getInputStream());
-			result.setData(jsonStringToStorageVolume(response));
+			result.setData(jsonStringToStorageVolume(response, server));
 		}
 		connection.disconnect();
 		return result;
@@ -61,15 +65,14 @@ public class StorageHTTP {
 	 * @return HTTPResult with empty data
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult<?> upload(URL baseUrl, String publicIdentifier, String blobName, String token, byte[] blob) throws IOException {
+	public HTTPResult<?> upload(URL baseUrl, String publicIdentifier, String blobName, String token, InputStream blob) throws IOException {
 		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
 		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
 		connection.setRequestProperty("X-Qabel-Token", token);
 		connection.setDoOutput(true);
-		DataOutputStream out;
 		HTTPResult<?> result = new HTTPResult<>();
-		out = new DataOutputStream(connection.getOutputStream());
-		out.write(blob);
+		BufferedOutputStream out = new BufferedOutputStream(connection.getOutputStream());
+		IOUtils.copyLarge(blob, out);
 		out.flush();
 		out.close();
 		int responseCode = connection.getResponseCode();
@@ -157,14 +160,14 @@ public class StorageHTTP {
 	 * @param response The parsed response.
 	 * @return The new StorageVolume.
 	 */
-	private StorageVolume jsonStringToStorageVolume(String response) {
+	private StorageVolume jsonStringToStorageVolume(String response, StorageServer server) {
 		JsonParser jsonParser = new JsonParser();
 		JsonObject jo = (JsonObject) jsonParser.parse(response);
 
 		String public_token = jo.get("public").getAsString();
 		String revoke_token = jo.get("revoke_token").getAsString();
 		String private_token = jo.get("token").getAsString();
-		return new StorageVolume(public_token, private_token, revoke_token);
+		return new StorageVolume(server, public_token, private_token, revoke_token);
 	}
 
 	/**

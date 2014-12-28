@@ -1,17 +1,14 @@
 package de.qabel.core.config;
 
+import java.net.URL;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volume
  */
 public class StorageVolume extends SyncSettingItem {
-	/**
-	 * ID of the storage server
-	 * Field name in serialized json: "storage_server_id"
-	 */
-	@SerializedName("storage_server_id")
-	private int storageServerId;
+	private StorageServer storageServer;
 	/**
 	 * identifier of the storage volume on the server
 	 * Field name in serialized json: "public_identifier"
@@ -36,27 +33,21 @@ public class StorageVolume extends SyncSettingItem {
 	 * @param token
 	 * @param revokeToken
 	 */
-	public StorageVolume(String publicIdentifier, String token, String revokeToken) {
+	public StorageVolume(StorageServer server, String publicIdentifier, String token, String revokeToken) {
+		this.setStorageServer(server);
 		this.setPublicIdentifier(publicIdentifier);
 		this.setToken(token);
 		this.setRevokeToken(revokeToken);
 	}
 
-	/**
-	 * Returns ID of the storage server
-	 * @return storageServerId
-	 */
-	public int getStorageServerId() {
-		return storageServerId;
+	public StorageServer getStorageServer() {
+		return storageServer;
 	}
 
-	/**
-	 * Sets the ID of the storage server
-	 * @param storageServerId
-	 */
-	public void setStorageServerId(int storageServerId) {
-		this.storageServerId = storageServerId;
+	public void setStorageServer(StorageServer storageServer) {
+		this.storageServer = storageServer;
 	}
+
 
 	/**
 	 * Returns the public identifier of the storage volume
@@ -106,32 +97,30 @@ public class StorageVolume extends SyncSettingItem {
 		this.revokeToken = revokeToken;
 	}
 
+	public URL getServerUrl() {
+		return this.storageServer.getUrl();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
-		
-		result = super.hashCode();
-		
+		int result = super.hashCode();
 		result = prime
 				* result
 				+ ((publicIdentifier == null) ? 0 : publicIdentifier.hashCode());
 		result = prime * result
 				+ ((revokeToken == null) ? 0 : revokeToken.hashCode());
-		result = prime * result + storageServerId;
+		result = prime * result
+				+ ((storageServer == null) ? 0 : storageServer.hashCode());
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj) == false) {
-		    return (false);
-		}
-
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -146,14 +135,16 @@ public class StorageVolume extends SyncSettingItem {
 				return false;
 		} else if (!revokeToken.equals(other.revokeToken))
 			return false;
-		if (storageServerId != other.storageServerId)
+		if (storageServer == null) {
+			if (other.storageServer != null)
+				return false;
+		} else if (!storageServer.equals(other.storageServer))
 			return false;
 		if (token == null) {
 			if (other.token != null)
 				return false;
 		} else if (!token.equals(other.token))
 			return false;
-
 		return true;
 	}
 
