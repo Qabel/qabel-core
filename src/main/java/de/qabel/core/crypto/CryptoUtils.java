@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -850,6 +851,7 @@ public class CryptoUtils {
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		IvParameterSpec iv;
 		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
+		BufferedInputStream bufferedInput = new BufferedInputStream(inputStream);
 		int readBytes;
 
 		if (pathName == null) {
@@ -865,7 +867,7 @@ public class CryptoUtils {
 		}
 
 		try {
-			inputStream.read(nonce);
+			bufferedInput.read(nonce);
 		} catch (IOException e) {
 			logger.debug("Decryption: Ciphertext (in this case the nonce) can not be read.", e);
 			return null;
@@ -874,9 +876,18 @@ public class CryptoUtils {
 		iv = new IvParameterSpec(nonce);
 		try {
 			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
-			while ((readBytes = inputStream.read(temp, 0,
+			while ((readBytes = bufferedInput.read(temp, 0,
 					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
-				fileOutput.write(gcmCipher.update(temp, 0, readBytes));
+				/*
+				 * reading from a buffered input stream ensures that enough bytes
+				 * are read to fulfill the block cipher min. length requirements.
+				 */
+				byte[] encBytes = gcmCipher.update(temp, 0, readBytes);
+				if (encBytes == null) {
+					logger.error("Input too short for block cipher. Input length was " + readBytes);
+					new RuntimeException("Decryption failed due to unexpected input length.");
+				}
+				fileOutput.write(encBytes);
 			}
 			fileOutput.write(gcmCipher.doFinal());
 			fileOutput.close();
