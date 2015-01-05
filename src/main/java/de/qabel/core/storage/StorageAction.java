@@ -70,7 +70,7 @@ public class StorageAction {
 				logger.debug("Volume probing negative.");
 				return false;
 			default:
-				logger.error("Volume creation failed with unexpected response " + result.getResponseCode());
+				logger.error("Volume probing failed with unexpected response " + result.getResponseCode());
 				throw new RuntimeException("Unexpected response from storage server");
 			}
 		}
