@@ -21,6 +21,7 @@ import de.qabel.core.exceptions.QblStorageInvalidBlobName;
 public class StorageBlob {
 	public static final int MINIMUM_SIZE_BYTES = 1 * 1024 * 1024; // 1 MiByte
 	public static final int MAXIMUM_SIZE_BYTES = 2 * 1024 * 1024; // 2 MiByte
+	private static final int BUFFER_SIZE = 512;
 	private static final byte FILL_BYTE = 0;
 	private String name;
 	private InputStream stream;
@@ -39,7 +40,7 @@ public class StorageBlob {
 		temp.deleteOnExit(); // TODO is this safe?
 		FileOutputStream fos = new FileOutputStream(temp);
 		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		byte[] copyBuffer = new byte[512];
+		byte[] copyBuffer = new byte[BUFFER_SIZE];
 		
 		long totalReadBytes = 0;
 		int readBytes;
@@ -128,7 +129,7 @@ public class StorageBlob {
 	
 	private void writePadding(OutputStream stream, long paddingSize) throws IOException {
 		long paddingToWrite = paddingSize;
-		byte[] paddingBuffer = new byte[512];
+		byte[] paddingBuffer = new byte[BUFFER_SIZE];
 		Arrays.fill(paddingBuffer, FILL_BYTE); 
 		while (paddingToWrite > 0) {
 			int curChunkLen = paddingToWrite > paddingBuffer.length ? paddingBuffer.length : (int)paddingToWrite;
