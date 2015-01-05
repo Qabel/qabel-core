@@ -28,7 +28,7 @@ public class StorageAction {
 	 * 
 	 * @param server Server to host the volume.
 	 * @return New storage volume.
-	 * @throws IOException
+	 * @throws IOException if server is overloaded.
 	 */
 	public static StorageVolume createStorageVolume(StorageServer server) throws IOException {
 		StorageHTTP http = new StorageHTTP();
@@ -39,7 +39,7 @@ public class StorageAction {
 			switch (result.getResponseCode()) {
 			case 503:
 				logger.info("Storage server reported capacity shortcoming.");
-				throw new RuntimeException("Storage server overloaded.");
+				throw new IOException("Storage server overloaded.");
 			default:
 				logger.error("Volume creation failed with unexpected response " + result.getResponseCode());
 				throw new RuntimeException("Unexpected response from storage server");
