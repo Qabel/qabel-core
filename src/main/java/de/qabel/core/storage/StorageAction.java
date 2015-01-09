@@ -1,10 +1,9 @@
 package de.qabel.core.storage;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.InvalidKeyException;
 
 import javax.crypto.SecretKey;
@@ -31,8 +30,8 @@ public class StorageAction {
 	 * @throws IOException if server is overloaded.
 	 */
 	public static StorageVolume createStorageVolume(StorageServer server) throws IOException {
-		StorageHTTP http = new StorageHTTP();
-		HTTPResult<StorageVolume> result = http.createNewStorageVolume(server);
+		StorageHTTP http = new StorageHTTP(server);
+		HTTPResult<StorageVolume> result = http.createNewStorageVolume();
 		StorageVolume volume = result.getData();
 
 		if (!result.isOk()) {
@@ -57,8 +56,8 @@ public class StorageAction {
 	 * @throws IOException
 	 */
 	public static boolean existsStorageVolume(StorageVolume volume) throws IOException {
-		StorageHTTP http = new StorageHTTP();
-		HTTPResult<?> result = http.probeStorageVolume(volume.getServerUrl(), volume.getPublicIdentifier());
+		StorageHTTP http = new StorageHTTP(volume.getStorageServer());
+		HTTPResult<?> result = http.probeStorageVolume(volume.getPublicIdentifier());
 
 		// Responses other than 200 or 404 need to be handled as exceptions
 		if (!result.isOk()) {
@@ -86,8 +85,8 @@ public class StorageAction {
 	 * @throws QblStorageInvalidToken if revoke token is invalid.
 	 */
 	public static void deleteStorageVolume(StorageVolume volume) throws IOException, QblStorageInvalidToken {
-		StorageHTTP http = new StorageHTTP();
-		HTTPResult<?> result = http.delete(volume.getServerUrl(), volume.getPublicIdentifier(), "",
+		StorageHTTP http = new StorageHTTP(volume.getStorageServer());
+		HTTPResult<?> result = http.delete(volume.getPublicIdentifier(), "",
 				volume.getRevokeToken());
 
 		if (!result.isOk()) {
@@ -123,20 +122,16 @@ public class StorageAction {
 	 */
 	public static void uploadBlob(StorageVolume volume, StorageBlob blob, SecretKey key) throws IOException,
 			InvalidKeyException, QblStorageInvalidToken {
-		StorageHTTP http = new StorageHTTP();
+		StorageHTTP http = new StorageHTTP(volume.getStorageServer());
 		CryptoUtils cryptoUtils = new CryptoUtils();
 
-		File encBlobFile = File.createTempFile("blob", ".enc");
-		FileOutputStream encBlobOutput = new FileOutputStream(encBlobFile);
-		cryptoUtils.encryptStreamAuthenticatedSymmetric(blob.getInputStream(), encBlobOutput, key, null);
-		encBlobOutput.flush();
-		encBlobOutput.close();
+		
 
-		FileInputStream encBlobInput = new FileInputStream(encBlobFile);
-		HTTPResult<?> result = http.upload(volume.getServerUrl(), volume.getPublicIdentifier(), blob.getName(),
-				volume.getToken(), encBlobInput);
-		encBlobInput.close();
-		encBlobFile.delete();
+		OutputStream out = http.prepareUpload(volume.getPublicIdentifier(),
+				blob.getName(), volume.getToken());
+		cryptoUtils.encryptStreamAuthenticatedSymmetric(blob.getInputStream(),
+				out, key, null);
+		HTTPResult<?> result = http.finishUpload();
 
 		if (!result.isOk()) {
 			switch (result.getResponseCode()) {
@@ -172,11 +167,11 @@ public class StorageAction {
 	 */
 	public static File retrieveBlob(StorageVolume volume, String blobName, SecretKey key) throws IOException,
 			InvalidKeyException, QblStorageInvalidBlobName {
-		StorageHTTP http = new StorageHTTP();
+		StorageHTTP http = new StorageHTTP(volume.getStorageServer());
 		CryptoUtils cryptoUtils = new CryptoUtils();
 
 		StorageBlob.checkBlobName(blobName);
-		HTTPResult<InputStream> result = http.retrieveBlob(volume.getServerUrl(), volume.getPublicIdentifier(),
+		HTTPResult<InputStream> result = http.retrieveBlob(volume.getPublicIdentifier(),
 				blobName);
 		InputStream input = result.getData();
 		File decryptedDataFile = null, fileCUReturned = null;
@@ -223,9 +218,9 @@ public class StorageAction {
 	 */
 	public static void deleteBlob(StorageVolume volume, String blobName) throws IOException, QblStorageInvalidToken,
 			QblStorageInvalidBlobName {
-		StorageHTTP http = new StorageHTTP();
+		StorageHTTP http = new StorageHTTP(volume.getStorageServer());
 		StorageBlob.checkBlobName(blobName);
-		HTTPResult<?> result = http.delete(volume.getServerUrl(), volume.getPublicIdentifier(), blobName,
+		HTTPResult<?> result = http.delete(volume.getPublicIdentifier(), blobName,
 				volume.getRevokeToken());
 
 		if (!result.isOk()) {

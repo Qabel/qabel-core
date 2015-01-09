@@ -9,93 +9,103 @@ import de.qabel.core.config.StorageVolume;
 import java.io.*;
 import java.net.*;
 
-import org.apache.commons.io.IOUtils;
-
 public class StorageHTTP {
+	private HttpURLConnection connection;
+	private StorageServer server;
+	
+	public StorageHTTP(StorageServer server) {
+		this.server = server;
+	}
 
 	/**
 	 * Sends a request to the storage server, which creates a new Qabel Storage Volume and returns the request result.
-	 * @param url Base url of the storage server.
 	 * @return HTTPResult
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult<StorageVolume> createNewStorageVolume(StorageServer server) throws IOException {
-		HTTPResult<StorageVolume> result = new HTTPResult<>();
-		URL url = addPathToURL(server.getUrl(), "_new");
-		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
+	public HTTPResult<StorageVolume> createNewStorageVolume() throws IOException {
+		this.setupConnection("_new");
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
 		int responseCode = connection.getResponseCode();
+		HTTPResult<StorageVolume> result = new HTTPResult<>();
 		result.setResponseCode(responseCode);
 		if(responseCode == 201) {
 			result.setOk(true);
 			String response = parsePostResponse(connection.getInputStream());
 			result.setData(jsonStringToStorageVolume(response, server));
 		}
-		connection.disconnect();
+		this.closeConnection();
 		return result;
 	}
 
 	/**
 	 * Probes the given StorageServer with the publicIdentifier.
-	 * @param baseUrl The baseUrl of a StorageServer.
 	 * @param publicIdentifier The public identifier we want to probe.
 	 * @return HTTPResult with empty data
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult<?> probeStorageVolume(URL baseUrl, String publicIdentifier) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + "/");
-		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult<?> result = new HTTPResult<>();
+	public HTTPResult<?> probeStorageVolume(String publicIdentifier) throws IOException {
+		this.setupConnection(publicIdentifier);
 		connection.setRequestMethod("GET");
 		int responseCode = connection.getResponseCode();
+		HTTPResult<?> result = new HTTPResult<>();
 		result.setResponseCode(responseCode);
 		result.setOk(responseCode == 200);
-		connection.disconnect();
+		this.closeConnection();
 		return result;
 	}
 
 	/**
-	 * Uploads the given blob to the url (baseUrl + publicIdentifier + blobName).
-	 * @param baseUrl The baseUrl of a StorageServer.
-	 * @param publicIdentifier Where the blob should be uploaded to.
-	 * @param blobName The blob/blob name for the upload.
-	 * @param token The token, which is required to upload files to the publicIdentifier.
-	 * @param blob The blob in bytes, which the user wants to upload.
-	 * @return HTTPResult with empty data
-	 * @throws IOException If something went wrong with the connection
+	 * Prepares the upload of a blob to a storage volume.
+	 *
+	 * @param publicIdentifier identifier of the containing storage volume.
+	 * @param blobName name of the uploaded blob.
+	 * @param token Token granting the right to upload blob to this storage volume.
+	 * @return OutputStream usable for uploading data.
+	 * @throws IOException
 	 */
-	public HTTPResult<?> upload(URL baseUrl, String publicIdentifier, String blobName, String token, InputStream blob) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
-		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		connection.setRequestProperty("X-Qabel-Token", token);
+	public OutputStream prepareUpload(String publicIdentifier, String blobName, String token) throws IOException {
+		if (connection != null) {
+			throw new IOException("Connection already established.");
+		}
+		this.setupConnection(publicIdentifier, blobName);
 		connection.setDoOutput(true);
-		HTTPResult<?> result = new HTTPResult<>();
-		BufferedOutputStream out = new BufferedOutputStream(connection.getOutputStream());
-		IOUtils.copyLarge(blob, out);
+		connection.setRequestProperty("X-Qabel-Token", token);
+		return connection.getOutputStream();
+	}
+
+	/**
+	 * Finishes to upload of a blob. Requires prepareUpload to be called before.
+	 * @return HTTPResult with empty data.
+	 * @throws IOException if no upload has been prepared first.
+	 */
+	public HTTPResult<?> finishUpload() throws IOException {
+		if (connection == null) {
+			throw new IOException("No connection prepared for upload.");
+		}
+		OutputStream out = connection.getOutputStream();
 		out.flush();
 		out.close();
 		int responseCode = connection.getResponseCode();
+		HTTPResult<?> result = new HTTPResult<>();
 		result.setResponseCode(responseCode);
 		result.setOk(responseCode == 200);
-		connection.disconnect();
+		this.closeConnection();
 		return result;
 	}
 
 	/**
 	 * Retrieves a blob/file from the url (baseUrl + publicIdentifier + blobName).
-	 * @param baseUrl  The baseUrl of a StorageServer.
 	 * @param publicIdentifier Where the file should be received from.
 	 * @param blobName The blob name, which should be downloaded.
 	 * @return HTTPResult
 	 * @throws IOException If something went wrong with the connection
 	 */
-	public HTTPResult<InputStream> retrieveBlob(URL baseUrl, String publicIdentifier, String blobName) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
-		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult<InputStream> result = new HTTPResult<>();
+	public HTTPResult<InputStream> retrieveBlob(String publicIdentifier, String blobName) throws IOException {
+		this.setupConnection(publicIdentifier, blobName);
 		connection.setRequestMethod("GET");
 		int responseCode = connection.getResponseCode();
+		HTTPResult<InputStream> result = new HTTPResult<>();
 		result.setResponseCode(responseCode);
 		result.setOk(responseCode == 200);
 		if (result.isOk()) {
@@ -106,34 +116,40 @@ public class StorageHTTP {
 
 	/**
 	 * Deletes a blob or the whole Qabel Storage Volume.
-	 * @param baseUrl The baseUrl of a StorageServer.
 	 * @param publicIdentifier Where the file should be received from.
 	 * @param blobName The blob name, which should be downloaded.
 	 * @param revokeToken The token, which is required to delete a blob or a qabel storage volume.
 	 * @throws IOException If something went wrong with the connection
 	 * @return HTTPResult  with empty data
 	 */
-	public HTTPResult<?> delete(URL baseUrl, String publicIdentifier, String blobName, String revokeToken) throws IOException {
-		URL url = addPathToURL(baseUrl, publicIdentifier + "/" + blobName);
-		HttpURLConnection connection = (HttpURLConnection) this.setupConnection(url);
-		HTTPResult<?> result = new HTTPResult<>();
+	public HTTPResult<?> delete(String publicIdentifier, String blobName, String revokeToken) throws IOException {
+		this.setupConnection(publicIdentifier, blobName);
 		connection.setRequestProperty("X-Qabel-Token", revokeToken);
 		connection.setRequestMethod("DELETE");
 		int responseCode = connection.getResponseCode();
+		HTTPResult<?> result = new HTTPResult<>();
 		result.setResponseCode(responseCode);
 		result.setOk(responseCode == 204);
-		connection.disconnect();
+		this.closeConnection();
 		return result;
 	}
 
-	/**
-	 * Setups the connection to the given url.
-	 * @param url The whole url to the Qabel Storage Volume.
-	 * @return The open connection.
-	 * @throws IOException If something went wrong with the connection
-	 */
-	private URLConnection setupConnection(URL url) throws IOException {
-		return url.openConnection();
+	private void setupConnection(String publicIdentifier, String blobName) throws IOException {
+		StringBuilder resourcePath = new StringBuilder(publicIdentifier + "/");
+		if (blobName != null) {
+			resourcePath.append(blobName);
+		}
+		URL url = addPathToURL(server.getUrl(), resourcePath.toString());
+		connection = (HttpURLConnection)url.openConnection();
+	}
+	
+	private void setupConnection(String publicIdentifier) throws IOException {
+		this.setupConnection(publicIdentifier, null);
+	}
+	
+	private void closeConnection() {
+		connection.disconnect();
+		connection = null;
 	}
 
 	/**
