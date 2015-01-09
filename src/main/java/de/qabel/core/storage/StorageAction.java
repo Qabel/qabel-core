@@ -173,34 +173,36 @@ public class StorageAction {
 		StorageBlob.checkBlobName(blobName);
 		HTTPResult<InputStream> result = http.retrieveBlob(volume.getPublicIdentifier(),
 				blobName);
-		InputStream input = result.getData();
-		File decryptedDataFile = null, fileCUReturned = null;
 
-		try {
-			if (!result.isOk()) {
-				switch (result.getResponseCode()) {
-				case 400:
-					logger.error("Blob retrieval failed because of syntactically invalid request url.");
-					throw new RuntimeException("Unexpected response from storage server");
-				case 404:
-					logger.error("Blob retrieval failed because of unlocatable blob.");
-					throw new RuntimeException("Unexpected response from storage server");
-				default:
-					logger.error("Blob retrieval failed with unexpected response " + result.getResponseCode());
-					throw new RuntimeException("Unexpected response from storage server");
-				}
+		if (!result.isOk()) {
+			switch (result.getResponseCode()) {
+			case 400:
+				logger.error("Blob retrieval failed because of syntactically invalid request url.");
+				throw new RuntimeException("Unexpected response from storage server");
+			case 404:
+				logger.error("Blob retrieval failed because of unlocatable blob.");
+				throw new RuntimeException("Unexpected response from storage server");
+			default:
+				logger.error("Blob retrieval failed with unexpected response " + result.getResponseCode());
+				throw new RuntimeException("Unexpected response from storage server");
 			}
-			decryptedDataFile = File.createTempFile("blob", ".dec");
-			fileCUReturned = cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(input,
-					decryptedDataFile.getAbsolutePath(), key);
+		}
+
+		InputStream input = result.getData();
+		File decryptedDataFile = File.createTempFile("blob", ".dec");
+		boolean decryptionSuccessful = false;
+		try {
+			decryptionSuccessful = cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(input,
+					decryptedDataFile, key);
 		} finally {
 			if (input != null) {
 				input.close();
 			}
-			if (fileCUReturned == null && decryptedDataFile != null) {
+			if (!decryptionSuccessful) {
 				// something went wrong during decryption
 				// delete file to avoid leakage of unauthenticated data
 				decryptedDataFile.delete();
+				decryptedDataFile = null;
 			}
 		}
 

@@ -178,7 +178,7 @@ public class CryptoUtilsTest {
 
 		FileInputStream cipherStream = new FileInputStream(testFileEnc);
 		
-		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec.getAbsolutePath(), key);
+		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec, key);
 
 		try {
 			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),

@@ -829,10 +829,10 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Decryptes ciphertext from an InputStream to a file. The decrypted content
-	 * is written to the file immediately. If decryption was successful a file
+	 * Decrypts ciphertext from an InputStream to a file. The decrypted content
+	 * is written to the file immediately. If decryption was successful true
 	 * is returned, if authentication tag validation fails or another error
-	 * occurs null is returned.
+	 * occurs false is returned.
 	 * 
 	 * @param inputStream
 	 *            InputStream from where the ciphertext is read
@@ -840,42 +840,36 @@ public class CryptoUtils {
 	 *            Pathname where the decrypted file will be stored
 	 * @param key
 	 *            Key which is used to en-/decrypt the file
-	 * @return The decrypted file or null if authentication tag validation
-	 *         failed or another error occured
+	 * @return true if successfully decrypted or true if authentication tag validation
+	 *         failed or another error occurred
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws IOException
 	 */
-	public File decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, String pathName, SecretKey key)
-			throws InvalidKeyException {
-		FileOutputStream fileOutput = null;
+	public boolean decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, File file, SecretKey key)
+			throws InvalidKeyException, IOException {
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		IvParameterSpec iv;
 		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
 		BufferedInputStream bufferedInput = new BufferedInputStream(inputStream);
 		int readBytes;
 
-		if (pathName == null) {
-			// TODO generate a temp folder where files can be stored
-			logger.debug("TODO generate a temp folder where files can be stored");
-		}
-
-		try {
-			fileOutput = new FileOutputStream(pathName);
-		} catch (FileNotFoundException e) {
-			logger.debug("Decryption: File " + pathName + " was not found/can not be written to.", e);
-			// TODO like above: create temp file
-		}
-
 		try {
 			bufferedInput.read(nonce);
 		} catch (IOException e) {
 			logger.debug("Decryption: Ciphertext (in this case the nonce) can not be read.", e);
-			return null;
+			throw e;
 		}
 
 		iv = new IvParameterSpec(nonce);
 		try {
 			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
+		} catch (InvalidAlgorithmParameterException e) {
+			throw new RuntimeException("Decryption: Wrong parameters for file decryption.", e);
+		}
+		
+		FileOutputStream fileOutput = new FileOutputStream(file);
+		try {
 			while ((readBytes = bufferedInput.read(temp, 0,
 					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
 				/*
@@ -885,26 +879,27 @@ public class CryptoUtils {
 				byte[] encBytes = gcmCipher.update(temp, 0, readBytes);
 				if (encBytes == null) {
 					logger.error("Input too short for block cipher. Input length was " + readBytes);
-					new RuntimeException("Decryption failed due to unexpected input length.");
+					throw new RuntimeException("Decryption failed due to unexpected input length.");
 				}
 				fileOutput.write(encBytes);
 			}
-			fileOutput.write(gcmCipher.doFinal());
+			try {
+				fileOutput.write(gcmCipher.doFinal());
+			} catch (IllegalBlockSizeException e) {
+				logger.debug("Decryption: File was encrypted with wrong block size.", e);
+				// truncate file to avoid leakage of incomplete or unauthenticated data
+				fileOutput.getChannel().truncate(0);
+				return false;
+			} catch (BadPaddingException e) {
+				logger.error("Decryption: Authentication tag is invalid!", e);
+				// truncate file to avoid leakage of incomplete or unauthenticated data
+				fileOutput.getChannel().truncate(0);
+				return false;
+			}
+		} finally {
 			fileOutput.close();
-		} catch (InvalidAlgorithmParameterException e) {
-			logger.debug("Decryption: Wrong parameters for file decryption.", e);
-			return null;
-		} catch (IllegalBlockSizeException e) {
-			logger.debug("Decryption: File was encrypted with wrong block size.", e);
-			return null;
-		} catch (BadPaddingException e) {
-			logger.error("Decryption: Authentication tag is invalid!", e);
-			return null;
-		} catch (IOException e) {
-			logger.debug("Decryption: Input/output Stream cannot be written/read to/from.", e);
-			return null;
 		}
 
-		return new File(pathName);
+		return true;
 	}
 }
