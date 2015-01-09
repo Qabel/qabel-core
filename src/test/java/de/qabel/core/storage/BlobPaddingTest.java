@@ -9,7 +9,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import de.qabel.core.exceptions.QblStorageBlobSizeExeeded;
 import de.qabel.core.exceptions.QblStorageInvalidBlobName;
 
 public class BlobPaddingTest {
@@ -36,22 +35,30 @@ public class BlobPaddingTest {
     
 	@Test
 	public void exceedBlobSizeLimit()
-			throws QblStorageBlobSizeExeeded, IOException, QblStorageInvalidBlobName {
-    	exception.expect(QblStorageBlobSizeExeeded.class);
+			throws IOException, QblStorageInvalidBlobName {
+    	exception.expect(IOException.class);
     	InputStream is = new DummyInput(StorageBlob.MAXIMUM_SIZE_BYTES + 1); // input of one more byte than allowed
-		new StorageBlob(is, null);
+		readEmpty(new StorageBlob(is, null));
 	}
 	
+	private static void readEmpty(StorageBlob blob) throws IOException {
+		InputStream bis = blob.getInputStream();
+		byte[] buffer = new byte[4096];
+		while (bis.read(buffer) >= 0) {
+			; // to nothing
+		}
+	}
+
 	@Test
 	public void exhaustBlobSizeLimit()
-			throws QblStorageBlobSizeExeeded, IOException, QblStorageInvalidBlobName {
+			throws IOException, QblStorageInvalidBlobName {
     	InputStream is = new DummyInput(StorageBlob.MAXIMUM_SIZE_BYTES); // input size of exact limit
-		new StorageBlob(is, null);
+		readEmpty(new StorageBlob(is, null));
 	}
 	
 	@Test
 	public void testPaddingToMinimum()
-			throws QblStorageBlobSizeExeeded, IOException, QblStorageInvalidBlobName {
+			throws IOException, QblStorageInvalidBlobName {
 		byte[] input = new byte[1];
 		Arrays.fill(input, (byte)42);
 		StorageBlob blob = new StorageBlob(input, null);
