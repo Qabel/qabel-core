@@ -60,11 +60,7 @@ public class PaddedInputStream extends InputStream {
 	 * @return size of unpadded InputStream in bytes.
 	 */
 	public long getUnPaddedSize() {
-		long res = 0;
-		if (this.streamExhausted) {
-			res = this.totalReadBytes;
-		}
-		return res;
+		return (this.streamExhausted) ? this.totalReadBytes : 0;
 	}
 
 	@Override
