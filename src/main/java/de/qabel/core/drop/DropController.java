@@ -217,10 +217,11 @@ public class DropController {
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
+			byte[] message = removeHeaderFromCipherMessage(cipherMessage);
 			for (Contact c : contacts) {
 				String plainJson = null;
 				try {
-					plainJson = decryptDrop(cipherMessage,
+					plainJson = decryptDrop(message,
 							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
 				} catch (InvalidKeyException e) {
 					// Don't handle key exception as it will be 
@@ -312,5 +313,14 @@ public class DropController {
 			logger.error("Couldn't prepend the header to the message.", e);
 		}
 		return byteArrayOutputStream.toByteArray();
+	}
+
+	/**
+	 * Removes the header from the cipherMessage.
+	 * @param cipherMessage the cipher message with a prepended header.
+	 * @return The cipher message without the header
+	 */
+	private byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
+		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH, cipherMessage.length);
 	}
 }
