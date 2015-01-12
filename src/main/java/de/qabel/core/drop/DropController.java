@@ -1,5 +1,7 @@
 package de.qabel.core.drop;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -19,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DropController {
 
+	private static final int HEADER_LENGTH = 1;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
@@ -189,7 +192,7 @@ public class DropController {
 					contact.getEncryptionPublicKey(),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
 			for (DropURL u : contact.getDropUrls()) {
-				result.addErrorCode(http.send(u.getUrl(), cryptedMessage));
+				result.addErrorCode(http.send(u.getUrl(), concatHeaderAndEncryptedMessage((byte) message.getVersion(), cryptedMessage)));
 			}
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key in contact. Cannot send message!");
@@ -292,5 +295,22 @@ public class DropController {
 
 		CryptoUtils cu = new CryptoUtils();
 		return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
+	}
+
+	/**
+	 * Concatenates the header byte array to the message byte array.
+	 * @param header
+	 * @param message
+	 * @return The message with the prepended header
+	 */
+	private byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH + message.length);
+		try {
+			byteArrayOutputStream.write(header);
+			byteArrayOutputStream.write(message);
+		} catch (IOException e) {
+			logger.error("Couldn't prepend the header to the message.", e);
+		}
+		return byteArrayOutputStream.toByteArray();
 	}
 }
