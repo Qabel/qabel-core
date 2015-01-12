@@ -191,8 +191,9 @@ public class DropController {
 			cryptedMessage = encryptDrop(serialize(message),
 					contact.getEncryptionPublicKey(),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
+			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) message.getVersion(), cryptedMessage);
 			for (DropURL u : contact.getDropUrls()) {
-				result.addErrorCode(http.send(u.getUrl(), concatHeaderAndEncryptedMessage((byte) message.getVersion(), cryptedMessage)));
+				result.addErrorCode(http.send(u.getUrl(), cryptedMessageWithHeader));
 			}
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key in contact. Cannot send message!");
