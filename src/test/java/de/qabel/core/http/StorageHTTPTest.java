@@ -1,11 +1,11 @@
 package de.qabel.core.http;
 
 import de.qabel.core.config.StorageVolume;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,16 +13,19 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class StorageHTTPTest {
 	private URL url;
 	private StorageVolume storageVolume, delStorageVolume;
 	private String publicIdentifier, token, revokeToken, delPublicIdentifier, delToken, delRevokeToken;
+	private final String unknownPublicIdentifier = UUID.randomUUID().toString();
 	private byte[] blob;
 
 	@Before
@@ -54,6 +57,11 @@ public class StorageHTTPTest {
 		delToken = delStorageVolume.getToken();
 		delRevokeToken = delStorageVolume.getRevokeToken();
 		storageHTTP.upload(url, delPublicIdentifier, "deleteBlobTest", delToken, blob);
+
+		// under very unlikely conditions the unknown QSV id can be the same, by chance
+		// then the tests for the invalid QSV id would not work
+		assertNotEquals(publicIdentifier, unknownPublicIdentifier);
+		assertNotEquals(delPublicIdentifier, unknownPublicIdentifier);
 	}
 
 	@After
@@ -94,19 +102,17 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Doesn't work, get 500 and Error: ENOENT, no such file or directory
 	public void probeNotExistingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult<?> result = storageHTTP.probeStorageVolume(url, "foo" + publicIdentifier);
+		HTTPResult<?> result = storageHTTP.probeStorageVolume(url, unknownPublicIdentifier);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
 	}
 
 	@Test
-	@Ignore //Does work, because "GET /data/ 200" is ok with the current qabel-storage
 	public void probeMissingPubIdQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -129,7 +135,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 http status does not exist in qabel-storage (also not in the protocol_update branch)
 	public void uploadWithMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -167,7 +172,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult<?> result = storageHTTP.upload(url, "foo" + publicIdentifier, "foo", token, blob);
+		HTTPResult<?> result = storageHTTP.upload(url, unknownPublicIdentifier, "foo", token, blob);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
@@ -185,7 +190,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
 	public void retrieveBlobFromMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -196,12 +200,11 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
 	public void retrieveBlobFromInvalidQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, "foo" + publicIdentifier, "retrieveTest");
+		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(url, unknownPublicIdentifier, "retrieveTest");
 		//Then
 		assertEquals(404, result.getResponseCode());
 	}
@@ -218,7 +221,6 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 Doesn't exists in the qabel-storage delete
 	public void deleteWithMissingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
@@ -252,12 +254,11 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //404 Doesn't exists in the qabel-storage delete
 	public void deleteWithNotExisitingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP();
 		//When
-		HTTPResult<?> result = storageHTTP.delete(url, "foo" + delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(url, unknownPublicIdentifier, "deleteBlobTest", delRevokeToken);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
