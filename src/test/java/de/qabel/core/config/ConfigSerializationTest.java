@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -25,7 +26,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 public class ConfigSerializationTest {	
 	
 	@Test
-	public void syncedSettingsTest() throws QblDropInvalidURL, MalformedURLException {
+	public void syncedSettingsTest() throws QblDropInvalidURL, IOException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
 		//generate and add an "accounts" entry
@@ -63,17 +64,12 @@ public class ConfigSerializationTest {
 		//generate and add a "storage_volumes" entry
 		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
-		
-		
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(SyncedSettings.class, new SyncedSettingsTypeAdapter());
-		Gson gson = builder.create();
-		
-		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
-		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
-		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
+
+		System.out.println("Synced settings: " + syncedSettings.toJson());
+		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
+		System.out.println("Deserialized synced settings: " + deserializedSyncedSettings.toJson());
 		assertEquals(0, 
-		        gson.toJson(syncedSettings).compareTo(gson.toJson(deserializedSyncedSettings)));
+				syncedSettings.toJson().compareTo(deserializedSyncedSettings.toJson()));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
