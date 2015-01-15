@@ -75,15 +75,12 @@ public class ConfigSerializationTest {
 	}
 	
 	@Test
-	public void localSettingsTest() {
+	public void localSettingsTest() throws IOException {
 		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
 		
-		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		Gson gson = builder.create();
-		System.out.println("Local settings: " + gson.toJson(localSettings));
-		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
-		System.out.println("Deserialized local settings: " + gson.toJson(deserializedLocalSettings));
+		System.out.println("Local settings: " + localSettings.toJson());
+		LocalSettings deserializedLocalSettings = LocalSettings.fromJson(localSettings.toJson());
+		System.out.println("Deserialized local settings: " + deserializedLocalSettings.toJson());
 		
 		assertEquals(deserializedLocalSettings, localSettings);
 	}
