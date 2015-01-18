@@ -135,8 +135,9 @@ public class StorageHTTP {
 	}
 
 	private void setupConnection(String publicIdentifier, String blobName) throws IOException {
-		StringBuilder resourcePath = new StringBuilder(publicIdentifier + "/");
+		StringBuilder resourcePath = new StringBuilder(publicIdentifier);
 		if (blobName != null) {
+			resourcePath.append("/");
 			resourcePath.append(blobName);
 		}
 		URL url = addPathToURL(server.getUrl(), resourcePath.toString());
