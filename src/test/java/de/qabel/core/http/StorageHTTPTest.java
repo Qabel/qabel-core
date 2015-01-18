@@ -152,7 +152,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		OutputStream out = storageHTTP.prepareUpload(publicIdentifier, "foo", null);
+		OutputStream out = storageHTTP.prepareUpload(publicIdentifier, "foo", "");
 		out.write(blob);
 		HTTPResult<?> result = storageHTTP.finishUpload();
 		//Then
@@ -247,7 +247,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		HTTPResult<?> result = storageHTTP.delete(delPublicIdentifier, "deleteBlobTest", null);
+		HTTPResult<?> result = storageHTTP.delete(delPublicIdentifier, "deleteBlobTest", "");
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(401, result.getResponseCode());
