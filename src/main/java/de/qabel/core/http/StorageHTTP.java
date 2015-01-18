@@ -69,6 +69,7 @@ public class StorageHTTP {
 			throw new IOException("Connection already established.");
 		}
 		this.setupConnection(publicIdentifier, blobName);
+		connection.setRequestMethod("POST");
 		connection.setDoOutput(true);
 		connection.setRequestProperty("X-Qabel-Token", token);
 		return connection.getOutputStream();
