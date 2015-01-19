@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 public class DropController {
 
 	private static final int HEADER_LENGTH_BYTE = 1;
+	private static final int MESSAGE_VERSION = 0;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
@@ -191,7 +192,7 @@ public class DropController {
 			cryptedMessage = encryptDrop(serialize(message),
 					contact.getEncryptionPublicKey(),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
-			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) message.getVersion(), cryptedMessage);
+			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) MESSAGE_VERSION, cryptedMessage);
 			for (DropURL u : contact.getDropUrls()) {
 				result.addErrorCode(http.send(u.getUrl(), cryptedMessageWithHeader));
 			}
