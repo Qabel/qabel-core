@@ -300,7 +300,7 @@ public class DropController {
 	}
 
 	/**
-	 * Concatenates the header byte array to the message byte array.
+	 * Concatenates the header to the message
 	 * @param header
 	 * @param message
 	 * @return The message with the prepended header
