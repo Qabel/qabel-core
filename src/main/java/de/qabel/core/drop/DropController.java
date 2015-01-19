@@ -21,7 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 public class DropController {
 
-	private static final int HEADER_LENGTH = 1;
+	private static final int HEADER_LENGTH_BYTE = 1;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
@@ -306,7 +306,7 @@ public class DropController {
 	 * @return The message with the prepended header
 	 */
 	private byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH + message.length);
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH_BYTE + message.length);
 		try {
 			byteArrayOutputStream.write(header);
 			byteArrayOutputStream.write(message);
@@ -322,6 +322,6 @@ public class DropController {
 	 * @return The cipher message without the header
 	 */
 	private byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
-		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH, cipherMessage.length);
+		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH_BYTE, cipherMessage.length);
 	}
 }
