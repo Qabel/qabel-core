@@ -5,6 +5,7 @@ import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
+    public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
         this.sendMessage();
 		this.sendUnwantedMessage();
@@ -82,7 +83,7 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    public void multiPartCryptoMultiMessageTest() throws InterruptedException {
+    public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -159,7 +160,7 @@ public class MultiPartCryptoTest {
         dropController.setDropServers(servers);
     }
 
-    private void sendMessage() {
+    private void sendMessage() throws QblDropPayloadSizeException {
         DropMessage<TestObject> dm = new DropMessage<TestObject>();
         TestObject data = new TestObject();
         data.setStr("Test");
@@ -179,7 +180,7 @@ public class MultiPartCryptoTest {
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
     }
 
-	private void sendUnwantedMessage() {
+	private void sendUnwantedMessage() throws QblDropPayloadSizeException {
 		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>();
 		UnwantedTestObject data = new UnwantedTestObject();
 		data.setStr("Test");

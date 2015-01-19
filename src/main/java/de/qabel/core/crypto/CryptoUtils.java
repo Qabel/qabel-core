@@ -44,8 +44,8 @@ public class CryptoUtils {
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
 	private final static String HMAC_ALGORITHM = "HMac/" + "SHA512";
-	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
-	private final static String SYMM_KEY_ALGORITHM = "AES";
+	final static int RSA_SIGNATURE_SIZE_BYTE = 256;
+	final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
@@ -53,7 +53,7 @@ public class CryptoUtils {
 	final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
-	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
+	final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
 	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
 			.getName());
@@ -259,7 +259,7 @@ public class CryptoUtils {
 	 * @return is signature valid
 	 * @throws InvalidKeyException
 	 */
-	private boolean validateSignature(byte[] message, byte[] signature,
+	boolean validateSignature(byte[] message, byte[] signature,
 			QblSignPublicKey signPublicKey) throws InvalidKeyException {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaValidateSignature(sha512Sum, signature,
@@ -304,7 +304,7 @@ public class CryptoUtils {
 	 * @return decrypted ciphertext, or null if undecryptable
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
+	byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
 			throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
@@ -456,7 +456,7 @@ public class CryptoUtils {
 		}
 		return plainText;
 	}
-
+	
 	/**
 	 * Hybrid encrypts a String message for a recipient. The String message is
 	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
@@ -477,6 +477,8 @@ public class CryptoUtils {
 			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		SecretKey aesKey = keyGenerator.generateKey();
+		
+		// pad message
 
 		try {
 			bs.write(rsaEncryptForRecipient(aesKey.getEncoded(), recipient));

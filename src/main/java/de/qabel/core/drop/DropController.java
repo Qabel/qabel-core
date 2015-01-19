@@ -1,10 +1,7 @@
 package de.qabel.core.drop;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -15,14 +12,14 @@ import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServer;
 import de.qabel.core.config.DropServers;
 import de.qabel.core.crypto.*;
+import de.qabel.core.exceptions.QblDropPayloadSizeException;
+import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DropController {
-
-	private static final int HEADER_LENGTH_BYTE = 1;
-	private static final int MESSAGE_VERSION = 0;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
@@ -94,7 +91,7 @@ public class DropController {
 				.getDropServers());
 		for (DropServer server : servers) {
 			DropController drop = new DropController();
-			Collection<DropMessage> results = drop
+			Collection<DropMessage<?>> results = drop
 					.retrieve(server.getUrl(), getContacts().getContacts());
 			for (DropMessage<? extends ModelObject> dm : results) {
 				handleDrop(dm);
@@ -129,8 +126,10 @@ public class DropController {
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
+	 * @throws QblDropPayloadSizeException 
 	 */
-	public DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts) {
+	public DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts)
+			throws QblDropPayloadSizeException {
 		return sendAndForget(message, contacts);
 	}
 
@@ -140,8 +139,9 @@ public class DropController {
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
+	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) {
+	public <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
 		DropResult result;
 		
 		result = new DropResult();
@@ -159,10 +159,10 @@ public class DropController {
 	 * @param object Object to send
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
+	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact) {
-		DropHTTP http = new DropHTTP();
-
+	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact)
+			throws QblDropPayloadSizeException {
 		DropMessage<T> dm = new DropMessage<T>();
 
 		dm.setData(object);
@@ -178,26 +178,19 @@ public class DropController {
 	 * @param message Message to send
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
+	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact) {
+	public <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact)
+			throws QblDropPayloadSizeException {
 		DropResultContact result;
 		DropHTTP http;
-		byte[] cryptedMessage;
 
 		result = new DropResultContact(contact);
 		http = new DropHTTP();
 
-		try {
-			//TODO: Adapt to List returned by getSignKeyPairs
-			cryptedMessage = encryptDrop(serialize(message),
-					contact.getEncryptionPublicKey(),
-					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
-			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) MESSAGE_VERSION, cryptedMessage);
-			for (DropURL u : contact.getDropUrls()) {
-				result.addErrorCode(http.send(u.getUrl(), cryptedMessageWithHeader));
-			}
-		} catch (InvalidKeyException e) {
-			logger.error("Invalid key in contact. Cannot send message!");
+		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(message);
+		for (DropURL u : contact.getDropUrls()) {
+			result.addErrorCode(http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact)));
 		}
 		
 		return result;
@@ -210,119 +203,40 @@ public class DropController {
 	 * @param contacts Contacts to check the signature with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage> retrieve(URL url, Collection<Contact> contacts) {
+	public Collection<DropMessage<?>> retrieve(URL url, Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
 		Collection<byte[]> cipherMessages = http.receiveMessages(url);
-		Collection<DropMessage> plainMessages = new ArrayList<DropMessage>();
+		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
 
 		List<Contact> ccc = new ArrayList<Contact>(contacts);
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
-			byte[] message = removeHeaderFromCipherMessage(cipherMessage);
-			for (Contact c : contacts) {
-				String plainJson = null;
+			AbstractBinaryDropMessage binMessage;
+			byte binaryFormatVersion = cipherMessage[0];
+			
+			switch (binaryFormatVersion) {
+			case 0:
 				try {
-					plainJson = decryptDrop(message,
-							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
-				} catch (InvalidKeyException e) {
-					// Don't handle key exception as it will be 
-					// likely that a message can't be 
-					// decrypted by all but the secret 
-					// decryption key of the contact owner!
+					binMessage = new BinaryDropMessageV0(cipherMessage);
+				} catch (QblVersionMismatchException e) {
+					logger.error("Version mismatch in binary drop message", e);
+					throw new RuntimeException("Version mismatch should not happen", e);
 				}
-				if (plainJson == null) {
-					continue;
-				} else {
-					DropMessage msg = deserialize(plainJson);
-					if (msg != null) {
-						plainMessages.add(msg);
-					}
-					break;
+				break;
+			default:
+				logger.warn("Unknown binary drop message version " + binaryFormatVersion);
+				// cannot handle this message -> skip
+				continue;
+			}
+			for (Contact c : contacts) {
+				DropMessage<?> dropMessage = binMessage.disassembleMessageFrom(c);
+				if (dropMessage != null) {
+					plainMessages.add(dropMessage);
+					break; // sender found for this message
 				}
 			}
 		}
 		return plainMessages;
-	}
-
-	/**
-	 * Serializes the message
-	 *
-	 * @param message DropMessage to serialize
-	 * @return String with message as json
-	 */
-	private String serialize(DropMessage<? extends ModelObject> message) {
-		return gson.toJson(message);
-	}
-
-	/**
-	 * Deserializes the message
-	 *
-	 * @param plainJson plain Json String
-	 * @return deserialized Dropmessage or null if deserialization error occurred.
-	 */
-	private DropMessage deserialize(String plainJson) {
-		try {
-			return gson.fromJson(plainJson, DropMessage.class);
-		}
-		catch (RuntimeException e) {
-			// Mainly be caused by illegal json syntax
-			logger.warn("Error while deserializing drop message:\n"+plainJson, e);
-			return null;
-		}
-	}
-
-	/**
-	 * Deserializes the message
-	 *
-	 * @param jsonMessage plain Json String to encrypt
-	 * @param publickey   Publickey to encrypt the jsonMessage with
-	 * @param skp         Sign key pair to sign the message
-	 * @return the cyphertext as byte[]
-	 * @throws InvalidKeyException
-	 */
-	private byte[] encryptDrop(String jsonMessage, QblEncPublicKey publickey, QblSignKeyPair skp) throws InvalidKeyException {
-
-		CryptoUtils cu = new CryptoUtils();
-		return cu.encryptHybridAndSign(jsonMessage, publickey, skp);
-	}
-
-	/**
-	 * @param cipher  Ciphertext to decrypt
-	 * @param keypair Keypair to decrypt the ciphertext with
-	 * @param signkey Public sign key to validate the signature
-	 * @return The encrypted message as string or null if decryption error occurred.
-	 * @throws InvalidKeyException
-	 */
-	private String decryptDrop(byte[] cipher, QblPrimaryKeyPair keypair, QblSignPublicKey signkey) throws InvalidKeyException {
-
-		CryptoUtils cu = new CryptoUtils();
-		return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
-	}
-
-	/**
-	 * Concatenates the header to the message
-	 * @param header
-	 * @param message
-	 * @return The message with the prepended header
-	 */
-	protected byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
-		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH_BYTE + message.length);
-		try {
-			byteArrayOutputStream.write(header);
-			byteArrayOutputStream.write(message);
-		} catch (IOException e) {
-			logger.error("Couldn't prepend the header to the message.", e);
-		}
-		return byteArrayOutputStream.toByteArray();
-	}
-
-	/**
-	 * Removes the header from the cipherMessage.
-	 * @param cipherMessage the cipher message with a prepended header.
-	 * @return The cipher message without the header
-	 */
-	protected byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
-		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH_BYTE, cipherMessage.length);
 	}
 }
