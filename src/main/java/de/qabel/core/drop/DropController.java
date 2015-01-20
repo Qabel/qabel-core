@@ -306,7 +306,7 @@ public class DropController {
 	 * @param message
 	 * @return The message with the prepended header
 	 */
-	private byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
+	protected byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH_BYTE + message.length);
 		try {
 			byteArrayOutputStream.write(header);
@@ -322,7 +322,7 @@ public class DropController {
 	 * @param cipherMessage the cipher message with a prepended header.
 	 * @return The cipher message without the header
 	 */
-	private byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
+	protected byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
 		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH_BYTE, cipherMessage.length);
 	}
 }
