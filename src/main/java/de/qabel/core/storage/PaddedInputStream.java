@@ -7,7 +7,8 @@ public class PaddedInputStream extends InputStream {
 	private static final byte FILL_BYTE = 0;
 	private InputStream stream;
 	private long totalReadBytes, paddingToWrite;
-	private long paddedSize, lowerBoundary, upperBoundary;
+	private long paddedSize;
+	private final long lowerBoundary, upperBoundary;
 	private boolean streamExhausted;
 
 	/**
