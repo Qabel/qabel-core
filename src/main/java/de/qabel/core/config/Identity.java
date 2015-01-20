@@ -6,6 +6,7 @@ import de.qabel.core.drop.DropURL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -28,7 +29,7 @@ public class Identity extends SyncSettingItem {
 	 * List of drop urls of the identity
 	 * Field name in serialized json: "drops"
 	 */
-	private Collection<DropURL> drops = new ArrayList<DropURL>();
+	private List<DropURL> drops = new ArrayList<DropURL>();
 
 	/**
 	 * Creates an instance of Identity
@@ -79,7 +80,7 @@ public class Identity extends SyncSettingItem {
 	 * @param drops
 	 */
 	public void setDrops(Collection<DropURL> drops) {
-		this.drops = drops;
+		this.drops = new ArrayList<DropURL>(drops);
 	}
 
 	/**
@@ -95,7 +96,7 @@ public class Identity extends SyncSettingItem {
 	 * @return Collection<DropURL>
 	 */
 	public Collection<DropURL> getDrops() {
-		return Collections.unmodifiableCollection(this.drops);
+		return Collections.unmodifiableList(this.drops);
 	}
 	
 	/**
@@ -136,6 +137,11 @@ public class Identity extends SyncSettingItem {
 			if (other.alias != null)
 				return false;
 		} else if (!alias.equals(other.alias))
+			return false;
+		if (primaryKeyPair == null) {
+			if (other.primaryKeyPair != null)
+				return false;
+		} else if (!primaryKeyPair.equals(other.primaryKeyPair))
 			return false;
 		if (drops == null) {
 			if (other.drops != null)

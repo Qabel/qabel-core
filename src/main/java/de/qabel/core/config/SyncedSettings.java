@@ -222,6 +222,11 @@ public class SyncedSettings {
 				return false;
 		} else if (!accounts.equals(other.accounts))
 			return false;
+		if (contacts == null) {
+			if (other.contacts != null)
+				return false;
+		} else if (!contacts.equals(other.contacts))
+			return false;
 		if (dropServers == null) {
 			if (other.dropServers != null)
 				return false;

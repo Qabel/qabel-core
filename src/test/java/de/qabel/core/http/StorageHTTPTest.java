@@ -15,16 +15,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class StorageHTTPTest {
 	private StorageServer server;
 	private StorageVolume storageVolume, delStorageVolume;
 	private String publicIdentifier, token, revokeToken, delPublicIdentifier, delToken, delRevokeToken;
+	private final String unknownPublicIdentifier = UUID.randomUUID().toString();
 	private byte[] blob;
 
 	@Before
@@ -56,6 +59,11 @@ public class StorageHTTPTest {
 		out = storageHTTP.prepareUpload(delPublicIdentifier, "deleteBlobTest", delToken);
 		out.write(blob);
 		storageHTTP.finishUpload();
+
+		// under very unlikely conditions the unknown QSV id can be the same, by chance
+		// then the tests for the invalid QSV id would not work
+		assertNotEquals(publicIdentifier, unknownPublicIdentifier);
+		assertNotEquals(delPublicIdentifier, unknownPublicIdentifier);
 	}
 
 	@After
@@ -96,19 +104,17 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Doesn't work, get 500 and Error: ENOENT, no such file or directory
 	public void probeNotExistingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		HTTPResult<?> result = storageHTTP.probeStorageVolume("foo" + publicIdentifier);
+		HTTPResult<?> result = storageHTTP.probeStorageVolume(unknownPublicIdentifier);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
 	}
 
 	@Test
-	@Ignore //Does work, because "GET /data/ 200" is ok with the current qabel-storage
 	public void probeMissingPubIdQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -134,7 +140,7 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 http status does not exist in qabel-storage (also not in the protocol_update branch)
+	@Ignore // see deleteWithMissingVolumeIdFromStorage
 	public void uploadWithMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -148,6 +154,7 @@ public class StorageHTTPTest {
 	}
 
 	@Test
+	@Ignore // see deleteWithMissingRevokeTokenFromStorage
 	public void uploadWithMissingTokenToQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -178,7 +185,7 @@ public class StorageHTTPTest {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		OutputStream out = storageHTTP.prepareUpload("foo" + publicIdentifier, "foo", token);
+		OutputStream out = storageHTTP.prepareUpload(unknownPublicIdentifier, "foo", token);
 		out.write(blob);
 		HTTPResult<?> result = storageHTTP.finishUpload();
 		//Then
@@ -198,7 +205,7 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
+	@Ignore // deleteWithMissingVolumeIdFromStorage
 	public void retrieveBlobFromMissingQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -209,12 +216,11 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //Get HTTP response Code: 500
 	public void retrieveBlobFromInvalidQabelStorageVolume() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		HTTPResult<InputStream> result = storageHTTP.retrieveBlob("foo" + publicIdentifier, "retrieveTest");
+		HTTPResult<InputStream> result = storageHTTP.retrieveBlob(unknownPublicIdentifier, "retrieveTest");
 		//Then
 		assertEquals(404, result.getResponseCode());
 	}
@@ -231,7 +237,13 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //400 Doesn't exists in the qabel-storage delete
+	@Ignore
+	// Passing null as a missing volume id is problematic because even if null results
+	// in an empty string part in the request path (e.g. /data//blobName)
+	// many http servers whould automatically detect the non-normalized path
+	// and return a redirect (e.g. /data/blobName).
+	// As a result, blobName would be treated as a volume identifier instead
+	// of rejecting the request as invalid (400).
 	public void deleteWithMissingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -243,6 +255,7 @@ public class StorageHTTPTest {
 	}
 
 	@Test
+	@Ignore // The client API does not allow to omit a token. This test should be on the server.
 	public void deleteWithMissingRevokeTokenFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
@@ -265,12 +278,11 @@ public class StorageHTTPTest {
 	}
 
 	@Test
-	@Ignore //404 Doesn't exists in the qabel-storage delete
 	public void deleteWithNotExisitingVolumeIdFromStorage() throws IOException {
 		//Given
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		//When
-		HTTPResult<?> result = storageHTTP.delete("foo" + delPublicIdentifier, "deleteBlobTest", delRevokeToken);
+		HTTPResult<?> result = storageHTTP.delete(unknownPublicIdentifier, "deleteBlobTest", delRevokeToken);
 		//Then
 		assertFalse(result.isOk());
 		assertEquals(404, result.getResponseCode());
