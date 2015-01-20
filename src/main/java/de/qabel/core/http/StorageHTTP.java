@@ -32,7 +32,7 @@ public class StorageHTTP {
 		if(responseCode == 201) {
 			result.setOk(true);
 			String response = parsePostResponse(connection.getInputStream());
-			result.setData(jsonStringToStorageVolume(response, server));
+			result.setData(jsonStringToStorageVolume(response));
 		}
 		this.closeConnection();
 		return result;
@@ -178,7 +178,7 @@ public class StorageHTTP {
 	 * @param response The parsed response.
 	 * @return The new StorageVolume.
 	 */
-	private StorageVolume jsonStringToStorageVolume(String response, StorageServer server) {
+	private StorageVolume jsonStringToStorageVolume(String response) {
 		JsonParser jsonParser = new JsonParser();
 		JsonObject jo = (JsonObject) jsonParser.parse(response);
 
