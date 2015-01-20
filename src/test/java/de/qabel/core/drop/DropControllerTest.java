@@ -1,5 +1,7 @@
 package de.qabel.core.drop;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
@@ -142,6 +144,44 @@ public class DropControllerTest {
         Assert.assertTrue(d.sendAndForget(dm, contact).isSuccess());
         
         retrieveTest();
+    }
+
+    @Test
+    public void addingAndRemovingHeader() {
+        TestMessage m = new TestMessage();
+        m.content = "baz";
+
+        DropMessage<TestMessage> dm = new DropMessage<>();
+        dm.setTime(new Date());
+        dm.setSender("foo");
+        dm.setData(m);
+        dm.setAcknowledgeID("bar");
+        dm.setVersion(1);
+        dm.setModelObject(TestMessage.class);
+
+        GsonBuilder gb = new GsonBuilder();
+        gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
+        gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
+        Gson gson = gb.create();
+
+        String message = gson.toJson(dm);
+        byte[] messageBytes = message.getBytes();
+        DropController dropController = new DropController();
+        //Adding header
+        byte[] headerAndMessage = dropController.concatHeaderAndEncryptedMessage((byte) 1, messageBytes);
+        //Removing header
+        byte[] messageBytesRemovedHeader = dropController.removeHeaderFromCipherMessage(headerAndMessage);
+        DropMessage newMessage = gson.fromJson(new String(messageBytesRemovedHeader), DropMessage.class);
+
+        Assert.assertEquals(messageBytes.length + 1, headerAndMessage.length);
+        Assert.assertEquals(headerAndMessage[0], (byte) 1);
+        Assert.assertArrayEquals(messageBytes, messageBytesRemovedHeader);
+
+        Assert.assertEquals(dm.getTime(), newMessage.getTime());
+        Assert.assertEquals(dm.getSender(), newMessage.getSender());
+        Assert.assertEquals(dm.getAcknowledgeID(), newMessage.getAcknowledgeID());
+        Assert.assertEquals(dm.getVersion(), newMessage.getVersion());
+        Assert.assertEquals(dm.getModelObject(), newMessage.getModelObject());
     }
 
     public void retrieveTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {

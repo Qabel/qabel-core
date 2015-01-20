@@ -1,5 +1,7 @@
 package de.qabel.core.drop;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -19,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 public class DropController {
 
+	private static final int HEADER_LENGTH_BYTE = 1;
+	private static final int MESSAGE_VERSION = 0;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
@@ -188,8 +192,9 @@ public class DropController {
 			cryptedMessage = encryptDrop(serialize(message),
 					contact.getEncryptionPublicKey(),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
+			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) MESSAGE_VERSION, cryptedMessage);
 			for (DropURL u : contact.getDropUrls()) {
-				result.addErrorCode(http.send(u.getUrl(), cryptedMessage));
+				result.addErrorCode(http.send(u.getUrl(), cryptedMessageWithHeader));
 			}
 		} catch (InvalidKeyException e) {
 			logger.error("Invalid key in contact. Cannot send message!");
@@ -214,10 +219,11 @@ public class DropController {
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages) {
+			byte[] message = removeHeaderFromCipherMessage(cipherMessage);
 			for (Contact c : contacts) {
 				String plainJson = null;
 				try {
-					plainJson = decryptDrop(cipherMessage,
+					plainJson = decryptDrop(message,
 							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
 				} catch (InvalidKeyException e) {
 					// Don't handle key exception as it will be 
@@ -292,5 +298,31 @@ public class DropController {
 
 		CryptoUtils cu = new CryptoUtils();
 		return cu.decryptHybridAndValidateSignature(cipher, keypair, signkey);
+	}
+
+	/**
+	 * Concatenates the header to the message
+	 * @param header
+	 * @param message
+	 * @return The message with the prepended header
+	 */
+	protected byte[] concatHeaderAndEncryptedMessage(byte header, byte[] message){
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(HEADER_LENGTH_BYTE + message.length);
+		try {
+			byteArrayOutputStream.write(header);
+			byteArrayOutputStream.write(message);
+		} catch (IOException e) {
+			logger.error("Couldn't prepend the header to the message.", e);
+		}
+		return byteArrayOutputStream.toByteArray();
+	}
+
+	/**
+	 * Removes the header from the cipherMessage.
+	 * @param cipherMessage the cipher message with a prepended header.
+	 * @return The cipher message without the header
+	 */
+	protected byte[] removeHeaderFromCipherMessage(byte[] cipherMessage) {
+		return Arrays.copyOfRange(cipherMessage, HEADER_LENGTH_BYTE, cipherMessage.length);
 	}
 }
