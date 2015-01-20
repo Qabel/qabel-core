@@ -136,6 +136,7 @@ public class StorageHTTP {
 	}
 
 	private void setupConnection(String publicIdentifier, String blobName) throws IOException {
+		assert connection == null : "Connection has not been closed after the previous request";
 		StringBuilder resourcePath = new StringBuilder(publicIdentifier);
 		if (blobName != null) {
 			resourcePath.append("/");
@@ -150,8 +151,10 @@ public class StorageHTTP {
 	}
 	
 	private void closeConnection() {
-		connection.disconnect();
-		connection = null;
+		if (connection != null) {
+			connection.disconnect();
+			connection = null;
+		}
 	}
 
 	/**
