@@ -555,7 +555,7 @@ public class CryptoUtils {
 
 		// Decrypt RSA encrypted AES key and decrypt encrypted data with AES key
 		byte[] rawAesKey = rsaDecrypt(encryptedAesKey,
-				privKey.getQblEncPrivateKey());
+				privKey.getQblEncPrivateKeys().get(0));
 		if (rawAesKey != null) {
 			logger.debug("Message is OK!");
 			return new String(decryptSymmetric(aesCipherText, 
