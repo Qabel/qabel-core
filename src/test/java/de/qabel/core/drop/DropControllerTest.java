@@ -12,7 +12,6 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 import org.junit.*;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
