@@ -224,7 +224,7 @@ public class DropController {
 				String plainJson = null;
 				try {
 					plainJson = decryptDrop(message,
-							c.getContactOwner().getPrimaryKeyPair(), c.getSignaturePublicKey());
+							c.getContactOwner().getPrimaryKeyPair(), c.getSignPublicKeys().get(0));
 				} catch (InvalidKeyException e) {
 					// Don't handle key exception as it will be 
 					// likely that a message can't be 
