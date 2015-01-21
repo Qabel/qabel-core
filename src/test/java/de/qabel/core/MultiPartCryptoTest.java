@@ -127,13 +127,13 @@ public class MultiPartCryptoTest {
 
         Contact alicesContact = new Contact(alice);
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
-        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKey());
+        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKeys().get(0));
         alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKey());
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
-        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKey());
+        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKeys().get(0));
         bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKey());
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
