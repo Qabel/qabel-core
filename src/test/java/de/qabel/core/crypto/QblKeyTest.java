@@ -18,7 +18,7 @@ public class QblKeyTest {
 		assertNotNull(qpkp.getRSAPrivateKey());
 		assertNotNull(qpkp.getQblPrimaryPublicKey());
 		assertNotNull(qpkp.getQblEncPublicKeys().get(0));
-		assertNotNull(qpkp.getQblSignPublicKey());
+		assertNotNull(qpkp.getQblSignPublicKeys().get(0));
 		assertNotNull(qpkp.getPublicKeyFingerprint());
 	}
 
@@ -27,7 +27,7 @@ public class QblKeyTest {
 		QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
 		QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
 		QblEncPublicKey qepk = qpkp.getQblEncPublicKeys().get(0);
-		QblSignPublicKey qspk = qpkp.getQblSignPublicKey();
+		QblSignPublicKey qspk = qpkp.getQblSignPublicKeys().get(0);
 
 		assertNotNull(qpkp);
 		assertNotNull(qppk);
@@ -61,7 +61,7 @@ public class QblKeyTest {
 				qkp1.getQblEncPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 		assertTrue(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp1.getQblSignPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 	}
 
@@ -76,7 +76,7 @@ public class QblKeyTest {
 				qkp1.getQblEncPublicKeys().get(0), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblSignPublicKey(), qkp2.getQblPrimaryPublicKey()));
+				qkp1.getQblSignPublicKeys().get(0), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
 				qkp2.getQblEncPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));

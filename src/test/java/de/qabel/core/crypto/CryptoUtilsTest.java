@@ -49,7 +49,7 @@ public class CryptoUtilsTest {
 				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 
 		assertEquals(
-				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKey()),
+				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKeys().get(0)),
 				jsonTestString);
 
 	}
@@ -60,7 +60,7 @@ public class CryptoUtilsTest {
 				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 
 		assertNull(cu.decryptHybridAndValidateSignature(cipherText, qpkp,
-				qpkp2.getQblSignPublicKey()));
+				qpkp2.getQblSignPublicKeys().get(0)));
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class CryptoUtilsTest {
 		byte[] ciphertext = cu.encryptHybridAndSign(jsonTestString,
 				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 		assertNull(cu.decryptHybridAndValidateSignature(ciphertext, qpkp2,
-				qpkp.getQblSignPublicKey()));
+				qpkp.getQblSignPublicKeys().get(0)));
 
 	}
 
