@@ -190,7 +190,7 @@ public class DropController {
 		try {
 			//TODO: Adapt to List returned by getSignKeyPairs
 			cryptedMessage = encryptDrop(serialize(message),
-					contact.getEncryptionPublicKey(),
+					contact.getEncryptionPublicKeys().get(0),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
 			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) MESSAGE_VERSION, cryptedMessage);
 			for (DropURL u : contact.getDropUrls()) {
