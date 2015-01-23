@@ -50,7 +50,7 @@ public class CryptoUtils {
 	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
 	private final static int SYMM_IV_SIZE_BYTE = 16;
-	private final static int SYMM_NONCE_SIZE_BYTE = 12;
+	final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
 	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
@@ -177,7 +177,7 @@ public class CryptoUtils {
 	 *            Signature key to sign with
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
+	byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaSign(sha512Sum, signatureKey);
 	}
@@ -276,7 +276,7 @@ public class CryptoUtils {
 	 * @return encrypted messsage. Can be null if error occurred.
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaEncryptForRecipient(byte[] message,
+	byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) throws InvalidKeyException {
 		byte[] cipherText = null;
 		try {
