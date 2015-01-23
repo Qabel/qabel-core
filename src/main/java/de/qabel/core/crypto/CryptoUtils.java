@@ -462,6 +462,8 @@ public class CryptoUtils {
 	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
 	 * recipients public key. The cipher text gets signed.
 	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
+	 * 
 	 * @param message
 	 *            String message to encrypt
 	 * @param recipient
@@ -472,6 +474,7 @@ public class CryptoUtils {
 	 * @return hybrid encrypted String message
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public byte[] encryptHybridAndSign(String message,
 			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
 			throws InvalidKeyException {
@@ -496,6 +499,8 @@ public class CryptoUtils {
 	 * using the own private key. The decrypted AES key is used to decrypt the
 	 * String message
 	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
+	 * 
 	 * @param cipherText
 	 *            hybrid encrypted String message
 	 * @param privKey
@@ -506,6 +511,7 @@ public class CryptoUtils {
 	 *         signature is invalid
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
 			QblSignPublicKey signatureKey) throws InvalidKeyException {
