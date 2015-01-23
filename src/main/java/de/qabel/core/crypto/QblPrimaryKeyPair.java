@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -88,6 +89,11 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		signKeyPairs.add(qskp);
 		signPrivateKeys.add(qskp.getRSAPrivateKey());
 		signPublicKeys.add(qskp.getQblSignPublicKey());
+		try {
+			qblPrimaryPublicKey.attachSignPublicKey(qskp.getQblSignPublicKey());
+		} catch (InvalidKeyException e) {
+			new RuntimeException("Newly created subkey has invalid signature.", e);
+		}
 	}
 
 	/**
@@ -104,6 +110,11 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		encKeyPairs.add(qekp);
 		encPrivateKeys.add(qekp.getRSAPrivateKey());
 		encPublicKeys.add(qekp.getQblEncPublicKey());
+		try {
+			qblPrimaryPublicKey.attachEncPublicKey(qekp.getQblEncPublicKey());
+		} catch (InvalidKeyException e) {
+			new RuntimeException("Newly created subkey has invalid signature.", e);
+		}
 	}
 
 	public List<QblEncKeyPair> getEncKeyPairs() {
