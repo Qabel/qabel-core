@@ -23,8 +23,7 @@ class StorageVolumeTestFactory implements Factory<StorageVolume>{
 		} catch (MalformedURLException e) {
 			throw new RuntimeException(e);
 		}
-		// TODO: what should we do with this?
-		//volume.setStorageServerId(i++);
+		i++;
 		return volume;
 	}
 }
