@@ -65,9 +65,7 @@ public class ConfigSerializationTest {
 		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 
-		System.out.println("Synced settings: " + syncedSettings.toJson());
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
-		System.out.println("Deserialized synced settings: " + deserializedSyncedSettings.toJson());
 		assertEquals(0, 
 				syncedSettings.toJson().compareTo(deserializedSyncedSettings.toJson()));
 		
@@ -78,9 +76,7 @@ public class ConfigSerializationTest {
 	public void localSettingsTest() throws IOException {
 		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
 		
-		System.out.println("Local settings: " + localSettings.toJson());
 		LocalSettings deserializedLocalSettings = LocalSettings.fromJson(localSettings.toJson());
-		System.out.println("Deserialized local settings: " + deserializedLocalSettings.toJson());
 		
 		assertEquals(deserializedLocalSettings, localSettings);
 	}
@@ -110,9 +106,7 @@ public class ConfigSerializationTest {
 			GsonBuilder builder = new GsonBuilder();
 			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
 			Gson gson = builder.create();
-			System.out.println("Serialized contact: " + gson.toJson(contact));
 			deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
-			System.out.println("Deserialized contact: " + gson.toJson(deserializedContact));
 			
 			//this has to be set by the caller for deserialization:
 			deserializedContact.setContactOwner(i);
