@@ -36,6 +36,10 @@ public class LocalSettings {
 	 */
 	@SerializedName("drop_last_update")
 	private Date dropLastUpdate;
+	/**
+	 * Constant string which defines the date format in the serialized json
+	 */
+	final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 	
 	/**
 	 * Creates an instance of LocalSettings
@@ -97,7 +101,7 @@ public class LocalSettings {
 	 */
 	public String toJson() throws IOException {
 		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		builder.setDateFormat(dateFormat);
 		Gson gson = builder.create();
 		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
 		return adapter.toJson(this);
@@ -112,7 +116,7 @@ public class LocalSettings {
 	 */
 	public static LocalSettings fromJson(String json) throws IOException, JsonParseException {
 		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+		builder.setDateFormat(dateFormat);
 		Gson gson = builder.create();
 		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
 		return adapter.fromJson(json);
