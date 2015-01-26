@@ -554,13 +554,14 @@ public class CryptoUtils {
 		}
 
 		// Decrypt RSA encrypted AES key and decrypt encrypted data with AES key
-		byte[] rawAesKey = rsaDecrypt(encryptedAesKey,
-				privKey.getQblEncPrivateKeys().get(0));
-		if (rawAesKey != null) {
-			logger.debug("Message is OK!");
-			return new String(decryptSymmetric(aesCipherText, 
-					new SecretKeySpec(rawAesKey, SYMM_KEY_ALGORITHM)));
-		}
+		for (RSAPrivateKey key : privKey.getQblEncPrivateKeys()) {
+            byte[] rawAesKey = rsaDecrypt(encryptedAesKey, key);
+            if (rawAesKey != null) {
+                logger.debug("Message is OK!");
+                return new String(decryptSymmetric(aesCipherText,
+                        new SecretKeySpec(rawAesKey, SYMM_KEY_ALGORITHM)));
+            }
+        }
 		return null;
 	}
 

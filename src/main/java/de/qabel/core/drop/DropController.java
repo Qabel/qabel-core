@@ -190,7 +190,7 @@ public class DropController {
 		try {
 			//TODO: Adapt to List returned by getSignKeyPairs
 			cryptedMessage = encryptDrop(serialize(message),
-					contact.getEncryptionPublicKeys().get(0),
+					contact.getEncryptionPublicKeyShuffle(),
 					contact.getContactOwner().getPrimaryKeyPair().getSignKeyPairs().get(0));
 			byte[] cryptedMessageWithHeader = concatHeaderAndEncryptedMessage((byte) MESSAGE_VERSION, cryptedMessage);
 			for (DropURL u : contact.getDropUrls()) {
@@ -223,8 +223,13 @@ public class DropController {
 			for (Contact c : contacts) {
 				String plainJson = null;
 				try {
-					plainJson = decryptDrop(message,
-							c.getContactOwner().getPrimaryKeyPair(), c.getSignPublicKeys().get(0));
+				    for (QblSignPublicKey key : c.getSignPublicKeys()) {
+				        plainJson = decryptDrop(message,
+				                c.getContactOwner().getPrimaryKeyPair(), key);
+				        if (plainJson != null) {
+				            break;
+				        }
+                    }
 				} catch (InvalidKeyException e) {
 					// Don't handle key exception as it will be 
 					// likely that a message can't be 
