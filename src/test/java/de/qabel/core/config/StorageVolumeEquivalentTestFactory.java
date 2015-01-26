@@ -1,7 +1,5 @@
 package de.qabel.core.config;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
 import org.meanbean.lang.EquivalentFactory;
@@ -13,18 +11,17 @@ import org.meanbean.lang.EquivalentFactory;
  */
 class StorageVolumeEquivalentTestFactory implements EquivalentFactory<StorageVolume> {
 	long created = new Date().getTime();
+	StorageServer server;
 
+	StorageVolumeEquivalentTestFactory() {
+		server = new StorageServerEquivalentTestFactory().create();
+	}
+
+	
 	@Override
 	public StorageVolume create() {
 		StorageVolume storageVolume;
-		try {
-			storageVolume = new StorageVolume(
-					new StorageServer(new URL("https://qabel.de"), ""),
-					"publicID", "token", "revokeToken");
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
-		//storageVolume.setStorageServerId(1);
+		storageVolume = new StorageVolume(server, "publicID", "token", "revokeToken");
 		storageVolume.setCreated(created);
 		return storageVolume;
 	}
