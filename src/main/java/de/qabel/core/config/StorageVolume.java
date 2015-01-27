@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class StorageVolume extends SyncSettingItem {
 	private StorageServer storageServer;
+	private String storageServerUrl;
 	/**
 	 * identifier of the storage volume on the server
 	 * Field name in serialized json: "public_identifier"
@@ -39,6 +40,17 @@ public class StorageVolume extends SyncSettingItem {
 		this.setToken(token);
 		this.setRevokeToken(revokeToken);
 	}
+	
+	/**
+	 * This constructor is only for deserialization purposes.
+	 * storageServer needs to be set explicitly
+	 */
+	protected StorageVolume(String serverUrl, String publicIdentifier, String token, String revokeToken) {
+		this.storageServerUrl = serverUrl;
+		this.setPublicIdentifier(publicIdentifier);
+		this.setToken(token);
+		this.setRevokeToken(revokeToken);
+	}
 
 	public StorageServer getStorageServer() {
 		return storageServer;
@@ -46,6 +58,7 @@ public class StorageVolume extends SyncSettingItem {
 
 	public void setStorageServer(StorageServer storageServer) {
 		this.storageServer = storageServer;
+		this.storageServerUrl = storageServer.getUrl().toString();
 	}
 
 
@@ -99,6 +112,11 @@ public class StorageVolume extends SyncSettingItem {
 
 	public URL getServerUrl() {
 		return this.storageServer.getUrl();
+	}
+	
+	// used during deserialization
+	protected String getServerUrlString() {
+		return storageServerUrl;
 	}
 
 	@Override

@@ -137,6 +137,11 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 							contact.getContactOwnerKeyId()));
 		}
 		
+		for (StorageVolume volume : storageVolumes.getStorageVolumes()) {
+			volume.setStorageServer(
+					storageServers.getStorageServerByUrl(volume.getServerUrlString()));
+		}
+		
 		syncedSettings = new SyncedSettings();
 		syncedSettings.setAccounts(accounts);
 		syncedSettings.setContacts(contacts);
