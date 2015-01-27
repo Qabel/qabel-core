@@ -20,7 +20,6 @@ install:
  - cd ..
  - git clone https://github.com/Qabel/qabel-storage.git
  - cd qabel-storage
- - git checkout -b protocol_update origin/protocol_update
  - npm install
  - mkdir data
  - node app.js &
