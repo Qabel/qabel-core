@@ -840,7 +840,7 @@ public class CryptoUtils {
 	 *            Pathname where the decrypted file will be stored
 	 * @param key
 	 *            Key which is used to en-/decrypt the file
-	 * @return true if successfully decrypted or true if authentication tag validation
+	 * @return true if successfully decrypted or false if authentication tag validation
 	 *         failed or another error occurred
 	 * @throws InvalidKeyException
 	 *             if key is invalid
