@@ -124,16 +124,6 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	/**
-	 * Returns an encryption public key
-	 * 
-	 * @return encryption public key
-	 */
-	@Deprecated
-	public QblEncPublicKey getQblEncPublicKey() {
-		return encKeyPairs.get(0).getQblEncPublicKey();
-	}
-	
-	/**
 	 * Returns all encryption public keys
 	 * 
 	 * @return encryption public keys
@@ -142,16 +132,6 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		return encPublicKeys;
 	}
 
-	/**
-	 * Returns a signature public key
-	 * 
-	 * @return signature public key
-	 */
-	@Deprecated
-	public QblSignPublicKey getQblSignPublicKey() {
-		return signKeyPairs.get(0).getQblSignPublicKey();
-	}
-	
 	/**
 	 * Returns all signature public keys
 	 * 
@@ -162,32 +142,12 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	/**
-	 * Returns an encryption private key
-	 * 
-	 * @return encryption private key
-	 */
-	@Deprecated
-	public RSAPrivateKey getQblEncPrivateKey() {
-		return encKeyPairs.get(0).getRSAPrivateKey();
-	}
-	
-	/**
 	 * Returns all encryption private keys
 	 * 
 	 * @return encryption private keys
 	 */
 	public List<RSAPrivateKey> getQblEncPrivateKeys() {
 		return encPrivateKeys;
-	}
-
-	/**
-	 * Returns a signature private key
-	 * 
-	 * @return signature private key
-	 */
-	@Deprecated
-	public RSAPrivateKey getQblSignPrivateKey() {
-		return signKeyPairs.get(0).getRSAPrivateKey();
 	}
 	
 	/**

@@ -83,16 +83,6 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns the public encryption key of the contact
-	 * @return QblEncPublicKey
-	 */
-	@Deprecated
-	public QblEncPublicKey getEncryptionPublicKey()
-	{
-		return primaryPublicKey.getEncPublicKey();
-	}
-	
-	/**
 	 * Returns a list of the public encryption keys of the contact
 	 * @return List<QblEncPublicKey>
 	 */
@@ -122,16 +112,6 @@ public class Contact {
 	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachEncPublicKey(key);
-	}
-	
-	/**
-	 * Returns the public signing key of the contact
-	 * @return QblSignPublicKey
-	 */
-	@Deprecated
-	public QblSignPublicKey getSignaturePublicKey()
-	{
-		return primaryPublicKey.getSignPublicKey();
 	}
 	
 	/**
