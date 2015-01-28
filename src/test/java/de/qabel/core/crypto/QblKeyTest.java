@@ -82,6 +82,6 @@ public class QblKeyTest {
 				qkp2.getQblEncPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp2.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp2.getQblSignPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 	}
 }

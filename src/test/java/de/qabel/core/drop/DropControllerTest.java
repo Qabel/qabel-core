@@ -25,13 +25,13 @@ public class DropControllerTest {
 
     final QblPrimaryKeyPair qpkpSender = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
     final QblPrimaryPublicKey qppkSender = qpkpSender.getQblPrimaryPublicKey();
-    final QblEncPublicKey qepkSender = qpkpSender.getQblEncPublicKey();
-    final QblSignPublicKey qspkSender = qpkpSender.getQblSignPublicKey();
+    final QblEncPublicKey qepkSender = qpkpSender.getQblEncPublicKeys().get(0);
+    final QblSignPublicKey qspkSender = qpkpSender.getQblSignPublicKeys().get(0);
         
     final QblPrimaryKeyPair qpkpRecipient = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
     final QblPrimaryPublicKey qppkRecipient = qpkpRecipient.getQblPrimaryPublicKey();
-    final QblEncPublicKey qepkRecipient = qpkpRecipient.getQblEncPublicKey();
-    final QblSignPublicKey qspkRecipient = qpkpRecipient.getQblSignPublicKey();
+    final QblEncPublicKey qepkRecipient = qpkpRecipient.getQblEncPublicKeys().get(0);
+    final QblSignPublicKey qspkRecipient = qpkpRecipient.getQblSignPublicKeys().get(0);
 
     
     static class TestMessage extends ModelObject {
