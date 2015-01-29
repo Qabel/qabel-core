@@ -45,6 +45,11 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		out.beginObject();
 		//TODO: write module data
 		out.endObject();
+
+		out.name("sync");
+		TypeAdapter<SyncSettingItem> syncItemAdapter = gson.getAdapter(SyncSettingItem.class);
+		syncItemAdapter.write(out, value);
+
 		out.endObject();
 		
 		return;
@@ -60,6 +65,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		String contactOwnerKeyId = null;
 		QblPrimaryPublicKey qppk = null;
 		Collection<DropURL> dropURLs = null;
+		SyncSettingItem syncItem = null;
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
@@ -88,6 +94,10 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				//TODO: read module data
 				in.endObject();
 				break;
+			case "sync":
+				TypeAdapter<SyncSettingItem> syncItemAdapter = new Gson().getAdapter(SyncSettingItem.class);
+				syncItem = syncItemAdapter.read(in);
+				break;
 			}
 		}
 		in.endObject();
@@ -96,9 +106,10 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId);
-		contact.setPrimaryPublicKey(qppk);
-		contact.getDropUrls().addAll(dropURLs);
+		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
+
+		// TODO copy all sync item properties
+		contact.setCreated(syncItem.getCreated());
 		
 		return contact;
 	}
