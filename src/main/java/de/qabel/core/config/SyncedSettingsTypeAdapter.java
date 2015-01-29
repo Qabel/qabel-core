@@ -133,7 +133,7 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 
 		for(Contact contact : contacts.getContacts()) {
 			contact.setContactOwner(
-					identities.getIdentityByKeyIdentifier(
+					identities.getByKeyIdentifier(
 							contact.getContactOwnerKeyId()));
 		}
 		
