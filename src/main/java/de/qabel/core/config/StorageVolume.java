@@ -123,13 +123,10 @@ public class StorageVolume extends SyncSettingItem {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime
-				* result
-				+ ((publicIdentifier == null) ? 0 : publicIdentifier.hashCode());
-		result = prime * result
-				+ ((revokeToken == null) ? 0 : revokeToken.hashCode());
-		result = prime * result
-				+ ((storageServer == null) ? 0 : storageServer.hashCode());
+		result = prime * result + ((publicIdentifier == null) ? 0 : publicIdentifier.hashCode());
+		result = prime * result + ((revokeToken == null) ? 0 : revokeToken.hashCode());
+		result = prime * result + ((storageServer == null) ? 0 : storageServer.hashCode());
+		result = prime * result + ((storageServerUrl == null) ? 0 : storageServerUrl.hashCode());
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
 		return result;
 	}
@@ -157,6 +154,11 @@ public class StorageVolume extends SyncSettingItem {
 			if (other.storageServer != null)
 				return false;
 		} else if (!storageServer.equals(other.storageServer))
+			return false;
+		if (storageServerUrl == null) {
+			if (other.storageServerUrl != null)
+				return false;
+		} else if (!storageServerUrl.equals(other.storageServerUrl))
 			return false;
 		if (token == null) {
 			if (other.token != null)
