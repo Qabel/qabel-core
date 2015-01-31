@@ -69,64 +69,8 @@ public class Contact extends Entity {
 	public String getContactOwnerKeyId() {
 		return this.contactOwnerKeyId;
 	}
-	
-	/**
-	 * Returns the public encryption key of the contact
-	 * @return QblEncPublicKey
-	 */
-	@Deprecated
-	public QblEncPublicKey getEncryptionPublicKey()
-	{
-		return primaryPublicKey.getEncPublicKey();
-	}
-	
-	/**
-	 * Returns a list of the public encryption keys of the contact
-	 * @return List<QblEncPublicKey>
-	 */
-	public List<QblEncPublicKey> getEncryptionPublicKeys() {
-		return primaryPublicKey.getEncPublicKeys();
-	}
 
-	/**
-	 * Adds a public encryption key to the contact
-	 * @param key
-	 * @throws InvalidKeyException
-	 */
-	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
-	{
-		primaryPublicKey.attachEncPublicKey(key);
-	}
-	
-	/**
-	 * Returns the public signing key of the contact
-	 * @return QblSignPublicKey
-	 */
-	@Deprecated
-	public QblSignPublicKey getSignaturePublicKey()
-	{
-		return primaryPublicKey.getSignPublicKey();
-	}
-	
-	/**
-	 * Returns a list of the public sign keys of the contact
-	 * @return List<QblSignPublicKey>
-	 */
-	public List<QblSignPublicKey> getSignPublicKeys() {
-		return primaryPublicKey.getSignPublicKeys();
-	}
 
-	/**
-	 * Adds a public signing key to the contact
-	 * @param key
-	 * @throws InvalidKeyException
-	 */
-	public void addSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
-	{
-		primaryPublicKey.attachSignPublicKey(key);
-	}
-	
-	
 	/**
 	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
 	 * @param owner
