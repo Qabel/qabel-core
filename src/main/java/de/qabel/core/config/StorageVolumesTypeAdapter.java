@@ -3,7 +3,6 @@ package de.qabel.core.config;
 import java.io.IOException;
 import java.util.Set;
 
-import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -14,9 +13,8 @@ public class StorageVolumesTypeAdapter extends TypeAdapter<StorageVolumes> {
 	@Override
 	public void write(JsonWriter out, StorageVolumes value) throws IOException {
 		out.beginArray();
-		Gson gson = new Gson();
 		Set<StorageVolume> set = value.getStorageVolumes();
-		TypeAdapter<StorageVolume> adapter = gson.getAdapter(StorageVolume.class);
+		TypeAdapter<StorageVolume> adapter = new StorageVolumeTypeAdapter();
 		for(StorageVolume storageVolume : set) {
 			adapter.write(out, storageVolume);
 		}
@@ -31,9 +29,8 @@ public class StorageVolumesTypeAdapter extends TypeAdapter<StorageVolumes> {
 			return null;
 		}
 		
-		Gson gson = new Gson();
 		StorageVolumes storageVolumes = new StorageVolumes();
-		TypeAdapter<StorageVolume> adapter = gson.getAdapter(StorageVolume.class);
+		TypeAdapter<StorageVolume> adapter = new StorageVolumeTypeAdapter();
 		StorageVolume storageVolume = null; 
 		
 		in.beginArray();
