@@ -44,18 +44,11 @@ public class ModuleManager {
 		return this.storageConnection;
 	}
 
-	/**
-	 * <pre>
-	 *           0..*     0..*
-	 * ModuleManager ------------------------- Settings
-	 *           moduleManager        &lt;       settings
-	 * </pre>
-	 */
-	private Set<Settings> settings;
+	private Settings settings;
 
-	public Set<Settings> getSettings() {
+	public Settings getSettings() {
 		if (this.settings == null) {
-			this.settings = new HashSet<Settings>();
+			this.settings = new Settings();
 		}
 		return this.settings;
 	}
