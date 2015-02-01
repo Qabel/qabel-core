@@ -1,80 +1,102 @@
 package de.qabel.core.drop;
 
 import java.util.Date;
+import java.util.UUID;
 
-import com.google.gson.annotations.SerializedName;
+import de.qabel.core.config.Entity;
 
 public class DropMessage<T extends ModelObject>{
-    @SerializedName("version")
-    private int version = 1;
-    @SerializedName("time_stamp")
-    private long time = 1L;
-    @SerializedName("acknowledge_id")
-    private String acknowledgeID = "0";
-    @SerializedName("sender")
-    private String sender = "";
-    @SerializedName("model_object")
-    private Class<T> modelObject;
-    @SerializedName("data")
+	/**
+	 * Acknowledge ID indicating that the sender does not
+	 * whish to receive an acknowledgement.
+	 */
+	public static final String NOACK = "0";
+	/**
+	 * Model object reserved for internal drop protocol purposes only.
+	 */
+	public static final String INTERNAL_MODEL_OBJECT = "drop";
+	
+	private static final int VERSION = 1;
+
+	
+    private Date created;
+    private String acknowledgeId;
+    private Entity sender;
+    private String senderKeyId;
     private T data;
 
-
-    public DropMessage(){}
-
-    public DropMessage(int version, Date time, String acknowledgeID, String sender, Class<T> modelObject, T data) {
-        setVersion(version);
-        setTime(time);
-        setAcknowledgeID(acknowledgeID);
-        setSender(sender);
-        setModelObject(modelObject);
-        setData(data);
+    public DropMessage(Entity sender, T data) {
+    	this.sender = sender;
+    	this.data = data;
+    	this.created = new Date();
+    	this.acknowledgeId = generateAcknowledgeId();
     }
 
-    public int getVersion() {
-        return version;
+    /**
+     * Constructor used for deserialization.
+     * registerSender has to be called to complete creation.
+     */
+    DropMessage(String senderKeyId, T data, Date created, String acknowledgeId) {
+		this.senderKeyId = senderKeyId;
+		this.data = data;
+		this.created = created;
+		this.acknowledgeId = acknowledgeId;
+	}
+
+	public static int getVersion() {
+        return VERSION;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
-
-    public long getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time.getTime();
+    public Date getCreationDate() {
+        return created;
     }
 
     public String getAcknowledgeID() {
-        return acknowledgeID;
+        return acknowledgeId;
     }
 
-    public void setAcknowledgeID(String acknowledgeID) {
-        this.acknowledgeID = acknowledgeID;
-    }
-
-    public String getSender() {
+    public Entity getSender() {
         return sender;
     }
 
-    public void setSender(String sender) {
-        this.sender = sender;
+    String getSenderKeyId() {
+    	return senderKeyId;
+    }
+
+    /**
+     * Register the given Entity as sender of this drop message
+     * and check if it matches the senderKeyId.
+     * This is used to complete the deserialization of DropMessage.
+     *
+     * @param sender Entity to be registered as sender.
+     * @return true if the given sender matches the senderKeyId, otherwise false.
+     */
+    boolean registerSender(Entity sender) {
+    	if (!senderKeyId.equals(sender.getKeyIdentifier())) {
+    		return false;
+    	}
+    	this.sender = sender;
+    	return true;
     }
 
     public Class<T> getModelObject() {
-        return modelObject;
-    }
-
-    public void setModelObject(Class<T> modelObject) {
-        this.modelObject = modelObject;
+        return (Class<T>)data.getClass();
     }
 
     public T getData() {
         return data;
     }
 
-    public void setData(T data) {
-        this.data = data;
+    /**
+     * Enable/disable acknowledge request for this drop message.
+     *
+     * @param enabled
+     */
+    public void enableAcknowledgeing(boolean enabled) {
+    	this.acknowledgeId = enabled ? generateAcknowledgeId() : NOACK;
+    }
+    
+    private static String generateAcknowledgeId() {
+    	return UUID.randomUUID().toString();
     }
 }
