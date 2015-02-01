@@ -10,11 +10,11 @@ public class DropSerializer implements JsonSerializer<DropMessage<? extends Mode
 
         JsonObject obj = new JsonObject();
         Gson gson = new Gson();
-        String model = src.getData().getClass().getName() + "";
+        String model = src.getData().getClass().getName();
 
-        obj.addProperty("version",        src.getVersion());
-        obj.addProperty("time_stamp",     src.getTime());
-        obj.addProperty("sender",         src.getSender());
+        obj.addProperty("version",        DropMessage.getVersion());
+        obj.addProperty("time_stamp",     src.getCreationDate().getTime());
+        obj.addProperty("sender",         src.getSender().getKeyIdentifier());
         obj.addProperty("acknowledge_id", src.getAcknowledgeID());
         obj.addProperty("model_object",   model);
         obj.add("data",                   gson.toJsonTree(src.getData()));
