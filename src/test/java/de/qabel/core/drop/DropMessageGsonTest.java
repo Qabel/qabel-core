@@ -3,10 +3,16 @@ package de.qabel.core.drop;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+
+import de.qabel.core.config.Identities;
+import de.qabel.core.config.Identity;
+import de.qabel.core.crypto.QblKeyFactory;
+
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
-import java.util.Date;
+import java.util.ArrayList;
 
 public class DropMessageGsonTest {
     String json = null;
@@ -50,20 +56,14 @@ public class DropMessageGsonTest {
     
     @Test
     public void serializeTest() {
-
-
         TestMessage m = new TestMessage();
 
         m.content = "baz";
-        DropMessage<TestMessage> a = new DropMessage<TestMessage>();
-        Date date = new Date();
-
-        a.setTime(date);
-        a.setSender("foo");
-        a.setData(m);
-        a.setAcknowledgeID("bar");
-        a.setVersion(1);
-        a.setModelObject(TestMessage.class);
+        Identity sender = new Identity("Bernd", new ArrayList<DropURL>(),
+        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair());
+        Identities identities = new Identities();
+        identities.add(sender);
+        DropMessage<TestMessage> a = new DropMessage<TestMessage>(sender, m);
 
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<TestMessage>());
@@ -77,10 +77,10 @@ public class DropMessageGsonTest {
 
         System.out.println("Serialized message: " + gson.toJson(a));
         DropMessage<TestMessage> deserializedJson = gson.fromJson(json, DropMessage.class);
+        assertTrue(deserializedJson.registerSender(sender));
         System.out.println("Deserialized message: " + gson.toJson(deserializedJson));
-        assertEquals("baz", deserializedJson.getData().content);
-        assertEquals("foo", deserializedJson.getSender());
-        assertEquals("bar", deserializedJson.getAcknowledgeID());
-        assertEquals(1, deserializedJson.getVersion());
+        assertEquals(m.content, deserializedJson.getData().content);
+        assertEquals(sender, deserializedJson.getSender());
+        assertEquals(a.getAcknowledgeID(), deserializedJson.getAcknowledgeID());
     }
 }

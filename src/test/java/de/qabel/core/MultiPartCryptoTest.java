@@ -17,7 +17,6 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 
 public class MultiPartCryptoTest {
 
@@ -49,6 +48,7 @@ public class MultiPartCryptoTest {
 
     private DropController dropController;
     private DropQueueCallback<TestObject> mQueue;
+    private Identity alice;
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
@@ -117,7 +117,7 @@ public class MultiPartCryptoTest {
         alicesDrops.add(
                 new DropURL(
                         "http://localhost:6000/12345678901234567890123456789012345678alice"));
-        Identity alice = new Identity("Alice", alicesDrops, alicesKey);
+        alice = new Identity("Alice", alicesDrops, alicesKey);
 
         QblPrimaryKeyPair bobsKey =
         		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
@@ -125,17 +125,15 @@ public class MultiPartCryptoTest {
         bob.addDrop(new DropURL(
         		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        Contact alicesContact = new Contact(alice);
-        alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
+        Contact alicesContact = new Contact(alice, null, bobsKey.getQblPrimaryPublicKey());
         alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKey());
         alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        Contact bobsContact = new Contact(bob);
-        bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
+        Contact bobsContact = new Contact(bob, null, alicesKey.getQblPrimaryPublicKey());
         bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKey());
         bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKey());
-        alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
         contacts.add(alicesContact);
@@ -160,18 +158,9 @@ public class MultiPartCryptoTest {
     }
 
     private void sendMessage() {
-        DropMessage<TestObject> dm = new DropMessage<TestObject>();
         TestObject data = new TestObject();
         data.setStr("Test");
-        dm.setData(data);
-
-        Date date = new Date();
-
-        dm.setSender("foo");
-        dm.setAcknowledgeID("bar");
-        dm.setTime(date);
-        dm.setVersion(1);
-        dm.setModelObject(TestObject.class);
+        DropMessage<TestObject> dm = new DropMessage<TestObject>(alice, data);
 
         DropController drop = new DropController();
 
@@ -180,18 +169,9 @@ public class MultiPartCryptoTest {
     }
 
 	private void sendUnwantedMessage() {
-		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>();
 		UnwantedTestObject data = new UnwantedTestObject();
 		data.setStr("Test");
-		dm.setData(data);
-
-		Date date = new Date();
-
-		dm.setSender("foo");
-		dm.setAcknowledgeID("bar");
-		dm.setTime(date);
-		dm.setVersion(1);
-		dm.setModelObject(UnwantedTestObject.class);
+		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>(alice, data);
 
 		DropController drop = new DropController();
 
