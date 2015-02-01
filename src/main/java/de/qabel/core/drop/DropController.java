@@ -163,11 +163,7 @@ public class DropController {
 	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact) {
 		DropHTTP http = new DropHTTP();
 
-		DropMessage<T> dm = new DropMessage<T>();
-
-		dm.setData(object);
-		dm.setTime(new Date());
-		dm.setModelObject((Class<T>) object.getClass());
+		DropMessage<T> dm = new DropMessage<T>(contact.getContactOwner(), object);
 
 		return sendAndForget(dm, contact);
 	}
