@@ -232,6 +232,13 @@ public class DropController {
 				} else {
 					DropMessage msg = deserialize(plainJson);
 					if (msg != null) {
+						boolean unspoofed = msg.registerSender(c);
+						if (!unspoofed) {
+							logger.info("Spoofing of sender infomation detected."
+									+ " Claim: " + msg.getSenderKeyId()
+									+ " Signer: " + c.getKeyIdentifier());
+							break;
+						}
 						plainMessages.add(msg);
 					}
 					break;
