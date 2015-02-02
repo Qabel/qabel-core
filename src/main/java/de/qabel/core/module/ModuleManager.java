@@ -3,8 +3,6 @@ package de.qabel.core.module;
 import de.qabel.core.storage.StorageConnection;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -12,7 +10,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import de.qabel.core.config.Settings;
-import de.qabel.core.drop.DropController;
+import de.qabel.core.drop.DropActor;
 
 public class ModuleManager {
 
@@ -60,7 +58,14 @@ public class ModuleManager {
 		return this.settings;
 	}
 
-	private Set<Module> modules;
+	/**
+	 * <pre>
+	 *           1..1     0..*
+	 * ModuleManager ------------------------- Module
+	 *           moduleManager        &gt;       modules
+	 * </pre>
+	 */
+	private HashSet<ModuleThread> modules;
 
 	Thread dropReceiverThread = new Thread() {
 		public void run() {
@@ -68,9 +73,9 @@ public class ModuleManager {
 		};
 	};
 	
-	public Set<Module> getModules() {
+	public HashSet<ModuleThread> getModules() {
 		if (this.modules == null) {
-			this.modules = new HashSet<Module>();
+			this.modules = new HashSet<ModuleThread>();
 		}
 		return this.modules;
 	}
@@ -85,8 +90,9 @@ public class ModuleManager {
 		Module m = (Module) module.newInstance();
 		m.setModuleManager(this);
 		m.init();
-		getModules().add(m);
-		m.start();
+        ModuleThread t = new ModuleThread(m);
+        getModules().add(t);
+        t.start();
 	}
 	
 	public void startModule(File jar, String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -106,7 +112,7 @@ public class ModuleManager {
 	 */
 	public void shutdown() {
 		while(getModules().isEmpty() == false) {
-			getModules().iterator().next().stopModule();
+			getModules().iterator().next().getModule().stopModule();
 		}
 	}
 	/**
@@ -116,13 +122,13 @@ public class ModuleManager {
 		module.stopModule();
 	}
 	
-	public DropController getDropController() {
-		return dropController;
+	public DropActor getDropActor() {
+		return dropActor;
 	}
 
-	public void setDropController(DropController dropController) {
-		this.dropController = dropController;
+	public void setDropActor(DropActor dropActor) {
+		this.dropActor = dropActor;
 	}
 
-	private DropController dropController;
+	private DropActor dropActor;
 }

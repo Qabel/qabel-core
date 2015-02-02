@@ -1,7 +1,9 @@
 package de.qabel.core.drop;
 
 
-public abstract class ModelObject {
+import java.io.Serializable;
+
+public abstract class ModelObject implements Serializable {
 	public <T extends ModelObject> T as(Class<T> cls) {
 		return cls.cast(this); 
 	}

@@ -47,13 +47,13 @@ public class MultiPartCryptoTest {
 		}
 	}
 
-    private DropController dropController;
+    private DropActor dropController;
     private DropQueueCallback<TestObject> mQueue;
     private Identity alice;
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
-        dropController = new DropController();
+        dropController = new DropActor();
 
         loadContacts();
         loadDropServers();
@@ -163,7 +163,7 @@ public class MultiPartCryptoTest {
         data.setStr("Test");
         DropMessage<TestObject> dm = new DropMessage<TestObject>(alice, data);
 
-        DropController drop = new DropController();
+        DropActor drop = new DropActor();
 
         // Send hello world to all contacts.
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
@@ -174,7 +174,7 @@ public class MultiPartCryptoTest {
 		data.setStr("Test");
 		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>(alice, data);
 
-		DropController drop = new DropController();
+		DropActor drop = new DropActor();
 
 		// Send an unknown drop message to all contacts.
 		drop.sendAndForget(dm, dropController.getContacts().getContacts());

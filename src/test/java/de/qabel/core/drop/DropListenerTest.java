@@ -34,7 +34,14 @@ public class DropListenerTest {
 		TestMO1 mo1 = new TestMO1();
 		mo1.content = "payload data";
 
+<<<<<<< HEAD
 		DropController dc = new DropController();
+=======
+		TestMO2 mo2 = new TestMO2();
+		mo1.content = "payload data";
+
+		DropActor dc = new DropActor();
+>>>>>>> Replace DropController by DropActor, an implementation of the Ackack EventActor.
 		DropQueueCallback<TestMO1> bq1 = new DropQueueCallback<TestMO1>();
 		dc.register(TestMO1.class, bq1);
 		DropQueueCallback<TestMO1> bq2 = new DropQueueCallback<TestMO1>();

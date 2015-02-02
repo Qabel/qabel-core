@@ -1,12 +1,16 @@
 package de.qabel.core.drop;
 
-import java.lang.reflect.Method;
+import java.io.Serializable;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import de.qabel.ackack.Actor;
+import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.event.EventActor;
+import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServer;
@@ -20,38 +24,32 @@ import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DropController {
+public class DropActor extends EventActor {
+
+	public static final String EVENT_DROP_MESSAGE_RECEIVED = "dropMessageReceived";
+	private static final String EVENT_ACTION_DROP_MESSAGE_RECEIVED = "sendDropMessage";
+	private static final String PRIVATE_TYPE_MESSAGE_INPUT = "MessageInput";
+	private final EventEmitter emitter;
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
 	GsonBuilder gb;
 	Gson gson;
+	Thread receiver;
 
-	public DropController() {
+	public DropActor(EventEmitter emitter) {
+		this.emitter = emitter;
 		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
+		// register events
 	}
 
-	/**
-	 * Register for DropMessages with a modelObject
-	 * 
-	 * @param type
-	 * 				Class to listen for events.
-	 * @param callback
-	 * 				Callback to call when event occurs.
-	 */
-	public <T extends ModelObject> void register(Class<T> type,
-			DropCallback<T> callback) {
-		Set<DropCallback<? extends ModelObject>> typeCallbacks = mCallbacks
-				.get(type);
-		if (typeCallbacks == null) {
-			typeCallbacks = new HashSet<DropCallback<? extends ModelObject>>();
-			mCallbacks.put(type, typeCallbacks);
-		}
-		typeCallbacks.add(callback);
+	public static <T extends Serializable & Collection<Contact>> void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, T contacts) {
+		if(emitter.emit(EVENT_ACTION_DROP_MESSAGE_RECEIVED, message, contacts) != 1)
+			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_RECEIVED should only listened by one Listener");
 	}
 
 	/**
@@ -61,7 +59,7 @@ public class DropController {
 	 * @param dm
 	 *            DropMessage which should be handled
 	 */
-	public void handleDrop(DropMessage<? extends ModelObject> dm) {
+	private void handleDrop(DropMessage<? extends ModelObject> dm) {
 		Class<? extends ModelObject> cls = dm.getModelObject();
 		Set<DropCallback<? extends ModelObject>> typeCallbacks = mCallbacks
 				.get(cls);
@@ -71,31 +69,53 @@ public class DropController {
 			return;
 		}
 
-		for (DropCallback<? extends ModelObject> callback : typeCallbacks) {
-			Method m;
-			try {
-				m = callback.getClass().getMethod("onDropMessage",
-						DropMessage.class);
-				m.invoke(callback, dm);
-			} catch (Exception e) {
-				logger.error("Error during handling drop", e);
-			}
+		emitter.emit("dropMessage", dm);
+	}
+
+
+	@Override
+	public void run() {
+		startRetriever();
+		super.run();
+		try {
+			stopRetriever();
+		} catch (InterruptedException e) {
+			// TODO
+			e.printStackTrace();
 		}
+	}
+
+	private void startRetriever() {
+		receiver = new Thread() {
+			@Override
+			public void run() {
+				while(isInterrupted()==false) {
+					retrieve();
+				}
+			}
+		};
+		receiver.start();
+	}
+
+	private void stopRetriever() throws InterruptedException {
+		receiver.interrupt();
+		receiver.join();
 	}
 
 	/**
 	 * retrieves new DropMessages from server and calls the corresponding
 	 * listeners
 	 */
-	public void retrieve() {
+	private void retrieve() {
 		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
 				.getDropServers());
 		for (DropServer server : servers) {
-			DropController drop = new DropController();
-			Collection<DropMessage<?>> results = drop
+			Collection<DropMessage<?>> results = this
 					.retrieve(server.getUrl(), getContacts().getContacts());
+			MessageInfo mi = new MessageInfo();
+			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
-				handleDrop(dm);
+				emitter.emit(EVENT_DROP_MESSAGE_RECEIVED, dm);
 			}
 		}
 	}
@@ -117,7 +137,7 @@ public class DropController {
 	}
 
 
-	private final static Logger logger = LogManager.getLogger(DropController.class.getName());
+	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
 
 	/**
 	 * Sends the message and waits for acknowledgement.
@@ -129,8 +149,7 @@ public class DropController {
 	 * @return DropResult which tell you the state of the sending
 	 * @throws QblDropPayloadSizeException 
 	 */
-	public DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts)
-			throws QblDropPayloadSizeException {
+	private DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
 		return sendAndForget(message, contacts);
 	}
 
@@ -142,7 +161,7 @@ public class DropController {
 	 * @return DropResult which tell you the state of the sending
 	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
+	private <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
 		DropResult result;
 		
 		result = new DropResult();
@@ -162,8 +181,9 @@ public class DropController {
 	 * @return DropResultContact which tell you the state of the sending
 	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact)
-			throws QblDropPayloadSizeException {
+	private <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact) throws QblDropPayloadSizeException {
+		DropHTTP http = new DropHTTP();
+
 		DropMessage<T> dm = new DropMessage<T>(contact.getContactOwner(), object);
 
 		return sendAndForget(dm, contact);
@@ -177,8 +197,7 @@ public class DropController {
 	 * @return DropResultContact which tell you the state of the sending
 	 * @throws QblDropPayloadSizeException 
 	 */
-	public <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact)
-			throws QblDropPayloadSizeException {
+	private <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact) throws QblDropPayloadSizeException {
 		DropResultContact result;
 		DropHTTP http;
 
