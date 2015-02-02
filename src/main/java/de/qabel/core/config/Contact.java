@@ -73,7 +73,6 @@ public class Contact extends Entity {
 
 	/**
 	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
-	 * @param owner
 	 */
 	public Contact(Identity owner, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
 		super(dropUrls);
@@ -85,7 +84,6 @@ public class Contact extends Entity {
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
 	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
-	 * @param ownerKeyId
 	 */
 	protected Contact(String ownerKeyId, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
 		super(dropUrls);
