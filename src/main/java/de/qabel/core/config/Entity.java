@@ -12,6 +12,10 @@ import de.qabel.core.crypto.QblPrimaryPublicKey;
 import de.qabel.core.crypto.QblSignPublicKey;
 import de.qabel.core.drop.DropURL;
 
+/**
+ * Entity is an abstract class for a participant in a Qabel Drop
+ * communication.
+ */
 public abstract class Entity extends SyncSettingItem {
 	private final Set<DropURL> dropUrls;
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); // TODO: Will

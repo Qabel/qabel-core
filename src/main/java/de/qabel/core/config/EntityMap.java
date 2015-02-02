@@ -6,6 +6,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * EntityMaps provide funcionality to lookup an Enity based
+ * on its key identifier.
+ * 
+ * @see Entity
+ */
 abstract public class EntityMap<T extends Entity> {
 	private final Map<String, T> entities = new HashMap<>();
 
