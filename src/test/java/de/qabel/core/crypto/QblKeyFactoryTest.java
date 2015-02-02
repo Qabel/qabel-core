@@ -117,16 +117,16 @@ public class QblKeyFactoryTest {
 		assertEquals(primaryModulus, qppk.getModulus());
 		assertEquals(primaryPublicExponent, qppk.getPublicExponent());
 
-		assertEquals(encModulus, qppk.getEncPublicKey().getModulus());
-		assertEquals(encPublicExponent, qppk.getEncPublicKey()
+		assertEquals(encModulus, qppk.getEncPublicKeys().get(0).getModulus());
+		assertEquals(encPublicExponent, qppk.getEncPublicKeys().get(0)
 				.getPublicExponent());
-		assertEquals(encPrimaryKeySignature, qppk.getEncPublicKey()
+		assertEquals(encPrimaryKeySignature, qppk.getEncPublicKeys().get(0)
 				.getPrimaryKeySignature());
 
-		assertEquals(signModulus, qppk.getSignPublicKey().getModulus());
-		assertEquals(signPublicExponent, qppk.getSignPublicKey()
+		assertEquals(signModulus, qppk.getSignPublicKeys().get(0).getModulus());
+		assertEquals(signPublicExponent, qppk.getSignPublicKeys().get(0)
 				.getPublicExponent());
-		assertEquals(signPrimaryKeySignature, qppk.getSignPublicKey()
+		assertEquals(signPrimaryKeySignature, qppk.getSignPublicKeys().get(0)
 				.getPrimaryKeySignature());
 	}
 }
