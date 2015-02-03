@@ -8,6 +8,7 @@ notifications:
   irc: "chat.freenode.net#qabel"
 
 install:
+ - cd ..
  - redis-server &
  - sudo apt-get install python-pip npm nodejs
  - sudo pip install virtualenv
@@ -15,15 +16,12 @@ install:
  - virtualenv qabel-drop
  - source qabel-drop/bin/activate
  - pip install -r qabel-drop/requirements.txt
- - cd qabel-drop
- - ./drop_server.py &
- - cd ..
  - git clone https://github.com/Qabel/qabel-storage.git
  - cd qabel-storage
  - npm install
  - mkdir data
- - node app.js &
  - cd ..
+ - cd qabel-core
 
 script:
  - ./gradlew check
