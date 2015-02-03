@@ -44,16 +44,16 @@ public class CryptoUtils {
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
 	private final static String HMAC_ALGORITHM = "HMac/" + "SHA512";
-	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
-	private final static String SYMM_KEY_ALGORITHM = "AES";
+	final static int RSA_SIGNATURE_SIZE_BYTE = 256;
+	final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
 	private final static int SYMM_IV_SIZE_BYTE = 16;
-	private final static int SYMM_NONCE_SIZE_BYTE = 12;
+	final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
-	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
+	final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
 	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
 			.getName());
@@ -177,7 +177,7 @@ public class CryptoUtils {
 	 *            Signature key to sign with
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
+	byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaSign(sha512Sum, signatureKey);
 	}
@@ -259,7 +259,7 @@ public class CryptoUtils {
 	 * @return is signature valid
 	 * @throws InvalidKeyException
 	 */
-	private boolean validateSignature(byte[] message, byte[] signature,
+	boolean validateSignature(byte[] message, byte[] signature,
 			QblSignPublicKey signPublicKey) throws InvalidKeyException {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaValidateSignature(sha512Sum, signature,
@@ -276,7 +276,7 @@ public class CryptoUtils {
 	 * @return encrypted messsage. Can be null if error occurred.
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaEncryptForRecipient(byte[] message,
+	byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) throws InvalidKeyException {
 		byte[] cipherText = null;
 		try {
@@ -304,7 +304,7 @@ public class CryptoUtils {
 	 * @return decrypted ciphertext, or null if undecryptable
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
+	byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
 			throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
@@ -456,11 +456,13 @@ public class CryptoUtils {
 		}
 		return plainText;
 	}
-
+	
 	/**
 	 * Hybrid encrypts a String message for a recipient. The String message is
 	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
 	 * recipients public key. The cipher text gets signed.
+	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
 	 * 
 	 * @param message
 	 *            String message to encrypt
@@ -472,11 +474,14 @@ public class CryptoUtils {
 	 * @return hybrid encrypted String message
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public byte[] encryptHybridAndSign(String message,
 			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
 			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		SecretKey aesKey = keyGenerator.generateKey();
+		
+		// pad message
 
 		try {
 			bs.write(rsaEncryptForRecipient(aesKey.getEncoded(), recipient));
@@ -494,6 +499,8 @@ public class CryptoUtils {
 	 * using the own private key. The decrypted AES key is used to decrypt the
 	 * String message
 	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
+	 * 
 	 * @param cipherText
 	 *            hybrid encrypted String message
 	 * @param privKey
@@ -504,6 +511,7 @@ public class CryptoUtils {
 	 *         signature is invalid
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
 			QblSignPublicKey signatureKey) throws InvalidKeyException {
