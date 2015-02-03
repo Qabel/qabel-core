@@ -18,7 +18,7 @@ repositories {
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
-	compile 'com.google.code.gson:gson:2.+' 
+	compile 'com.google.code.gson:gson:2.+'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.+'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.+'
 	compile group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.51'
@@ -26,13 +26,47 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+	gradleVersion = '1.12'
 }
 sourceSets {
 	main {
-	    resources.srcDirs += ['src/resources/config/'] 
+		resources.srcDirs += ['src/resources/config/']
 	}
 	test {
-		resources.srcDirs += ['src/resources/config/'] 
+		resources.srcDirs += ['src/resources/config/']
 	}
+}
+
+class ExecWait extends DefaultTask {
+	String command
+	String ready
+	String directory
+
+	@TaskAction
+	def spawnProcess() {
+
+		ProcessBuilder builder = new ProcessBuilder(command.split(' '))
+		builder.redirectErrorStream(true)
+		builder.directory(new File(directory))
+		Process process = builder.start()
+
+		InputStream stdout = process.getInputStream()
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stdout))
+	}
+}
+
+task startDropServer(type: ExecWait) {
+	command './drop_server.py &'
+	ready 'Drop server running.'
+	directory '../qabel-drop/'
+}
+
+task startDropStorage(type: ExecWait) {
+	command 'node app.js &'
+	ready 'Storage server running.'
+	directory '../qabel-storage/'
+}
+
+test {
+	dependsOn startDropServer, startDropStorage
 }
