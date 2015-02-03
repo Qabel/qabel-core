@@ -62,7 +62,7 @@ task startDropServer(type: ExecWait) {
 }
 
 task startDropStorage(type: ExecWait) {
-	command 'sh $(which nodejs || which node) app.js &'
+	command 'node app.js &'
 	ready 'Storage server running.'
 	directory '../qabel-storage/'
 }
