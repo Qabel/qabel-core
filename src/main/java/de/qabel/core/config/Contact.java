@@ -4,6 +4,7 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.drop.DropURL;
 
 import java.security.InvalidKeyException;
+import java.security.SecureRandom;
 import java.util.*;
 
 /** 
@@ -82,15 +83,19 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns the public encryption key of the contact
-	 * @return QblEncPublicKey
+	 * Returns a list of the public encryption keys of the contact
+	 * @return List<QblEncPublicKey>
 	 */
-	@Deprecated
-	public QblEncPublicKey getEncryptionPublicKey()
-	{
-		return primaryPublicKey.getEncPublicKey();
+	public QblEncPublicKey getEncryptionPublicKeyShuffle() {
+	    SecureRandom random;
+	    List<QblEncPublicKey> list;
+	    
+	    list = this.getEncryptionPublicKeys();
+	    random = new SecureRandom();
+
+	    return (list.get(random.nextInt(list.size())));
 	}
-	
+
 	/**
 	 * Returns a list of the public encryption keys of the contact
 	 * @return List<QblEncPublicKey>
@@ -107,16 +112,6 @@ public class Contact {
 	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
 	{
 		primaryPublicKey.attachEncPublicKey(key);
-	}
-	
-	/**
-	 * Returns the public signing key of the contact
-	 * @return QblSignPublicKey
-	 */
-	@Deprecated
-	public QblSignPublicKey getSignaturePublicKey()
-	{
-		return primaryPublicKey.getSignPublicKey();
 	}
 	
 	/**

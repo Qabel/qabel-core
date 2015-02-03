@@ -81,7 +81,7 @@ public class DropHTTPTest {
 	public void postMessageTooBig() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
-		char[] chars = new char[2001];
+		char[] chars = new char[3000];
 		Arrays.fill(chars, 'a');
 		// When
 		int responseCode = dHTTP.send(this.workingUrl,

@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -88,6 +89,11 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		signKeyPairs.add(qskp);
 		signPrivateKeys.add(qskp.getRSAPrivateKey());
 		signPublicKeys.add(qskp.getQblSignPublicKey());
+		try {
+			qblPrimaryPublicKey.attachSignPublicKey(qskp.getQblSignPublicKey());
+		} catch (InvalidKeyException e) {
+			new RuntimeException("Newly created subkey has invalid signature.", e);
+		}
 	}
 
 	/**
@@ -104,6 +110,11 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		encKeyPairs.add(qekp);
 		encPrivateKeys.add(qekp.getRSAPrivateKey());
 		encPublicKeys.add(qekp.getQblEncPublicKey());
+		try {
+			qblPrimaryPublicKey.attachEncPublicKey(qekp.getQblEncPublicKey());
+		} catch (InvalidKeyException e) {
+			new RuntimeException("Newly created subkey has invalid signature.", e);
+		}
 	}
 
 	public List<QblEncKeyPair> getEncKeyPairs() {
@@ -124,16 +135,6 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	/**
-	 * Returns an encryption public key
-	 * 
-	 * @return encryption public key
-	 */
-	@Deprecated
-	public QblEncPublicKey getQblEncPublicKey() {
-		return encKeyPairs.get(0).getQblEncPublicKey();
-	}
-	
-	/**
 	 * Returns all encryption public keys
 	 * 
 	 * @return encryption public keys
@@ -142,16 +143,6 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 		return encPublicKeys;
 	}
 
-	/**
-	 * Returns a signature public key
-	 * 
-	 * @return signature public key
-	 */
-	@Deprecated
-	public QblSignPublicKey getQblSignPublicKey() {
-		return signKeyPairs.get(0).getQblSignPublicKey();
-	}
-	
 	/**
 	 * Returns all signature public keys
 	 * 
@@ -162,32 +153,12 @@ public class QblPrimaryKeyPair extends QblKeyPair {
 	}
 
 	/**
-	 * Returns an encryption private key
-	 * 
-	 * @return encryption private key
-	 */
-	@Deprecated
-	public RSAPrivateKey getQblEncPrivateKey() {
-		return encKeyPairs.get(0).getRSAPrivateKey();
-	}
-	
-	/**
 	 * Returns all encryption private keys
 	 * 
 	 * @return encryption private keys
 	 */
 	public List<RSAPrivateKey> getQblEncPrivateKeys() {
 		return encPrivateKeys;
-	}
-
-	/**
-	 * Returns a signature private key
-	 * 
-	 * @return signature private key
-	 */
-	@Deprecated
-	public RSAPrivateKey getQblSignPrivateKey() {
-		return signKeyPairs.get(0).getRSAPrivateKey();
 	}
 	
 	/**
