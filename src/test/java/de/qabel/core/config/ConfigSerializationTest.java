@@ -53,15 +53,11 @@ public class ConfigSerializationTest {
 		syncedSettings.getIdentities().add(identity);
 		
 		//generate and add a "storage_servers" entry
-		try {
-			StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
-			syncedSettings.getStorageServers().add(storageServer);
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
+		StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
+		syncedSettings.getStorageServers().add(storageServer);
 		
 		//generate and add a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().add(new StorageVolume("publicIdentifier", "token", "revokeToken"));
+		syncedSettings.getStorageVolumes().add(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 		
 		
