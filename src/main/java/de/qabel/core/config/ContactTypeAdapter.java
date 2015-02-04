@@ -46,9 +46,11 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		//TODO: write module data
 		out.endObject();
 
-		out.name("sync");
-		TypeAdapter<SyncSettingItem> syncItemAdapter = gson.getAdapter(SyncSettingItem.class);
-		syncItemAdapter.write(out, value);
+		// SyncSettingItem properties
+		out.name("id").value(value.getId());
+		out.name("created").value(value.getCreated());
+		out.name("updated").value(value.getUpdated());
+		out.name("deleted").value(value.getDeleted());
 
 		out.endObject();
 		
@@ -65,7 +67,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		String contactOwnerKeyId = null;
 		QblPrimaryPublicKey qppk = null;
 		Collection<DropURL> dropURLs = null;
-		SyncSettingItem syncItem = null;
+		SyncSettingItem syncItem = new SyncSettingItem();
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
@@ -94,9 +96,18 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				//TODO: read module data
 				in.endObject();
 				break;
-			case "sync":
-				TypeAdapter<SyncSettingItem> syncItemAdapter = new Gson().getAdapter(SyncSettingItem.class);
-				syncItem = syncItemAdapter.read(in);
+			// SyncSettingItem properties
+			case "id":
+				syncItem.setId(in.nextInt());
+				break;
+			case "created":
+				syncItem.setCreated(in.nextLong());
+				break;
+			case "updated":
+				syncItem.setUpdated(in.nextLong());
+				break;
+			case "deleted":
+				syncItem.setDeleted(in.nextLong());
 				break;
 			}
 		}
@@ -108,8 +119,11 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		
 		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
 
-		// TODO copy all sync item properties
+		// copy all sync item properties
+		contact.setId(syncItem.getId());
 		contact.setCreated(syncItem.getCreated());
+		contact.setUpdated(syncItem.getUpdated());
+		contact.setDeleted(syncItem.getDeleted());
 		
 		return contact;
 	}
