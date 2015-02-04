@@ -11,11 +11,17 @@ import org.meanbean.lang.EquivalentFactory;
  */
 class StorageVolumeEquivalentTestFactory implements EquivalentFactory<StorageVolume> {
 	long created = new Date().getTime();
+	StorageServer server;
 
+	StorageVolumeEquivalentTestFactory() {
+		server = new StorageServerEquivalentTestFactory().create();
+	}
+
+	
 	@Override
 	public StorageVolume create() {
-		StorageVolume storageVolume = new StorageVolume("publicID", "token", "revokeToken");
-		storageVolume.setStorageServerId(1);
+		StorageVolume storageVolume;
+		storageVolume = new StorageVolume(server, "publicID", "token", "revokeToken");
 		storageVolume.setCreated(created);
 		return storageVolume;
 	}

@@ -46,10 +46,10 @@ public class CryptoUtilsTest {
 	@Test
 	public void encryptHybridTest() throws BadPaddingException, InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
+				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 
 		assertEquals(
-				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKey()),
+				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKeys().get(0)),
 				jsonTestString);
 
 	}
@@ -57,10 +57,10 @@ public class CryptoUtilsTest {
 	@Test
 	public void encryptHybridTestInvalidSignature() throws InvalidKeyException {
 		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
+				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 
 		assertNull(cu.decryptHybridAndValidateSignature(cipherText, qpkp,
-				qpkp2.getQblSignPublicKey()));
+				qpkp2.getQblSignPublicKeys().get(0)));
 	}
 
 	@Test
@@ -68,9 +68,9 @@ public class CryptoUtilsTest {
 		// exception.expect(BadPaddingException.class);
 
 		byte[] ciphertext = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKey(), qpkp.getSignKeyPairs().get(0));
+				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
 		assertNull(cu.decryptHybridAndValidateSignature(ciphertext, qpkp2,
-				qpkp.getQblSignPublicKey()));
+				qpkp.getQblSignPublicKeys().get(0)));
 
 	}
 
@@ -178,7 +178,7 @@ public class CryptoUtilsTest {
 
 		FileInputStream cipherStream = new FileInputStream(testFileEnc);
 		
-		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec.getAbsolutePath(), key);
+		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec, key);
 
 		try {
 			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),

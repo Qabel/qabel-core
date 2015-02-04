@@ -62,18 +62,8 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 		return false;
 	}
 	
-	@Deprecated
-	public QblEncPublicKey getEncPublicKey(){
-		return encPublicKeys.get(0);
-	}
-	
 	public List<QblEncPublicKey> getEncPublicKeys(){
 		return encPublicKeys;
-	}
-
-	@Deprecated
-	public QblSignPublicKey getSignPublicKey(){
-		return signPublicKeys.get(0);
 	}
 
 	public List<QblSignPublicKey> getSignPublicKeys(){

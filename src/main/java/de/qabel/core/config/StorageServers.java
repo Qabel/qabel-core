@@ -1,6 +1,8 @@
 package de.qabel.core.config;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -15,14 +17,18 @@ public class StorageServers {
 	 *           storageServers        &gt;       storageServer
 	 * </pre>
 	 */
-	private final Set<StorageServer> storageServers = new HashSet<StorageServer>();
+	private final Map<String,StorageServer> storageServers = new HashMap<String,StorageServer>();
 
 	/**
 	 * Returns an unmodifiable set of contained storage servers
 	 * @return Set<StorageServer>
 	 */
 	public Set<StorageServer> getStorageServers() {
-		return Collections.unmodifiableSet(this.storageServers);
+		return Collections.unmodifiableSet(new HashSet<StorageServer>(this.storageServers.values()));
+	}
+	
+	protected StorageServer getStorageServerByUrl(String serverUrl) {
+		return this.storageServers.get(serverUrl);
 	}
 	
 	/**
@@ -31,7 +37,11 @@ public class StorageServers {
 	 * @return true if successfully added, false if already contained
 	 */
 	public boolean add(StorageServer storageServer) {
-		return this.storageServers.add(storageServer);
+		if (this.storageServers.containsValue(storageServer)) {
+			return false;
+		}
+		this.storageServers.put(storageServer.getUrl().toString(), storageServer);
+		return true;
 	}
 
 	/**
@@ -40,7 +50,8 @@ public class StorageServers {
 	 * @return true if storageServer was contained in list, false if not
 	 */
 	public boolean remove(StorageServer storageServer) {
-		return this.storageServers.remove(storageServer);
+		return storageServer != null
+				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
 	}
 
 	@Override

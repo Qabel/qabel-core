@@ -258,6 +258,9 @@ public class ConfigEqualsTest {
 	@Test
 	public void storageVolumeEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
-		tester.testEqualsMethod(new StorageVolumeEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+		.overrideFactory("storageServer", new StorageServerTestFactory())
+		.build();
+		tester.testEqualsMethod(new StorageVolumeEquivalentTestFactory(), config);
 	}
 }

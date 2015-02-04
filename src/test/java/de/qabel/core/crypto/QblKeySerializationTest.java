@@ -30,8 +30,8 @@ public class QblKeySerializationTest {
 		QblKeyFactory kf = QblKeyFactory.getInstance();
 		QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
 		QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
-		qppk.attachEncPublicKey(qpkp.getQblEncPublicKey());
-		qppk.attachSignPublicKey(qpkp.getQblSignPublicKey());
+		qppk.attachEncPublicKey(qpkp.getQblEncPublicKeys().get(0));
+		qppk.attachSignPublicKey(qpkp.getQblSignPublicKeys().get(0));
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(QblPrimaryPublicKey.class, new QblPrimaryPublicKeyTypeAdapter());
 		Gson gson = builder.setPrettyPrinting().create();

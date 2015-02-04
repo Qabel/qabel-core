@@ -1,7 +1,10 @@
 package de.qabel.core.config;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.google.gson.JsonParseException;
 
 public class SyncedSettings {
 	/**
@@ -185,6 +188,28 @@ public class SyncedSettings {
 	 */
 	public StorageVolumes getStorageVolumes() {
 		return this.storageVolumes;
+	}
+
+	/**
+	 * Serializes this class to a Json String
+	 * @return Json String
+	 * @throws IOException
+	 */
+	public String toJson() throws IOException {
+		SyncedSettingsTypeAdapter adapter = new SyncedSettingsTypeAdapter();
+		return adapter.toJson(this);
+	}
+
+	/**
+	 * Deserializes a Json String
+	 * @param json
+	 * @return SyncedSettings
+	 * @throws IOException
+	 * @throws JsonParseException
+	 */
+	public static SyncedSettings fromJson(String json) throws IOException, JsonParseException {
+		SyncedSettingsTypeAdapter adapter = new SyncedSettingsTypeAdapter();
+		return adapter.fromJson(json);
 	}
 
 	@Override

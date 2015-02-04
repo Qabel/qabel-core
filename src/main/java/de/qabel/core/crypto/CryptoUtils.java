@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -44,16 +45,16 @@ public class CryptoUtils {
 	private final static String SIGNATURE_ALGORITHM = "RSASSA-PSS";
 	private final static String RSA_CIPHER_ALGORITM = "RSA/ECB/OAEPWITHSHA1ANDMGF1PADDING";
 	private final static String HMAC_ALGORITHM = "HMac/" + "SHA512";
-	private final static int RSA_SIGNATURE_SIZE_BYTE = 256;
-	private final static String SYMM_KEY_ALGORITHM = "AES";
+	final static int RSA_SIGNATURE_SIZE_BYTE = 256;
+	final static String SYMM_KEY_ALGORITHM = "AES";
 	private final static String SYMM_TRANSFORMATION = "AES/CTR/NoPadding";
 	private final static String SYMM_GCM_TRANSFORMATION = "AES/GCM/NoPadding";
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
 	private final static int SYMM_IV_SIZE_BYTE = 16;
-	private final static int SYMM_NONCE_SIZE_BYTE = 12;
+	final static int SYMM_NONCE_SIZE_BYTE = 12;
 	private final static int AES_KEY_SIZE_BYTE = 32;
 	private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
-	private final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
+	final static int ENCRYPTED_AES_KEY_SIZE_BYTE = 256;
 
 	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
 			.getName());
@@ -177,7 +178,7 @@ public class CryptoUtils {
 	 *            Signature key to sign with
 	 * @return Signature over SHA512 sum of message
 	 */
-	private byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
+	byte[] createSignature(byte[] message, QblSignKeyPair signatureKey) {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaSign(sha512Sum, signatureKey);
 	}
@@ -259,7 +260,7 @@ public class CryptoUtils {
 	 * @return is signature valid
 	 * @throws InvalidKeyException
 	 */
-	private boolean validateSignature(byte[] message, byte[] signature,
+	boolean validateSignature(byte[] message, byte[] signature,
 			QblSignPublicKey signPublicKey) throws InvalidKeyException {
 		byte[] sha512Sum = getSHA512sum(message);
 		return rsaValidateSignature(sha512Sum, signature,
@@ -276,7 +277,7 @@ public class CryptoUtils {
 	 * @return encrypted messsage. Can be null if error occurred.
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaEncryptForRecipient(byte[] message,
+	byte[] rsaEncryptForRecipient(byte[] message,
 			QblEncPublicKey reciPubKey) throws InvalidKeyException {
 		byte[] cipherText = null;
 		try {
@@ -304,7 +305,7 @@ public class CryptoUtils {
 	 * @return decrypted ciphertext, or null if undecryptable
 	 * @throws InvalidKeyException
 	 */
-	private byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
+	byte[] rsaDecrypt(byte[] cipherText, RSAPrivateKey privKey)
 			throws InvalidKeyException {
 		byte[] plaintext = null;
 		try {
@@ -456,11 +457,13 @@ public class CryptoUtils {
 		}
 		return plainText;
 	}
-
+	
 	/**
 	 * Hybrid encrypts a String message for a recipient. The String message is
 	 * encrypted with a random AES key. The AES key gets RSA encrypted with the
 	 * recipients public key. The cipher text gets signed.
+	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
 	 * 
 	 * @param message
 	 *            String message to encrypt
@@ -472,11 +475,14 @@ public class CryptoUtils {
 	 * @return hybrid encrypted String message
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public byte[] encryptHybridAndSign(String message,
 			QblEncPublicKey recipient, QblSignKeyPair signatureKey)
 			throws InvalidKeyException {
 		ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		SecretKey aesKey = keyGenerator.generateKey();
+		
+		// pad message
 
 		try {
 			bs.write(rsaEncryptForRecipient(aesKey.getEncoded(), recipient));
@@ -494,6 +500,8 @@ public class CryptoUtils {
 	 * using the own private key. The decrypted AES key is used to decrypt the
 	 * String message
 	 * 
+	 * This function is deprecated. Use an AbstractBinaryDropMessage instead.
+	 * 
 	 * @param cipherText
 	 *            hybrid encrypted String message
 	 * @param privKey
@@ -504,6 +512,7 @@ public class CryptoUtils {
 	 *         signature is invalid
 	 * @throws InvalidKeyException
 	 */
+	@Deprecated
 	public String decryptHybridAndValidateSignature(
 			byte[] cipherText, QblPrimaryKeyPair privKey,
 			QblSignPublicKey signatureKey) throws InvalidKeyException {
@@ -554,13 +563,14 @@ public class CryptoUtils {
 		}
 
 		// Decrypt RSA encrypted AES key and decrypt encrypted data with AES key
-		byte[] rawAesKey = rsaDecrypt(encryptedAesKey,
-				privKey.getQblEncPrivateKey());
-		if (rawAesKey != null) {
-			logger.debug("Message is OK!");
-			return new String(decryptSymmetric(aesCipherText, 
-					new SecretKeySpec(rawAesKey, SYMM_KEY_ALGORITHM)));
-		}
+		for (RSAPrivateKey key : privKey.getQblEncPrivateKeys()) {
+            byte[] rawAesKey = rsaDecrypt(encryptedAesKey, key);
+            if (rawAesKey != null) {
+                logger.debug("Message is OK!");
+                return new String(decryptSymmetric(aesCipherText,
+                        new SecretKeySpec(rawAesKey, SYMM_KEY_ALGORITHM)));
+            }
+        }
 		return null;
 	}
 
@@ -740,9 +750,10 @@ public class CryptoUtils {
 	 * @return true if encryption worked as expected, else false
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws FileNotFoundException 
 	 */
-	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
-			throws InvalidKeyException {
+	public boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key)
+			throws InvalidKeyException, FileNotFoundException {
 		return encryptFileAuthenticatedSymmetric(file, outputStream, key, null);
 	}
 
@@ -764,21 +775,34 @@ public class CryptoUtils {
 	 * @return true if encryption worked as expected, else false
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws FileNotFoundException 
 	 */
-	boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
-			throws InvalidKeyException {
+	public boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, SecretKey key, byte[] nonce)
+			throws InvalidKeyException, FileNotFoundException {
+		FileInputStream fileInputStream = new FileInputStream(file);
+		return this.encryptStreamAuthenticatedSymmetric(fileInputStream, outputStream, key, nonce);
+	}	
+	
+	/**
+	 * Encrypts an InputStream to an OutputStream. The OutputStream gets the result
+	 * immediately while encrypting. The step size of every separate decryption
+	 * step is defined in SYMM_GCM_READ_SIZE_BYTE. Nonce of size
+	 * SYMM_NONCE_SIZE_BIT is taken as nonce directly, else a random nonce is
+	 * generated.
+	 * 
+	 * @param inputStream InputStream that will be encrypted
+	 * @param outputStream OutputStream where ciphertext is streamed to
+	 * @param key Key which is used to en-/decrypt
+	 * @param nonce Random value which is concatenated to a counter
+	 * @return true if encryption worked as expected, else false
+	 * @throws InvalidKeyException if key is invalid
+	 */
+	public boolean encryptStreamAuthenticatedSymmetric(InputStream inputStream, OutputStream outputStream,
+			SecretKey key, byte[] nonce) throws InvalidKeyException {
 		IvParameterSpec iv;
 		DataOutputStream cipherText = new DataOutputStream(outputStream);
-		FileInputStream fileInputStream;
 		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
 		int readBytes;
-
-		try {
-			fileInputStream = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			logger.debug("Encryption: File for encryption was not found.", e);
-			return false;
-		}
 
 		if (nonce == null || nonce.length != SYMM_NONCE_SIZE_BYTE) {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
@@ -795,12 +819,11 @@ public class CryptoUtils {
 
 		try {
 			cipherText.write(nonce);
-			while ((readBytes = fileInputStream.read(temp, 0,
-					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+			while ((readBytes = inputStream.read(temp)) > 0) {
 				cipherText.write(gcmCipher.update(temp, 0, readBytes));
 			}
 			cipherText.write(gcmCipher.doFinal());
-			fileInputStream.close();
+			inputStream.close();
 		} catch (IllegalBlockSizeException e) {
 			// Should not happen
 			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
@@ -815,10 +838,10 @@ public class CryptoUtils {
 	}
 
 	/**
-	 * Decryptes ciphertext from an InputStream to a file. The decrypted content
-	 * is written to the file immediately. If decryption was successful a file
+	 * Decrypts ciphertext from an InputStream to a file. The decrypted content
+	 * is written to the file immediately. If decryption was successful true
 	 * is returned, if authentication tag validation fails or another error
-	 * occurs null is returned.
+	 * occurs false is returned.
 	 * 
 	 * @param inputStream
 	 *            InputStream from where the ciphertext is read
@@ -826,62 +849,67 @@ public class CryptoUtils {
 	 *            Pathname where the decrypted file will be stored
 	 * @param key
 	 *            Key which is used to en-/decrypt the file
-	 * @return The decrypted file or null if authentication tag validation
-	 *         failed or another error occured
+	 * @return true if successfully decrypted or false if authentication tag validation
+	 *         failed or another error occurred
 	 * @throws InvalidKeyException
 	 *             if key is invalid
+	 * @throws IOException
 	 */
-	File decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, String pathName, SecretKey key)
-			throws InvalidKeyException {
-		FileOutputStream fileOutput = null;
+	public boolean decryptFileAuthenticatedSymmetricAndValidateTag(InputStream inputStream, File file, SecretKey key)
+			throws InvalidKeyException, IOException {
 		byte[] nonce = new byte[SYMM_NONCE_SIZE_BYTE];
 		IvParameterSpec iv;
 		byte[] temp = new byte[SYMM_GCM_READ_SIZE_BYTE];
+		BufferedInputStream bufferedInput = new BufferedInputStream(inputStream);
 		int readBytes;
 
-		if (pathName == null) {
-			// TODO generate a temp folder where files can be stored
-			logger.debug("TODO generate a temp folder where files can be stored");
-		}
-
 		try {
-			fileOutput = new FileOutputStream(pathName);
-		} catch (FileNotFoundException e) {
-			logger.debug("Decryption: File " + pathName + " was not found/can not be written to.", e);
-			// TODO like above: create temp file
-		}
-
-		try {
-			inputStream.read(nonce);
+			bufferedInput.read(nonce);
 		} catch (IOException e) {
 			logger.debug("Decryption: Ciphertext (in this case the nonce) can not be read.", e);
-			return null;
+			throw e;
 		}
 
 		iv = new IvParameterSpec(nonce);
 		try {
 			gcmCipher.init(Cipher.DECRYPT_MODE, key, iv);
-			while ((readBytes = inputStream.read(temp, 0,
-					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
-				fileOutput.write(gcmCipher.update(temp, 0, readBytes));
-			}
-			fileOutput.write(gcmCipher.doFinal());
-			fileOutput.close();
 		} catch (InvalidAlgorithmParameterException e) {
-			logger.debug("Decryption: Wrong parameters for file decryption.", e);
-			return null;
-		} catch (IllegalBlockSizeException e) {
-			logger.debug("Decryption: File was encrypted with wrong block size.", e);
-			return null;
-		} catch (BadPaddingException e) {
-			logger.error("Decryption: Authentication tag is invalid!", e);
-			return null;
-		} catch (IOException e) {
-			logger.debug("Decryption: Input/output Stream cannot be written/read to/from.", e);
-			return null;
+			throw new RuntimeException("Decryption: Wrong parameters for file decryption.", e);
+		}
+		
+		FileOutputStream fileOutput = new FileOutputStream(file);
+		try {
+			while ((readBytes = bufferedInput.read(temp, 0,
+					SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+				/*
+				 * reading from a buffered input stream ensures that enough bytes
+				 * are read to fulfill the block cipher min. length requirements.
+				 */
+				byte[] encBytes = gcmCipher.update(temp, 0, readBytes);
+				if (encBytes == null) {
+					logger.error("Input too short for block cipher. Input length was " + readBytes);
+					throw new RuntimeException("Decryption failed due to unexpected input length.");
+				}
+				fileOutput.write(encBytes);
+			}
+			try {
+				fileOutput.write(gcmCipher.doFinal());
+			} catch (IllegalBlockSizeException e) {
+				logger.debug("Decryption: File was encrypted with wrong block size.", e);
+				// truncate file to avoid leakage of incomplete or unauthenticated data
+				fileOutput.getChannel().truncate(0);
+				return false;
+			} catch (BadPaddingException e) {
+				logger.error("Decryption: Authentication tag is invalid!", e);
+				// truncate file to avoid leakage of incomplete or unauthenticated data
+				fileOutput.getChannel().truncate(0);
+				return false;
+			}
+		} finally {
+			fileOutput.close();
 		}
 
-		return new File(pathName);
+		return true;
 	}
 	
 	/**

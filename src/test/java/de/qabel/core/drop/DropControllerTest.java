@@ -8,6 +8,7 @@ import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
 import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.*;
 
@@ -58,7 +59,7 @@ public class DropControllerTest {
     }
 
     @Test
-    public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL {  
+    public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {  
         TestMessage m = new TestMessage("baz");
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
@@ -71,7 +72,7 @@ public class DropControllerTest {
     }
 
     @Test
-    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
+    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {
         TestMessage m = new TestMessage("baz");
 
         Assert.assertTrue(controller.sendAndForget(m, recipientContact).isSuccess());
@@ -80,7 +81,7 @@ public class DropControllerTest {
     }
 
     @Test
-    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {    	
+    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {    	
         TestMessage m = new TestMessage("baz");
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
@@ -91,54 +92,22 @@ public class DropControllerTest {
         retrieveTest();
     }
 
-    @Test
-    public void addingAndRemovingHeader() {
-        TestMessage m = new TestMessage("baz");
-
-        DropMessage<TestMessage> dm = new DropMessage<>(
-        		new Identity("foo", new ArrayList<DropURL>(),
-        				QblKeyFactory.getInstance().generateQblPrimaryKeyPair()), m);
-
-        GsonBuilder gb = new GsonBuilder();
-        gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
-        gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
-        Gson gson = gb.create();
-
-        String message = gson.toJson(dm);
-        byte[] messageBytes = message.getBytes();
-        //Adding header
-        byte[] headerAndMessage = controller.concatHeaderAndEncryptedMessage((byte) 1, messageBytes);
-        //Removing header
-        byte[] messageBytesRemovedHeader = controller.removeHeaderFromCipherMessage(headerAndMessage);
-        DropMessage<TestMessage> newMessage = gson.fromJson(new String(messageBytesRemovedHeader), DropMessage.class);
-        newMessage.registerSender(dm.getSender());
-
-        Assert.assertEquals(messageBytes.length + 1, headerAndMessage.length);
-        Assert.assertEquals(headerAndMessage[0], (byte) 1);
-        Assert.assertArrayEquals(messageBytes, messageBytesRemovedHeader);
-
-        Assert.assertEquals(dm.getCreationDate(), newMessage.getCreationDate());
-        Assert.assertEquals(dm.getSender(), newMessage.getSender());
-        Assert.assertEquals(dm.getAcknowledgeID(), newMessage.getAcknowledgeID());
-        Assert.assertEquals(dm.getModelObject(), newMessage.getModelObject());
-    }
-
     public void retrieveTest() throws MalformedURLException, QblDropInvalidURL {
-        Collection<DropMessage> result = controller.retrieve(
+        Collection<DropMessage<?>> result = controller.retrieve(
         		new DropURL(cUrl).getUrl(), contacts.getContacts());
         //We expect at least one drop message from sender
         Assert.assertTrue(result.size() >= 1);
-        for (DropMessage<ModelObject> dm : result){
+        for (DropMessage<?> dm : result){
         	 Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
         }
     }
 
     public void retrieveAutoTest() throws MalformedURLException, QblDropInvalidURL {
-        Collection<DropMessage> result = controller.retrieve(
+        Collection<DropMessage<?>> result = controller.retrieve(
         		new DropURL(cUrl).getUrl(), contacts.getContacts());
         //We expect at least one drop message from sender
         Assert.assertTrue(result.size() >= 1);
-        for (DropMessage<ModelObject> dm : result){
+        for (DropMessage<?> dm : result){
             Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
         }
     }
