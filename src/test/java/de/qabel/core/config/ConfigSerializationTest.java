@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -25,7 +26,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 public class ConfigSerializationTest {	
 	
 	@Test
-	public void syncedSettingsTest() throws QblDropInvalidURL, MalformedURLException {
+	public void syncedSettingsTest() throws QblDropInvalidURL, IOException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
 		//generate and add an "accounts" entry
@@ -59,31 +60,19 @@ public class ConfigSerializationTest {
 		//generate and add a "storage_volumes" entry
 		syncedSettings.getStorageVolumes().add(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
-		
-		
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(SyncedSettings.class, new SyncedSettingsTypeAdapter());
-		Gson gson = builder.create();
-		
-		System.out.println("Synced settings: " + gson.toJson(syncedSettings));
-		SyncedSettings deserializedSyncedSettings = gson.fromJson(gson.toJson(syncedSettings), SyncedSettings.class);
-		System.out.println("Deserialized synced settings: " + gson.toJson(deserializedSyncedSettings));
+
+		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
 		assertEquals(0, 
-		        gson.toJson(syncedSettings).compareTo(gson.toJson(deserializedSyncedSettings)));
+				syncedSettings.toJson().compareTo(deserializedSyncedSettings.toJson()));
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
 	
 	@Test
-	public void localSettingsTest() {
+	public void localSettingsTest() throws IOException {
 		LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));		
 		
-		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-		Gson gson = builder.create();
-		System.out.println("Local settings: " + gson.toJson(localSettings));
-		LocalSettings deserializedLocalSettings = gson.fromJson(gson.toJson(localSettings), LocalSettings.class);
-		System.out.println("Deserialized local settings: " + gson.toJson(deserializedLocalSettings));
+		LocalSettings deserializedLocalSettings = LocalSettings.fromJson(localSettings.toJson());
 		
 		assertEquals(deserializedLocalSettings, localSettings);
 	}
@@ -113,9 +102,7 @@ public class ConfigSerializationTest {
 			GsonBuilder builder = new GsonBuilder();
 			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
 			Gson gson = builder.create();
-			System.out.println("Serialized contact: " + gson.toJson(contact));
 			deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
-			System.out.println("Deserialized contact: " + gson.toJson(deserializedContact));
 			
 			//this has to be set by the caller for deserialization:
 			deserializedContact.setContactOwner(i);

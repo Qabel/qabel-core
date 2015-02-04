@@ -1,9 +1,14 @@
 package de.qabel.core.config;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
@@ -31,6 +36,10 @@ public class LocalSettings {
 	 */
 	@SerializedName("drop_last_update")
 	private Date dropLastUpdate;
+	/**
+	 * Constant string which defines the date format in the serialized json
+	 */
+	final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 	
 	/**
 	 * Creates an instance of LocalSettings
@@ -83,6 +92,34 @@ public class LocalSettings {
 	 */
 	public Date getLastUpdate() {
 		return this.dropLastUpdate;
+	}
+
+	/**
+	 * Serializes this class to a Json String
+	 * @return Json String
+	 * @throws IOException
+	 */
+	public String toJson() throws IOException {
+		GsonBuilder builder = new GsonBuilder();
+		builder.setDateFormat(dateFormat);
+		Gson gson = builder.create();
+		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
+		return adapter.toJson(this);
+	}
+
+	/**
+	 * Deserializes a Json String
+	 * @param json
+	 * @return LocalSettings
+	 * @throws IOException
+	 * @throws JsonParseException
+	 */
+	public static LocalSettings fromJson(String json) throws IOException, JsonParseException {
+		GsonBuilder builder = new GsonBuilder();
+		builder.setDateFormat(dateFormat);
+		Gson gson = builder.create();
+		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
+		return adapter.fromJson(json);
 	}
 
 	@Override
