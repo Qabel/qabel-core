@@ -39,7 +39,7 @@ public class Contact {
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
 	
 	/**
-	 * Returns the primary public key of the contact
+	 * Returns the primary public key of the contact.
 	 * @return QblPrimaryPublicKey
 	 */
 	public QblPrimaryPublicKey getPrimaryPublicKey()
@@ -48,8 +48,8 @@ public class Contact {
 	}
 	
 	/**
-	 * Sets the primary public key of the contacts
-	 * @param key
+	 * Sets the primary public key of the contact.
+	 * @param key Key to set the contact key to.
 	 */
 	public void setPrimaryPublicKey(QblPrimaryPublicKey key)
 	{
@@ -57,7 +57,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns the identity which owns the contact
+	 * Returns the identity which owns the contact.
 	 * @return contactOwner
 	 */
 	public Identity getContactOwner()
@@ -66,8 +66,8 @@ public class Contact {
 	}
 	
 	/**
-	 * Sets the contact owning identity
-	 * @param identity
+	 * Sets the contact owning identity.
+	 * @param identity Identity to set to the owning identity.
 	 */
 	public void setContactOwner (Identity identity) {
 		this.contactOwner = identity;
@@ -75,7 +75,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns the key identifier of the contact owning identity
+	 * Returns the key identifier of the contact owning identity.
 	 * @return contactOwnerKeyId
 	 */
 	public String getContactOwnerKeyId() {
@@ -83,7 +83,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns a list of the public encryption keys of the contact
+	 * Returns a list of the public encryption keys of the contact.
 	 * @return List<QblEncPublicKey>
 	 */
 	public QblEncPublicKey getEncryptionPublicKeyShuffle() {
@@ -97,7 +97,7 @@ public class Contact {
 	}
 
 	/**
-	 * Returns a list of the public encryption keys of the contact
+	 * Returns a list of the public encryption keys of the contact.
 	 * @return List<QblEncPublicKey>
 	 */
 	public List<QblEncPublicKey> getEncryptionPublicKeys() {
@@ -105,8 +105,8 @@ public class Contact {
 	}
 
 	/**
-	 * Adds a public encryption key to the contact
-	 * @param key
+	 * Adds a public encryption key to the contact.
+	 * @param key Key to add to the contact.
 	 * @throws InvalidKeyException
 	 */
 	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
@@ -115,7 +115,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns a list of the public sign keys of the contact
+	 * Returns a list of the public sign keys of the contact.
 	 * @return List<QblSignPublicKey>
 	 */
 	public List<QblSignPublicKey> getSignPublicKeys() {
@@ -123,8 +123,8 @@ public class Contact {
 	}
 
 	/**
-	 * Adds a public signing key to the contact
-	 * @param key
+	 * Adds a public signing key to the contact.
+	 * @param key Signing key to add to the contact.
 	 * @throws InvalidKeyException
 	 */
 	public void addSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
@@ -133,7 +133,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns a collection of the drop urls of the contact
+	 * Returns a collection of the drop urls of the contact.
 	 * @return Collection<DropURL>
 	 */
 	public Collection<DropURL> getDropUrls()
@@ -142,7 +142,7 @@ public class Contact {
 	}
 	
 	/**
-	 * Returns a set of the module specific settings of the contact
+	 * Returns a set of the module specific settings of the contact.
 	 * @return Set<AbstractModuleSettings>
 	 */
 	public Set<AbstractModuleSettings> getModuleSettings()
@@ -151,8 +151,8 @@ public class Contact {
 	}
 	
 	/**
-	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
-	 * @param owner
+	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId.
+	 * @param owner Owner of the contact.
 	 */
 	public Contact(Identity owner)
 	{
@@ -162,8 +162,8 @@ public class Contact {
 	
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
-	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
-	 * @param ownerKeyId
+	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards.
+	 * @param ownerKeyId KeyId of the owner to set on the contact.
 	 */
 	protected Contact(String ownerKeyId) {
 		this.contactOwnerKeyId = ownerKeyId;

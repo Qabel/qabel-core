@@ -11,28 +11,28 @@ public class StorageVolume extends SyncSettingItem {
 	private StorageServer storageServer;
 	private String storageServerUrl;
 	/**
-	 * identifier of the storage volume on the server
+	 * identifier of the storage volume on the server.
 	 * Field name in serialized json: "public_identifier"
 	 */
 	@SerializedName("public_identifier")
 	private String publicIdentifier;
 	/**
-	 * Credential granting write permission to the storage volume
+	 * Credential granting write permission to the storage volume.
 	 * Field name in serialized json: "token"
 	 */
 	private String token;
 	/**
-	 * Credential granting the permission to delete the whole storage volume
+	 * Credential granting the permission to delete the whole storage volume.
 	 * Field name in serialized json: "revoke_token"
 	 */
 	@SerializedName("revoke_token")
 	private String revokeToken;
 	
 	/**
-	 * Creates an instance of StorageVolume
-	 * @param publicIdentifier
-	 * @param token
-	 * @param revokeToken
+	 * Creates an instance of StorageVolume.
+	 * @param publicIdentifier PublicIdentifier of the StoraveVolume.
+	 * @param token Token thats granting write permission to the storage volume.
+	 * @param revokeToken Token thats granting the permission to delete the whole storage volume.
 	 */
 	public StorageVolume(StorageServer server, String publicIdentifier, String token, String revokeToken) {
 		this.setStorageServer(server);
@@ -44,7 +44,12 @@ public class StorageVolume extends SyncSettingItem {
 	/**
 	 * This constructor is only for deserialization purposes.
 	 * storageServer needs to be set explicitly
+	 * @param serverUrl Url of the server.
+	 * @param publicIdentifier PublicIdentifier of the StorageVolume.
+	 * @param token Token thats granting write permission to the storage volume.
+	 * @param revokeToken Token thats granting the permission to delete the whole storage volume.
 	 */
+
 	protected StorageVolume(String serverUrl, String publicIdentifier, String token, String revokeToken) {
 		this.storageServerUrl = serverUrl;
 		this.setPublicIdentifier(publicIdentifier);
@@ -61,51 +66,26 @@ public class StorageVolume extends SyncSettingItem {
 		this.storageServerUrl = storageServer.getUrl().toString();
 	}
 
-
-	/**
-	 * Returns the public identifier of the storage volume
-	 * @return publicIdentifier
-	 */
 	public String getPublicIdentifier() {
 		return publicIdentifier;
 	}
 
-	/**
-	 * Sets the public identifier of the storage volume
-	 * @param publicIdentifier
-	 */
 	public void setPublicIdentifier(String publicIdentifier) {
 		this.publicIdentifier = publicIdentifier;
 	}
 
-	/**
-	 * Returns the token of the storage volume
-	 * @return token
-	 */
 	public String getToken() {
 		return token;
 	}
 
-	/**
-	 * Sets the token of the storage volume
-	 * @param token
-	 */
 	public void setToken(String token) {
 		this.token = token;
 	}
 
-	/**
-	 * Returns the revoke token of the storage volume
-	 * @return revokeToken
-	 */
 	public String getRevokeToken() {
 		return revokeToken;
 	}
 
-	/**
-	 * Sets the revoke token of the storage volume
-	 * @param revokeToken
-	 */
 	public void setRevokeToken(String revokeToken) {
 		this.revokeToken = revokeToken;
 	}

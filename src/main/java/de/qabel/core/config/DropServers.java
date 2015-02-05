@@ -18,17 +18,16 @@ public class DropServers {
 	private final Set<DropServer> dropServers = new HashSet<DropServer>();
 
 	/**
-	 * Returns unmodifiable set of contained drop servers
-	 * @return
+	 * @return Returns unmodifiable set of contained drop servers
 	 */
 	public Set<DropServer> getDropServers() {
 		return Collections.unmodifiableSet(this.dropServers);
 	}
 	
 	/**
-	 * Adds a drop server
-	 * @param dropServer
-	 * @return true if successfully added, false if already contained
+	 * Adds a drop server.
+	 * @param dropServer DropServer to add.
+	 * @return true if successfully added, false if already contained.
 	 */
 	public boolean add(DropServer dropServer) {
 		return this.dropServers.add(dropServer);
@@ -36,8 +35,8 @@ public class DropServers {
 
 	/**
 	 * Removes dropServer from list of dropServers
-	 * @param dropServer
-	 * @return true if dropServer was contained in list, false if not
+	 * @param dropServer DropServer to remove.
+	 * @return true if dropServer was contained in list, false if not.
 	 */
 	public boolean remove(DropServer dropServer) {
 		return this.dropServers.remove(dropServer);

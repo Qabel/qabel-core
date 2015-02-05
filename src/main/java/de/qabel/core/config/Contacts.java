@@ -6,14 +6,7 @@ import java.util.*;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contacts
  */
 public class Contacts {
-	
-    	/**
-	 * <pre>
-	 *           1     0..*
-	 * Contacts ------------------------- Contact
-	 *           contacts        &gt;       contacts
-	 * </pre>
-	 */
+
 	private final Set<Contact> contacts = new HashSet<Contact>();
 
 	/**
@@ -26,8 +19,8 @@ public class Contacts {
 	
 	/**
 	 * Adds a contact
-	 * @param contact
-	 * @return true if contact is added, false if contact is already in list
+	 * @param contact Contact to add.
+	 * @return true if contact is added, false if contact is already in list.
 	 */
 	public boolean add(Contact contact) {
 		return this.contacts.add(contact);
@@ -35,8 +28,8 @@ public class Contacts {
 
 	/**
 	 * Removes contact from list of contacts
-	 * @param contact
-	 * @return true if contact was contained in list, false if not
+	 * @param contact Contact to remove.
+	 * @return true if contact was contained in list, false if not.
 	 */
 	public boolean remove(Contact contact) {
 		return this.contacts.remove(contact);

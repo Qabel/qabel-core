@@ -32,10 +32,10 @@ public class Identity extends SyncSettingItem {
 	private List<DropURL> drops = new ArrayList<DropURL>();
 
 	/**
-	 * Creates an instance of Identity
-	 * @param alias
-	 * @param drops
-	 * @param primaryKeyPair
+	 * Creates an instance of Identity.
+	 * @param alias Name of the identity.
+	 * @param drops Drops of the identity.
+	 * @param primaryKeyPair Primary Key pair of the identity.
 	 */
 	public Identity(String alias, Collection<DropURL> drops, 
 			QblPrimaryKeyPair primaryKeyPair) {
@@ -50,7 +50,7 @@ public class Identity extends SyncSettingItem {
 	}
 
 	/**
-	 * Returns the alias name of the identity
+	 * Returns the alias name of the identity.
 	 * @return alias
 	 */
 	public String getAlias() {
@@ -58,8 +58,8 @@ public class Identity extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the primary key pair of the identity
-	 * @param key
+	 * Sets the primary key pair of the identity.
+	 * @param key Primary Key pair of the identity.
 	 */
 	public void setPrimaryKeyPair(QblPrimaryKeyPair key)
 	{
@@ -67,7 +67,7 @@ public class Identity extends SyncSettingItem {
 	}
 	
 	/**
-	 * Returns the primary key pair of the identity
+	 * Returns the primary key pair of the identity.
 	 * @return QblPrimaryKeyPair
 	 */
 	public QblPrimaryKeyPair getPrimaryKeyPair()
@@ -76,23 +76,23 @@ public class Identity extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the list of drop urls of the identity
-	 * @param drops
+	 * Sets the list of drop urls of the identity.
+	 * @param drops Drops of the identity.
 	 */
 	public void setDrops(Collection<DropURL> drops) {
 		this.drops = new ArrayList<DropURL>(drops);
 	}
 
 	/**
-	 * Adds a drop url to the identity
-	 * @param drop
+	 * Adds a drop url to the identity.
+	 * @param drop Drop to add to the identity.
 	 */
 	public void addDrop(DropURL drop) {
 		this.drops.add(drop);
 	}
 
 	/**
-	 * Returns unmodifiable collection of the identity's drop urls
+	 * Returns unmodifiable collection of the identity's drop urls.
 	 * @return Collection<DropURL>
 	 */
 	public Collection<DropURL> getDrops() {
@@ -101,7 +101,7 @@ public class Identity extends SyncSettingItem {
 	
 	/**
 	 * Returns the key identifier of the identity.
-	 * The key identifier consists of the right-most 64 bit of the identity's public fingerprint
+	 * The key identifier consists of the right-most 64 bit of the identity's public fingerprint.
 	 * @return key identifier
 	 */
 	public String getKeyIdentifier() {

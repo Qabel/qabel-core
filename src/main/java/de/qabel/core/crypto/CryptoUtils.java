@@ -845,8 +845,8 @@ public class CryptoUtils {
 	 * 
 	 * @param inputStream
 	 *            InputStream from where the ciphertext is read
-	 * @param pathName
-	 *            Pathname where the decrypted file will be stored
+	 * @param file
+	 *            File to be decrypted
 	 * @param key
 	 *            Key which is used to en-/decrypt the file
 	 * @return true if successfully decrypted or false if authentication tag validation

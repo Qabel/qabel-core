@@ -22,9 +22,9 @@ public class Account extends SyncSettingItem {
 	
 	/**
 	 * Creates an instance of Account
-	 * @param provider
-	 * @param user
-	 * @param auth
+	 * @param provider Provider of the account.
+	 * @param user  User of the account
+	 * @param auth Authentication of the account
 	 */
 	public Account(String provider, String user, String auth) {
 		this.setProvider(provider);
@@ -32,51 +32,26 @@ public class Account extends SyncSettingItem {
 		this.setAuth(auth);
 	}
 
-
-	/**
-	 * Sets the provider of the account
-	 * @param value
-	 */
 	public void setProvider(String value) {
 		this.provider = value;
 	}
 
-	/**
-	 * Returns the provider of the account
-	 * @return provider
-	 */
 	public String getProvider() {
 		return this.provider;
 	}
 
-	/**
-	 * Sets the user of the account
-	 * @param value
-	 */
 	public void setUser(String value) {
 		this.user = value;
 	}
 
-	/**
-	 * Returns the user of the account
-	 * @return user
-	 */
 	public String getUser() {
 		return this.user;
 	}
 
-	/**
-	 * Sets the authentication of the account
-	 * @param value
-	 */
 	public void setAuth(String value) {
 		this.auth = value;
 	}
 
-	/**
-	 * Returns the authentication of the account
-	 * @return auth
-	 */
 	public String getAuth() {
 		return this.auth;
 	}

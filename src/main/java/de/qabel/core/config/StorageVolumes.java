@@ -8,13 +8,7 @@ import java.util.HashSet;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volumes
  */
 public class StorageVolumes {
-	/**
-	 * <pre>
-	 *           1     0..*
-	 * StorageVolumes ------------------------- StorageVolume
-	 *           storageVolumes        &gt;       storageVolume
-	 * </pre>
-	 */
+
 	private final Set<StorageVolume> storageVolumes = new HashSet<StorageVolume>();
 
 	/**
@@ -27,7 +21,7 @@ public class StorageVolumes {
 	
 	/**
 	 * Adds a storage volume
-	 * @param storageVolume
+	 * @param storageVolume StorageVolume to add.
 	 * @return true if successfully added, false if already contained
 	 */
 	public boolean add(StorageVolume storageVolume) {
@@ -36,7 +30,7 @@ public class StorageVolumes {
 
 	/**
 	 * Removes storageVolume from list of storageVolumes
-	 * @param storageVolume
+	 * @param storageVolume Storage volume to remove.
 	 * @return true if storageVolume was contained in list, false if not
 	 */
 	public boolean remove(StorageVolume storageVolume) {
