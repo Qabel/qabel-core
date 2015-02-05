@@ -29,7 +29,7 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	/**
 	 * Attach a new encryption public key to the list of known public keys
 	 * 
-	 * @param encPublicKey
+	 * @param encPublicKey Public encryption key to add.
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
 	 * @throws InvalidKeyException 
@@ -47,7 +47,7 @@ public class QblPrimaryPublicKey extends QblPublicKey {
 	/**
 	 * Attach a new signature public key to the list of known public keys
 	 * 
-	 * @param signPublicKey
+	 * @param signPublicKey Public sign key to add.
 	 * @return key is valid and successfully attached to the list of known
 	 *         public keys
 	 * @throws InvalidKeyException 
