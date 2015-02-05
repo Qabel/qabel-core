@@ -28,13 +28,6 @@ public class ModuleManager {
 
 	public final static ClassLoader LOADER = new ClassLoader();
 
-	/**
-	 * <pre>
-	 *           0..*     0..*
-	 * ModuleManager ------------------------- StorageConnection
-	 *           moduleManager        &lt;       storageConnection
-	 * </pre>
-	 */
 	private Set<StorageConnection> storageConnection;
 
 	public Set<StorageConnection> getStorageConnection() {
@@ -53,13 +46,6 @@ public class ModuleManager {
 		return this.settings;
 	}
 
-	/**
-	 * <pre>
-	 *           1..1     0..*
-	 * ModuleManager ------------------------- Module
-	 *           moduleManager        &gt;       modules
-	 * </pre>
-	 */
 	private Set<Module> modules;
 
 	Thread dropReceiverThread = new Thread() {
@@ -77,7 +63,7 @@ public class ModuleManager {
 
 	/**
 	 * Starts a given Module by its class
-	 * @param module
+	 * @param module Module to start.
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
