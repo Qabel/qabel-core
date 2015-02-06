@@ -3,6 +3,8 @@ package de.qabel.core.drop;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.UrlBase64;
 
@@ -13,6 +15,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
  * Class DropURL represents a URL fully identifying a drop.
  */
 public class DropURL {
+	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());
 	
 	private URL url;
 
@@ -51,8 +54,9 @@ public class DropURL {
 		try {
 			this.url = new URL(server.getUrl().toString() + "/" + dropId);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to create drop url.", e);
+			// should not happen - cannot recover from this
+			throw new RuntimeException("Failed to create drop url.", e);
 		}
 	}
 	
