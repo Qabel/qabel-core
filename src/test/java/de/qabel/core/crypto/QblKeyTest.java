@@ -17,8 +17,8 @@ public class QblKeyTest {
 		assertNotNull(qpkp);
 		assertNotNull(qpkp.getRSAPrivateKey());
 		assertNotNull(qpkp.getQblPrimaryPublicKey());
-		assertNotNull(qpkp.getQblEncPublicKey());
-		assertNotNull(qpkp.getQblSignPublicKey());
+		assertNotNull(qpkp.getQblEncPublicKeys().get(0));
+		assertNotNull(qpkp.getQblSignPublicKeys().get(0));
 		assertNotNull(qpkp.getPublicKeyFingerprint());
 	}
 
@@ -26,8 +26,8 @@ public class QblKeyTest {
 	public void qblPublicKeysNotNullTest() {
 		QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
 		QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
-		QblEncPublicKey qepk = qpkp.getQblEncPublicKey();
-		QblSignPublicKey qspk = qpkp.getQblSignPublicKey();
+		QblEncPublicKey qepk = qpkp.getQblEncPublicKeys().get(0);
+		QblSignPublicKey qspk = qpkp.getQblSignPublicKeys().get(0);
 
 		assertNotNull(qpkp);
 		assertNotNull(qppk);
@@ -58,10 +58,10 @@ public class QblKeyTest {
 
 		// Validate signature of signature and encryption sub public keys
 		assertTrue(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblEncPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp1.getQblEncPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 		assertTrue(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp1.getQblSignPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 	}
 
@@ -73,15 +73,15 @@ public class QblKeyTest {
 		// Try to validate signature of signature and encryption sub public keys
 		// with a wrong signature key
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblEncPublicKey(), qkp2.getQblPrimaryPublicKey()));
+				qkp1.getQblEncPublicKeys().get(0), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp1.getQblSignPublicKey(), qkp2.getQblPrimaryPublicKey()));
+				qkp1.getQblSignPublicKeys().get(0), qkp2.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp2.getQblEncPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp2.getQblEncPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 
 		assertFalse(QblKeyFactory.getInstance().rsaValidateKeySignature(
-				qkp2.getQblSignPublicKey(), qkp1.getQblPrimaryPublicKey()));
+				qkp2.getQblSignPublicKeys().get(0), qkp1.getQblPrimaryPublicKey()));
 	}
 }

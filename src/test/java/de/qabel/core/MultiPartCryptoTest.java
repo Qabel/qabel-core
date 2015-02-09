@@ -5,6 +5,7 @@ import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +63,7 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException {
+    public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
         this.sendMessage();
 		this.sendUnwantedMessage();
@@ -82,7 +83,7 @@ public class MultiPartCryptoTest {
     }
 
     @Test
-    public void multiPartCryptoMultiMessageTest() throws InterruptedException {
+    public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -127,14 +128,14 @@ public class MultiPartCryptoTest {
 
         Contact alicesContact = new Contact(alice);
         alicesContact.setPrimaryPublicKey(bobsKey.getQblPrimaryPublicKey());
-        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKey());
-        alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKey());
+        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKeys().get(0));
+        alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKeys().get(0));
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob);
         bobsContact.setPrimaryPublicKey(alicesKey.getQblPrimaryPublicKey());
-        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKey());
-        bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKey());
+        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKeys().get(0));
+        bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKeys().get(0));
         alicesContact.getDropUrls().add(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
@@ -159,7 +160,7 @@ public class MultiPartCryptoTest {
         dropController.setDropServers(servers);
     }
 
-    private void sendMessage() {
+    private void sendMessage() throws QblDropPayloadSizeException {
         DropMessage<TestObject> dm = new DropMessage<TestObject>();
         TestObject data = new TestObject();
         data.setStr("Test");
@@ -179,7 +180,7 @@ public class MultiPartCryptoTest {
         drop.sendAndForget(dm, dropController.getContacts().getContacts());
     }
 
-	private void sendUnwantedMessage() {
+	private void sendUnwantedMessage() throws QblDropPayloadSizeException {
 		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>();
 		UnwantedTestObject data = new UnwantedTestObject();
 		data.setStr("Test");
