@@ -114,9 +114,9 @@ public class DropHTTPTest {
 		assertEquals(new ArrayList<String>(), response);
 	}
 
-	// GET 404
+	// GET 204
 	@Test
-	public void getRequestForEmptyDropShouldBe404() {
+	public void getRequestForEmptyDropShouldBe204() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -151,9 +151,9 @@ public class DropHTTPTest {
 		assertEquals(new ArrayList<String>(), response);
 	}
 
-	// GET 404 SINCE
+	// GET 204 SINCE
 	@Test
-	public void getRequestWithSinceDateForEmptyDropShouldBe404() {
+	public void getRequestWithSinceDateForEmptyDropShouldBe204() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -194,7 +194,7 @@ public class DropHTTPTest {
 		// When
 		int responseCode = dHTTP.head(this.notExistingUrl);
 		// Then
-		assertEquals(404, responseCode);
+		assertEquals(204, responseCode);
 	}
 
 	// HEAD 200 SINCE
@@ -229,7 +229,7 @@ public class DropHTTPTest {
 		int responseCode = dHTTP.head(this.notExistingUrl,
 				System.currentTimeMillis() + 10);
 		// Then
-		assertEquals(404, responseCode);
+		assertEquals(204, responseCode);
 	}
 
 }
