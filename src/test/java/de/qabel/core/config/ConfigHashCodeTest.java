@@ -102,7 +102,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void localSettingsHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("dateFormat")
+			.build();
+		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory(), config);
 	}
 
 	@Test
