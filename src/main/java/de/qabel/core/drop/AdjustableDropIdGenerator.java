@@ -30,7 +30,8 @@ public class AdjustableDropIdGenerator extends DropIdGenerator {
 	 * for the namespace.
 	 * Hence, the collision probability is 1/2^(usedBits).
 	 *
-	 * @param usedBits number of bits used during randomization.
+	 * @param usedBits number of bits used during randomization. Must be in the
+	 *            interval (0, DROP_ID_LENGTH_BYTE*8].
 	 */
 	public AdjustableDropIdGenerator(int usedBits) {
 		if (usedBits <= 0 || usedBits > DROP_ID_LENGTH_BYTE * 8) {
