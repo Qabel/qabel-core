@@ -10,7 +10,7 @@ public class DropIdGenerationTest {
 	public ExpectedException exception = ExpectedException.none();
 
 	@Test
-	public void testAdustable() {
+	public void testAdjustable() {
 		DropIdGenerator generator = new AdjustableDropIdGenerator();
 		String id = generator.generateDropId();
 		Assert.assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
