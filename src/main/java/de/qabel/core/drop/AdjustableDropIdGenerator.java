@@ -15,7 +15,7 @@ import java.util.Random;
  * and therefore less anonymity but more performance.
  */
 public class AdjustableDropIdGenerator extends DropIdGenerator {
-	private int usedBits;
+	private final int usedBits;
 
 	/**
 	 * Creates a new random drop id using the whole id namespace.
