@@ -29,7 +29,7 @@ public class DropMessage<T extends ModelObject>{
     	this.sender = sender;
     	this.data = data;
     	this.created = new Date();
-    	this.acknowledgeId = generateAcknowledgeId();
+    	this.acknowledgeId = NOACK;
     }
 
     /**
@@ -89,6 +89,7 @@ public class DropMessage<T extends ModelObject>{
 
     /**
      * Enable/disable acknowledge request for this drop message.
+     * Acknowledging is disabled by default.
      *
      * @param enabled
      */
