@@ -8,7 +8,7 @@ import de.qabel.core.config.Entity;
 public class DropMessage<T extends ModelObject>{
 	/**
 	 * Acknowledge ID indicating that the sender does not
-	 * whish to receive an acknowledgement.
+	 * wish to receive an acknowledgement.
 	 */
 	public static final String NOACK = "0";
 	/**
