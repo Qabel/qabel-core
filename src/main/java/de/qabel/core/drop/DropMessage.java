@@ -91,10 +91,14 @@ public class DropMessage<T extends ModelObject>{
      * Enable/disable acknowledge request for this drop message.
      * Acknowledging is disabled by default.
      *
-     * @param enabled
+     * @param enabled true enables acknowledging
      */
     public void enableAcknowledgeing(boolean enabled) {
-    	this.acknowledgeId = enabled ? generateAcknowledgeId() : NOACK;
+    	if (enabled && this.acknowledgeId != NOACK) {
+    		this.acknowledgeId = generateAcknowledgeId();
+    	} else if (!enabled) {
+    		this.acknowledgeId = NOACK;
+    	}
     }
     
     private static String generateAcknowledgeId() {
