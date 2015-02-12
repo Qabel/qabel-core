@@ -5,7 +5,7 @@ import de.qabel.core.drop.DropURL;
 
 import java.util.*;
 
-/** 
+/**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact extends Entity {
@@ -25,7 +25,7 @@ public class Contact extends Entity {
 	 * Field name in serialized json: "my_identity"
 	 */
 	private String contactOwnerKeyId;
-	
+
 	/**
 	 * Returns the primary public key of the contact
 	 * @return QblPrimaryPublicKey
@@ -34,7 +34,7 @@ public class Contact extends Entity {
 	public QblPrimaryPublicKey getPrimaryPublicKey() {
 		return primaryPublicKey;
 	}
-	
+
 	/**
 	 * Sets the primary public key of the contacts
 	 * @param key
@@ -43,7 +43,7 @@ public class Contact extends Entity {
 	{
 		primaryPublicKey = key;
 	}
-	
+
 	/**
 	 * Returns the identity which owns the contact
 	 * @return contactOwner
@@ -52,7 +52,7 @@ public class Contact extends Entity {
 	{
 		return contactOwner;
 	}
-	
+
 	/**
 	 * Sets the contact owning identity
 	 * @param identity
@@ -61,7 +61,7 @@ public class Contact extends Entity {
 		this.contactOwner = identity;
 		this.contactOwnerKeyId = identity.getKeyIdentifier();
 	}
-	
+
 	/**
 	 * Returns the key identifier of the contact owning identity
 	 * @return contactOwnerKeyId
@@ -80,7 +80,7 @@ public class Contact extends Entity {
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
 		this.setPrimaryPublicKey(pubKey);
 	}
-	
+
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
 	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
@@ -95,9 +95,12 @@ public class Contact extends Entity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((contactOwner == null) ? 0 : contactOwner.hashCode());
-		result = prime * result + ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
-		result = prime * result + ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
+		result = prime * result
+				+ ((contactOwner == null) ? 0 : contactOwner.hashCode());
+		result = prime * result
+				+ ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
+		result = prime * result
+				+ ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
 		return result;
 	}
 

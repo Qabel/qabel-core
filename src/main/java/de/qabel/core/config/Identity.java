@@ -29,13 +29,13 @@ public class Identity extends Entity {
 	 * @param drops
 	 * @param primaryKeyPair
 	 */
-	public Identity(String alias, Collection<DropURL> drops, 
+	public Identity(String alias, Collection<DropURL> drops,
 			QblPrimaryKeyPair primaryKeyPair) {
 		super(drops);
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
 	}
-	
+
 	public void setAlias(String value) {
 		this.alias = value;
 	}
@@ -56,7 +56,7 @@ public class Identity extends Entity {
 	{
 		this.primaryKeyPair = key;
 	}
-	
+
 	/**
 	 * Returns the primary key pair of the identity
 	 * @return QblPrimaryKeyPair
@@ -75,10 +75,10 @@ public class Identity extends Entity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		
+
 		result = super.hashCode();
-		
 		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
+		result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
 		return result;
 	}
 
