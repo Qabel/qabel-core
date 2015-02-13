@@ -94,7 +94,7 @@ public class DropMessage<T extends ModelObject>{
      * @param enabled true enables acknowledging
      */
     public void enableAcknowledgeing(boolean enabled) {
-    	if (enabled && this.acknowledgeId != NOACK) {
+    	if (enabled && this.acknowledgeId == NOACK) {
     		this.acknowledgeId = generateAcknowledgeId();
     	} else if (!enabled) {
     		this.acknowledgeId = NOACK;
