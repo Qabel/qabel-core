@@ -73,7 +73,7 @@ public class ModuleManager {
 		};
 	};
 	
-	public HashSet<ModuleThread> getModules() {
+	public Set<ModuleThread> getModules() {
 		if (this.modules == null) {
 			this.modules = new HashSet<ModuleThread>();
 		}
@@ -91,8 +91,8 @@ public class ModuleManager {
 		m.setModuleManager(this);
 		m.init();
         ModuleThread t = new ModuleThread(m);
-        getModules().add(t);
-        t.start();
+		getModules().add(t);
+		t.start();
 	}
 	
 	public void startModule(File jar, String className) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
@@ -119,7 +119,8 @@ public class ModuleManager {
 	 * 
 	 */
 	public void stopModule(Module module) {
-		module.stopModule();
+        // TODO Wait till the Module really exits
+        module.stopModule();
 	}
 	
 	public DropActor getDropActor() {

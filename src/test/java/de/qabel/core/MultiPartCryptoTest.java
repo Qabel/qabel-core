@@ -1,5 +1,8 @@
 package de.qabel.core;
 
+import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.event.EventEmitter;
+import de.qabel.ackack.event.EventListener;
 import de.qabel.core.config.*;
 import de.qabel.core.crypto.QblKeyFactory;
 import de.qabel.core.crypto.QblPrimaryKeyPair;
@@ -18,8 +21,13 @@ import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class MultiPartCryptoTest {
+
+    private EventEmitter emitter;
+    private EventListener queueReceiver;
 
     class TestObject extends ModelObject {
         public TestObject() { }
@@ -48,18 +56,28 @@ public class MultiPartCryptoTest {
 	}
 
     private DropActor dropController;
-    private DropQueueCallback<TestObject> mQueue;
     private Identity alice;
+    LinkedBlockingQueue<DropMessage<TestObject>> mQueue = new LinkedBlockingQueue<>();
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
-        dropController = new DropActor();
+        emitter = new EventEmitter();
+        dropController = new DropActor(emitter);
+        queueReceiver = new EventListener() {
+            @Override
+            public void onEvent(String event, MessageInfo info, Object... data) {
+                if(DropActor.EVENT_DROP_MESSAGE_RECEIVED.equals(event)) {
+                    try {
+                        mQueue.put((DropMessage<TestObject>) data[0]);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
 
         loadContacts();
         loadDropServers();
-
-        mQueue = new DropQueueCallback<TestObject>();
-        dropController.register(TestObject.class, mQueue);
     }
 
     @Test
@@ -74,7 +92,6 @@ public class MultiPartCryptoTest {
             e.printStackTrace();
         }
 
-        dropController.retrieve();
         assertTrue(mQueue.size() >= 1);
 
         DropMessage<TestObject> msg = mQueue.take();
@@ -98,7 +115,6 @@ public class MultiPartCryptoTest {
             e.printStackTrace();
         }
 
-        dropController.retrieve();
         assertTrue(mQueue.size() >= 4);
 
         DropMessage<TestObject> msg = mQueue.take();
@@ -163,10 +179,8 @@ public class MultiPartCryptoTest {
         data.setStr("Test");
         DropMessage<TestObject> dm = new DropMessage<TestObject>(alice, data);
 
-        DropActor drop = new DropActor();
-
         // Send hello world to all contacts.
-        drop.sendAndForget(dm, dropController.getContacts().getContacts());
+        DropActor.send(emitter, dm, new HashSet<>(dropController.getContacts().getContacts()));
     }
 
 	private void sendUnwantedMessage() throws QblDropPayloadSizeException {
@@ -174,9 +188,7 @@ public class MultiPartCryptoTest {
 		data.setStr("Test");
 		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>(alice, data);
 
-		DropActor drop = new DropActor();
-
 		// Send an unknown drop message to all contacts.
-		drop.sendAndForget(dm, dropController.getContacts().getContacts());
+        DropActor.send(emitter, dm, new HashSet<>(dropController.getContacts().getContacts()));
 	}
 }

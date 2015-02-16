@@ -7,7 +7,6 @@ import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.EventActor;
 import de.qabel.ackack.event.EventEmitter;
@@ -23,14 +22,14 @@ import de.qabel.core.http.DropHTTP;
 import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.math.raw.Mod;
 
 public class DropActor extends EventActor {
 
 	public static final String EVENT_DROP_MESSAGE_RECEIVED = "dropMessageReceived";
-	private static final String EVENT_ACTION_DROP_MESSAGE_RECEIVED = "sendDropMessage";
+	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";
 	private static final String PRIVATE_TYPE_MESSAGE_INPUT = "MessageInput";
 	private final EventEmitter emitter;
-	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
 	private Contacts mContacts;
 	GsonBuilder gb;
@@ -39,18 +38,31 @@ public class DropActor extends EventActor {
 
 	public DropActor(EventEmitter emitter) {
 		this.emitter = emitter;
-		mCallbacks = new HashMap<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>>();
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
-		// register events
+		// registerModelObject events
 	}
 
 	public static <T extends Serializable & Collection<Contact>> void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, T contacts) {
-		if(emitter.emit(EVENT_ACTION_DROP_MESSAGE_RECEIVED, message, contacts) != 1)
-			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_RECEIVED should only listened by one Listener");
+        int nbr;
+		if((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1)
+			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = "+nbr+")");
 	}
+
+    public static void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, Contact contact) {
+        ArrayList<Contact> contacts = new ArrayList<>(1);
+        contacts.add(contact);
+        send(emitter, message, contacts);
+    }
+
+    public static void send(EventEmitter emitter, ModelObject message, Contact contact) {
+        ArrayList<Contact> contacts = new ArrayList<>(1);
+        contacts.add(contact);
+        DropMessage<ModelObject> dm = new DropMessage<>(contact.getContactOwner(), message);
+        send(emitter, dm, contacts);
+    }
 
 	/**
 	 * Handles a received DropMessage. Puts this DropMessage into the registered
@@ -61,13 +73,6 @@ public class DropActor extends EventActor {
 	 */
 	private void handleDrop(DropMessage<? extends ModelObject> dm) {
 		Class<? extends ModelObject> cls = dm.getModelObject();
-		Set<DropCallback<? extends ModelObject>> typeCallbacks = mCallbacks
-				.get(cls);
-
-		if (typeCallbacks == null) {
-			logger.debug("Received drop message of type " + cls.getCanonicalName() + " which we do not listen for.");
-			return;
-		}
 
 		emitter.emit("dropMessage", dm);
 	}

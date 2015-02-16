@@ -7,7 +7,9 @@ import de.qabel.core.drop.DropActor;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.ModelObject;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 public abstract class Module extends EventActor implements EventListener {
 	HashSet<Class<?>> modelObjects = new HashSet<>();
@@ -22,6 +24,7 @@ public abstract class Module extends EventActor implements EventListener {
 	 * </pre>
 	 */
 	private ModuleManager moduleManager;
+
 
 	/**
 	 * 
@@ -47,12 +50,6 @@ public abstract class Module extends EventActor implements EventListener {
 	abstract public void init();
 
 	/**
-	 * Called by the modulemanager to run the module. This is runned in an own
-	 * Thread.
-	 */
-	abstract public void run();
-
-	/**
 	 * stops the background thread. Overwrite this if you want to do cleanup work.
 	 * Don't forget to call super.
 	 * This should NOT be called from the background thread itself!
@@ -62,7 +59,7 @@ public abstract class Module extends EventActor implements EventListener {
 		getModuleManager().getModules().remove(this);
 	}
 
-	protected void register(Class<? extends ModelObject> cls) {
+	protected void registerModelObject(Class<? extends ModelObject> cls) {
 		modelObjects.add(cls);
 	}
 
@@ -71,8 +68,11 @@ public abstract class Module extends EventActor implements EventListener {
 		if(!event.equals(DropActor.EVENT_DROP_MESSAGE_RECEIVED))
 			return;
 		DropMessage<?> dm = (DropMessage<?>) data[0];
-		onDropMessage(dm);
+        if(modelObjects.contains(dm.getClass()))
+            onDropMessage(dm);
 	}
 
-	protected abstract void onDropMessage(DropMessage<?> dm);
+    void onDropMessage(DropMessage<?> dm) {
+
+    }
 }

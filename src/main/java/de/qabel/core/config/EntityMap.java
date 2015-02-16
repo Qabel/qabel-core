@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import java.util.Set;
  * 
  * @see Entity
  */
-abstract public class EntityMap<T extends Entity> {
+abstract public class EntityMap<T extends Entity> implements Serializable{
 	private final Map<String, T> entities = new HashMap<>();
 
 	/**
