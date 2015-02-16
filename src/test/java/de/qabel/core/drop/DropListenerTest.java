@@ -2,13 +2,17 @@ package de.qabel.core.drop;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
-import java.util.concurrent.BlockingQueue;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import de.qabel.core.config.Identity;
+import de.qabel.core.crypto.QblKeyFactory;
+
 public class DropListenerTest {
+	private Identity sender;
 
 	static public class TestMO1 extends ModelObject {
 		public String content;
@@ -17,14 +21,17 @@ public class DropListenerTest {
 	static public class TestMO2 extends ModelObject {
 		public String content;
 	}
+	
+	@Before
+	public void setup() {
+		sender = new Identity("Bernd", new ArrayList<DropURL>(),
+				QblKeyFactory.getInstance().generateQblPrimaryKeyPair());;
+	}
 
 	@Test
 	public void dropListenerTest() throws InterruptedException {
 
 		TestMO1 mo1 = new TestMO1();
-		mo1.content = "payload data";
-
-		TestMO2 mo2 = new TestMO2();
 		mo1.content = "payload data";
 
 		DropController dc = new DropController();
@@ -35,15 +42,7 @@ public class DropListenerTest {
 		DropQueueCallback<TestMO2> bq3 = new DropQueueCallback<TestMO2>();
 		dc.register(TestMO2.class, bq3);
 
-		DropMessage<TestMO1> dm = new DropMessage<TestMO1>();
-		Date date = new Date(1412687357);
-
-		dm.setTime(date);
-		dm.setSender("foo");
-		dm.setData(mo1);
-		dm.setAcknowledgeID("bar");
-		dm.setVersion(1);
-		dm.setModelObject(TestMO1.class);
+		DropMessage<TestMO1> dm = new DropMessage<TestMO1>(sender, mo1);
 
 		dc.handleDrop(dm);
 

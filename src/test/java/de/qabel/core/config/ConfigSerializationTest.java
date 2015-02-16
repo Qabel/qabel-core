@@ -86,18 +86,17 @@ public class ConfigSerializationTest {
 			
 			Identity i = new Identity("alias", new ArrayList<DropURL>(), kf.generateQblPrimaryKeyPair());
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
-			contact = new Contact(i);
 			QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
 			qpkp.generateEncKeyPair();
 			qpkp.generateSignKeyPair();
-			contact.setPrimaryPublicKey(qpkp.getQblPrimaryPublicKey());
+			contact = new Contact(i, null, qpkp.getQblPrimaryPublicKey());
 			for(QblEncPublicKey key : qpkp.getQblEncPublicKeys()) {
 				contact.addEncryptionPublicKey(key);
 			}
 			for(QblSignPublicKey key : qpkp.getQblSignPublicKeys()) {
 				contact.addSignaturePublicKey(key);
 			}
-			contact.getDropUrls().add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
+			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			
 			GsonBuilder builder = new GsonBuilder();
 			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());

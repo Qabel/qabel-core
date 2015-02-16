@@ -3,14 +3,12 @@ package de.qabel.core.config;
 import de.qabel.core.crypto.*;
 import de.qabel.core.drop.DropURL;
 
-import java.security.InvalidKeyException;
-import java.security.SecureRandom;
 import java.util.*;
 
-/** 
+/**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
-public class Contact {
+public class Contact extends Entity {
 	/**
 	 * Primary public key of the contact
 	 * Field name in serialized json: "keys"
@@ -27,26 +25,16 @@ public class Contact {
 	 * Field name in serialized json: "my_identity"
 	 */
 	private String contactOwnerKeyId;
-	/**
-	 * List of drop urls of the contact
-	 * Field name in serialized json: "drop_urls"
-	 */
-	private final Set<DropURL> dropUrls = new HashSet<DropURL>(); //TODO: Have drop urls management with add/remove/edit events etc.
-	/**
-	 * List of module specific settings for the contact
-	 * Field name in serialized json: "module_data"
-	 */
-	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); //TODO: Will there be a module settings manager (and thus not a smimple set) as well?
-	
+
 	/**
 	 * Returns the primary public key of the contact
 	 * @return QblPrimaryPublicKey
 	 */
-	public QblPrimaryPublicKey getPrimaryPublicKey()
-	{
+	@Override
+	public QblPrimaryPublicKey getPrimaryPublicKey() {
 		return primaryPublicKey;
 	}
-	
+
 	/**
 	 * Sets the primary public key of the contacts
 	 * @param key
@@ -55,7 +43,7 @@ public class Contact {
 	{
 		primaryPublicKey = key;
 	}
-	
+
 	/**
 	 * Returns the identity which owns the contact
 	 * @return contactOwner
@@ -64,7 +52,7 @@ public class Contact {
 	{
 		return contactOwner;
 	}
-	
+
 	/**
 	 * Sets the contact owning identity
 	 * @param identity
@@ -73,7 +61,7 @@ public class Contact {
 		this.contactOwner = identity;
 		this.contactOwnerKeyId = identity.getKeyIdentifier();
 	}
-	
+
 	/**
 	 * Returns the key identifier of the contact owning identity
 	 * @return contactOwnerKeyId
@@ -81,106 +69,38 @@ public class Contact {
 	public String getContactOwnerKeyId() {
 		return this.contactOwnerKeyId;
 	}
-	
-	/**
-	 * Returns a list of the public encryption keys of the contact
-	 * @return List<QblEncPublicKey>
-	 */
-	public QblEncPublicKey getEncryptionPublicKeyShuffle() {
-	    SecureRandom random;
-	    List<QblEncPublicKey> list;
-	    
-	    list = this.getEncryptionPublicKeys();
-	    random = new SecureRandom();
 
-	    return (list.get(random.nextInt(list.size())));
-	}
 
-	/**
-	 * Returns a list of the public encryption keys of the contact
-	 * @return List<QblEncPublicKey>
-	 */
-	public List<QblEncPublicKey> getEncryptionPublicKeys() {
-		return primaryPublicKey.getEncPublicKeys();
-	}
-
-	/**
-	 * Adds a public encryption key to the contact
-	 * @param key
-	 * @throws InvalidKeyException
-	 */
-	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException
-	{
-		primaryPublicKey.attachEncPublicKey(key);
-	}
-	
-	/**
-	 * Returns a list of the public sign keys of the contact
-	 * @return List<QblSignPublicKey>
-	 */
-	public List<QblSignPublicKey> getSignPublicKeys() {
-		return primaryPublicKey.getSignPublicKeys();
-	}
-
-	/**
-	 * Adds a public signing key to the contact
-	 * @param key
-	 * @throws InvalidKeyException
-	 */
-	public void addSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException
-	{
-		primaryPublicKey.attachSignPublicKey(key);
-	}
-	
-	/**
-	 * Returns a collection of the drop urls of the contact
-	 * @return Collection<DropURL>
-	 */
-	public Collection<DropURL> getDropUrls()
-	{
-		return dropUrls;
-	}
-	
-	/**
-	 * Returns a set of the module specific settings of the contact
-	 * @return Set<AbstractModuleSettings>
-	 */
-	public Set<AbstractModuleSettings> getModuleSettings()
-	{
-		return moduleSettings;
-	}
-	
 	/**
 	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
-	 * @param owner
 	 */
-	public Contact(Identity owner)
-	{
+	public Contact(Identity owner, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
+		super(dropUrls);
 		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
+		this.setPrimaryPublicKey(pubKey);
 	}
-	
+
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
 	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
-	 * @param ownerKeyId
 	 */
-	protected Contact(String ownerKeyId) {
+	protected Contact(String ownerKeyId, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
+		super(dropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
+		this.setPrimaryPublicKey(pubKey);
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((contactOwner == null) ? 0 : contactOwner.hashCode());
 		result = prime * result
-				+ ((dropUrls == null) ? 0 : dropUrls.hashCode());
+				+ ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
 		result = prime * result
 				+ ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
-		result = prime * result
-				+ ((moduleSettings == null) ? 0 : moduleSettings.hashCode());
 		return result;
 	}
 
@@ -188,7 +108,7 @@ public class Contact {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -198,15 +118,15 @@ public class Contact {
 				return false;
 		} else if (!contactOwner.equals(other.contactOwner))
 			return false;
+		if (contactOwnerKeyId == null) {
+			if (other.contactOwnerKeyId != null)
+				return false;
+		} else if (!contactOwnerKeyId.equals(other.contactOwnerKeyId))
+			return false;
 		if (primaryPublicKey == null) {
 			if (other.primaryPublicKey != null)
 				return false;
 		} else if (!primaryPublicKey.equals(other.primaryPublicKey))
-			return false;
-		if (dropUrls == null) {
-			if (other.dropUrls != null)
-				return false;
-		} else if (!dropUrls.equals(other.dropUrls))
 			return false;
 		return true;
 	}
