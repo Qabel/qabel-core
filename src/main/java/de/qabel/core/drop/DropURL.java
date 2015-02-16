@@ -2,8 +2,9 @@ package de.qabel.core.drop;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.UrlBase64;
 
@@ -14,8 +15,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
  * Class DropURL represents a URL fully identifying a drop.
  */
 public class DropURL {
-	private static final int DROP_ID_LENGTH = 43;
-	private static final int DROP_ID_LENGTH_BYTE = 32;
+	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());
 	
 	private URL url;
 
@@ -33,31 +33,33 @@ public class DropURL {
 	
 	/**
 	 * Constructs a new drop url for a drop on the given drop server.
+	 * This uses the default drop id generator.
 	 * 
 	 * @param server Hosting drop server
+	 * @see DropIdGenerator
 	 */
 	public DropURL(DropServer server) {
-		String dropId = this.generateDropId();
+		this(server, DropIdGenerator.getDefaultDropIdGenerator());
+	}
+
+	/**
+	 * Constructs a new drop url for a drop on the given drop server.
+	 *
+	 * @param server Hosting drop server.
+	 * @param generator Generator used for drop id generation.
+	 */
+	public DropURL(DropServer server, DropIdGenerator generator) {
+		String dropId = generator.generateDropId();
 		
 		try {
 			this.url = new URL(server.getUrl().toString() + "/" + dropId);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("Failed to create drop url.", e);
+			// should not happen - cannot recover from this
+			throw new RuntimeException("Failed to create drop url.", e);
 		}
 	}
 	
-	/**
-	 * Generates identifier for a drop encoded in Base64url.
-	 * @return the identifier
-	 */
-	private String generateDropId() {
-		// TODO this is just a dummy generator
-		byte[] id = new byte[DROP_ID_LENGTH_BYTE];
-		Arrays.fill(id, (byte)42);
-		return new String(UrlBase64.encode(id)).substring(0, DROP_ID_LENGTH); // cut off terminating dot
-	}
-
 	/**
 	 * Gets drop id part of drop url.
 	 * @return the drop id
@@ -75,7 +77,7 @@ public class DropURL {
 		// check if its a valid Drop-URL.
 		String dropID = this.getDropId();
 		
-		if (dropID.length() != DROP_ID_LENGTH) {
+		if (dropID.length() != DropIdGenerator.DROP_ID_LENGTH) {
 			throw new QblDropInvalidURL();
 		}
 		

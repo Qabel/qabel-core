@@ -15,6 +15,9 @@ import de.qabel.core.config.Settings;
 import de.qabel.core.drop.DropController;
 
 public class ModuleManager {
+
+	private static ModuleManager defaultModuleManager = null;
+
 	static public class ClassLoader extends URLClassLoader{
 	    public ClassLoader() {
 	        super(new URL[0]);
@@ -24,6 +27,17 @@ public class ModuleManager {
 	    public void addURL(URL url) {
 	        super.addURL(url);
 	    }
+	}
+
+	/**
+	 * Get default ModuleManager. Creates a new one if none exists.
+	 * @return Default ModuleManager
+	 */
+	public static ModuleManager getDefault() {
+		if (defaultModuleManager == null) {
+			defaultModuleManager = new ModuleManager();
+		}
+		return defaultModuleManager;
 	}
 
 	public final static ClassLoader LOADER = new ClassLoader();

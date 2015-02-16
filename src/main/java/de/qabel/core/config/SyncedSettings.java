@@ -114,6 +114,8 @@ public class SyncedSettings {
 		result = prime * result
 				+ ((accounts == null) ? 0 : accounts.hashCode());
 		result = prime * result
+				+ ((contacts == null) ? 0 : contacts.hashCode());
+		result = prime * result
 				+ ((dropServers == null) ? 0 : dropServers.hashCode());
 		result = prime * result
 				+ ((identities == null) ? 0 : identities.hashCode());

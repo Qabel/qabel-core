@@ -20,8 +20,9 @@ class ContactTestFactory implements Factory<Contact>{
 
 	@Override
 	public Contact create() {
-		Contact contact = new Contact(idFactory.create());
-		contact.setPrimaryPublicKey(qppkFactory.create());
-		return contact;
+		return new Contact(
+				idFactory.create(),
+				null,
+				qppkFactory.create());
 	}
 }

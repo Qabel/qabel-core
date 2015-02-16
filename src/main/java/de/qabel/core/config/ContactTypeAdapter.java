@@ -45,6 +45,13 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		out.beginObject();
 		//TODO: write module data
 		out.endObject();
+
+		// SyncSettingItem properties
+		out.name("id").value(value.getId());
+		out.name("created").value(value.getCreated());
+		out.name("updated").value(value.getUpdated());
+		out.name("deleted").value(value.getDeleted());
+
 		out.endObject();
 		
 		return;
@@ -60,6 +67,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		String contactOwnerKeyId = null;
 		QblPrimaryPublicKey qppk = null;
 		Collection<DropURL> dropURLs = null;
+		SyncSettingItem syncItem = new SyncSettingItem();
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
@@ -88,6 +96,19 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				//TODO: read module data
 				in.endObject();
 				break;
+			// SyncSettingItem properties
+			case "id":
+				syncItem.setId(in.nextInt());
+				break;
+			case "created":
+				syncItem.setCreated(in.nextLong());
+				break;
+			case "updated":
+				syncItem.setUpdated(in.nextLong());
+				break;
+			case "deleted":
+				syncItem.setDeleted(in.nextLong());
+				break;
 			}
 		}
 		in.endObject();
@@ -96,9 +117,13 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId);
-		contact.setPrimaryPublicKey(qppk);
-		contact.getDropUrls().addAll(dropURLs);
+		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
+
+		// copy all sync item properties
+		contact.setId(syncItem.getId());
+		contact.setCreated(syncItem.getCreated());
+		contact.setUpdated(syncItem.getUpdated());
+		contact.setDeleted(syncItem.getDeleted());
 		
 		return contact;
 	}

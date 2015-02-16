@@ -163,11 +163,7 @@ public class DropController {
 	 */
 	public <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact)
 			throws QblDropPayloadSizeException {
-		DropMessage<T> dm = new DropMessage<T>();
-
-		dm.setData(object);
-		dm.setTime(new Date());
-		dm.setModelObject((Class<T>) object.getClass());
+		DropMessage<T> dm = new DropMessage<T>(contact.getContactOwner(), object);
 
 		return sendAndForget(dm, contact);
 	}
@@ -232,6 +228,13 @@ public class DropController {
 			for (Contact c : contacts) {
 				DropMessage<?> dropMessage = binMessage.disassembleMessageFrom(c);
 				if (dropMessage != null) {
+					boolean unspoofed = dropMessage.registerSender(c);
+					if (!unspoofed) {
+						logger.info("Spoofing of sender infomation detected."
+								+ " Claim: " + dropMessage.getSenderKeyId()
+								+ " Signer: " + c.getKeyIdentifier());
+						break;
+					}
 					plainMessages.add(dropMessage);
 					break; // sender found for this message
 				}
