@@ -28,7 +28,7 @@ public class DropURL {
 	 */
 	public DropURL(String url) throws MalformedURLException, QblDropInvalidURL {
 		this.url = new URL(url);
-		this.checkUrl();
+		this.checkDropIdFromUrl();
 	}
 	
 	/**
@@ -70,10 +70,10 @@ public class DropURL {
 	}
 
 	/**
-	 * Syntactically verifies the drop url.
+	 * Syntactically verifies the dropId part of the url.
 	 * @throws QblDropInvalidURL
 	 */
-	private void checkUrl() throws QblDropInvalidURL {
+	private void checkDropIdFromUrl() throws QblDropInvalidURL {
 		// check if its a valid Drop-URL.
 		String dropID = this.getDropId();
 		
