@@ -15,7 +15,7 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
-
+import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -186,7 +186,8 @@ public class DropController {
 
 		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(message);
 		for (DropURL u : contact.getDropUrls()) {
-			result.addErrorCode(http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact)));
+			HTTPResult<?> dropResult = http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact));
+			result.addErrorCode(dropResult.getResponseCode());
 		}
 		
 		return result;
