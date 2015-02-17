@@ -1,6 +1,8 @@
 package de.qabel.core.http;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 
 import java.net.MalformedURLException;
@@ -10,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class DropHTTPTest {
@@ -58,10 +59,11 @@ public class DropHTTPTest {
 		DropHTTP dHTTP = new DropHTTP();
 		String message = "Test";
 		// When
-		int responseCode = dHTTP.send(this.workingUrl, message.getBytes());
+		HTTPResult<?> result = dHTTP.send(this.workingUrl, message.getBytes());
 		this.postedAt = System.currentTimeMillis();
 		// Then
-		assertEquals(200, responseCode);
+		assertEquals(200, result.getResponseCode());
+		assertTrue(result.isOk());
 	}
 
 	// POST 400
@@ -71,9 +73,10 @@ public class DropHTTPTest {
 		DropHTTP dHTTP = new DropHTTP();
 		String message = "";
 		// When
-		int responseCode = dHTTP.send(this.workingUrl, message.getBytes());
+		HTTPResult<?> result = dHTTP.send(this.workingUrl, message.getBytes());
 		// Then
-		assertEquals(400, responseCode);
+		assertEquals(400, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
 	// POST 413
@@ -84,10 +87,11 @@ public class DropHTTPTest {
 		char[] chars = new char[2574]; // one byte more than the server accepts
 		Arrays.fill(chars, 'a');
 		// When
-		int responseCode = dHTTP.send(this.workingUrl,
+		HTTPResult<?> result = dHTTP.send(this.workingUrl,
 				new String(chars).getBytes());
 		// Then
-		assertEquals(413, responseCode);
+		assertEquals(413, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
 	// GET 200
