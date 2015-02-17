@@ -103,7 +103,7 @@ public class DropHTTPTest {
 		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.workingUrl);
 		// Then
 		assertNotEquals(null, result.getData());
-		assertNotEquals(new ArrayList<String>(), result.getData());
+		assertNotEquals(new ArrayList<byte[]>(), result.getData());
 		assertTrue(result.isOk());
 		assertEquals(200, result.getResponseCode());
 	}
@@ -145,7 +145,7 @@ public class DropHTTPTest {
 		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.shouldContainMessagesUrl, 0);
 		// Then
 		assertNotEquals(null, result.getData());
-		assertNotEquals(new ArrayList<String>(), result.getData());
+		assertNotEquals(new ArrayList<byte[]>(), result.getData());
 		assertTrue(result.isOk());
 		assertEquals(200, result.getResponseCode());
 	}
@@ -186,9 +186,10 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.shouldContainMessagesUrl);
+		HTTPResult<?> result = dHTTP.head(this.shouldContainMessagesUrl);
 		// Then
-		assertEquals(200, responseCode);
+		assertEquals(200, result.getResponseCode());
+		assertTrue(result.isOk());
 	}
 
 	// HEAD 400
@@ -197,20 +198,22 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.tooShortUrl);
+		HTTPResult<?> result = dHTTP.head(this.tooShortUrl);
 		// Then
-		assertEquals(400, responseCode);
+		assertEquals(400, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
-	// HEAD 404
+	// HEAD 204
 	@Test
 	public void shouldBeEmpty() {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.notExistingUrl);
+		HTTPResult<?> result = dHTTP.head(this.notExistingUrl);
 		// Then
-		assertEquals(204, responseCode);
+		assertEquals(204, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
 	// HEAD 200 SINCE
@@ -219,9 +222,10 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.workingUrl, this.postedAt);
+		HTTPResult<?> result = dHTTP.head(this.workingUrl, this.postedAt);
 		// Then
-		assertEquals(200, responseCode);
+		assertEquals(200, result.getResponseCode());
+		assertTrue(result.isOk());
 	}
 
 	// HEAD 304 SINCE
@@ -230,10 +234,11 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUrl,
+		HTTPResult<?> result = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUrl,
 				System.currentTimeMillis());
 		// Then
-		assertEquals(304, responseCode);
+		assertEquals(304, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
 	// HEAD 404 + SINCE
@@ -242,10 +247,11 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		int responseCode = dHTTP.head(this.notExistingUrl,
+		HTTPResult<?> result = dHTTP.head(this.notExistingUrl,
 				System.currentTimeMillis() + 10);
 		// Then
-		assertEquals(204, responseCode);
+		assertEquals(204, result.getResponseCode());
+		assertFalse(result.isOk());
 	}
 
 }
