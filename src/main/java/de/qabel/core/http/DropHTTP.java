@@ -45,19 +45,20 @@ public class DropHTTP {
 		return result;
 	}
 
-	public Collection<byte[]> receiveMessages(URL url) {
+	public HTTPResult<Collection<byte[]>> receiveMessages(URL url) {
 		return this.receiveMessages(url, 0);
 	}
 
-	public Collection<byte[]> receiveMessages(URL url, long sinceDate) {
-		int responseCode = 0;
+	public HTTPResult<Collection<byte[]>> receiveMessages(URL url, long sinceDate) {
+		HTTPResult<Collection<byte[]>> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
 		conn.setIfModifiedSince(sinceDate);
 		Collection<byte[]> messages = new ArrayList<byte[]>();
 		try {
 			conn.setRequestMethod("GET");
-			responseCode = conn.getResponseCode();
-			if (responseCode == 200) {
+			result.setResponseCode(conn.getResponseCode());
+			result.setOk(conn.getResponseCode() == 200);
+			if (result.isOk()) {
 				InputStream inputstream = conn.getInputStream();
 				MimeTokenStream stream = new MimeTokenStream();
 				stream.parseHeadless(inputstream, conn.getContentType());
@@ -77,7 +78,8 @@ public class DropHTTP {
 		} finally {
 			conn.disconnect();
 		}
-		return messages;
+		result.setData(messages);
+		return result;
 	}
 
 	public int head(URL url) {
