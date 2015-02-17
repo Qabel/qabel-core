@@ -82,24 +82,25 @@ public class DropHTTP {
 		return result;
 	}
 
-	public int head(URL url) {
+	public HTTPResult<?> head(URL url) {
 		return this.head(url, 0);
 	}
 
-	public int head(URL url, long sinceDate) {
-		int responseCode = 0;
+	public HTTPResult<?> head(URL url, long sinceDate) {
+		HTTPResult<?> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
 		conn.setIfModifiedSince(sinceDate);
 		try {
 			conn.setRequestMethod("GET");
-			responseCode = conn.getResponseCode();
+			result.setResponseCode(conn.getResponseCode());
+			result.setOk(conn.getResponseCode() == 200);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			conn.disconnect();
 		}
-		return responseCode;
+		return result;
 	}
 
 	private URLConnection setupConnection(URL url) {
