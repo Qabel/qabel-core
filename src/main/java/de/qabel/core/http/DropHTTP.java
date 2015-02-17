@@ -19,8 +19,8 @@ public class DropHTTP {
 
 	String dateFormat;
 
-	public int send(URL url, byte[] message) {
-		int responseCode = 0;
+	public HTTPResult<?> send(URL url, byte[] message) {
+		HTTPResult<?> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
 		conn.setDoOutput(true); // indicates POST method
 		conn.setDoInput(true);
@@ -33,7 +33,8 @@ public class DropHTTP {
 			out.write(message);
 			out.flush();
 			out.close();
-			responseCode = conn.getResponseCode();
+			result.setResponseCode(conn.getResponseCode());
+			result.setOk(conn.getResponseCode() == 200);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,7 +42,7 @@ public class DropHTTP {
 			conn.disconnect();
 
 		}
-		return responseCode;
+		return result;
 	}
 
 	public Collection<byte[]> receiveMessages(URL url) {
