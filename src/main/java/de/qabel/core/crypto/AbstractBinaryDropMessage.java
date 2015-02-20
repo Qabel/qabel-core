@@ -13,6 +13,7 @@ import de.qabel.core.config.Contact;
 import de.qabel.core.drop.DropDeserializer;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.DropSerializer;
+import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 
@@ -33,12 +34,19 @@ public abstract class AbstractBinaryDropMessage {
 		}
 	}
 
+	/**
+	 * Creates binary drop message from the raw binary plaintext.
+	 *
+	 * @param binaryMessage raw binary plaintext.
+	 * @throws QblVersionMismatchException if the version header byte is not as expected.
+	 * @throws QblDropInvalidMessageSizeException if size does not match the version requirement.
+	 */
 	public AbstractBinaryDropMessage(byte[] binaryMessage)
-			throws QblVersionMismatchException {
+			throws QblVersionMismatchException, QblDropInvalidMessageSizeException {
 		if (binaryMessage.length != getTotalSize()) {
-			logger.error("Unexpected message size. Is: " + binaryMessage.length
+			logger.debug("Unexpected message size. Is: " + binaryMessage.length
 					+ " Should: " + getTotalSize());
-			throw new QblVersionMismatchException();
+			throw new QblDropInvalidMessageSizeException();
 		}
 		if (binaryMessage[0] != getVersion()) {
 			throw new QblVersionMismatchException();

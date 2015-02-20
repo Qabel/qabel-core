@@ -12,6 +12,7 @@ import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServer;
 import de.qabel.core.config.DropServers;
 import de.qabel.core.crypto.*;
+import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
@@ -218,6 +219,11 @@ public class DropController {
 				} catch (QblVersionMismatchException e) {
 					logger.error("Version mismatch in binary drop message", e);
 					throw new RuntimeException("Version mismatch should not happen", e);
+				} catch (QblDropInvalidMessageSizeException e) {
+					logger.info("Binary drop message version 0 with unexpected size discarded.");
+					// Invalid message uploads may happen with malicious intent
+					// or by broken clients. Skip.
+					continue;
 				}
 				break;
 			default:
