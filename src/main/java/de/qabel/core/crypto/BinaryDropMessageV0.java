@@ -12,6 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import de.qabel.core.config.Contact;
 import de.qabel.core.drop.DropMessage;
+import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 
@@ -33,7 +34,7 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 	}
 
 	public BinaryDropMessageV0(byte[] binaryMessage)
-			throws QblVersionMismatchException {
+			throws QblVersionMismatchException, QblDropInvalidMessageSizeException {
 		super(binaryMessage);
 		encKey = Arrays.copyOfRange(binaryMessage, HEADER_SIZE, HEADER_SIZE
 				+ CryptoUtils.ENCRYPTED_AES_KEY_SIZE_BYTE);
