@@ -156,7 +156,7 @@ public class DropHTTPTest {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
-		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.workingUrl,
+		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.shouldContainNoNewMessagesSinceDateUrl,
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, result.getData());
