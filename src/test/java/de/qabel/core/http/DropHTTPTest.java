@@ -117,7 +117,7 @@ public class DropHTTPTest {
 		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.tooShortUrl);
 		// Then
 		assertNotEquals(null, result.getData());
-		assertEquals(new ArrayList<String>(), result.getData());
+		assertEquals(new ArrayList<byte[]>(), result.getData());
 		assertFalse(result.isOk());
 		assertEquals(400, result.getResponseCode());
 	}
@@ -131,7 +131,7 @@ public class DropHTTPTest {
 		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.notExistingUrl);
 		// Then
 		assertNotEquals(null, result.getData());
-		assertEquals(new ArrayList<String>(), result.getData());
+		assertEquals(new ArrayList<byte[]>(), result.getData());
 		assertFalse(result.isOk());
 		assertEquals(204, result.getResponseCode());
 	}
@@ -160,7 +160,7 @@ public class DropHTTPTest {
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, result.getData());
-		assertEquals(new ArrayList<String>(), result.getData());
+		assertEquals(new ArrayList<byte[]>(), result.getData());
 		assertFalse(result.isOk());
 		assertEquals(304, result.getResponseCode());
 	}
@@ -175,7 +175,7 @@ public class DropHTTPTest {
 				System.currentTimeMillis());
 		// Then
 		assertNotEquals(null, result.getData());
-		assertEquals(new ArrayList<String>(), result.getData());
+		assertEquals(new ArrayList<byte[]>(), result.getData());
 		assertFalse(result.isOk());
 		assertEquals(204, result.getResponseCode());
 	}
