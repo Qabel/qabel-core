@@ -5,7 +5,6 @@ jdk:
 
 notifications:
   email: false
-  irc: "chat.freenode.net#qabel"
 
 install:
  - redis-server &
