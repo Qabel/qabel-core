@@ -4,7 +4,14 @@
     <eAnnotations xmi:id="_3s2iMLU1EeShbLALyvfh1A" source="http://ns.yatta.de/umllab">
       <contents xmi:type="ecore:EAnnotation" xmi:id="_3s3JQLU1EeShbLALyvfh1A" source="codegen">
         <details xmi:id="_3s3JQbU1EeShbLALyvfh1A" key="codegenDirectory" value="/qabel-core/src/main/java"/>
-        <details xmi:id="_-J2a0LU1EeShbLALyvfh1A" key="AssociatedSourceCode" value="/qabel-core/src/main/java/de/qabel/core/module/ModuleManager.java;3325540268/1;/qabel-core/src/main/java/de/qabel/core/module/Module.java;2243337003/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;38356861/1;/qabel-core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;471649579/1;/qabel-core/src/main/java/de/qabel/core/config/Account.java;635346291/1;/qabel-core/src/main/java/de/qabel/core/config/Accounts.java;3904800373/1;/qabel-core/src/main/java/de/qabel/core/config/AccountsTypeAdapter.java;1362181279/1;/qabel-core/src/main/java/de/qabel/core/config/Contact.java;2949487079/1;/qabel-core/src/main/java/de/qabel/core/config/ContactTypeAdapter.java;1980549358/1;/qabel-core/src/main/java/de/qabel/core/config/Contacts.java;1654268321/1;/qabel-core/src/main/java/de/qabel/core/config/ContactsTypeAdapter.java;1025284053/1;/qabel-core/src/main/java/de/qabel/core/config/DropServer.java;1439548278/1;/qabel-core/src/main/java/de/qabel/core/config/DropServers.java;3124830295/1;/qabel-core/src/main/java/de/qabel/core/config/DropServersTypeAdapter.java;2051467244/1;/qabel-core/src/main/java/de/qabel/core/config/Identities.java;1583176320/1;/qabel-core/src/main/java/de/qabel/core/config/IdentitiesTypeAdapter.java;1282563587/1;/qabel-core/src/main/java/de/qabel/core/config/Identity.java;720679933/1;/qabel-core/src/main/java/de/qabel/core/config/LocalSettings.java;295424905/1;/qabel-core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;3694991015/1;/qabel-core/src/main/java/de/qabel/core/config/Settings.java;2282107800/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServer.java;3767053333/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServers.java;4153051912/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServersTypeAdapter.java;4095216490/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolume.java;3682483488/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumeTypeAdapter.java;2790200297/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumes.java;3264514386/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumesTypeAdapter.java;3259336645/1;/qabel-core/src/main/java/de/qabel/core/config/SyncSettingItem.java;2950329101/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;3648298379/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedSettings.java;1441813966/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedSettingsTypeAdapter.java;3333986834/1;/qabel-core/src/main/java/de/qabel/core/crypto/AbstractBinaryDropMessage.java;935906787/1;/qabel-core/src/main/java/de/qabel/core/crypto/BinaryDropMessageV0.java;1774223017/1;/qabel-core/src/main/java/de/qabel/core/crypto/CryptoUtils.java;3588382496/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblEncKeyPair.java;39360590/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblEncPublicKey.java;3621620537/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblKeyFactory.java;2644526550/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblKeyPair.java;1063720968/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryKeyPair.java;1407192924/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryKeyPairTypeAdapter.java;769646743/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryPublicKey.java;4034243989/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryPublicKeyTypeAdapter.java;54377567/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPublicKey.java;3556902298/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSignKeyPair.java;2993147666/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSignPublicKey.java;2905741684/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSubKeyPair.java;247595774/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSubPublicKey.java;1667729950/1;/qabel-core/src/main/java/de/qabel/core/drop/AdjustableDropIdGenerator.java;794803897/1;/qabel-core/src/main/java/de/qabel/core/drop/DropCallback.java;4019091714/1;/qabel-core/src/main/java/de/qabel/core/drop/DropController.java;1373870/1;/qabel-core/src/main/java/de/qabel/core/drop/DropDeserializer.java;761149025/1;/qabel-core/src/main/java/de/qabel/core/drop/DropIdGenerator.java;3297744262/1;/qabel-core/src/main/java/de/qabel/core/drop/DropListener.java;807269056/1;/qabel-core/src/main/java/de/qabel/core/drop/DropMessage.java;2407510013/1;/qabel-core/src/main/java/de/qabel/core/drop/DropQueueCallback.java;1762970359/1;/qabel-core/src/main/java/de/qabel/core/drop/DropResult.java;3875654636/1;/qabel-core/src/main/java/de/qabel/core/drop/DropResultContact.java;1039746429/1;/qabel-core/src/main/java/de/qabel/core/drop/DropSerializer.java;1333738093/1;/qabel-core/src/main/java/de/qabel/core/drop/DropTypeAdapter.java;3479020105/1;/qabel-core/src/main/java/de/qabel/core/drop/DropURL.java;2517016691/1;/qabel-core/src/main/java/de/qabel/core/drop/ModelObject.java;3008837768/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblContactUnknownException.java;2312524889/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblCryptoBadSignatureException.java;2385301731/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblDropInvalidURL.java;1304908520/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblDropPayloadSizeException.java;1019557897/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblException.java;2649833378/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblInvalidServerCertificateException.java;3900665092/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblModuleUnknownException.java;3483039839/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblNetworkInvalidResponseException.java;4223999813/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblNetworkTimeoutException.java;4097577720/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblSerializationInvalidMessage.java;2696809873/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageBlobSizeExeeded.java;2981504669/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageInvalidBlobName.java;1497440078/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageInvalidToken.java;487375454/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblUnkownVersionException.java;654250984/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblVersionMismatchException.java;805119595/1;/qabel-core/src/main/java/de/qabel/core/http/DropHTTP.java;1845510428/1;/qabel-core/src/main/java/de/qabel/core/http/HTTPResult.java;1347343215/1;/qabel-core/src/main/java/de/qabel/core/http/StorageHTTP.java;2090808982/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageController.java;536932943/1;/qabel-core/src/main/java/de/qabel/core/storage/PaddedInputStream.java;2243709001/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageAction.java;2791906238/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageBlob.java;1944584506/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageConnection.java;2137472735/1;"/>
+        <details xmi:id="_-J2a0LU1EeShbLALyvfh1A" key="AssociatedSourceCode" value="/qabel-core/src/main/java/de/qabel/core/module/ModuleManager.java;3325540268/1;/qabel-core/src/main/java/de/qabel/core/module/Module.java;2243337003/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageResponseListener.java;38356861/1;/qabel-core/src/main/java/de/qabel/core/config/AbstractModuleSettings.java;471649579/1;/qabel-core/src/main/java/de/qabel/core/config/Account.java;635346291/1;/qabel-core/src/main/java/de/qabel/core/config/Accounts.java;3904800373/1;/qabel-core/src/main/java/de/qabel/core/config/AccountsTypeAdapter.java;1362181279/1;/qabel-core/src/main/java/de/qabel/core/config/Contact.java;4080167079/1;/qabel-core/src/main/java/de/qabel/core/config/ContactTypeAdapter.java;2863505805/1;/qabel-core/src/main/java/de/qabel/core/config/Contacts.java;43782347/1;/qabel-core/src/main/java/de/qabel/core/config/ContactsTypeAdapter.java;1025284053/1;/qabel-core/src/main/java/de/qabel/core/config/DropServer.java;1439548278/1;/qabel-core/src/main/java/de/qabel/core/config/DropServers.java;3124830295/1;/qabel-core/src/main/java/de/qabel/core/config/DropServersTypeAdapter.java;2051467244/1;/qabel-core/src/main/java/de/qabel/core/config/Identities.java;3838445384/1;/qabel-core/src/main/java/de/qabel/core/config/IdentitiesTypeAdapter.java;1282563587/1;/qabel-core/src/main/java/de/qabel/core/config/Identity.java;2627965156/1;/qabel-core/src/main/java/de/qabel/core/config/LocalSettings.java;295424905/1;/qabel-core/src/main/java/de/qabel/core/config/LocaleModuleSettings.java;3694991015/1;/qabel-core/src/main/java/de/qabel/core/config/Settings.java;2282107800/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServer.java;3767053333/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServers.java;4153051912/1;/qabel-core/src/main/java/de/qabel/core/config/StorageServersTypeAdapter.java;4095216490/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolume.java;3682483488/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumeTypeAdapter.java;2790200297/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumes.java;3264514386/1;/qabel-core/src/main/java/de/qabel/core/config/StorageVolumesTypeAdapter.java;3259336645/1;/qabel-core/src/main/java/de/qabel/core/config/SyncSettingItem.java;2950329101/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedModuleSettings.java;3648298379/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedSettings.java;1441813966/1;/qabel-core/src/main/java/de/qabel/core/config/SyncedSettingsTypeAdapter.java;2981547549/1;/qabel-core/src/main/java/de/qabel/core/crypto/AbstractBinaryDropMessage.java;2747134135/1;/qabel-core/src/main/java/de/qabel/core/crypto/BinaryDropMessageV0.java;2333659324/1;/qabel-core/src/main/java/de/qabel/core/crypto/CryptoUtils.java;3588382496/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblEncKeyPair.java;39360590/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblEncPublicKey.java;3621620537/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblKeyFactory.java;2644526550/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblKeyPair.java;1063720968/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryKeyPair.java;1407192924/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryKeyPairTypeAdapter.java;769646743/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryPublicKey.java;4034243989/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPrimaryPublicKeyTypeAdapter.java;54377567/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblPublicKey.java;3556902298/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSignKeyPair.java;2993147666/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSignPublicKey.java;2905741684/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSubKeyPair.java;247595774/1;/qabel-core/src/main/java/de/qabel/core/crypto/QblSubPublicKey.java;1667729950/1;/qabel-core/src/main/java/de/qabel/core/drop/AdjustableDropIdGenerator.java;794803897/1;/qabel-core/src/main/java/de/qabel/core/drop/DropCallback.java;4019091714/1;/qabel-core/src/main/java/de/qabel/core/drop/DropController.java;2254446287/1;/qabel-core/src/main/java/de/qabel/core/drop/DropDeserializer.java;1149353071/1;/qabel-core/src/main/java/de/qabel/core/drop/DropIdGenerator.java;3297744262/1;/qabel-core/src/main/java/de/qabel/core/drop/DropListener.java;807269056/1;/qabel-core/src/main/java/de/qabel/core/drop/DropMessage.java;3972008598/1;/qabel-core/src/main/java/de/qabel/core/drop/DropQueueCallback.java;1762970359/1;/qabel-core/src/main/java/de/qabel/core/drop/DropResult.java;3875654636/1;/qabel-core/src/main/java/de/qabel/core/drop/DropResultContact.java;1039746429/1;/qabel-core/src/main/java/de/qabel/core/drop/DropSerializer.java;3858139047/1;/qabel-core/src/main/java/de/qabel/core/drop/DropTypeAdapter.java;3479020105/1;/qabel-core/src/main/java/de/qabel/core/drop/DropURL.java;2535410942/1;/qabel-core/src/main/java/de/qabel/core/drop/ModelObject.java;3008837768/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblContactUnknownException.java;2312524889/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblCryptoBadSignatureException.java;2385301731/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblDropInvalidURL.java;1304908520/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblDropPayloadSizeException.java;1019557897/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblException.java;2649833378/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblInvalidServerCertificateException.java;3900665092/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblModuleUnknownException.java;3483039839/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblNetworkInvalidResponseException.java;4223999813/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblNetworkTimeoutException.java;4097577720/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblSerializationInvalidMessage.java;2696809873/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageBlobSizeExeeded.java;2981504669/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageInvalidBlobName.java;1497440078/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblStorageInvalidToken.java;487375454/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblUnkownVersionException.java;654250984/1;/qabel-core/src/main/java/de/qabel/core/exceptions/QblVersionMismatchException.java;805119595/1;/qabel-core/src/main/java/de/qabel/core/http/DropHTTP.java;1845510428/1;/qabel-core/src/main/java/de/qabel/core/http/HTTPResult.java;1347343215/1;/qabel-core/src/main/java/de/qabel/core/http/StorageHTTP.java;2090808982/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageController.java;536932943/1;/qabel-core/src/main/java/de/qabel/core/storage/PaddedInputStream.java;2243709001/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageAction.java;2791906238/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageBlob.java;1944584506/1;/qabel-core/src/main/java/de/qabel/core/storage/StorageConnection.java;2137472735/1;"/>
+      </contents>
+      <contents xmi:type="ecore:EAnnotation" xmi:id="_4GifsMDJEeSZ-dz5sVoj6g" source="preferences">
+        <contents xmi:type="ecore:EAnnotation" xmi:id="_4Gjt0MDJEeSZ-dz5sVoj6g" source="com.yattasolutions.codegen.reverse">
+          <details xmi:id="_4Gjt0cDJEeSZ-dz5sVoj6g" key="com.yattasolutions.codegen.reverse.roundtrip.ReverseEngineerNewFiles" value="true"/>
+          <details xmi:id="_4Gjt0sDJEeSZ-dz5sVoj6g" key="com.yattasolutions.codegen.reverse.roundtrip.ReverseEngineerChangedFiles" value="true"/>
+          <details xmi:id="_4Gjt08DJEeSZ-dz5sVoj6g" key="com.yattasolutions.codegen.reverse.roundtrip.RemoveDeletedFiles" value="true"/>
+        </contents>
       </contents>
     </eAnnotations>
     <elementImport xmi:id="_4h7JALU1EeShbLALyvfh1A">
@@ -323,25 +330,12 @@
               <ownedComment xmi:id="_4uj21LU1EeShbLALyvfh1A">
                 <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact</body>
               </ownedComment>
-              <ownedAttribute xmi:id="_4tccgLU1EeShbLALyvfh1A" name="primaryPublicKey" type="_4qZIgbU1EeShbLALyvfh1A" association="_4ukd4LU1EeShbLALyvfh1A"/>
-              <ownedAttribute xmi:id="_4tccgbU1EeShbLALyvfh1A" name="contactOwner" visibility="private" type="_4jIC4LU1EeShbLALyvfh1A" association="_4u1jobU1EeShbLALyvfh1A"/>
+              <generalization xmi:id="_5KWGEMDJEeSZ-dz5sVoj6g" general="_5KQmgMDJEeSZ-dz5sVoj6g"/>
+              <ownedAttribute xmi:id="_4tccgLU1EeShbLALyvfh1A" name="primaryPublicKey" type="_4qZIgbU1EeShbLALyvfh1A" isReadOnly="true" association="_7udBkMDJEeSZ-dz5sVoj6g"/>
+              <ownedAttribute xmi:id="_4tccgbU1EeShbLALyvfh1A" name="contactOwner" visibility="private" type="_4jIC4LU1EeShbLALyvfh1A" isReadOnly="true" association="_4u1jobU1EeShbLALyvfh1A"/>
               <ownedAttribute xmi:id="_4tdDkbU1EeShbLALyvfh1A" name="contactOwnerKeyId" isReadOnly="true">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
               </ownedAttribute>
-              <ownedAttribute xmi:id="_4tdDkrU1EeShbLALyvfh1A" name="dropUrls" isLeaf="true" type="_4qKfALU1EeShbLALyvfh1A" isReadOnly="true" association="_4u2KsbU1EeShbLALyvfh1A">
-                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tdqobU1EeShbLALyvfh1A" value="*"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_4tdqorU1EeShbLALyvfh1A" value="new HashSet&lt;DropURL>()"/>
-              </ownedAttribute>
-              <ownedAttribute xmi:id="_4teRtbU1EeShbLALyvfh1A" name="moduleSettings" visibility="private" isLeaf="true" type="_4h6h8LU1EeShbLALyvfh1A" isReadOnly="true" association="_4u2xwbU1EeShbLALyvfh1A">
-                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4teRtrU1EeShbLALyvfh1A" value="*"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_4te4wLU1EeShbLALyvfh1A" value="new HashSet&lt;AbstractModuleSettings>()"/>
-              </ownedAttribute>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4hYLU1EeShbLALyvfh1A" name="getContactOwner" specification="_4iLnsLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t4hYbU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
-                <language>java</language>
-                <body>return contactOwner;
-	</body>
-              </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4hYrU1EeShbLALyvfh1A" name="setContactOwner" specification="_4qM7QLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t4hY7U1EeShbLALyvfh1A" name="identity" type="_4jIC4LU1EeShbLALyvfh1A"/>
                 <language>java</language>
@@ -349,98 +343,51 @@
 		this.contactOwnerKeyId = identity.getKeyIdentifier();
 	</body>
               </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4hZLU1EeShbLALyvfh1A" name="getEncryptionPublicKeyShuffle" specification="_4iNc4LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t4hZbU1EeShbLALyvfh1A" type="_4roeoLU1EeShbLALyvfh1A" direction="return"/>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4hZrU1EeShbLALyvfh1A" name="getContactOwner" specification="_4iNc4bU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_7ualUMDJEeSZ-dz5sVoj6g" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
                 <language>java</language>
-                <body>SecureRandom random;
-	    List&lt;QblEncPublicKey> list;
-	    
-	    list = this.getEncryptionPublicKeys();
-	    random = new SecureRandom();
-
-	    return (list.get(random.nextInt(list.size())));
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4hZrU1EeShbLALyvfh1A" name="getEncryptionPublicKeys" specification="_4iNc4bU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t4hZ7U1EeShbLALyvfh1A" type="_4roeoLU1EeShbLALyvfh1A" isOrdered="true" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t4haLU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return primaryPublicKey.getEncPublicKeys();
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t4habU1EeShbLALyvfh1A" name="addEncryptionPublicKey" specification="_4rpswLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t4harU1EeShbLALyvfh1A" name="key" type="_4roeoLU1EeShbLALyvfh1A"/>
-                <language>java</language>
-                <body>primaryPublicKey.attachEncPublicKey(key);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5IcLU1EeShbLALyvfh1A" name="getSignPublicKeys" specification="_4iOD8bU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t5IcbU1EeShbLALyvfh1A" type="_4rqT0LU1EeShbLALyvfh1A" isOrdered="true" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t5IcrU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return primaryPublicKey.getSignPublicKeys();
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5Ic7U1EeShbLALyvfh1A" name="addSignaturePublicKey" specification="_4rq64LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t5IdLU1EeShbLALyvfh1A" name="key" type="_4rqT0LU1EeShbLALyvfh1A"/>
-                <language>java</language>
-                <body>primaryPublicKey.attachSignPublicKey(key);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5IdbU1EeShbLALyvfh1A" name="getModuleSettings" specification="_4iOrArU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t5IdrU1EeShbLALyvfh1A" type="_4h6h8LU1EeShbLALyvfh1A" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t5Id7U1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return moduleSettings;
+                <body>return contactOwner;
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5IeLU1EeShbLALyvfh1A" name="Contact" specification="_4qNiULU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t5IebU1EeShbLALyvfh1A" name="owner" type="_4jIC4LU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t5IerU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_7ualUcDJEeSZ-dz5sVoj6g" name="owner" type="_4jIC4LU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_7ualUsDJEeSZ-dz5sVoj6g" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_7ualU8DJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_7ualVMDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
                 <language>java</language>
-                <body>this.contactOwner = owner;
+                <body>super(dropUrls);
+		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5Ie7U1EeShbLALyvfh1A" name="Contact" specification="_4iP5ILU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t5IfLU1EeShbLALyvfh1A" name="ownerKeyId">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_4t5IfbU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
-                <language>java</language>
-                <body>this.contactOwnerKeyId = ownerKeyId;
+		this.setPrimaryPublicKey(pubKey);
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5vgLU1EeShbLALyvfh1A" name="hashCode" specification="_4iP5JbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t5vgbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 </ownedParameter>
                 <language>java</language>
                 <body>final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result
 				+ ((contactOwner == null) ? 0 : contactOwner.hashCode());
 		result = prime * result
-				+ ((dropUrls == null) ? 0 : dropUrls.hashCode());
+				+ ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
 		result = prime * result
 				+ ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
-		result = prime * result
-				+ ((moduleSettings == null) ? 0 : moduleSettings.hashCode());
 		return result;
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5vgrU1EeShbLALyvfh1A" name="equals" specification="_4rrh8LU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t5vg7U1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4t5vhLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
                 <language>java</language>
                 <body>if (this == obj)
 			return true;
-		if (obj == null)
+		if (!super.equals(obj))
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
@@ -450,73 +397,55 @@
 				return false;
 		} else if (!contactOwner.equals(other.contactOwner))
 			return false;
+		if (contactOwnerKeyId == null) {
+			if (other.contactOwnerKeyId != null)
+				return false;
+		} else if (!contactOwnerKeyId.equals(other.contactOwnerKeyId))
+			return false;
 		if (primaryPublicKey == null) {
 			if (other.primaryPublicKey != null)
 				return false;
 		} else if (!primaryPublicKey.equals(other.primaryPublicKey))
 			return false;
-		if (dropUrls == null) {
-			if (other.dropUrls != null)
-				return false;
-		} else if (!dropUrls.equals(other.dropUrls))
-			return false;
 		return true;
 	</body>
               </ownedBehavior>
-              <ownedOperation xmi:id="_4iLnsLU1EeShbLALyvfh1A" name="getContactOwner" method="_4t4hYLU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ukd4rU1EeShbLALyvfh1A">
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5KyyA8DJEeSZ-dz5sVoj6g" name="Contact" specification="_4iP5ILU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_5KyyBMDJEeSZ-dz5sVoj6g" name="ownerKeyId">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+                <ownedParameter xmi:id="_5KzZEMDJEeSZ-dz5sVoj6g" type="_4iLAoLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
+                <ownedParameter xmi:id="_5KzZEcDJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5KzZEsDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
+                <language>java</language>
+                <body>super(dropUrls);
+		this.contactOwnerKeyId = ownerKeyId;
+		this.setPrimaryPublicKey(pubKey);
+	</body>
+              </ownedBehavior>
+              <ownedOperation xmi:id="_4iNc4bU1EeShbLALyvfh1A" name="getContactOwner" method="_4t4hZrU1EeShbLALyvfh1A">
+                <ownedComment xmi:id="_7udBksDJEeSZ-dz5sVoj6g">
                   <body>Returns the identity which owns the contact
 	 * @return contactOwner</body>
                 </ownedComment>
-                <ownedParameter xmi:id="_4qMUMLU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_7uKGoMDJEeSZ-dz5sVoj6g" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
               </ownedOperation>
-              <ownedOperation xmi:id="_4iNc4LU1EeShbLALyvfh1A" name="getEncryptionPublicKeyShuffle" method="_4t4hZLU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE8LU1EeShbLALyvfh1A">
-                  <body>Returns a list of the public encryption keys of the contact
-	 * @return List&lt;QblEncPublicKey></body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4roeorU1EeShbLALyvfh1A" type="_4roeoLU1EeShbLALyvfh1A" direction="return"/>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4iNc4bU1EeShbLALyvfh1A" name="getEncryptionPublicKeys" method="_4t4hZrU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE8bU1EeShbLALyvfh1A">
-                  <body>Returns a list of the public encryption keys of the contact
-	 * @return List&lt;QblEncPublicKey></body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4iNc4rU1EeShbLALyvfh1A" type="_4roeoLU1EeShbLALyvfh1A" isOrdered="true" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4iOD8LU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4iOD8bU1EeShbLALyvfh1A" name="getSignPublicKeys" method="_4t5IcLU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE87U1EeShbLALyvfh1A">
-                  <body>Returns a list of the public sign keys of the contact
-	 * @return List&lt;QblSignPublicKey></body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4iOrALU1EeShbLALyvfh1A" type="_4rqT0LU1EeShbLALyvfh1A" isOrdered="true" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4iOrAbU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4iOrArU1EeShbLALyvfh1A" name="getModuleSettings" method="_4t5IdbU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE9bU1EeShbLALyvfh1A">
-                  <body>Returns a set of the module specific settings of the contact
-	 * @return Set&lt;AbstractModuleSettings></body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4iPSELU1EeShbLALyvfh1A" type="_4h6h8LU1EeShbLALyvfh1A" direction="return">
-                  <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4iPSEbU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4iP5ILU1EeShbLALyvfh1A" name="Contact" visibility="protected" method="_4t5Ie7U1EeShbLALyvfh1A">
+              <ownedOperation xmi:id="_4iP5ILU1EeShbLALyvfh1A" name="Contact" visibility="protected" method="_5KyyA8DJEeSZ-dz5sVoj6g">
                 <eAnnotations xmi:id="_4iP5IrU1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
                   <details xmi:id="_4iP5I7U1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
                 <ownedComment xmi:id="_4ulE97U1EeShbLALyvfh1A">
                   <body>Creates an instance of Contact and sets the contactOwnerId.
-	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
-	 * @param ownerKeyId</body>
+	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_4iP5IbU1EeShbLALyvfh1A" name="ownerKeyId">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <ownedParameter xmi:id="_4iP5JLU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5F98YMDJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5F_xkcDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
               </ownedOperation>
               <ownedOperation xmi:id="_4iP5JbU1EeShbLALyvfh1A" name="hashCode" method="_4t5vgLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4iP5JrU1EeShbLALyvfh1A" direction="return">
@@ -535,27 +464,12 @@
                   <details xmi:id="_4qNiU7U1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
                 <ownedComment xmi:id="_4ulE9rU1EeShbLALyvfh1A">
-                  <body>Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
-	 * @param owner</body>
+                  <body>Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_4qNiUbU1EeShbLALyvfh1A" name="owner" type="_4jIC4LU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4qNiVLU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4rpswLU1EeShbLALyvfh1A" name="addEncryptionPublicKey" method="_4t4habU1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE8rU1EeShbLALyvfh1A">
-                  <body>Adds a public encryption key to the contact
-	 * @param key
-	 * @throws InvalidKeyException</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4rpswbU1EeShbLALyvfh1A" name="key" type="_4roeoLU1EeShbLALyvfh1A"/>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4rq64LU1EeShbLALyvfh1A" name="addSignaturePublicKey" method="_4t5Ic7U1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4ulE9LU1EeShbLALyvfh1A">
-                  <body>Adds a public signing key to the contact
-	 * @param key
-	 * @throws InvalidKeyException</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4rq64bU1EeShbLALyvfh1A" name="key" type="_4rqT0LU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_4tkYUbU1EeShbLALyvfh1A" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5F8uQMDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
               </ownedOperation>
               <ownedOperation xmi:id="_4rrh8LU1EeShbLALyvfh1A" name="equals" method="_4t5vgrU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4rrh8bU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
@@ -594,6 +508,13 @@
 		out.beginObject();
 		//TODO: write module data
 		out.endObject();
+
+		// SyncSettingItem properties
+		out.name(&quot;id&quot;).value(value.getId());
+		out.name(&quot;created&quot;).value(value.getCreated());
+		out.name(&quot;updated&quot;).value(value.getUpdated());
+		out.name(&quot;deleted&quot;).value(value.getDeleted());
+
 		out.endObject();
 		
 		return;
@@ -601,7 +522,9 @@
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t6WkLU1EeShbLALyvfh1A" name="read" specification="_4rulQbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t6WkbU1EeShbLALyvfh1A" name="in" type="_4qICwLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t6WkrU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4t6WkrU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>if(in.peek() == JsonToken.NULL) {
 			in.nextNull();
@@ -611,6 +534,7 @@
 		String contactOwnerKeyId = null;
 		QblPrimaryPublicKey qppk = null;
 		Collection&lt;DropURL> dropURLs = null;
+		SyncSettingItem syncItem = new SyncSettingItem();
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
@@ -639,6 +563,19 @@
 				//TODO: read module data
 				in.endObject();
 				break;
+			// SyncSettingItem properties
+			case &quot;id&quot;:
+				syncItem.setId(in.nextInt());
+				break;
+			case &quot;created&quot;:
+				syncItem.setCreated(in.nextLong());
+				break;
+			case &quot;updated&quot;:
+				syncItem.setUpdated(in.nextLong());
+				break;
+			case &quot;deleted&quot;:
+				syncItem.setDeleted(in.nextLong());
+				break;
 			}
 		}
 		in.endObject();
@@ -647,9 +584,13 @@
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId);
-		contact.setPrimaryPublicKey(qppk);
-		contact.getDropUrls().addAll(dropURLs);
+		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
+
+		// copy all sync item properties
+		contact.setId(syncItem.getId());
+		contact.setCreated(syncItem.getCreated());
+		contact.setUpdated(syncItem.getUpdated());
+		contact.setDeleted(syncItem.getDeleted());
 		
 		return contact;
 	</body>
@@ -667,67 +608,14 @@
               <ownedComment xmi:id="_4um6ILU1EeShbLALyvfh1A">
                 <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contacts</body>
               </ownedComment>
-              <ownedAttribute xmi:id="_4tff0LU1EeShbLALyvfh1A" name="contacts" visibility="private" isLeaf="true" type="_4iLAoLU1EeShbLALyvfh1A" isReadOnly="true" association="_4u3Y0bU1EeShbLALyvfh1A">
-                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tff0bU1EeShbLALyvfh1A" value="*"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_4tff0rU1EeShbLALyvfh1A" value="new HashSet&lt;Contact>()"/>
-              </ownedAttribute>
+              <generalization xmi:id="_5KX7QcDJEeSZ-dz5sVoj6g" general="_5KXUMMDJEeSZ-dz5sVoj6g"/>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t6Wk7U1EeShbLALyvfh1A" name="getContacts" specification="_4ijbILU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t6WlLU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t6WlbU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>return Collections.unmodifiableSet(this.contacts);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t6WlrU1EeShbLALyvfh1A" name="add" specification="_4qcL0LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t6Wl7U1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t6WmLU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return this.contacts.add(contact);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t6WmbU1EeShbLALyvfh1A" name="remove" specification="_4qcy4LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t6WmrU1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t6Wm7U1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return this.contacts.remove(contact);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t69oLU1EeShbLALyvfh1A" name="hashCode" specification="_4ikCMLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t69obU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((contacts == null) ? 0 : contacts.hashCode());
-		return result;
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t69orU1EeShbLALyvfh1A" name="equals" specification="_4rwacLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t69o7U1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t69pLU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Contacts other = (Contacts) obj;
-		if (contacts == null) {
-			if (other.contacts != null)
-				return false;
-		} else if (!contacts.equals(other.contacts))
-			return false;
-		return true;
+                <body>return this.getEntities();
 	</body>
               </ownedBehavior>
               <ownedOperation xmi:id="_4ijbILU1EeShbLALyvfh1A" name="getContacts" method="_4t6Wk7U1EeShbLALyvfh1A">
@@ -737,39 +625,6 @@
                 </ownedComment>
                 <ownedParameter xmi:id="_4ijbIbU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return">
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ijbIrU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4ikCMLU1EeShbLALyvfh1A" name="hashCode" method="_4t69oLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4ikCMbU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4qcL0LU1EeShbLALyvfh1A" name="add" method="_4t6WlrU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4um6IrU1EeShbLALyvfh1A">
-                  <body>Adds a contact
-	 * @param contact
-	 * @return true if contact is added, false if contact is already in list</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4qcL0bU1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4qcL0rU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4qcy4LU1EeShbLALyvfh1A" name="remove" method="_4t6WmbU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4um6I7U1EeShbLALyvfh1A">
-                  <body>Removes contact from list of contacts
-	 * @param contact
-	 * @return true if contact was contained in list, false if not</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4qcy4bU1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4qcy4rU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4rwacLU1EeShbLALyvfh1A" name="equals" method="_4t69orU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4rwacbU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4rxBgLU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
               </ownedOperation>
             </packagedElement>
@@ -1094,84 +949,14 @@
               <ownedComment xmi:id="_4unhNbU1EeShbLALyvfh1A">
                 <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identities</body>
               </ownedComment>
-              <ownedAttribute xmi:id="_4th8ELU1EeShbLALyvfh1A" name="identities" visibility="private" isLeaf="true" type="_4jIC4LU1EeShbLALyvfh1A" isReadOnly="true" association="_4u4m8bU1EeShbLALyvfh1A">
-                <qualifier xmi:id="_4th8E7U1EeShbLALyvfh1A">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </qualifier>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_4th8EbU1EeShbLALyvfh1A" value="new HashMap&lt;String, Identity>()"/>
-              </ownedAttribute>
+              <generalization xmi:id="_5Kda0MDJEeSZ-dz5sVoj6g" general="_5KXUMMDJEeSZ-dz5sVoj6g"/>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t8y1rU1EeShbLALyvfh1A" name="getIdentities" specification="_4i9DwLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t8y17U1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t8y2LU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>return Collections.unmodifiableSet(new HashSet&lt;Identity>(this.identities.values()));
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t8y2bU1EeShbLALyvfh1A" name="add" specification="_4qpnMbU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t8y2rU1EeShbLALyvfh1A" name="identity" type="_4jIC4LU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t8y27U1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>if (this.identities.containsKey(identity.getKeyIdentifier())) {
-			return false;
-		}
-		else {
-			this.identities.put(identity.getKeyIdentifier(), identity);
-			return true;
-		}
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t9Z4LU1EeShbLALyvfh1A" name="remove" specification="_4qqOQbU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t9Z4bU1EeShbLALyvfh1A" name="identity" type="_4jIC4LU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t9Z4rU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return (identity != null &amp;&amp; this.identities.remove(identity.getKeyIdentifier()) != null);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t9Z47U1EeShbLALyvfh1A" name="getIdentityByKeyIdentifier" specification="_4i9q0LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t9Z5LU1EeShbLALyvfh1A" name="keyIdentifier">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_4t9Z5bU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
-                <language>java</language>
-                <body>return this.identities.get(keyIdentifier);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t9Z5rU1EeShbLALyvfh1A" name="hashCode" specification="_4i-R4LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t9Z57U1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((identities == null) ? 0 : identities.hashCode());
-		return result;
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t9Z6LU1EeShbLALyvfh1A" name="equals" specification="_4sPioLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t9Z6bU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t9Z6rU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Identities other = (Identities) obj;
-		if (identities == null) {
-			if (other.identities != null)
-				return false;
-		} else if (!identities.equals(other.identities))
-			return false;
-		return true;
+                <body>return this.getEntities();
 	</body>
               </ownedBehavior>
               <ownedOperation xmi:id="_4i9DwLU1EeShbLALyvfh1A" name="getIdentities" method="_4t8y1rU1EeShbLALyvfh1A">
@@ -1181,50 +966,6 @@
                 </ownedComment>
                 <ownedParameter xmi:id="_4i9DwbU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return">
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4i9DwrU1EeShbLALyvfh1A" value="*"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4i9q0LU1EeShbLALyvfh1A" name="getIdentityByKeyIdentifier" method="_4t9Z47U1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4uoIQrU1EeShbLALyvfh1A">
-                  <body>Get Identity by key identifier (right most 64 bit of the identity's public fingerprint)
-	 * @param keyIdentifier
-	 * @return identity to which the key identifier is mapped or null if there is no mapping for this key identifier</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4i9q0bU1EeShbLALyvfh1A" name="keyIdentifier">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_4qqORLU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4i-R4LU1EeShbLALyvfh1A" name="hashCode" method="_4t9Z5rU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4i-R4bU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4qpnMbU1EeShbLALyvfh1A" name="add" method="_4t8y2bU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4uoIQLU1EeShbLALyvfh1A">
-                  <body>Add an instance of Identity to the identities list.
-	 * @param identity
-	 * @return true if identity has been added - false if this identity is a duplicate</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4qpnMrU1EeShbLALyvfh1A" name="identity" type="_4jIC4LU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4qqOQLU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4qqOQbU1EeShbLALyvfh1A" name="remove" method="_4t9Z4LU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4uoIQbU1EeShbLALyvfh1A">
-                  <body>Removes identity from list of identities
-	 * @param identity
-	 * @return true if identity was contained in list, false if not</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4qqOQrU1EeShbLALyvfh1A" name="identity" type="_4jIC4LU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4qqOQ7U1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
-                </ownedParameter>
-              </ownedOperation>
-              <ownedOperation xmi:id="_4sPioLU1EeShbLALyvfh1A" name="equals" method="_4t9Z6LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4sPiobU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4sPiorU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
               </ownedOperation>
             </packagedElement>
@@ -1285,27 +1026,24 @@
               <ownedComment xmi:id="_4uoIQ7U1EeShbLALyvfh1A">
                 <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity</body>
               </ownedComment>
-              <generalization xmi:id="_4qvGwLU1EeShbLALyvfh1A" general="_4kcRgLU1EeShbLALyvfh1A"/>
+              <generalization xmi:id="_4qvGwLU1EeShbLALyvfh1A" general="_5KQmgMDJEeSZ-dz5sVoj6g"/>
               <ownedAttribute xmi:id="_4tijILU1EeShbLALyvfh1A" name="alias">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
               </ownedAttribute>
               <ownedAttribute xmi:id="_4tijIbU1EeShbLALyvfh1A" name="primaryKeyPair" type="_4qrcYLU1EeShbLALyvfh1A" isReadOnly="true" association="_4u5OALU1EeShbLALyvfh1A"/>
-              <ownedAttribute xmi:id="_4tjxQ7U1EeShbLALyvfh1A" name="drops" type="_4qKfALU1EeShbLALyvfh1A" isOrdered="true" association="_4u51ELU1EeShbLALyvfh1A">
-                <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tjxRbU1EeShbLALyvfh1A" value="*"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_4tjxRrU1EeShbLALyvfh1A" value="new ArrayList&lt;DropURL>()"/>
-              </ownedAttribute>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oALU1EeShbLALyvfh1A" name="Identity" specification="_4sahwLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t-oAbU1EeShbLALyvfh1A" name="alias">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <ownedParameter xmi:id="_4t-oArU1EeShbLALyvfh1A" name="drops" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4t-oA7U1EeShbLALyvfh1A" name="primaryKeyPair" type="_4qrcYLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4t-oBLU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4t-oBLU1EeShbLALyvfh1A" type="_4jIC4LU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
-                <body>this.setId(0); //just to set it somehow
+                <body>super(drops);
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
-		this.setDrops(drops);
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oBbU1EeShbLALyvfh1A" name="setPrimaryKeyPair" specification="_4sbv4bU1EeShbLALyvfh1A">
@@ -1314,32 +1052,17 @@
                 <body>this.primaryKeyPair = key;
 	</body>
               </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oB7U1EeShbLALyvfh1A" name="addDrop" specification="_4scW8LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t-oCLU1EeShbLALyvfh1A" name="drop" type="_4qKfALU1EeShbLALyvfh1A"/>
-                <language>java</language>
-                <body>this.drops.add(drop);
-	</body>
-              </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oCbU1EeShbLALyvfh1A" name="getKeyIdentifier" specification="_4jJ4ELU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_4t-oCrU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </ownedParameter>
-                <language>java</language>
-                <body>return this.primaryKeyPair.getQblPrimaryPublicKey().getReadableKeyIdentifier();
-	</body>
-              </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oC7U1EeShbLALyvfh1A" name="hashCode" specification="_4jJ4ErU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t-oDLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 </ownedParameter>
                 <language>java</language>
                 <body>final int prime = 31;
 		int result = 1;
-		
+
 		result = super.hashCode();
-		
 		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
-		result = prime * result + ((drops == null) ? 0 : drops.hashCode());
 		result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
 		return result;
 	</body>
@@ -1347,6 +1070,7 @@
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t-oDbU1EeShbLALyvfh1A" name="equals" specification="_4sc-ALU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4t-oDrU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4t-oD7U1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
                 <language>java</language>
@@ -1371,25 +1095,18 @@
 				return false;
 		} else if (!primaryKeyPair.equals(other.primaryKeyPair))
 			return false;
-		if (drops == null) {
-			if (other.drops != null)
-				return false;
-		} else if (!drops.equals(other.drops))
-			return false;
 
 		return true;
 	</body>
               </ownedBehavior>
-              <ownedOperation xmi:id="_4jJ4ELU1EeShbLALyvfh1A" name="getKeyIdentifier" method="_4t-oCbU1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4uovUbU1EeShbLALyvfh1A">
-                  <body>Returns the key identifier of the identity.
-	 * The key identifier consists of the right-most 64 bit of the identity's public fingerprint
-	 * @return key identifier</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4jJ4EbU1EeShbLALyvfh1A" direction="return">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5K0AIMDJEeSZ-dz5sVoj6g" name="getPrimaryPublicKey" specification="_5GKJoMDJEeSZ-dz5sVoj6g">
+                <ownedParameter xmi:id="_5K0AIcDJEeSZ-dz5sVoj6g" type="_4qZIgbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                 </ownedParameter>
-              </ownedOperation>
+                <language>java</language>
+                <body>return this.getPrimaryKeyPair().getQblPrimaryPublicKey();
+	</body>
+              </ownedBehavior>
               <ownedOperation xmi:id="_4jJ4ErU1EeShbLALyvfh1A" name="hashCode" method="_4t-oC7U1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4jJ4E7U1EeShbLALyvfh1A" direction="return">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
@@ -1419,18 +1136,14 @@
                 </ownedComment>
                 <ownedParameter xmi:id="_4sbv4rU1EeShbLALyvfh1A" name="key" type="_4qrcYLU1EeShbLALyvfh1A"/>
               </ownedOperation>
-              <ownedOperation xmi:id="_4scW8LU1EeShbLALyvfh1A" name="addDrop" method="_4t-oB7U1EeShbLALyvfh1A">
-                <ownedComment xmi:id="_4uovULU1EeShbLALyvfh1A">
-                  <body>Adds a drop url to the identity
-	 * @param drop</body>
-                </ownedComment>
-                <ownedParameter xmi:id="_4scW8bU1EeShbLALyvfh1A" name="drop" type="_4qKfALU1EeShbLALyvfh1A"/>
-              </ownedOperation>
               <ownedOperation xmi:id="_4sc-ALU1EeShbLALyvfh1A" name="equals" method="_4t-oDbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4sc-AbU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4sc-ArU1EeShbLALyvfh1A" direction="return">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5GKJoMDJEeSZ-dz5sVoj6g" name="getPrimaryPublicKey" method="_5K0AIMDJEeSZ-dz5sVoj6g">
+                <ownedParameter xmi:id="_5GKJocDJEeSZ-dz5sVoj6g" type="_4qZIgbU1EeShbLALyvfh1A" direction="return"/>
               </ownedOperation>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_4jTpELU1EeShbLALyvfh1A" name="LocalSettings">
@@ -2700,7 +2413,9 @@
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ugMc7U1EeShbLALyvfh1A" name="read" specification="_4tQ2ULU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ugMdLU1EeShbLALyvfh1A" name="in" type="_4qICwLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4ugMdbU1EeShbLALyvfh1A" type="_4kiYILU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4ugMdbU1EeShbLALyvfh1A" type="_4kiYILU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>if(in.peek() == JsonToken.NULL) {
 			in.nextNull();
@@ -2770,7 +2485,7 @@
 
 		for(Contact contact : contacts.getContacts()) {
 			contact.setContactOwner(
-					identities.getIdentityByKeyIdentifier(
+					identities.getByKeyIdentifier(
 							contact.getContactOwnerKeyId()));
 		}
 		
@@ -2811,9 +2526,6 @@
             <packagedElement xmi:type="uml:Association" xmi:id="_4uhakbU1EeShbLALyvfh1A" name="" memberEnd="_4topwrU1EeShbLALyvfh1A _4uhakLU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4uhakLU1EeShbLALyvfh1A" name="" type="_4jgdYbU1EeShbLALyvfh1A" association="_4uhakbU1EeShbLALyvfh1A"/>
             </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4ukd4LU1EeShbLALyvfh1A" name="" memberEnd="_4tccgLU1EeShbLALyvfh1A _4ukd4bU1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4ukd4bU1EeShbLALyvfh1A" name="" type="_4iLAoLU1EeShbLALyvfh1A" association="_4ukd4LU1EeShbLALyvfh1A"/>
-            </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_4um6JbU1EeShbLALyvfh1A" name="" memberEnd="_4tgG4bU1EeShbLALyvfh1A _4unhMLU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4unhMLU1EeShbLALyvfh1A" name="" type="_4inskLU1EeShbLALyvfh1A" association="_4um6JbU1EeShbLALyvfh1A"/>
             </packagedElement>
@@ -2847,26 +2559,11 @@
             <packagedElement xmi:type="uml:Association" xmi:id="_4u1jobU1EeShbLALyvfh1A" name="" memberEnd="_4u1jorU1EeShbLALyvfh1A _4tccgbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4u1jorU1EeShbLALyvfh1A" name="" type="_4iLAoLU1EeShbLALyvfh1A" association="_4u1jobU1EeShbLALyvfh1A"/>
             </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4u2KsbU1EeShbLALyvfh1A" name="" memberEnd="_4u2KsrU1EeShbLALyvfh1A _4tdDkrU1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4u2KsrU1EeShbLALyvfh1A" name="" type="_4iLAoLU1EeShbLALyvfh1A" association="_4u2KsbU1EeShbLALyvfh1A"/>
-            </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4u2xwbU1EeShbLALyvfh1A" name="" memberEnd="_4u2xwrU1EeShbLALyvfh1A _4teRtbU1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4u2xwrU1EeShbLALyvfh1A" name="" type="_4iLAoLU1EeShbLALyvfh1A" association="_4u2xwbU1EeShbLALyvfh1A"/>
-            </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4u3Y0bU1EeShbLALyvfh1A" name="" memberEnd="_4u3Y0rU1EeShbLALyvfh1A _4tff0LU1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4u3Y0rU1EeShbLALyvfh1A" name="" type="_4ictcLU1EeShbLALyvfh1A" association="_4u3Y0bU1EeShbLALyvfh1A"/>
-            </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_4u3_4bU1EeShbLALyvfh1A" name="" memberEnd="_4u3_4rU1EeShbLALyvfh1A _4tgt8bU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4u3_4rU1EeShbLALyvfh1A" name="" type="_4ixdkLU1EeShbLALyvfh1A" association="_4u3_4bU1EeShbLALyvfh1A"/>
             </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4u4m8bU1EeShbLALyvfh1A" name="" memberEnd="_4u4m8rU1EeShbLALyvfh1A _4th8ELU1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4u4m8rU1EeShbLALyvfh1A" name="" type="_4i8csLU1EeShbLALyvfh1A" association="_4u4m8bU1EeShbLALyvfh1A"/>
-            </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_4u5OALU1EeShbLALyvfh1A" name="" memberEnd="_4u5OAbU1EeShbLALyvfh1A _4tijIbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4u5OAbU1EeShbLALyvfh1A" name="" type="_4jIC4LU1EeShbLALyvfh1A" association="_4u5OALU1EeShbLALyvfh1A"/>
-            </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_4u51ELU1EeShbLALyvfh1A" name="" memberEnd="_4u51EbU1EeShbLALyvfh1A _4tjxQ7U1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_4u51EbU1EeShbLALyvfh1A" name="" type="_4jIC4LU1EeShbLALyvfh1A" association="_4u51ELU1EeShbLALyvfh1A"/>
             </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_4u51E7U1EeShbLALyvfh1A" name="" memberEnd="_4u51FLU1EeShbLALyvfh1A _4topwbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4u51FLU1EeShbLALyvfh1A" name="" type="_4jgdYbU1EeShbLALyvfh1A" association="_4u51E7U1EeShbLALyvfh1A"/>
@@ -2883,6 +2580,11 @@
             <packagedElement xmi:type="uml:Association" xmi:id="_4u8RUbU1EeShbLALyvfh1A" name="" memberEnd="_4u8RUrU1EeShbLALyvfh1A _4tuJUbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_4u8RUrU1EeShbLALyvfh1A" name="" type="_4kWx8LU1EeShbLALyvfh1A" association="_4u8RUbU1EeShbLALyvfh1A"/>
             </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5KQmgMDJEeSZ-dz5sVoj6g" name="Entity"/>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5KXUMMDJEeSZ-dz5sVoj6g" name="EntityMap"/>
+            <packagedElement xmi:type="uml:Association" xmi:id="_7udBkMDJEeSZ-dz5sVoj6g" name="" memberEnd="_4tccgLU1EeShbLALyvfh1A _7udBkcDJEeSZ-dz5sVoj6g">
+              <ownedEnd xmi:id="_7udBkcDJEeSZ-dz5sVoj6g" name="" type="_4iLAoLU1EeShbLALyvfh1A" association="_7udBkMDJEeSZ-dz5sVoj6g"/>
+            </packagedElement>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_4WD3QLU1EeShbLALyvfh1A" name="crypto">
             <packagedElement xmi:type="uml:Class" xmi:id="_4kriELU1EeShbLALyvfh1A" name="AbstractBinaryDropMessage" isAbstract="true">
@@ -2898,7 +2600,9 @@
               </ownedAttribute>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ugMdrU1EeShbLALyvfh1A" name="AbstractBinaryDropMessage" specification="_4tSrgLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ugMd7U1EeShbLALyvfh1A" name="dropMessage" type="_4rQEIbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4ugMeLU1EeShbLALyvfh1A" type="_4kriELU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4ugMeLU1EeShbLALyvfh1A" type="_4kriELU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>this.plainPayload = serializeMessage(dropMessage);
 		if (plainPayload.length > getPayloadSize()) {
@@ -2911,12 +2615,14 @@
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ugMe7U1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_4ugMfLU1EeShbLALyvfh1A" type="_4kriELU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4ugMfLU1EeShbLALyvfh1A" type="_4kriELU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>if (binaryMessage.length != getTotalSize()) {
-			logger.error(&quot;Unexpected message size. Is: &quot; + binaryMessage.length
+			logger.debug(&quot;Unexpected message size. Is: &quot; + binaryMessage.length
 					+ &quot; Should: &quot; + getTotalSize());
-			throw new QblVersionMismatchException();
+			throw new QblDropInvalidMessageSizeException();
 		}
 		if (binaryMessage[0] != getVersion()) {
 			throw new QblVersionMismatchException();
@@ -2926,6 +2632,7 @@
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ugMfbU1EeShbLALyvfh1A" name="serializeMessage" specification="_4tT5oLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ugMfrU1EeShbLALyvfh1A" name="dropMessage" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4ugMf7U1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ugMgLU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -2939,7 +2646,9 @@
                 <ownedParameter xmi:id="_4ugMgrU1EeShbLALyvfh1A" name="plainJson">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_4ugMg7U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4ugMg7U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>Gson gson = new GsonBuilder().registerTypeAdapter(DropMessage.class,
 				new DropDeserializer()).create();
@@ -2953,6 +2662,7 @@
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ugMhLU1EeShbLALyvfh1A" name="getPaddedMessage" specification="_4k3vULU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ugMhbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ugMhrU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -2966,6 +2676,7 @@
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ugzgrU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
                 <ownedParameter xmi:id="_4ugzg7U1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4ugzhLU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -2980,7 +2691,9 @@
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ugzhbU1EeShbLALyvfh1A" name="disassembleMessageFrom" specification="_4rVjsLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ugzhrU1EeShbLALyvfh1A" name="sender" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_4ugzh7U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_4ugzh7U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>byte[] rawPlainText = disassembleRawMessageFrom(sender);
 		if (rawPlainText == null) {
@@ -3005,10 +2718,17 @@
 		return dropMessage;
 	</body>
               </ownedBehavior>
-              <ownedOperation xmi:id="_4kzd4LU1EeShbLALyvfh1A" name="AbstractBinaryDropMessage" method="_4ugMebU1EeShbLALyvfh1A" raisedException="_4rRSQrU1EeShbLALyvfh1A">
+              <ownedOperation xmi:id="_4kzd4LU1EeShbLALyvfh1A" name="AbstractBinaryDropMessage" method="_4ugMebU1EeShbLALyvfh1A" raisedException="_4rRSQrU1EeShbLALyvfh1A _5KOKQMDJEeSZ-dz5sVoj6g">
                 <eAnnotations xmi:id="_4k0E8LU1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
                   <details xmi:id="_4k0E8bU1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
+                <ownedComment xmi:id="_5LEe0MDJEeSZ-dz5sVoj6g">
+                  <body>Creates binary drop message from the raw binary plaintext.
+	 *
+	 * @param binaryMessage raw binary plaintext.
+	 * @throws QblVersionMismatchException if the version header byte is not as expected.
+	 * @throws QblDropInvalidMessageSizeException if size does not match the version requirement.</body>
+                </ownedComment>
                 <ownedParameter xmi:id="_4kzd4bU1EeShbLALyvfh1A" name="binaryMessage">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4k0E87U1EeShbLALyvfh1A" value="*"/>
@@ -4243,7 +3963,9 @@ related private key</body>
               </ownedAttribute>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PBfkLU1EeShbLALyvfh1A" name="BinaryDropMessageV0" specification="_5LLhYLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PBfkbU1EeShbLALyvfh1A" name="dropMessage" type="_4rQEIbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_5PBfkrU1EeShbLALyvfh1A" type="_5LKTQLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5PBfkrU1EeShbLALyvfh1A" type="_5LKTQLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>super(dropMessage);
 	</body>
@@ -4253,7 +3975,9 @@ related private key</body>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5PBflbU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_5PBflrU1EeShbLALyvfh1A" type="_5LKTQLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5PBflrU1EeShbLALyvfh1A" type="_5LKTQLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>super(binaryMessage);
 		encKey = Arrays.copyOfRange(binaryMessage, HEADER_SIZE, HEADER_SIZE
@@ -4271,6 +3995,7 @@ related private key</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PBfl7U1EeShbLALyvfh1A" name="getVersion" specification="_5LPLwLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PBfmLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                 </ownedParameter>
                 <language>java</language>
@@ -4279,6 +4004,7 @@ related private key</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PBfmbU1EeShbLALyvfh1A" name="getHeader" specification="_5LRoArU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PBfmrU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5PBfm7U1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -4288,6 +4014,7 @@ related private key</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PBfnLU1EeShbLALyvfh1A" name="getPayloadSize" specification="_5LSPELU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PBfnbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 </ownedParameter>
                 <language>java</language>
@@ -4296,6 +4023,7 @@ related private key</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PCGoLU1EeShbLALyvfh1A" name="getTotalSize" specification="_5LS2ILU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PCGobU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 </ownedParameter>
                 <language>java</language>
@@ -4308,6 +4036,7 @@ related private key</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PCGorU1EeShbLALyvfh1A" name="buildBody" specification="_5LS2JbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PCGo7U1EeShbLALyvfh1A" name="recipient" type="_4iLAoLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5PCGpLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5PCGpbU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -4334,6 +4063,7 @@ related private key</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PCGprU1EeShbLALyvfh1A" name="assembleMessageFor" specification="_5LTdNLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PCGp7U1EeShbLALyvfh1A" name="recipient" type="_4iLAoLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5PCGqLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5PCGqbU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -4344,6 +4074,7 @@ related private key</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5PCGqrU1EeShbLALyvfh1A" name="disassembleRawMessageFrom" specification="_5LUERLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_5PCGq7U1EeShbLALyvfh1A" name="sender" type="_4iLAoLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5PCGrLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#byte"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_5PCGrbU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
@@ -4393,7 +4124,7 @@ related private key</body>
                 <ownedParameter xmi:id="_5LLhYbU1EeShbLALyvfh1A" name="dropMessage" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5LMIcLU1EeShbLALyvfh1A" type="_5LKTQLU1EeShbLALyvfh1A" direction="return"/>
               </ownedOperation>
-              <ownedOperation xmi:id="_5LMvgbU1EeShbLALyvfh1A" name="BinaryDropMessageV0" method="_5PBfk7U1EeShbLALyvfh1A" raisedException="_4rRSQrU1EeShbLALyvfh1A">
+              <ownedOperation xmi:id="_5LMvgbU1EeShbLALyvfh1A" name="BinaryDropMessageV0" method="_5PBfk7U1EeShbLALyvfh1A" raisedException="_4rRSQrU1EeShbLALyvfh1A _5KOKQMDJEeSZ-dz5sVoj6g">
                 <eAnnotations xmi:id="_5LMvg7U1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
                   <details xmi:id="_5LNWkLU1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
@@ -6926,15 +6657,19 @@ for signatures.</body>
                 <ownedParameter xmi:id="_6tWeybU1EeShbLALyvfh1A" name="url">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_6tWeyrU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tWeyrU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>this.url = new URL(url);
-		this.checkUrl();
+		this.checkDropIdFromUrl();
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF0LU1EeShbLALyvfh1A" name="DropURL" specification="_6lTWALU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXF0bU1EeShbLALyvfh1A" name="server" type="_4inskLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tXF0rU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tXF0rU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>this(server, DropIdGenerator.getDefaultDropIdGenerator());
 	</body>
@@ -6942,7 +6677,9 @@ for signatures.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF07U1EeShbLALyvfh1A" name="DropURL" specification="_6rbzMLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXF1LU1EeShbLALyvfh1A" name="server" type="_4inskLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tXF1bU1EeShbLALyvfh1A" name="generator" type="_6nDCcLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tXF1rU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tXF1rU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>String dropId = generator.generateDropId();
 		
@@ -6957,6 +6694,7 @@ for signatures.</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF17U1EeShbLALyvfh1A" name="getDropId" specification="_6lT9FLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXF2LU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <language>java</language>
@@ -6964,7 +6702,7 @@ for signatures.</body>
 		return path.substring(path.lastIndexOf(&quot;/&quot;) + 1);
 	</body>
               </ownedBehavior>
-              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF2bU1EeShbLALyvfh1A" name="checkUrl" specification="_6lT9FbU1EeShbLALyvfh1A">
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF2bU1EeShbLALyvfh1A" name="checkDropIdFromUrl" specification="_6lT9FbU1EeShbLALyvfh1A">
                 <language>java</language>
                 <body>// check if its a valid Drop-URL.
 		String dropID = this.getDropId();
@@ -6982,6 +6720,7 @@ for signatures.</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF2rU1EeShbLALyvfh1A" name="toString" specification="_6lT9FrU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXF27U1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <language>java</language>
@@ -6990,6 +6729,7 @@ for signatures.</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXF3LU1EeShbLALyvfh1A" name="hashCode" specification="_6lUkIrU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXF3bU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 </ownedParameter>
                 <language>java</language>
@@ -7002,6 +6742,7 @@ for signatures.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tXs4LU1EeShbLALyvfh1A" name="equals" specification="_6lUkJbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tXs4bU1EeShbLALyvfh1A" name="obj" type="_4rf7wbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tXs4rU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
                 <language>java</language>
@@ -7043,9 +6784,9 @@ for signatures.</body>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
               </ownedOperation>
-              <ownedOperation xmi:id="_6lT9FbU1EeShbLALyvfh1A" name="checkUrl" visibility="private" method="_6tXF2bU1EeShbLALyvfh1A" raisedException="_4qaWobU1EeShbLALyvfh1A">
+              <ownedOperation xmi:id="_6lT9FbU1EeShbLALyvfh1A" name="checkDropIdFromUrl" visibility="private" method="_6tXF2bU1EeShbLALyvfh1A" raisedException="_4qaWobU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tlISrU1EeShbLALyvfh1A">
-                  <body>Syntactically verifies the drop url.
+                  <body>Syntactically verifies the dropId part of the url.
 	 * @throws QblDropInvalidURL</body>
                 </ownedComment>
               </ownedOperation>
@@ -7102,16 +6843,20 @@ for signatures.</body>
                 <ownedParameter xmi:id="_6tTbcbU1EeShbLALyvfh1A" name="json" type="_6rQ0ErU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tTbcrU1EeShbLALyvfh1A" name="type" type="_6rPl8LU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tTbc7U1EeShbLALyvfh1A" name="context" type="_6rQNAbU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tTbdLU1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tTbdLU1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>int version          = json.getAsJsonObject().get(&quot;version&quot;)       .getAsInt();
+     if (version != DropMessage.getVersion()) {
+     	throw new JsonParseException(&quot;Unexpected version: &quot; + version);
+     }
      long time             = json.getAsJsonObject().get(&quot;time_stamp&quot;)    .getAsLong();
      String sender        = json.getAsJsonObject().get(&quot;sender&quot;)        .getAsString();
      String model         = json.getAsJsonObject().get(&quot;model_object&quot;)  .getAsString();
      String acknowledgeID = json.getAsJsonObject().get(&quot;acknowledge_id&quot;).getAsString();
 
      ModelObject m;
-     Class&lt;ModelObject> classModelObject;
      try {
          ClassLoader loader = ModuleManager.LOADER;
 
@@ -7119,12 +6864,15 @@ for signatures.</body>
          Class&lt;? extends ModelObject> cls = (Class&lt;? extends ModelObject>) loader
                  .loadClass(model);
          m = new Gson().fromJson(json.getAsJsonObject().get(&quot;data&quot;).getAsJsonObject(), cls);
-         classModelObject = (Class&lt;ModelObject>) m.getClass();
      } catch (ClassNotFoundException e1) {
          throw new JsonParseException(&quot;Couldn't deserialize 'data' entry&quot;, e1);
      }
 
-     return new DropMessage&lt;>(version, new Date(time), acknowledgeID, sender, classModelObject, m);
+     return new DropMessage&lt;>(
+     		sender,
+     		m,
+     		new Date(time),
+     		acknowledgeID);
  </body>
               </ownedBehavior>
               <ownedOperation xmi:id="_6ry_kLU1EeShbLALyvfh1A" name="deserialize" method="_6tTbcLU1EeShbLALyvfh1A" raisedException="_4qyKELU1EeShbLALyvfh1A">
@@ -7135,70 +6883,196 @@ for signatures.</body>
               </ownedOperation>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_4rQEIbU1EeShbLALyvfh1A" name="DropMessage">
-              <ownedAttribute xmi:id="_6sYOY7U1EeShbLALyvfh1A" name="version">
+              <ownedAttribute xmi:id="_6sYOY7U1EeShbLALyvfh1A" name="VERSION" visibility="private" isLeaf="true" isStatic="true" isReadOnly="true">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
                 <defaultValue xmi:type="uml:LiteralString" xmi:id="_6sY1cbU1EeShbLALyvfh1A" value="1"/>
               </ownedAttribute>
-              <ownedAttribute xmi:id="_6saDkLU1EeShbLALyvfh1A" name="time">
-                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_6saDkrU1EeShbLALyvfh1A" value="1L"/>
-              </ownedAttribute>
-              <ownedAttribute xmi:id="_6sbRsbU1EeShbLALyvfh1A" name="acknowledgeID">
+              <ownedAttribute xmi:id="_6saDkLU1EeShbLALyvfh1A" name="created" visibility="private" type="_4qxjALU1EeShbLALyvfh1A"/>
+              <ownedAttribute xmi:id="_6sbRsbU1EeShbLALyvfh1A" name="acknowledgeId" visibility="private">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_6sbRs7U1EeShbLALyvfh1A" value="&quot;0&quot;"/>
+                <defaultValue xmi:type="uml:LiteralString" xmi:id="_6sbRs7U1EeShbLALyvfh1A">
+                  <value xsi:nil="true"/>
+                </defaultValue>
               </ownedAttribute>
-              <ownedAttribute xmi:id="_6scf0rU1EeShbLALyvfh1A" name="sender">
+              <ownedAttribute xmi:id="_6scf0rU1EeShbLALyvfh1A" name="sender" type="_5KQmgMDJEeSZ-dz5sVoj6g" isReadOnly="true">
+                <defaultValue xmi:type="uml:LiteralString" xmi:id="_6scf1LU1EeShbLALyvfh1A">
+                  <value xsi:nil="true"/>
+                </defaultValue>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_6sdt87U1EeShbLALyvfh1A" name="INTERNAL_MODEL_OBJECT" isLeaf="true" isStatic="true" isReadOnly="true">
                 <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                <defaultValue xmi:type="uml:LiteralString" xmi:id="_6scf1LU1EeShbLALyvfh1A" value="&quot;&quot;"/>
+                <defaultValue xmi:type="uml:LiteralString" xmi:id="_5GaoUMDJEeSZ-dz5sVoj6g" value="&quot;drop&quot;"/>
               </ownedAttribute>
-              <ownedAttribute xmi:id="_6sdt87U1EeShbLALyvfh1A" name="modelObject" type="_4s30wLU1EeShbLALyvfh1A" association="_6t8UoLU1EeShbLALyvfh1A"/>
-              <ownedAttribute xmi:id="_6sgxQbU1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A" association="_6t8Uo7U1EeShbLALyvfh1A"/>
+              <ownedAttribute xmi:id="_6sgxQbU1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A" isReadOnly="true" association="_6t8Uo7U1EeShbLALyvfh1A"/>
+              <ownedAttribute xmi:id="_5KrdQMDJEeSZ-dz5sVoj6g" name="NOACK" isLeaf="true" isStatic="true" isReadOnly="true">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                <defaultValue xmi:type="uml:LiteralString" xmi:id="_5KsEUMDJEeSZ-dz5sVoj6g" value="&quot;0&quot;"/>
+              </ownedAttribute>
+              <ownedAttribute xmi:id="_5KsEUcDJEeSZ-dz5sVoj6g" name="senderKeyId" visibility="package" isReadOnly="true">
+                <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+              </ownedAttribute>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tUpl7U1EeShbLALyvfh1A" name="DropMessage" specification="_6r1b0LU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_6tUpmLU1EeShbLALyvfh1A" name="version">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_6tUpmbU1EeShbLALyvfh1A" name="time" type="_4qxjALU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tUpmrU1EeShbLALyvfh1A" name="acknowledgeID">
+                <ownedParameter xmi:id="_5K5fs8DJEeSZ-dz5sVoj6g" name="acknowledgeId">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_6tUpm7U1EeShbLALyvfh1A" name="sender">
+                <ownedParameter xmi:id="_5K5ftMDJEeSZ-dz5sVoj6g" name="senderKeyId">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_6tUpnLU1EeShbLALyvfh1A" name="modelObject" type="_4s30wLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tUpnbU1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tUpnrU1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5K6GwMDJEeSZ-dz5sVoj6g" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5K6GwcDJEeSZ-dz5sVoj6g" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5K6GwsDJEeSZ-dz5sVoj6g" name="created" type="_4qxjALU1EeShbLALyvfh1A"/>
                 <language>java</language>
-                <body>setVersion(version);
-     setTime(time);
-     setAcknowledgeID(acknowledgeID);
-     setSender(sender);
-     setModelObject(modelObject);
-     setData(data);
+                <body>this.senderKeyId = senderKeyId;
+		this.data = data;
+		this.created = created;
+		this.acknowledgeId = acknowledgeId;
+	</body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5K5fsMDJEeSZ-dz5sVoj6g" name="DropMessage" specification="_6lIW4LU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_5K5fscDJEeSZ-dz5sVoj6g" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5K5fssDJEeSZ-dz5sVoj6g" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
+                <language>java</language>
+                <body>this.sender = sender;
+ 	this.data = data;
+ 	this.created = new Date();
+ 	this.acknowledgeId = NOACK;
  </body>
               </ownedBehavior>
-              <ownedOperation xmi:id="_6lIW4LU1EeShbLALyvfh1A" name="DropMessage">
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tTbebU1EeShbLALyvfh1A" name="getVersion" specification="_6sY1crU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6tTberU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>return VERSION;
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tUpk7U1EeShbLALyvfh1A" name="getCreationDate" specification="_6shYUbU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_5K-_QMDJEeSZ-dz5sVoj6g" type="_4qxjALU1EeShbLALyvfh1A" direction="return"/>
+                <language>java</language>
+                <body>return created;
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tUChLU1EeShbLALyvfh1A" name="getAcknowledgeID" specification="_6sb4wLU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6tUChbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>return acknowledgeId;
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tUCiLU1EeShbLALyvfh1A" name="registerSender" specification="_6sdG4LU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_5K_mUMDJEeSZ-dz5sVoj6g" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>if (!senderKeyId.equals(sender.getKeyIdentifier())) {
+ 		return false;
+ 	}
+ 	this.sender = sender;
+ 	return true;
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tUCjLU1EeShbLALyvfh1A" name="getModelObject" specification="_6seVAbU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6tUpkLU1EeShbLALyvfh1A" type="_4s30wLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>return (Class&lt;T>)data.getClass();
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5K_mUcDJEeSZ-dz5sVoj6g" name="enableAcknowledgeing" specification="_5HzIYMDJEeSZ-dz5sVoj6g">
+                <ownedParameter xmi:id="_5K_mUsDJEeSZ-dz5sVoj6g" name="enabled">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>if (enabled &amp;&amp; this.acknowledgeId == NOACK) {
+ 		this.acknowledgeId = generateAcknowledgeId();
+ 	} else if (!enabled) {
+ 		this.acknowledgeId = NOACK;
+ 	}
+ </body>
+              </ownedBehavior>
+              <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5LANYMDJEeSZ-dz5sVoj6g" name="generateAcknowledgeId" specification="_5GwmkMDJEeSZ-dz5sVoj6g">
+                <ownedParameter xmi:id="_5LANYcDJEeSZ-dz5sVoj6g" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+                <language>java</language>
+                <body>return UUID.randomUUID().toString();
+ </body>
+              </ownedBehavior>
+              <ownedOperation xmi:id="_6lIW4LU1EeShbLALyvfh1A" name="DropMessage" method="_5K5fsMDJEeSZ-dz5sVoj6g">
                 <eAnnotations xmi:id="_6lIW4bU1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
                   <details xmi:id="_6lIW4rU1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
                 <ownedParameter xmi:id="_6lI98LU1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tUpm7U1EeShbLALyvfh1A" name="sender" type="_5KQmgMDJEeSZ-dz5sVoj6g"/>
+                <ownedParameter xmi:id="_5GncoMDJEeSZ-dz5sVoj6g" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
               </ownedOperation>
-              <ownedOperation xmi:id="_6r1b0LU1EeShbLALyvfh1A" name="DropMessage" method="_6tUpl7U1EeShbLALyvfh1A">
+              <ownedOperation xmi:id="_6r1b0LU1EeShbLALyvfh1A" name="DropMessage" visibility="package" method="_6tUpl7U1EeShbLALyvfh1A">
                 <eAnnotations xmi:id="_6r2C4LU1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
                   <details xmi:id="_6r2C4bU1EeShbLALyvfh1A" key="create"/>
                 </eAnnotations>
-                <ownedParameter xmi:id="_6r1b0bU1EeShbLALyvfh1A" name="version">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_6r1b0rU1EeShbLALyvfh1A" name="time" type="_4qxjALU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6r1b07U1EeShbLALyvfh1A" name="acknowledgeID">
+                <ownedComment xmi:id="_5LG7EMDJEeSZ-dz5sVoj6g">
+                  <body>Constructor used for deserialization.
+     * registerSender has to be called to complete creation.</body>
+                </ownedComment>
+                <ownedParameter xmi:id="_6r1b1LU1EeShbLALyvfh1A" name="senderKeyId">
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_6r1b1LU1EeShbLALyvfh1A" name="sender">
-                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-                </ownedParameter>
-                <ownedParameter xmi:id="_6r1b1bU1EeShbLALyvfh1A" name="modelObject" type="_4s30wLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6r1b1rU1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6r1b17U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_5GoDsMDJEeSZ-dz5sVoj6g" name="created" type="_4qxjALU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_6r1b07U1EeShbLALyvfh1A" name="acknowledgeId">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:id="_6sY1crU1EeShbLALyvfh1A" name="getVersion" isStatic="true" method="_6tTbebU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6sZcgLU1EeShbLALyvfh1A" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:id="_6shYUbU1EeShbLALyvfh1A" name="getCreationDate" method="_6tUpk7U1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6sh_YLU1EeShbLALyvfh1A" type="_4qxjALU1EeShbLALyvfh1A" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_6sb4wLU1EeShbLALyvfh1A" name="getAcknowledgeID" method="_6tUChLU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6sb4w7U1EeShbLALyvfh1A" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:id="_6sdG4LU1EeShbLALyvfh1A" name="registerSender" visibility="package" method="_6tUCiLU1EeShbLALyvfh1A">
+                <ownedComment xmi:id="_5LG7EcDJEeSZ-dz5sVoj6g">
+                  <body>Register the given Entity as sender of this drop message
+     * and check if it matches the senderKeyId.
+     * This is used to complete the deserialization of DropMessage.
+     *
+     * @param sender Entity to be registered as sender.
+     * @return true if the given sender matches the senderKeyId, otherwise false.</body>
+                </ownedComment>
+                <ownedParameter xmi:id="_5HyhUMDJEeSZ-dz5sVoj6g" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+                </ownedParameter>
+                <ownedParameter xmi:id="_6sdG4rU1EeShbLALyvfh1A" name="sender" type="_5LHiIMDJEeSZ-dz5sVoj6g"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_6seVAbU1EeShbLALyvfh1A" name="getModelObject" method="_6tUCjLU1EeShbLALyvfh1A">
+                <ownedParameter xmi:id="_6se8ELU1EeShbLALyvfh1A" type="_4s30wLU1EeShbLALyvfh1A" direction="return"/>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5GwmkMDJEeSZ-dz5sVoj6g" name="generateAcknowledgeId" visibility="private" isStatic="true" method="_5LANYMDJEeSZ-dz5sVoj6g">
+                <ownedParameter xmi:id="_5HzvcMDJEeSZ-dz5sVoj6g" direction="return">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+                </ownedParameter>
+              </ownedOperation>
+              <ownedOperation xmi:id="_5HzIYMDJEeSZ-dz5sVoj6g" name="enableAcknowledgeing" method="_5K_mUcDJEeSZ-dz5sVoj6g">
+                <ownedComment xmi:id="_5LIwQMDJEeSZ-dz5sVoj6g">
+                  <body>Enable/disable acknowledge request for this drop message.
+     * Acknowledging is disabled by default.
+     *
+     * @param enabled true enables acknowledging</body>
+                </ownedComment>
+                <ownedParameter xmi:id="_5HzIYcDJEeSZ-dz5sVoj6g" name="enabled">
+                  <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
+                </ownedParameter>
               </ownedOperation>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_4rQrMbU1EeShbLALyvfh1A" name="DropSerializer">
@@ -7207,15 +7081,17 @@ for signatures.</body>
                 <ownedParameter xmi:id="_6tWewbU1EeShbLALyvfh1A" name="src" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tWewrU1EeShbLALyvfh1A" name="typeOfSrc" type="_6rPl8LU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tWew7U1EeShbLALyvfh1A" name="context" type="_6r6UULU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tWexLU1EeShbLALyvfh1A" type="_6rQ0ErU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tWexLU1EeShbLALyvfh1A" type="_6rQ0ErU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>JsonObject obj = new JsonObject();
      Gson gson = new Gson();
-     String model = src.getData().getClass().getName() + &quot;&quot;;
+     String model = src.getData().getClass().getName();
 
-     obj.addProperty(&quot;version&quot;,        src.getVersion());
-     obj.addProperty(&quot;time_stamp&quot;,     src.getTime());
-     obj.addProperty(&quot;sender&quot;,         src.getSender());
+     obj.addProperty(&quot;version&quot;,        DropMessage.getVersion());
+     obj.addProperty(&quot;time_stamp&quot;,     src.getCreationDate().getTime());
+     obj.addProperty(&quot;sender&quot;,         src.getSender().getKeyIdentifier());
      obj.addProperty(&quot;acknowledge_id&quot;, src.getAcknowledgeID());
      obj.addProperty(&quot;model_object&quot;,   model);
      obj.add(&quot;data&quot;,                   gson.toJsonTree(src.getData()));
@@ -7338,7 +7214,7 @@ and therefore less anonymity but more performance.</body>
             <packagedElement xmi:type="uml:Class" xmi:id="_6m4DUbU1EeShbLALyvfh1A" name="DropController">
               <ownedAttribute xmi:id="_6sTV4rU1EeShbLALyvfh1A" name="mCallbacks" visibility="package" type="_6m21MLU1EeShbLALyvfh1A" association="_6t54YLU1EeShbLALyvfh1A">
                 <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6sT88LU1EeShbLALyvfh1A" value="*"/>
-                <qualifier xmi:id="_6sVLEbU1EeShbLALyvfh1A" type="_6sUkAbU1EeShbLALyvfh1A"/>
+                <qualifier xmi:id="_6sVLEbU1EeShbLALyvfh1A" type="_4s30wLU1EeShbLALyvfh1A"/>
               </ownedAttribute>
               <ownedAttribute xmi:id="_6sVLE7U1EeShbLALyvfh1A" name="mDropServers" visibility="private" type="_4ixdkLU1EeShbLALyvfh1A" association="_6t54Y7U1EeShbLALyvfh1A"/>
               <ownedAttribute xmi:id="_6sVyIbU1EeShbLALyvfh1A" name="mContacts" visibility="private" type="_4ictcLU1EeShbLALyvfh1A" association="_6t6fcbU1EeShbLALyvfh1A"/>
@@ -7348,7 +7224,9 @@ and therefore less anonymity but more performance.</body>
                 <defaultValue xmi:type="uml:LiteralString" xmi:id="_6sXAQrU1EeShbLALyvfh1A" value="LogManager.getLogger(DropController.class.getName())"/>
               </ownedAttribute>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tRmQ7U1EeShbLALyvfh1A" name="DropController" specification="_6m4qYLU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_6tRmRLU1EeShbLALyvfh1A" type="_6m4DUbU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tRmRLU1EeShbLALyvfh1A" type="_6m4DUbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>mCallbacks = new HashMap&lt;Class&lt;? extends ModelObject>, Set&lt;DropCallback&lt;? extends ModelObject>>>();
 		gb = new GsonBuilder();
@@ -7409,7 +7287,9 @@ and therefore less anonymity but more performance.</body>
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tSNULU1EeShbLALyvfh1A" name="getDropServers" specification="_6m54grU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_6tSNUbU1EeShbLALyvfh1A" type="_4ixdkLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tSNUbU1EeShbLALyvfh1A" type="_4ixdkLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>return mDropServers;
 	</body>
@@ -7421,7 +7301,9 @@ and therefore less anonymity but more performance.</body>
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tSNVLU1EeShbLALyvfh1A" name="getContacts" specification="_6m6fkrU1EeShbLALyvfh1A">
-                <ownedParameter xmi:id="_6tSNVbU1EeShbLALyvfh1A" type="_4ictcLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tSNVbU1EeShbLALyvfh1A" type="_4ictcLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>return mContacts;
 	</body>
@@ -7435,7 +7317,9 @@ and therefore less anonymity but more performance.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tSNWLU1EeShbLALyvfh1A" name="send" specification="_6m7GobU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tSNWbU1EeShbLALyvfh1A" name="message" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tSNWrU1EeShbLALyvfh1A" name="contacts" type="_4qSa0rU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tSNW7U1EeShbLALyvfh1A" type="_6nOBkLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tSNW7U1EeShbLALyvfh1A" type="_6nOBkLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>return sendAndForget(message, contacts);
 	</body>
@@ -7443,7 +7327,9 @@ and therefore less anonymity but more performance.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tSNXLU1EeShbLALyvfh1A" name="sendAndForget" specification="_6m8UwbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tSNXbU1EeShbLALyvfh1A" name="message" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tSNXrU1EeShbLALyvfh1A" name="contacts" type="_4qSa0rU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tSNX7U1EeShbLALyvfh1A" type="_6nOBkLU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tSNX7U1EeShbLALyvfh1A" type="_6nOBkLU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>DropResult result;
 		
@@ -7459,13 +7345,11 @@ and therefore less anonymity but more performance.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tS0YLU1EeShbLALyvfh1A" name="sendAndForget" specification="_6rv8QbU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tS0YbU1EeShbLALyvfh1A" name="object" type="_6rvVMLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tS0YrU1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tS0Y7U1EeShbLALyvfh1A" type="_6nRr8LU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tS0Y7U1EeShbLALyvfh1A" type="_6nRr8LU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
-                <body>DropMessage&lt;T> dm = new DropMessage&lt;T>();
-
-		dm.setData(object);
-		dm.setTime(new Date());
-		dm.setModelObject((Class&lt;T>) object.getClass());
+                <body>DropMessage&lt;T> dm = new DropMessage&lt;T>(contact.getContactOwner(), object);
 
 		return sendAndForget(dm, contact);
 	</body>
@@ -7473,7 +7357,9 @@ and therefore less anonymity but more performance.</body>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_6tS0ZLU1EeShbLALyvfh1A" name="sendAndForget" specification="_6m-J8LU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_6tS0ZbU1EeShbLALyvfh1A" name="message" type="_4rQEIbU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tS0ZrU1EeShbLALyvfh1A" name="contact" type="_4iLAoLU1EeShbLALyvfh1A"/>
-                <ownedParameter xmi:id="_6tS0Z7U1EeShbLALyvfh1A" type="_6nRr8LU1EeShbLALyvfh1A" direction="return"/>
+                <ownedParameter xmi:id="_6tS0Z7U1EeShbLALyvfh1A" type="_6nRr8LU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
+                </ownedParameter>
                 <language>java</language>
                 <body>DropResultContact result;
 		DropHTTP http;
@@ -7493,6 +7379,7 @@ and therefore less anonymity but more performance.</body>
                 <ownedParameter xmi:id="_6tS0abU1EeShbLALyvfh1A" name="url" type="_4qP-kLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tS0arU1EeShbLALyvfh1A" name="contacts" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tS0a7U1EeShbLALyvfh1A" type="_4rQEIbU1EeShbLALyvfh1A" direction="return">
+                  <name xsi:nil="true"/>
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_6tS0bLU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
                 <language>java</language>
@@ -7514,6 +7401,11 @@ and therefore less anonymity but more performance.</body>
 				} catch (QblVersionMismatchException e) {
 					logger.error(&quot;Version mismatch in binary drop message&quot;, e);
 					throw new RuntimeException(&quot;Version mismatch should not happen&quot;, e);
+				} catch (QblDropInvalidMessageSizeException e) {
+					logger.info(&quot;Binary drop message version 0 with unexpected size discarded.&quot;);
+					// Invalid message uploads may happen with malicious intent
+					// or by broken clients. Skip.
+					continue;
 				}
 				break;
 			default:
@@ -7524,6 +7416,13 @@ and therefore less anonymity but more performance.</body>
 			for (Contact c : contacts) {
 				DropMessage&lt;?> dropMessage = binMessage.disassembleMessageFrom(c);
 				if (dropMessage != null) {
+					boolean unspoofed = dropMessage.registerSender(c);
+					if (!unspoofed) {
+						logger.info(&quot;Spoofing of sender infomation detected.&quot;
+								+ &quot; Claim: &quot; + dropMessage.getSenderKeyId()
+								+ &quot; Signer: &quot; + c.getKeyIdentifier());
+						break;
+					}
 					plainMessages.add(dropMessage);
 					break; // sender found for this message
 				}
@@ -7945,9 +7844,6 @@ whether everything is okay</body>
             <packagedElement xmi:type="uml:Association" xmi:id="_6t7tkbU1EeShbLALyvfh1A" name="" memberEnd="_6t7tkrU1EeShbLALyvfh1A _6sXAQbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_6t7tkrU1EeShbLALyvfh1A" name="" type="_6m4DUbU1EeShbLALyvfh1A" association="_6t7tkbU1EeShbLALyvfh1A"/>
             </packagedElement>
-            <packagedElement xmi:type="uml:Association" xmi:id="_6t8UoLU1EeShbLALyvfh1A" name="" memberEnd="_6t8UobU1EeShbLALyvfh1A _6sdt87U1EeShbLALyvfh1A">
-              <ownedEnd xmi:id="_6t8UobU1EeShbLALyvfh1A" name="" type="_4rQEIbU1EeShbLALyvfh1A" association="_6t8UoLU1EeShbLALyvfh1A"/>
-            </packagedElement>
             <packagedElement xmi:type="uml:Association" xmi:id="_6t8Uo7U1EeShbLALyvfh1A" name="" memberEnd="_6t8UpLU1EeShbLALyvfh1A _6sgxQbU1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_6t8UpLU1EeShbLALyvfh1A" name="" type="_4rQEIbU1EeShbLALyvfh1A" association="_6t8Uo7U1EeShbLALyvfh1A"/>
             </packagedElement>
@@ -7963,6 +7859,7 @@ whether everything is okay</body>
             <packagedElement xmi:type="uml:Association" xmi:id="_6t-J0bU1EeShbLALyvfh1A" name="" memberEnd="_6t-J0rU1EeShbLALyvfh1A _6smQ07U1EeShbLALyvfh1A">
               <ownedEnd xmi:id="_6t-J0rU1EeShbLALyvfh1A" name="" type="_4qKfALU1EeShbLALyvfh1A" association="_6t-J0bU1EeShbLALyvfh1A"/>
             </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5LHiIMDJEeSZ-dz5sVoj6g" name="Entity"/>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_4WU9ALU1EeShbLALyvfh1A" name="exceptions">
             <packagedElement xmi:type="uml:Class" xmi:id="_4qaWobU1EeShbLALyvfh1A" name="QblDropInvalidURL">
@@ -8070,6 +7967,7 @@ whether everything is okay</body>
                 <defaultValue xmi:type="uml:LiteralString" xmi:id="_6sqiQbU1EeShbLALyvfh1A" value="-5999923858312482465L"/>
               </ownedAttribute>
             </packagedElement>
+            <packagedElement xmi:type="uml:Class" xmi:id="_5KOKQMDJEeSZ-dz5sVoj6g" name="QblDropInvalidMessageSizeException"/>
           </packagedElement>
           <packagedElement xmi:type="uml:Package" xmi:id="_4W8BALU1EeShbLALyvfh1A" name="module">
             <packagedElement xmi:type="uml:Class" xmi:id="_4q10cbU1EeShbLALyvfh1A" name="ModuleManager">
@@ -9665,10 +9563,6 @@ whether everything is okay</body>
   <UMLLabProfile:Annotations xmi:id="_4iQgMbU1EeShbLALyvfh1A" base_Element="_4iP5JbU1EeShbLALyvfh1A">
     <annotations xmi:id="_4iQgMrU1EeShbLALyvfh1A" name="Override"/>
   </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4ikCMrU1EeShbLALyvfh1A" base_Element="_4ikCMLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Annotations xmi:id="_4ikpQLU1EeShbLALyvfh1A" base_Element="_4ikCMLU1EeShbLALyvfh1A">
-    <annotations xmi:id="_4ikpQbU1EeShbLALyvfh1A" name="Override"/>
-  </UMLLabProfile:Annotations>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4ivBUrU1EeShbLALyvfh1A" base_Element="_4io6sLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4ivoYrU1EeShbLALyvfh1A" base_Element="_4ivoYLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_4ivoY7U1EeShbLALyvfh1A" base_Element="_4ivoYLU1EeShbLALyvfh1A">
@@ -9677,10 +9571,6 @@ whether everything is okay</body>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4izSwLU1EeShbLALyvfh1A" base_Element="_4iyrsLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_4izSwbU1EeShbLALyvfh1A" base_Element="_4iyrsLU1EeShbLALyvfh1A">
     <annotations xmi:id="_4izSwrU1EeShbLALyvfh1A" name="Override"/>
-  </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4i-R4rU1EeShbLALyvfh1A" base_Element="_4i-R4LU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Annotations xmi:id="_4i-R47U1EeShbLALyvfh1A" base_Element="_4i-R4LU1EeShbLALyvfh1A">
-    <annotations xmi:id="_4i-R5LU1EeShbLALyvfh1A" name="Override"/>
   </UMLLabProfile:Annotations>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4jKfILU1EeShbLALyvfh1A" base_Element="_4jJ4ErU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_4jKfIbU1EeShbLALyvfh1A" base_Element="_4jJ4ErU1EeShbLALyvfh1A">
@@ -9780,10 +9670,6 @@ whether everything is okay</body>
     <annotations xmi:id="_4rvMU7U1EeShbLALyvfh1A" name="Override"/>
   </UMLLabProfile:Annotations>
   <UMLLabProfile:Generics xmi:id="_4rvzYLU1EeShbLALyvfh1A" genericsValue="Contact" base_Element="_4rvMVLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4rxBgbU1EeShbLALyvfh1A" base_Element="_4rwacLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Annotations xmi:id="_4rxBgrU1EeShbLALyvfh1A" base_Element="_4rwacLU1EeShbLALyvfh1A">
-    <annotations xmi:id="_4rxBg7U1EeShbLALyvfh1A" name="Override"/>
-  </UMLLabProfile:Annotations>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4ryPo7U1EeShbLALyvfh1A" base_Element="_4ryPoLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_4ry2sLU1EeShbLALyvfh1A" base_Element="_4ryPoLU1EeShbLALyvfh1A">
     <annotations xmi:id="_4ry2sbU1EeShbLALyvfh1A" name="Override"/>
@@ -9810,10 +9696,6 @@ whether everything is okay</body>
     <annotations xmi:id="_4sOUg7U1EeShbLALyvfh1A" name="Override"/>
   </UMLLabProfile:Annotations>
   <UMLLabProfile:Generics xmi:id="_4sO7kLU1EeShbLALyvfh1A" genericsValue="DropServers" base_Element="_4sOUhLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4sPio7U1EeShbLALyvfh1A" base_Element="_4sPioLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Annotations xmi:id="_4sQJsLU1EeShbLALyvfh1A" base_Element="_4sPioLU1EeShbLALyvfh1A">
-    <annotations xmi:id="_4sQJsbU1EeShbLALyvfh1A" name="Override"/>
-  </UMLLabProfile:Annotations>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4sQww7U1EeShbLALyvfh1A" base_Element="_4sQwwLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_4sRX0LU1EeShbLALyvfh1A" base_Element="_4sQwwLU1EeShbLALyvfh1A">
     <annotations xmi:id="_4sRX0bU1EeShbLALyvfh1A" name="Override"/>
@@ -9904,24 +9786,10 @@ whether everything is okay</body>
   </UMLLabProfile:Annotations>
   <UMLLabProfile:Generics xmi:id="_4tRdY7U1EeShbLALyvfh1A" genericsValue="SyncedSettings" base_Element="_4tRdYrU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Generics xmi:id="_4tTSkLU1EeShbLALyvfh1A" genericsValue="?" base_Element="_4tSrgbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Array xmi:id="_4tUgsLU1EeShbLALyvfh1A" dimensions="1" base_Element="_4tT5oLU1EeShbLALyvfh1A"/>
+  <UMLLabProfile:Array xmi:id="_4tUgsLU1EeShbLALyvfh1A" dimensions="0" base_Element="_4tT5oLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Generics xmi:id="_4tUgsbU1EeShbLALyvfh1A" genericsValue="?" base_Element="_4tT5obU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4tb1cbU1EeShbLALyvfh1A" base_Element="_4tbOYLU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4tdDkLU1EeShbLALyvfh1A" base_Element="_4tccgbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4tdqoLU1EeShbLALyvfh1A" base_Element="_4tdDkrU1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_4teRsLU1EeShbLALyvfh1A" name="getDropUrls" method="_4t36VrU1EeShbLALyvfh1A">
-      <eAnnotations xmi:id="_4teRs7U1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <details xmi:id="_4teRtLU1EeShbLALyvfh1A" key="generic_container"/>
-      </eAnnotations>
-      <ownedParameter xmi:id="_4teRsbU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
-        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4teRsrU1EeShbLALyvfh1A" value="*"/>
-      </ownedParameter>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4te4wbU1EeShbLALyvfh1A" base_Element="_4teRtbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4tgG4LU1EeShbLALyvfh1A" base_Element="_4tff0LU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4thVAbU1EeShbLALyvfh1A" base_Element="_4tgt8bU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4th8ErU1EeShbLALyvfh1A" base_Element="_4th8ELU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4tjKMLU1EeShbLALyvfh1A" base_Element="_4tijIbU1EeShbLALyvfh1A">
     <associatedElement xmi:type="uml:Operation" xmi:id="_4tjKMbU1EeShbLALyvfh1A" name="getPrimaryKeyPair" method="_4t-A87U1EeShbLALyvfh1A">
       <ownedParameter xmi:id="_4tjKMrU1EeShbLALyvfh1A" type="_4qrcYLU1EeShbLALyvfh1A" direction="return"/>
@@ -9934,20 +9802,6 @@ whether everything is okay</body>
       </annotationParameters>
     </annotations>
   </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_4tjxRLU1EeShbLALyvfh1A" base_Element="_4tjxQ7U1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_4tkYULU1EeShbLALyvfh1A" name="setDrops" method="_4t-A9bU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_4tkYUbU1EeShbLALyvfh1A" name="drops" type="_4qSa0rU1EeShbLALyvfh1A"/>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_4tkYUrU1EeShbLALyvfh1A" name="getDrops" method="_4t-A97U1EeShbLALyvfh1A">
-      <eAnnotations xmi:id="_4tk_YbU1EeShbLALyvfh1A" source="http://www.eclipse.org/uml2/2.0.0/UML">
-        <details xmi:id="_4tk_YrU1EeShbLALyvfh1A" key="generic_container"/>
-      </eAnnotations>
-      <ownedParameter xmi:id="_4tkYU7U1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
-        <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tk_YLU1EeShbLALyvfh1A" value="*"/>
-      </ownedParameter>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:Generics xmi:id="_4tlmcLU1EeShbLALyvfh1A" genericsValue="DropURL" base_Element="_4tkYUbU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4tmNgrU1EeShbLALyvfh1A" base_Element="_4tmNgbU1EeShbLALyvfh1A">
     <associatedElement xmi:type="uml:Operation" xmi:id="_4tm0kLU1EeShbLALyvfh1A" name="getPollInterval" method="_4t_PELU1EeShbLALyvfh1A">
       <ownedParameter xmi:id="_4tm0kbU1EeShbLALyvfh1A" direction="return">
@@ -10014,7 +9868,7 @@ whether everything is okay</body>
   </UMLLabProfile:LegacyStyledElement>
   <UMLLabProfile:Array xmi:id="_4tzo5LU1EeShbLALyvfh1A" base_Element="_4tzo4rU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_4t0P8LU1EeShbLALyvfh1A" base_Element="_4tzo4rU1EeShbLALyvfh1A"/>
-  <uml:OpaqueBehavior xmi:id="_4t36VrU1EeShbLALyvfh1A" name="getDropUrls" specification="_4teRsLU1EeShbLALyvfh1A">
+  <uml:OpaqueBehavior xmi:id="_4t36VrU1EeShbLALyvfh1A" name="getDropUrls">
     <ownedParameter xmi:id="_4t36V7U1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t36WLU1EeShbLALyvfh1A" value="*"/>
     </ownedParameter>
@@ -10023,18 +9877,20 @@ whether everything is okay</body>
 	</body>
   </uml:OpaqueBehavior>
   <uml:OpaqueBehavior xmi:id="_4t-A87U1EeShbLALyvfh1A" name="getPrimaryKeyPair" specification="_4tjKMbU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_4t-A9LU1EeShbLALyvfh1A" type="_4qrcYLU1EeShbLALyvfh1A" direction="return"/>
+    <ownedParameter xmi:id="_4t-A9LU1EeShbLALyvfh1A" type="_4qrcYLU1EeShbLALyvfh1A" direction="return">
+      <name xsi:nil="true"/>
+    </ownedParameter>
     <language>java</language>
     <body>return this.primaryKeyPair;
 	</body>
   </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_4t-A9bU1EeShbLALyvfh1A" name="setDrops" specification="_4tkYULU1EeShbLALyvfh1A">
+  <uml:OpaqueBehavior xmi:id="_4t-A9bU1EeShbLALyvfh1A" name="setDrops">
     <ownedParameter xmi:id="_4t-A9rU1EeShbLALyvfh1A" name="drops" type="_4qSa0rU1EeShbLALyvfh1A"/>
     <language>java</language>
     <body>this.drops = new ArrayList&lt;DropURL>(drops);
 	</body>
   </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_4t-A97U1EeShbLALyvfh1A" name="getDrops" specification="_4tkYUrU1EeShbLALyvfh1A">
+  <uml:OpaqueBehavior xmi:id="_4t-A97U1EeShbLALyvfh1A" name="getDrops">
     <ownedParameter xmi:id="_4t-A-LU1EeShbLALyvfh1A" type="_4qKfALU1EeShbLALyvfh1A" direction="return">
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t-A-bU1EeShbLALyvfh1A" value="*"/>
     </ownedParameter>
@@ -10078,13 +9934,8 @@ whether everything is okay</body>
   </uml:OpaqueBehavior>
   <UMLLabProfile:Reference xmi:id="_4u1joLU1EeShbLALyvfh1A" base_Element="_4u08kLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u2KsLU1EeShbLALyvfh1A" base_Element="_4u1jobU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_4u2xwLU1EeShbLALyvfh1A" base_Element="_4u2KsbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_4u3Y0LU1EeShbLALyvfh1A" base_Element="_4u2xwbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_4u3_4LU1EeShbLALyvfh1A" base_Element="_4u3Y0bU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u4m8LU1EeShbLALyvfh1A" base_Element="_4u3_4bU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_4u4m87U1EeShbLALyvfh1A" base_Element="_4u4m8bU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u5OArU1EeShbLALyvfh1A" base_Element="_4u5OALU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_4u51ErU1EeShbLALyvfh1A" base_Element="_4u51ELU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u6cILU1EeShbLALyvfh1A" base_Element="_4u51E7U1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u7DMLU1EeShbLALyvfh1A" base_Element="_4u6cIbU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_4u7qQLU1EeShbLALyvfh1A" base_Element="_4u7DMbU1EeShbLALyvfh1A"/>
@@ -10332,7 +10183,6 @@ whether everything is okay</body>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mCV0LU1EeShbLALyvfh1A" base_Element="_6k0N07U1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mC84LU1EeShbLALyvfh1A" base_Element="_6k004rU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mC84bU1EeShbLALyvfh1A" base_Element="_6k1b8LU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6mK4sLU1EeShbLALyvfh1A" base_Element="_6lIW4LU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mPKILU1EeShbLALyvfh1A" base_Element="_6lT9FrU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mPxMLU1EeShbLALyvfh1A" base_Element="_6lUkIrU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6mPxMbU1EeShbLALyvfh1A" base_Element="_6lUkJbU1EeShbLALyvfh1A"/>
@@ -10444,7 +10294,6 @@ whether everything is okay</body>
   <UMLLabProfile:Annotations xmi:id="_6rzmorU1EeShbLALyvfh1A" base_Element="_6ry_kLU1EeShbLALyvfh1A">
     <annotations xmi:id="_6rzmo7U1EeShbLALyvfh1A" name="Override"/>
   </UMLLabProfile:Annotations>
-  <UMLLabProfile:Generics xmi:id="_6r2C4rU1EeShbLALyvfh1A" genericsValue="T" base_Element="_6r1b1bU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Generics xmi:id="_6r4fILU1EeShbLALyvfh1A" genericsValue="DropMessage&lt;T>" base_Element="_6r34ELU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6r5GMbU1EeShbLALyvfh1A" base_Element="_6r5GMLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Generics xmi:id="_6r5tQbU1EeShbLALyvfh1A" genericsValue="DropMessage&lt;? extends ModelObject>" base_Element="_6r5tQLU1EeShbLALyvfh1A"/>
@@ -10474,73 +10323,8 @@ whether everything is okay</body>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6sWZMbU1EeShbLALyvfh1A" base_Element="_6sWZMLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6sXAQLU1EeShbLALyvfh1A" base_Element="_6sWZMrU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6sXnULU1EeShbLALyvfh1A" base_Element="_6sXAQbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6sY1cLU1EeShbLALyvfh1A" base_Element="_6sYOY7U1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sY1crU1EeShbLALyvfh1A" name="getVersion" method="_6tTbebU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sZcgLU1EeShbLALyvfh1A" direction="return">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-      </ownedParameter>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sY1c7U1EeShbLALyvfh1A" name="setVersion" method="_6tTbe7U1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sY1dLU1EeShbLALyvfh1A" name="version">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-      </ownedParameter>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:Annotations xmi:id="_6sZcgbU1EeShbLALyvfh1A" base_Element="_6sYOY7U1EeShbLALyvfh1A">
-    <annotations xmi:id="_6sZcgrU1EeShbLALyvfh1A" name="SerializedName">
-      <annotationParameters xmi:id="_6sZcg7U1EeShbLALyvfh1A" skipName="true" skipArray="true">
-        <valueSpecifications xmi:type="uml:LiteralString" xmi:id="_6tj6JLU1EeShbLALyvfh1A" value="&quot;version&quot;"/>
-      </annotationParameters>
-    </annotations>
-  </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6saDkbU1EeShbLALyvfh1A" base_Element="_6saDkLU1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6saqoLU1EeShbLALyvfh1A" name="getTime" method="_6tUCgLU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6saqo7U1EeShbLALyvfh1A" direction="return">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
-      </ownedParameter>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6saqobU1EeShbLALyvfh1A" name="setTime" method="_6tUCgrU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6saqorU1EeShbLALyvfh1A" name="time" type="_4qxjALU1EeShbLALyvfh1A"/>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:Annotations xmi:id="_6saqpLU1EeShbLALyvfh1A" base_Element="_6saDkLU1EeShbLALyvfh1A">
-    <annotations xmi:id="_6saqpbU1EeShbLALyvfh1A" name="SerializedName">
-      <annotationParameters xmi:id="_6sbRsLU1EeShbLALyvfh1A" skipName="true" skipArray="true">
-        <valueSpecifications xmi:type="uml:LiteralString" xmi:id="_6tj6JbU1EeShbLALyvfh1A" value="&quot;time_stamp&quot;"/>
-      </annotationParameters>
-    </annotations>
-  </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6sbRsrU1EeShbLALyvfh1A" base_Element="_6sbRsbU1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sb4wLU1EeShbLALyvfh1A" name="getAcknowledgeID" method="_6tUChLU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sb4w7U1EeShbLALyvfh1A" direction="return">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      </ownedParameter>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sb4wbU1EeShbLALyvfh1A" name="setAcknowledgeID" method="_6tUChrU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sb4wrU1EeShbLALyvfh1A" name="acknowledgeID">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      </ownedParameter>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:Annotations xmi:id="_6sb4xLU1EeShbLALyvfh1A" base_Element="_6sbRsbU1EeShbLALyvfh1A">
-    <annotations xmi:id="_6scf0LU1EeShbLALyvfh1A" name="SerializedName">
-      <annotationParameters xmi:id="_6scf0bU1EeShbLALyvfh1A" skipName="true" skipArray="true">
-        <valueSpecifications xmi:type="uml:LiteralString" xmi:id="_6tkhMLU1EeShbLALyvfh1A" value="&quot;acknowledge_id&quot;"/>
-      </annotationParameters>
-    </annotations>
-  </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6scf07U1EeShbLALyvfh1A" base_Element="_6scf0rU1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sdG4LU1EeShbLALyvfh1A" name="getSender" method="_6tUCiLU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sdG47U1EeShbLALyvfh1A" direction="return">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      </ownedParameter>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6sdG4bU1EeShbLALyvfh1A" name="setSender" method="_6tUCirU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sdG4rU1EeShbLALyvfh1A" name="sender">
-        <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-      </ownedParameter>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
+  <UMLLabProfile:LegacyStyledElement xmi:id="_6saDkbU1EeShbLALyvfh1A" base_Element="_6saDkLU1EeShbLALyvfh1A"/>
+  <UMLLabProfile:LegacyStyledElement xmi:id="_6sbRsrU1EeShbLALyvfh1A" base_Element="_6sbRsbU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Annotations xmi:id="_6sdt8LU1EeShbLALyvfh1A" base_Element="_6scf0rU1EeShbLALyvfh1A">
     <annotations xmi:id="_6sdt8bU1EeShbLALyvfh1A" name="SerializedName">
       <annotationParameters xmi:id="_6sdt8rU1EeShbLALyvfh1A" skipName="true" skipArray="true">
@@ -10548,32 +10332,7 @@ whether everything is okay</body>
       </annotationParameters>
     </annotations>
   </UMLLabProfile:Annotations>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6sdt9LU1EeShbLALyvfh1A" base_Element="_6sdt87U1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6seVAbU1EeShbLALyvfh1A" name="getModelObject" method="_6tUCjLU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6se8ELU1EeShbLALyvfh1A" type="_4s30wLU1EeShbLALyvfh1A" direction="return"/>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6seVArU1EeShbLALyvfh1A" name="setModelObject" method="_6tUpkbU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6seVA7U1EeShbLALyvfh1A" name="modelObject" type="_4s30wLU1EeShbLALyvfh1A"/>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
-  <UMLLabProfile:Generics xmi:id="_6seVALU1EeShbLALyvfh1A" genericsValue="T" base_Element="_6sdt87U1EeShbLALyvfh1A"/>
   <UMLLabProfile:Generics xmi:id="_6se8EbU1EeShbLALyvfh1A" genericsValue="T" base_Element="_6seVAbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Annotations xmi:id="_6sgKMLU1EeShbLALyvfh1A" base_Element="_6sdt87U1EeShbLALyvfh1A">
-    <annotations xmi:id="_6sgKMbU1EeShbLALyvfh1A" name="SerializedName">
-      <annotationParameters xmi:id="_6sgKMrU1EeShbLALyvfh1A" skipName="true" skipArray="true">
-        <valueSpecifications xmi:type="uml:LiteralString" xmi:id="_6tkhMrU1EeShbLALyvfh1A" value="&quot;model_object&quot;"/>
-      </annotationParameters>
-    </annotations>
-  </UMLLabProfile:Annotations>
-  <UMLLabProfile:Generics xmi:id="_6sgxQLU1EeShbLALyvfh1A" genericsValue="T" base_Element="_6seVA7U1EeShbLALyvfh1A"/>
-  <UMLLabProfile:LegacyStyledElement xmi:id="_6shYULU1EeShbLALyvfh1A" base_Element="_6sgxQbU1EeShbLALyvfh1A">
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6shYUbU1EeShbLALyvfh1A" name="getData" method="_6tUpk7U1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6sh_YLU1EeShbLALyvfh1A" type="_6rvVMLU1EeShbLALyvfh1A" direction="return"/>
-    </associatedElement>
-    <associatedElement xmi:type="uml:Operation" xmi:id="_6shYUrU1EeShbLALyvfh1A" name="setData" method="_6tUplbU1EeShbLALyvfh1A">
-      <ownedParameter xmi:id="_6shYU7U1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
-    </associatedElement>
-  </UMLLabProfile:LegacyStyledElement>
   <UMLLabProfile:Annotations xmi:id="_6sh_YbU1EeShbLALyvfh1A" base_Element="_6sgxQbU1EeShbLALyvfh1A">
     <annotations xmi:id="_6sh_YrU1EeShbLALyvfh1A" name="SerializedName">
       <annotationParameters xmi:id="_6sh_Y7U1EeShbLALyvfh1A" skipName="true" skipArray="true">
@@ -10601,92 +10360,6 @@ whether everything is okay</body>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6s0TQbU1EeShbLALyvfh1A" base_Element="_6s0TQLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6s1hYLU1EeShbLALyvfh1A" base_Element="_6s06ULU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6s2vgLU1EeShbLALyvfh1A" base_Element="_6s2IcrU1EeShbLALyvfh1A"/>
-  <uml:OpaqueBehavior xmi:id="_6tTbebU1EeShbLALyvfh1A" name="getVersion" specification="_6sY1crU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tTberU1EeShbLALyvfh1A" direction="return">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>return version;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tTbe7U1EeShbLALyvfh1A" name="setVersion" specification="_6sY1c7U1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tTbfLU1EeShbLALyvfh1A" name="version">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#int"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>this.version = version;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUCgLU1EeShbLALyvfh1A" name="getTime" specification="_6saqoLU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUCgbU1EeShbLALyvfh1A" direction="return">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#long"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>return time;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUCgrU1EeShbLALyvfh1A" name="setTime" specification="_6saqobU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUCg7U1EeShbLALyvfh1A" name="time" type="_4qxjALU1EeShbLALyvfh1A"/>
-    <language>java</language>
-    <body>this.time = time.getTime();
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUChLU1EeShbLALyvfh1A" name="getAcknowledgeID" specification="_6sb4wLU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUChbU1EeShbLALyvfh1A" direction="return">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>return acknowledgeID;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUChrU1EeShbLALyvfh1A" name="setAcknowledgeID" specification="_6sb4wbU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUCh7U1EeShbLALyvfh1A" name="acknowledgeID">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>this.acknowledgeID = acknowledgeID;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUCiLU1EeShbLALyvfh1A" name="getSender" specification="_6sdG4LU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUCibU1EeShbLALyvfh1A" direction="return">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>return sender;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUCirU1EeShbLALyvfh1A" name="setSender" specification="_6sdG4bU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUCi7U1EeShbLALyvfh1A" name="sender">
-      <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
-    </ownedParameter>
-    <language>java</language>
-    <body>this.sender = sender;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUCjLU1EeShbLALyvfh1A" name="getModelObject" specification="_6seVAbU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUpkLU1EeShbLALyvfh1A" type="_4s30wLU1EeShbLALyvfh1A" direction="return"/>
-    <language>java</language>
-    <body>return modelObject;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUpkbU1EeShbLALyvfh1A" name="setModelObject" specification="_6seVArU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUpkrU1EeShbLALyvfh1A" name="modelObject" type="_4s30wLU1EeShbLALyvfh1A"/>
-    <language>java</language>
-    <body>this.modelObject = modelObject;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUpk7U1EeShbLALyvfh1A" name="getData" specification="_6shYUbU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUplLU1EeShbLALyvfh1A" type="_6rvVMLU1EeShbLALyvfh1A" direction="return"/>
-    <language>java</language>
-    <body>return data;
- </body>
-  </uml:OpaqueBehavior>
-  <uml:OpaqueBehavior xmi:id="_6tUplbU1EeShbLALyvfh1A" name="setData" specification="_6shYUrU1EeShbLALyvfh1A">
-    <ownedParameter xmi:id="_6tUplrU1EeShbLALyvfh1A" name="data" type="_6rvVMLU1EeShbLALyvfh1A"/>
-    <language>java</language>
-    <body>this.data = data;
- </body>
-  </uml:OpaqueBehavior>
   <UMLLabProfile:MultiDeclaration xmi:id="_6tmWYbU1EeShbLALyvfh1A" base_Property="_6tmWYLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:LegacyStyledElement xmi:id="_6tmWYrU1EeShbLALyvfh1A" base_Element="_6tmWYLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:MultiDeclaration xmi:id="_6tm9cLU1EeShbLALyvfh1A" base_Property="_6tmWY7U1EeShbLALyvfh1A"/>
@@ -10711,7 +10384,6 @@ whether everything is okay</body>
   <UMLLabProfile:Reference xmi:id="_6t7GgrU1EeShbLALyvfh1A" base_Element="_6t7GgLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6t7tkLU1EeShbLALyvfh1A" base_Element="_6t7Gg7U1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6t7tk7U1EeShbLALyvfh1A" base_Element="_6t7tkbU1EeShbLALyvfh1A"/>
-  <UMLLabProfile:Reference xmi:id="_6t8UorU1EeShbLALyvfh1A" base_Element="_6t8UoLU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6t87sLU1EeShbLALyvfh1A" base_Element="_6t8Uo7U1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6t9iwLU1EeShbLALyvfh1A" base_Element="_6t87sbU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_6t9iw7U1EeShbLALyvfh1A" base_Element="_6t9iwbU1EeShbLALyvfh1A"/>
@@ -10755,4 +10427,13 @@ whether everything is okay</body>
   <UMLLabProfile:Reference xmi:id="_7DlNcLU1EeShbLALyvfh1A" base_Element="_7DkmY7U1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_7DlNc7U1EeShbLALyvfh1A" base_Element="_7DlNcbU1EeShbLALyvfh1A"/>
   <UMLLabProfile:Reference xmi:id="_7Dl0gLU1EeShbLALyvfh1A" base_Element="_7DlNdLU1EeShbLALyvfh1A"/>
+  <UMLLabProfile:Generics xmi:id="_5F_xkMDJEeSZ-dz5sVoj6g" genericsValue="DropURL" base_Element="_5F98YMDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Reference xmi:id="_5KOxUMDJEeSZ-dz5sVoj6g" base_Element="_5KOKQMDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Reference xmi:id="_5KRNkMDJEeSZ-dz5sVoj6g" base_Element="_5KQmgMDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Reference xmi:id="_5KX7QMDJEeSZ-dz5sVoj6g" base_Element="_5KXUMMDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Generics xmi:id="_5KczwMDJEeSZ-dz5sVoj6g" genericsValue="Contact" base_Element="_5KX7QcDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Generics xmi:id="_5KeB4MDJEeSZ-dz5sVoj6g" genericsValue="Identity" base_Element="_5Kda0MDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:Generics xmi:id="_5LD3wMDJEeSZ-dz5sVoj6g" genericsValue="DropURL" base_Element="_4tkYUbU1EeShbLALyvfh1A"/>
+  <UMLLabProfile:Reference xmi:id="_5LIJMMDJEeSZ-dz5sVoj6g" base_Element="_5LHiIMDJEeSZ-dz5sVoj6g"/>
+  <UMLLabProfile:LegacyStyledElement xmi:id="_7uTQkMDJEeSZ-dz5sVoj6g" base_Element="_4tccgbU1EeShbLALyvfh1A"/>
 </xmi:XMI>
