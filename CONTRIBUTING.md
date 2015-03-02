@@ -59,11 +59,12 @@ Example commit message:
 ### Style guide
 We do not dogmatically follow a particular style guide but generally the [Code Conventions for the Java :tm: Programming Language](http://www.oracle.com/technetwork/java/javase/documentation/codeconvtoc-136057.html) are a good starting point.
 
-Regarding the look and feel most of this is reflected by the Eclipse default settings.
+Regarding the look and feel most -- but not all -- of this is reflected by the Eclipse default settings.
 
 ### Our style
 * Use tabs instead of spaces.
 * Try to fit your code into **80** characters but do not wrap your line of code just for the sake of wrapping it. Use **120** in your auto format settings.
+* Statements like ```if``` always with ```{ }```. Do not just write ```if (foo) bar;```
 
 Be consistent. The code should look the same regardless who wrote the code. Look into the code if you are unsure about how to do something.
 Example:
