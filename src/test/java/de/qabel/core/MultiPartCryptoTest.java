@@ -10,6 +10,7 @@ import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,6 +29,7 @@ public class MultiPartCryptoTest {
 
     private EventEmitter emitter;
     private EventListener queueReceiver;
+    private Thread dropThread;
 
     class TestObject extends ModelObject {
         public TestObject() { }
@@ -60,7 +62,7 @@ public class MultiPartCryptoTest {
     LinkedBlockingQueue<DropMessage<TestObject>> mQueue = new LinkedBlockingQueue<>();
 
     @Before
-    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
+    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
         emitter = new EventEmitter();
         dropController = new DropActor(emitter);
         queueReceiver = new EventListener() {
@@ -76,8 +78,17 @@ public class MultiPartCryptoTest {
             }
         };
 
+
+        dropThread = new Thread(dropController);
+
         loadContacts();
         loadDropServers();
+        dropThread.start();
+        Thread.sleep(1000);
+    }
+    @After
+    public void tearDown() {
+        dropController.stop();
     }
 
     @Test
