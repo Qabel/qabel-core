@@ -59,7 +59,7 @@ public class DropMessage<T extends ModelObject>{
         return sender;
     }
 
-    String getSenderKeyId() {
+    public String getSenderKeyId() {
     	return senderKeyId;
     }
 

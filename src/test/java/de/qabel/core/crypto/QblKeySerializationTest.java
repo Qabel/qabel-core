@@ -13,32 +13,28 @@ public class QblKeySerializationTest {
 
 	@Test
 	public void qblPrimaryKeyPairTest() {
-		QblKeyFactory kf = QblKeyFactory.getInstance();
-		QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
+		QblECKeyPair ecKeyPair = new QblECKeyPair();
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(QblPrimaryKeyPair.class, new QblPrimaryKeyPairTypeAdapter());
+		builder.registerTypeAdapter(QblECKeyPair.class, new QblEcKeyPairTypeAdapter());
 		Gson gson = builder.setPrettyPrinting().create();
-		System.out.println("Serialized key: " + gson.toJson(qpkp));
-		QblPrimaryKeyPair deserializedQpkp = gson.fromJson(gson.toJson(qpkp), QblPrimaryKeyPair.class);
-		System.out.println("Deserialized key: " + gson.toJson(deserializedQpkp));
-		
-		assertEquals(qpkp, deserializedQpkp);
+		System.out.println("Serialized key: " + gson.toJson(ecKeyPair));
+		QblECKeyPair deserializedEcKeyPair = gson.fromJson(gson.toJson(ecKeyPair), QblECKeyPair.class);
+		System.out.println("Deserialized key: " + gson.toJson(deserializedEcKeyPair));
+
+		assertEquals(ecKeyPair, deserializedEcKeyPair);
 	}
 	
 	@Test
 	public void qblPrimaryPublicKeyTest() throws InvalidKeyException {
-		QblKeyFactory kf = QblKeyFactory.getInstance();
-		QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
-		QblPrimaryPublicKey qppk = qpkp.getQblPrimaryPublicKey();
-		qppk.attachEncPublicKey(qpkp.getQblEncPublicKeys().get(0));
-		qppk.attachSignPublicKey(qpkp.getQblSignPublicKeys().get(0));
+		QblECKeyPair ecKeyPair = new QblECKeyPair();
+		QblECPublicKey ecPublicKey = ecKeyPair.getPub();
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(QblPrimaryPublicKey.class, new QblPrimaryPublicKeyTypeAdapter());
+		builder.registerTypeAdapter(QblECPublicKey.class, new QblEcPublicKeyTypeAdapter());
 		Gson gson = builder.setPrettyPrinting().create();
-		System.out.println("Serialized key: " + gson.toJson(qppk));
-		QblPrimaryPublicKey deserializedQppk = gson.fromJson(gson.toJson(qppk), QblPrimaryPublicKey.class);
+		System.out.println("Serialized key: " + gson.toJson(ecPublicKey));
+		QblECPublicKey deserializedQppk = gson.fromJson(gson.toJson(ecPublicKey), QblECPublicKey.class);
 		System.out.println("Deserialized key: " + gson.toJson(deserializedQppk));
 		
-		assertEquals(qppk, deserializedQppk);
+		assertEquals(ecPublicKey, deserializedQppk);
 	}
 }

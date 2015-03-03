@@ -6,7 +6,7 @@ import com.google.gson.JsonSyntaxException;
 
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
-import de.qabel.core.crypto.QblKeyFactory;
+import de.qabel.core.crypto.QblECKeyPair;
 
 import org.junit.Test;
 
@@ -59,8 +59,7 @@ public class DropMessageGsonTest {
         TestMessage m = new TestMessage();
 
         m.content = "baz";
-        Identity sender = new Identity("Bernd", new ArrayList<DropURL>(),
-        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair());
+        Identity sender = new Identity("Bernd", new ArrayList<DropURL>(), new QblECKeyPair());
         Identities identities = new Identities();
         identities.add(sender);
         DropMessage<TestMessage> a = new DropMessage<TestMessage>(sender, m);

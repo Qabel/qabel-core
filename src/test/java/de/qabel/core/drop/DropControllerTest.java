@@ -1,7 +1,5 @@
 package de.qabel.core.drop;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.Identities;
@@ -14,7 +12,6 @@ import org.junit.*;
 
 import java.net.MalformedURLException;
 import java.security.InvalidKeyException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -37,25 +34,25 @@ public class DropControllerTest {
     
     @Before
     public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException {
-    	QblPrimaryKeyPair qpkpSender = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    	QblPrimaryKeyPair qpkpRecipient = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    	sender = new Identity("Bernd", null, qpkpSender);
+    	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
-    	recipient = new Identity("Bernd", null, qpkpRecipient);
+    	recipient = new Identity("Bob", null, new QblECKeyPair());
     	recipient.addDrop(new DropURL(cUrl));
 
-    	recipientContact = new Contact(sender, recipient.getDropUrls(), qpkpRecipient.getQblPrimaryPublicKey());
-    	senderContact = new Contact(recipient, sender.getDropUrls(), qpkpSender.getQblPrimaryPublicKey());
+    	recipientContact = new Contact(this.sender, this.recipient.getDropUrls(), recipient.getEcPublicKey());
+    	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
-    	identities.add(sender);
-    	identities.add(recipient);
+    	identities.add(this.sender);
+    	identities.add(this.recipient);
 
     	contacts = new Contacts();
     	contacts.add(senderContact);
     	contacts.add(recipientContact);
 
         controller = new DropController();
+		controller.setIdentities(identities);
+		controller.setContacts(contacts);
     }
 
     @Test
@@ -94,7 +91,7 @@ public class DropControllerTest {
 
     public void retrieveTest() throws MalformedURLException, QblDropInvalidURL {
         Collection<DropMessage<?>> result = controller.retrieve(
-        		new DropURL(cUrl).getUrl(), contacts.getContacts());
+        		new DropURL(cUrl).getUrl(), identities.getIdentities(), contacts.getContacts());
         //We expect at least one drop message from sender
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<?> dm : result){
@@ -104,7 +101,7 @@ public class DropControllerTest {
 
     public void retrieveAutoTest() throws MalformedURLException, QblDropInvalidURL {
         Collection<DropMessage<?>> result = controller.retrieve(
-        		new DropURL(cUrl).getUrl(), contacts.getContacts());
+        		new DropURL(cUrl).getUrl(), identities.getIdentities(), contacts.getContacts());
         //We expect at least one drop message from sender
         Assert.assertTrue(result.size() >= 1);
         for (DropMessage<?> dm : result){

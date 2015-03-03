@@ -1,8 +1,7 @@
 package de.qabel.core;
 
 import de.qabel.core.config.*;
-import de.qabel.core.crypto.QblKeyFactory;
-import de.qabel.core.crypto.QblPrimaryKeyPair;
+import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
@@ -55,7 +54,7 @@ public class MultiPartCryptoTest {
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL {
         dropController = new DropController();
 
-        loadContacts();
+        loadContactsAndIdentities();
         loadDropServers();
 
         mQueue = new DropQueueCallback<TestObject>();
@@ -111,36 +110,35 @@ public class MultiPartCryptoTest {
         assertEquals("Test", msg.getData().getStr());
     }
 
-    private void loadContacts() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
-        QblPrimaryKeyPair alicesKey =
-        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+    private void loadContactsAndIdentities() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
+        QblECKeyPair alicesKey = new QblECKeyPair();
         Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
         alicesDrops.add(
                 new DropURL(
                         "http://localhost:6000/12345678901234567890123456789012345678alice"));
         alice = new Identity("Alice", alicesDrops, alicesKey);
 
-        QblPrimaryKeyPair bobsKey =
-        		QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
+        QblECKeyPair bobsKey = new QblECKeyPair();
         Identity bob = new Identity("Bob", new ArrayList<DropURL>(), bobsKey);
         bob.addDrop(new DropURL(
         		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-		Contact alicesContact = new Contact(alice, null, bobsKey.getQblPrimaryPublicKey());
-        alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKeys().get(0));
-        alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKeys().get(0));
+		Contact alicesContact = new Contact(alice, null, bobsKey.getPub());
         alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        Contact bobsContact = new Contact(bob, null, alicesKey.getQblPrimaryPublicKey());
-        bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKeys().get(0));
-        bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKeys().get(0));
+        Contact bobsContact = new Contact(bob, null, alicesKey.getPub());
         alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         Contacts contacts = new Contacts();
         contacts.add(alicesContact);
         contacts.add(bobsContact);
 
+		Identities identities = new Identities();
+		identities.add(alice);
+		identities.add(bob);
+
         dropController.setContacts(contacts);
+		dropController.setIdentities(identities);
     }
 
     private void loadDropServers() throws MalformedURLException {
