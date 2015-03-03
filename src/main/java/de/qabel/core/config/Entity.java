@@ -1,15 +1,11 @@
 package de.qabel.core.config;
 
-import java.security.InvalidKeyException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import de.qabel.core.crypto.QblEncPublicKey;
-import de.qabel.core.crypto.QblPrimaryPublicKey;
-import de.qabel.core.crypto.QblSignPublicKey;
+import de.qabel.core.crypto.QblECPublicKey;
 import de.qabel.core.drop.DropURL;
 
 /**
@@ -28,23 +24,7 @@ public abstract class Entity extends SyncSettingItem {
 		}
 	}
 	
-	abstract public QblPrimaryPublicKey getPrimaryPublicKey();
-
-	public List<QblEncPublicKey> getEncryptionPublicKeys() {
-		return this.getPrimaryPublicKey().getEncPublicKeys();
-	}
-
-	public void addEncryptionPublicKey(QblEncPublicKey key) throws InvalidKeyException {
-		this.getPrimaryPublicKey().attachEncPublicKey(key);
-	}
-
-	public List<QblSignPublicKey> getSignPublicKeys() {
-		return this.getPrimaryPublicKey().getSignPublicKeys();
-	}
-
-	public void addSignaturePublicKey(QblSignPublicKey key) throws InvalidKeyException {
-		this.getPrimaryPublicKey().attachSignPublicKey(key);
-	}
+	abstract public QblECPublicKey getEcPublicKey();
 
 	/**
 	 * Returns the key identifier. The key identifier consists of the right-most 64 bit of the public fingerprint
@@ -52,7 +32,7 @@ public abstract class Entity extends SyncSettingItem {
 	 * @return key identifier
 	 */
 	public String getKeyIdentifier() {
-		return this.getPrimaryPublicKey().getReadableKeyIdentifier();
+		return this.getEcPublicKey().getReadableKeyIdentifier();
 	}
 
 	public Set<DropURL> getDropUrls() {

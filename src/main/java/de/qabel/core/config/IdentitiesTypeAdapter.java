@@ -10,8 +10,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
-import de.qabel.core.crypto.QblPrimaryKeyPair;
-import de.qabel.core.crypto.QblPrimaryKeyPairTypeAdapter;
+import de.qabel.core.crypto.QblECKeyPair;
+import de.qabel.core.crypto.QblEcKeyPairTypeAdapter;
 
 public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 
@@ -19,7 +19,7 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 	public void write(JsonWriter out, Identities value) throws IOException {
 		out.beginArray();
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(QblPrimaryKeyPair.class, new QblPrimaryKeyPairTypeAdapter());
+		builder.registerTypeAdapter(QblECKeyPair.class, new QblEcKeyPairTypeAdapter());
 		Gson gson = builder.create();
 		Set<Identity> set = value.getIdentities();
 		TypeAdapter<Identity> adapter = gson.getAdapter(Identity.class);
@@ -27,7 +27,6 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 			adapter.write(out, identity);
 		}
 		out.endArray();
-		return;
 	}
 
 	@Override
@@ -38,7 +37,7 @@ public class IdentitiesTypeAdapter extends TypeAdapter<Identities> {
 		}
 		
 		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(QblPrimaryKeyPair.class, new QblPrimaryKeyPairTypeAdapter());
+		builder.registerTypeAdapter(QblECKeyPair.class, new QblEcKeyPairTypeAdapter());
 		Gson gson = builder.create();		Identities identities = new Identities();
 		TypeAdapter<Identity> adapter = gson.getAdapter(Identity.class);
 		Identity identity = null; 

@@ -21,7 +21,7 @@ public class Identity extends Entity {
 	 * Field name in serialized json: "keys"
 	 */
 	@SerializedName("keys")
-	private QblPrimaryKeyPair primaryKeyPair;
+	private QblECKeyPair primaryKeyPair;
 
 	/**
 	 * Creates an instance of Identity
@@ -30,7 +30,7 @@ public class Identity extends Entity {
 	 * @param primaryKeyPair
 	 */
 	public Identity(String alias, Collection<DropURL> drops,
-			QblPrimaryKeyPair primaryKeyPair) {
+					QblECKeyPair primaryKeyPair) {
 		super(drops);
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
@@ -52,7 +52,7 @@ public class Identity extends Entity {
 	 * Sets the primary key pair of the identity
 	 * @param key
 	 */
-	public void setPrimaryKeyPair(QblPrimaryKeyPair key)
+	public void setPrimaryKeyPair(QblECKeyPair key)
 	{
 		this.primaryKeyPair = key;
 	}
@@ -61,14 +61,14 @@ public class Identity extends Entity {
 	 * Returns the primary key pair of the identity
 	 * @return QblPrimaryKeyPair
 	 */
-	public QblPrimaryKeyPair getPrimaryKeyPair()
+	public QblECKeyPair getPrimaryKeyPair()
 	{
 		return this.primaryKeyPair;
 	}
 
 	@Override
-	public QblPrimaryPublicKey getPrimaryPublicKey() {
-		return this.getPrimaryKeyPair().getQblPrimaryPublicKey();
+	public QblECPublicKey getEcPublicKey() {
+		return this.getPrimaryKeyPair().getPub();
 	}
 
 	@Override

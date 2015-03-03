@@ -13,7 +13,7 @@ public class Contact extends Entity {
 	 * Primary public key of the contact
 	 * Field name in serialized json: "keys"
 	 */
-	private QblPrimaryPublicKey primaryPublicKey;
+	private QblECPublicKey ecPublicKey;
 	/**
 	 * The owner identity which owns this contact.
 	 * Note: This is not the identity which is represented by this contact!
@@ -31,17 +31,17 @@ public class Contact extends Entity {
 	 * @return QblPrimaryPublicKey
 	 */
 	@Override
-	public QblPrimaryPublicKey getPrimaryPublicKey() {
-		return primaryPublicKey;
+	public QblECPublicKey getEcPublicKey() {
+		return ecPublicKey;
 	}
 
 	/**
 	 * Sets the primary public key of the contacts
 	 * @param key
 	 */
-	public void setPrimaryPublicKey(QblPrimaryPublicKey key)
+	public void setEcPublicKey(QblECPublicKey key)
 	{
-		primaryPublicKey = key;
+		ecPublicKey = key;
 	}
 
 	/**
@@ -74,21 +74,21 @@ public class Contact extends Entity {
 	/**
 	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
 	 */
-	public Contact(Identity owner, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
+	public Contact(Identity owner, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
 		super(dropUrls);
 		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
-		this.setPrimaryPublicKey(pubKey);
+		this.setEcPublicKey(pubKey);
 	}
 
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
 	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
 	 */
-	protected Contact(String ownerKeyId, Collection<DropURL> dropUrls, QblPrimaryPublicKey pubKey) {
+	protected Contact(String ownerKeyId, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
 		super(dropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
-		this.setPrimaryPublicKey(pubKey);
+		this.setEcPublicKey(pubKey);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class Contact extends Entity {
 		result = prime * result
 				+ ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
 		result = prime * result
-				+ ((primaryPublicKey == null) ? 0 : primaryPublicKey.hashCode());
+				+ ((ecPublicKey == null) ? 0 : ecPublicKey.hashCode());
 		return result;
 	}
 
@@ -123,10 +123,10 @@ public class Contact extends Entity {
 				return false;
 		} else if (!contactOwnerKeyId.equals(other.contactOwnerKeyId))
 			return false;
-		if (primaryPublicKey == null) {
-			if (other.primaryPublicKey != null)
+		if (ecPublicKey == null) {
+			if (other.ecPublicKey != null)
 				return false;
-		} else if (!primaryPublicKey.equals(other.primaryPublicKey))
+		} else if (!ecPublicKey.equals(other.ecPublicKey))
 			return false;
 		return true;
 	}
