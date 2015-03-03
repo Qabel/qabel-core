@@ -1,4 +1,4 @@
-package de.qabel.noise;
+package de.qabel.core.crypto;
 
 import org.junit.Test;
 
