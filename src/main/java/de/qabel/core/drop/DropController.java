@@ -16,7 +16,7 @@ import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
-
+import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -187,7 +187,8 @@ public class DropController {
 
 		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(message);
 		for (DropURL u : contact.getDropUrls()) {
-			result.addErrorCode(http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact)));
+			HTTPResult<?> dropResult = http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact));
+			result.addErrorCode(dropResult.getResponseCode());
 		}
 		
 		return result;
@@ -202,13 +203,13 @@ public class DropController {
 	 */
 	public Collection<DropMessage<?>> retrieve(URL url, Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
-		Collection<byte[]> cipherMessages = http.receiveMessages(url);
+		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
 
 		List<Contact> ccc = new ArrayList<Contact>(contacts);
 		Collections.shuffle(ccc, new SecureRandom());
 
-		for (byte[] cipherMessage : cipherMessages) {
+		for (byte[] cipherMessage : cipherMessages.getData()) {
 			AbstractBinaryDropMessage binMessage;
 			byte binaryFormatVersion = cipherMessage[0];
 			
