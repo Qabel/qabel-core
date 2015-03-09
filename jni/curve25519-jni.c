@@ -5,24 +5,21 @@
 #include "curve25519.h"
 
 JNIEXPORT jbyteArray JNICALL
-Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env,
-												jobject obj,
-												jbyteArray n, jbyteArray p)
+Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env, jobject obj, jbyteArray n, jbyteArray p)
 {
 	jboolean qIsCopy, pIsCopy;
-	jbyte *_n, *_result, *_p;
+	jbyte *_n, *_p;
 	jbyteArray result;
 	jsize length;
 
 	length = (*env)->GetArrayLength(env, n);
-	_result = (jbyte *) malloc(length * sizeof(jbyte));
+	jbyte _result[length];
 	result = (*env)->NewByteArray(env, length);
 
 	_n = (jbyte *) (*env)->GetByteArrayElements(env, n, &qIsCopy);
 	_p = (jbyte *) (*env)->GetByteArrayElements(env, p, &pIsCopy);
 
-	crypto_scalarmult((unsigned char *) _result, (unsigned char *) _n,
-					  (unsigned char *) _p);
+	crypto_scalarmult((unsigned char *) _result, (unsigned char *) _n, (unsigned char *) _p);
 
 	if (qIsCopy) {
 		(*env)->ReleaseByteArrayElements(env, n, _n, JNI_ABORT);
@@ -31,37 +28,32 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env,
 		(*env)->ReleaseByteArrayElements(env, p, _p, JNI_ABORT);
 	}
 
-	(*env)->SetByteArrayRegion(env, result, 0, length, (jbyte *) _result);
-	free(_result);
+	(*env)->SetByteArrayRegion(env, result, 0, length, _result);
 
 	return (result);
 }
 
 JNIEXPORT jbyteArray JNICALL
-Java_de_qabel_core_crypto_Curve25519_cryptoScalarmultBase(JNIEnv * env,
-													jobject obj,
-													jbyteArray n)
+Java_de_qabel_core_crypto_Curve25519_cryptoScalarmultBase(JNIEnv * env, jobject obj, jbyteArray n)
 {
 	jboolean qIsCopy;
-	jbyte *_n, *_result;
+	jbyte *_n;
 	jbyteArray result;
 	jsize length;
 
 	length = (*env)->GetArrayLength(env, n);
-	_result = (jbyte *) malloc(length * sizeof(jbyte));
+	jbyte _result[length];
 	result = (*env)->NewByteArray(env, length);
 
 	_n = (jbyte *) (*env)->GetByteArrayElements(env, n, &qIsCopy);
 
-	crypto_scalarmult_base((unsigned char *) _result,
-						   (unsigned char *) _n);
+	crypto_scalarmult_base((unsigned char *) _result, (unsigned char *) _n);
 
 	if (qIsCopy) {
 		(*env)->ReleaseByteArrayElements(env, n, _n, JNI_ABORT);
 	}
 
-	(*env)->SetByteArrayRegion(env, result, 0, length, (jbyte *) _result);
-	free(_result);
+	(*env)->SetByteArrayRegion(env, result, 0, length, _result);
 
 	return (result);
 }
