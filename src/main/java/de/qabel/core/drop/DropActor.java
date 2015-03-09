@@ -126,8 +126,7 @@ public class DropActor extends EventActor {
 	}
 
 	/**
-	 * retrieves new DropMessages from server and calls the corresponding
-	 * listeners
+	 * retrieves new DropMessages from server and emits EVENT_DROP_MESSAGE_RECEIVED event.
 	 */
 	private void retrieve() {
 		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
