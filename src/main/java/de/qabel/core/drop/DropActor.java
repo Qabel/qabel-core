@@ -45,18 +45,36 @@ public class DropActor extends EventActor {
 		// registerModelObject events
 	}
 
+    /**
+     * sends a DropMessage to a Set of Contacts
+     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
+     * @param message DropMessage to be send
+     * @param contacts Receiver of the message
+     */
 	public static <T extends Serializable & Collection<Contact>> void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, T contacts) {
         int nbr;
 		if((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1)
 			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = "+nbr+")");
 	}
 
+    /**
+     * sends a DropMessage to a Contact
+     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
+     * @param message DropMessage to be send
+     * @param contact Receiver of the message
+     */
     public static void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, Contact contact) {
         ArrayList<Contact> contacts = new ArrayList<>(1);
         contacts.add(contact);
         send(emitter, message, contacts);
     }
 
+    /**
+     * sends a ModelObject to a Contact via Drop
+     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
+     * @param message ModelObject to be send
+     * @param contact Receiver of the message
+     */
     public static void send(EventEmitter emitter, ModelObject message, Contact contact) {
         ArrayList<Contact> contacts = new ArrayList<>(1);
         contacts.add(contact);
