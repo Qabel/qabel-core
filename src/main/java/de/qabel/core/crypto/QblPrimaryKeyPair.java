@@ -13,7 +13,10 @@ import java.util.List;
  *
  */
 public class QblPrimaryKeyPair extends QblKeyPair {
-
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 7156762804935261246L;
 	private QblPrimaryPublicKey qblPrimaryPublicKey;
 	private List<QblEncKeyPair> encKeyPairs;
 	private List<RSAPrivateKey> encPrivateKeys;

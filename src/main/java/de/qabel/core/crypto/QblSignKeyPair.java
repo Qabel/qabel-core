@@ -9,7 +9,10 @@ import java.security.interfaces.RSAPublicKey;
  * for signatures.
  */
 public class QblSignKeyPair extends QblSubKeyPair {
-
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -2254849732273626810L;
 	private QblSignPublicKey qblSignPublicKey;
 
 	QblSignKeyPair() {

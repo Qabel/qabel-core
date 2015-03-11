@@ -5,6 +5,10 @@ package de.qabel.core.crypto;
  * 
  */
 abstract class QblSubKeyPair extends QblKeyPair {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4028181046924524176L;
 
 	/**
 	 * Set the primary key signature for this sub key. A QblPrimaryKeyPair has to

@@ -9,7 +9,10 @@ import java.security.interfaces.RSAPublicKey;
  * for encryptions.
  */
 public class QblEncKeyPair extends QblSubKeyPair {
-
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -946962232275071923L;
 	private QblEncPublicKey qblEncPublicKey;
 
 	QblEncKeyPair() {

@@ -1,13 +1,17 @@
 package de.qabel.core.crypto;
 
+import java.io.Serializable;
 import java.security.interfaces.RSAPrivateKey;
 
 /**
  * Abstract super class for all Qbl...KeyPair types 
  * 
  */
-abstract class QblKeyPair {
-
+abstract class QblKeyPair implements Serializable {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7174326436171108728L;
 	private RSAPrivateKey privateKey;
 
 	QblKeyPair() {
