@@ -146,7 +146,7 @@ public class QblKeyFactory {
 	 * 
 	 * @param modulus
 	 *            RSA modulus
-	 * @param privateExponent
+	 * @param publicExponent
 	 *            RSA public exponent
 	 * @return new RSAPublicKey
 	 * @throws InvalidKeySpecException

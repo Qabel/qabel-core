@@ -18,8 +18,6 @@ public class DropResultContact {
 	 * 
 	 * @param contact
 	 *            Contact object
-	 * @param success
-	 *            Return state
 	 */
 	DropResultContact(Contact contact) {
 		this.contact = contact;

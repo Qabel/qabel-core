@@ -7,25 +7,25 @@ import java.net.URL;
  */
 public class DropServer extends SyncSettingItem {
 	/**
-	 * URL to the drop service without the drop id
+	 * URL to the DropServer without the drop id.
 	 * Field name in serialized json: "url"
 	 */
 	private URL url;
 	/**
-	 * Authentication for the drop server (Credential for optional, additional access regulation)
+	 * Authentication for the DropServer (Credential for optional, additional access regulation).
 	 * Field name in serialized json: "auth"
 	 */	
 	private String auth;
 	/**
-	 * Status flag of the drop server
+	 * Status flag of the DropServer.
 	 * Field name in serialized json: "active"
 	 */
 	private boolean active;
 	/**
-	 * Creates an instance of DropServer
-	 * @param url
-	 * @param auth
-	 * @param active
+	 * Creates an instance of DropServer.
+	 * @param url URL of the DropServer.
+	 * @param auth Authentication for the DropServer.
+	 * @param active Status flag of the DropServer.
 	 */
 	public DropServer(URL url, String auth, boolean active) {
 		this.setUrl(url);
@@ -33,22 +33,22 @@ public class DropServer extends SyncSettingItem {
 		this.setActive(active);
 	}
 	/**
-	 * Creates an instance of DropServer
+	 * Creates an instance of DropServer.
 	 */
 	public DropServer() {
 		
 	}
 
 	/**
-	 * Sets the url of the drop server
-	 * @param value
+	 * Sets the url of the DropServer.
+	 * @param url URL of the DropServer.
 	 */
-	public void setUrl(URL value) {
-		this.url = value;
+	public void setUrl(URL url) {
+		this.url = url;
 	}
 
 	/**
-	 * Returns the url of the drop server
+	 * Returns the url of the DropServer.
 	 * @return URL
 	 */
 	public URL getUrl() {
@@ -56,15 +56,15 @@ public class DropServer extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the authentication of the drop server
-	 * @param value
+	 * Sets the authentication of the DropServer.
+	 * @param value Authentication for the DropServer.
 	 */
 	public void setAuth(String value) {
 		this.auth = value;
 	}
 
 	/**
-	 * Returns the authentication of the drop server
+	 * Returns the authentication of the DropServer.
 	 * @return authentication
 	 */
 	public String getAuth() {
@@ -72,15 +72,15 @@ public class DropServer extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the status flag of the drop server
-	 * @param value
+	 * Sets the status flag of the DropServer.
+	 * @param value Status flag to set the DropServer to.
 	 */
 	public void setActive(boolean value) {
 		this.active = value;
 	}
 
 	/**
-	 * Returns the status flag of the drop server
+	 * Returns the status flag of the DropServer.
 	 * @return boolean
 	 */
 	public boolean isActive() {

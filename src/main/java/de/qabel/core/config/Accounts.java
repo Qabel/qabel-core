@@ -8,14 +8,7 @@ import java.util.HashSet;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts
  */
 public class Accounts {
-	
-	/**
-	 * <pre>
-	 *           1     0..*
-	 * Accounts ------------------------- Account
-	 *           accounts        &gt;       account
-	 * </pre>
-	 */
+
 	private final Set<Account> accounts = new HashSet<Account>();
 
 	/**
@@ -32,7 +25,7 @@ public class Accounts {
 
 	/**
 	 * Removes account from list of accounts
-	 * @param account
+	 * @param account Account to be removed.
 	 * @return true if account was contained in list, false if not
 	 */
 	public boolean remove(Account account) {

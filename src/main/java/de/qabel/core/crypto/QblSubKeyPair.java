@@ -9,7 +9,7 @@ abstract class QblSubKeyPair extends QblKeyPair {
 	/**
 	 * Set the primary key signature for this sub key. A QblPrimaryKeyPair has to
 	 * call this method on all its sub keys after creation. 
-	 * @param primaryKeySignature
+	 * @param primaryKeySignature PrimaryKeySignature to set.
 	 */
 	abstract void setQblPrimaryKeySignature(byte[] primaryKeySignature);
 }

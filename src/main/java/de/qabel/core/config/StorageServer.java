@@ -7,19 +7,19 @@ import java.net.URL;
  */
 public class StorageServer extends SyncSettingItem {
 	/**
-	 * Url of the storage server
+	 * Url of the StorageServer.
 	 * Field name in serialized json: "url"
 	 */
 	private URL url;
 	/**
-	 * Credential for optional, additional access regulation
+	 * Credential for optional, additional access regulation.
 	 * Field name in serialized json: "auth"
 	 */
 	private String auth;
 	/**
-	 * Creates an instance of StorageServer
-	 * @param url
-	 * @param auth
+	 * Creates an instance of StorageServer.
+	 * @param url Url of the StorageServer.
+	 * @param auth Credential for optional, additional access regulation.
 	 */
 	public StorageServer(URL url, String auth) {
 		this.setUrl(url);
@@ -27,7 +27,7 @@ public class StorageServer extends SyncSettingItem {
 	}
 	
 	/**
-	 * Returns the url of the storage server
+	 * Returns the url of the StorageServer.
 	 * @return URL
 	 */
 	public URL getUrl() {
@@ -35,15 +35,15 @@ public class StorageServer extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the url of the storage server
-	 * @param url
+	 * Sets the url of the StorageServer.
+	 * @param url Url to set the StorageServer url to.
 	 */
 	public void setUrl(URL url) {
 		this.url = url;
 	}
 
 	/**
-	 * Returns the authentication of the storage server
+	 * Returns the authentication of the StorageServer.
 	 * @return auth
 	 */
 	public String getAuth() {
@@ -51,8 +51,8 @@ public class StorageServer extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the authentication of the storage server
-	 * @param auth
+	 * Sets the authentication of the StorageServer.
+	 * @param auth Authentication to set.
 	 */
 	public void setAuth(String auth) {
 		this.auth = auth;

@@ -10,13 +10,7 @@ import java.util.HashSet;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-servers
  */
 public class StorageServers {
-	/**
-	 * <pre>
-	 *           1     0..*
-	 * StorageServers ------------------------- StorageServer
-	 *           storageServers        &gt;       storageServer
-	 * </pre>
-	 */
+
 	private final Map<String,StorageServer> storageServers = new HashMap<String,StorageServer>();
 
 	/**
@@ -33,7 +27,7 @@ public class StorageServers {
 	
 	/**
 	 * Adds a storage server
-	 * @param storageServer
+	 * @param storageServer StorageServer to add.
 	 * @return true if successfully added, false if already contained
 	 */
 	public boolean add(StorageServer storageServer) {
@@ -46,7 +40,7 @@ public class StorageServers {
 
 	/**
 	 * Removes storageServer from list of storageServers
-	 * @param storageServer
+	 * @param storageServer StorageServer to remove.
 	 * @return true if storageServer was contained in list, false if not
 	 */
 	public boolean remove(StorageServer storageServer) {

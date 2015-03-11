@@ -45,8 +45,7 @@ public class DropResult {
 	/**
 	 * Add one result
 	 * 
-	 * @param pair
-	 *            Object of DropResultContact
+	 * @param result Object of DropResultContact
 	 */
 	public void addContactResult(DropResultContact result) {
 		this.results.add(result);
