@@ -17,6 +17,10 @@ import de.qabel.core.drop.DropURL;
  * communication.
  */
 public abstract class Entity extends SyncSettingItem {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 570661846263644501L;
 	private final Set<DropURL> dropUrls;
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); // TODO: Will
 
