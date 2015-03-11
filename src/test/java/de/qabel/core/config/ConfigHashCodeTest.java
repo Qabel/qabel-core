@@ -42,6 +42,7 @@ public class ConfigHashCodeTest {
 		Configuration config = new ConfigurationBuilder()
 		.overrideFactory("primaryKeyPair", new QblPrimaryKeyPairTestFactory())
 		.overrideFactory("drops", new DropUrlListTestFactory())
+		.ignoreProperty("serialVersionUID")
 		.build();
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}
