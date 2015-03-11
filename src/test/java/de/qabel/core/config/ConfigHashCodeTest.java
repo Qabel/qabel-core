@@ -74,7 +74,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void contactsHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new ContactsEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new ContactsEquivalentTestFactory(), config);
 	}
 
 	@Test
