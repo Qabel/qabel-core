@@ -22,6 +22,7 @@ public class ConfigHashCodeTest {
 		.overrideFactory("primaryPublicKey", new QblPrimaryPublicKeyTestFactory())
 		.overrideFactory("contactOwner", new IdentityTestFactory())
 		.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
+		.ignoreProperty("serialVersionUID")
 		.build();
 		tester.testHashCodeMethod(new ContactEquivalentTestFactory(), config);
 	}

@@ -10,6 +10,10 @@ import java.util.*;
  */
 public class Contact extends Entity {
 	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3971315594579958553L;
+	/**
 	 * Primary public key of the contact
 	 * Field name in serialized json: "keys"
 	 */
@@ -89,6 +93,14 @@ public class Contact extends Entity {
 		super(dropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
 		this.setPrimaryPublicKey(pubKey);
+	}
+
+	/**
+	 * Creates and instance of Contact without any attributes set
+	 * Attention: This constructor is intended for deserialization purposes when getting copied by ContactsActor
+	 */
+	protected Contact() {
+		super(null);
 	}
 
 	@Override
