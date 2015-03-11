@@ -13,7 +13,10 @@ import org.apache.logging.log4j.Logger;
  * used to identify valid encryption and signature sub-keys.
  */
 public class QblPrimaryPublicKey extends QblPublicKey {
-
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -5037435575908728134L;
 	private List<QblEncPublicKey> encPublicKeys;
 	private List<QblSignPublicKey> signPublicKeys;
 	

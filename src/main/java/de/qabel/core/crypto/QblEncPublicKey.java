@@ -7,6 +7,10 @@ import java.security.interfaces.RSAPublicKey;
  * related private key
  */
 public class QblEncPublicKey extends QblSubPublicKey {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 259177911416775073L;
 
 	QblEncPublicKey(RSAPublicKey publicKey) {
 		super(publicKey);
