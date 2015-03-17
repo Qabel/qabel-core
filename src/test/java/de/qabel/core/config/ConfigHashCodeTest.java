@@ -95,7 +95,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void identitiesHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory(), config);
 	}
 
 	@Test
