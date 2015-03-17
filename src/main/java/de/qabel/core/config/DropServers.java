@@ -42,6 +42,11 @@ public class DropServers {
 		return this.dropServers.remove(dropServer);
 	}
 
+	public boolean replace(DropServer dropServer) {
+		this.remove(dropServer);
+		return this.add(dropServer);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
