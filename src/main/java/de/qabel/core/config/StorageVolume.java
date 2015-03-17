@@ -8,6 +8,7 @@ import com.google.gson.annotations.SerializedName;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volume
  */
 public class StorageVolume extends SyncSettingItem {
+	private static final long serialVersionUID = 2647120543754600171L;
 	private StorageServer storageServer;
 	private String storageServerUrl;
 	/**

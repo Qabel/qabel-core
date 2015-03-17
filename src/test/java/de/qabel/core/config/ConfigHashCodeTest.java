@@ -65,6 +65,7 @@ public class ConfigHashCodeTest {
 	public void storageVolumeHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
 			.overrideFactory("storageServer", new StorageServerTestFactory())
 			.build();
 		tester.testHashCodeMethod(new StorageVolumeEquivalentTestFactory(), config);
