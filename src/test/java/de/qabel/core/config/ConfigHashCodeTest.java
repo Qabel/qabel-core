@@ -111,6 +111,7 @@ public class ConfigHashCodeTest {
 	public void localSettingsHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
 			.ignoreProperty("dateFormat")
 			.build();
 		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory(), config);
