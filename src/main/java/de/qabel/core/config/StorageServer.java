@@ -6,6 +6,7 @@ import java.net.URL;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-server
  */
 public class StorageServer extends SyncSettingItem {
+	private static final long serialVersionUID = -8866784788767622338L;
 	/**
 	 * Url of the StorageServer.
 	 * Field name in serialized json: "url"

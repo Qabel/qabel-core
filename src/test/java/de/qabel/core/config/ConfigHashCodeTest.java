@@ -55,8 +55,9 @@ public class ConfigHashCodeTest {
 	public void storageServerHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
-		.overrideFactory("url", new UrlTestFactory())
-		.build();
+			.ignoreProperty("serialVersionUID")
+			.overrideFactory("url", new UrlTestFactory())
+			.build();
 		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
 	}
 
