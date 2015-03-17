@@ -12,7 +12,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void accountHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new AccountEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new AccountEquivalentTestFactory(), config);
 	}
 
 	@Test
