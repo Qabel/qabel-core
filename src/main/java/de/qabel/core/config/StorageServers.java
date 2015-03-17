@@ -48,6 +48,11 @@ public class StorageServers {
 				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
 	}
 
+	public boolean replace(StorageServer storageServer) {
+		this.remove(storageServer);
+		return this.add(storageServer);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
