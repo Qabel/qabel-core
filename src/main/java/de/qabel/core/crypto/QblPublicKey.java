@@ -1,5 +1,6 @@
 package de.qabel.core.crypto;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.interfaces.RSAPublicKey;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import javax.xml.bind.DatatypeConverter;
  * Abstract super class for all Qbl...PublicKey types 
  *
  */
-abstract class QblPublicKey {
+abstract class QblPublicKey implements Serializable {
 
 	private RSAPublicKey publicKey;
 	private byte[] publicKeyFingerprint;

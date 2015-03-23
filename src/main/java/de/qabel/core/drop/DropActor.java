@@ -8,8 +8,7 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.ackack.MessageInfo;
-import de.qabel.ackack.event.EventActor;
-import de.qabel.ackack.event.EventEmitter;
+import de.qabel.ackack.event.*;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServer;
@@ -24,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.math.raw.Mod;
 
-public class DropActor extends EventActor {
+public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
 
 	public static final String EVENT_DROP_MESSAGE_RECEIVED = "dropMessageReceived";
 	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";
@@ -37,11 +36,13 @@ public class DropActor extends EventActor {
 	Thread receiver;
 
 	public DropActor(EventEmitter emitter) {
+        super(emitter);
 		this.emitter = emitter;
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
+        on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
 		// registerModelObject events
 	}
 
@@ -290,4 +291,15 @@ public class DropActor extends EventActor {
 		}
 		return plainMessages;
 	}
+
+    @Override
+    public void onEvent(String event, MessageInfo info, Object... data) {
+        if(EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false)
+            return;
+        try {
+            send((DropMessage<?>)data[0], (Collection)data[1]);
+        } catch (QblDropPayloadSizeException e) {
+            e.printStackTrace();
+        }
+    }
 }

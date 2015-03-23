@@ -1,6 +1,7 @@
 package de.qabel.core;
 
 import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.event.EventActor;
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.ackack.event.EventListener;
 import de.qabel.core.config.*;
@@ -28,10 +29,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class MultiPartCryptoTest {
 
     private EventEmitter emitter;
-    private EventListener queueReceiver;
     private Thread dropThread;
+    private EventActor receiveActor;
+    private Thread receiverThread;
 
-    class TestObject extends ModelObject {
+    static class TestObject extends ModelObject {
         public TestObject() { }
         private String str;
 
@@ -44,7 +46,7 @@ public class MultiPartCryptoTest {
         }
     }
 
-	class UnwantedTestObject extends ModelObject {
+	static class UnwantedTestObject extends ModelObject {
 		public UnwantedTestObject() { }
 		private String str;
 
@@ -65,9 +67,13 @@ public class MultiPartCryptoTest {
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
         emitter = new EventEmitter();
         dropController = new DropActor(emitter);
-        queueReceiver = new EventListener() {
+
+        receiveActor = new EventActor(emitter);
+        receiveActor.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, new EventListener() {
             @Override
             public void onEvent(String event, MessageInfo info, Object... data) {
+                if(!(data[0] instanceof TestObject))
+                    return;
                 if(DropActor.EVENT_DROP_MESSAGE_RECEIVED.equals(event)) {
                     try {
                         mQueue.put((DropMessage<TestObject>) data[0]);
@@ -76,19 +82,21 @@ public class MultiPartCryptoTest {
                     }
                 }
             }
-        };
+        });
 
-
-        dropThread = new Thread(dropController);
+        dropThread = new Thread(dropController, "drop");
+        receiverThread = new Thread(receiveActor, "receiver");
 
         loadContacts();
         loadDropServers();
         dropThread.start();
+        receiverThread.start();
         Thread.sleep(1000);
     }
     @After
     public void tearDown() {
         dropController.stop();
+        receiveActor.stop();
     }
 
     @Test
@@ -127,7 +135,7 @@ public class MultiPartCryptoTest {
         }
 
         assertTrue(mQueue.size() >= 4);
-
+        System.out.println(mQueue.size());
         DropMessage<TestObject> msg = mQueue.take();
         assertEquals("Test", msg.getData().getStr());
         msg = mQueue.take();

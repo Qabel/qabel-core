@@ -1,5 +1,6 @@
 package de.qabel.core.drop;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -14,7 +15,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 /**
  * Class DropURL represents a URL fully identifying a drop.
  */
-public class DropURL {
+public class DropURL implements Serializable{
 	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());
 	
 	private URL url;
