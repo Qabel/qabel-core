@@ -76,7 +76,8 @@ public class MultiPartCryptoTest {
 		receiveActor.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, new EventListener() {
 			@Override
 			public void onEvent(String event, MessageInfo info, Object... data) {
-				if (!(data[0] instanceof TestObject))
+				DropMessage<?> dm = (DropMessage<?>) data[0];
+				if (!(dm.getData() instanceof TestObject))
 					return;
 				if (DropActor.EVENT_DROP_MESSAGE_RECEIVED.equals(event)) {
 					try {
@@ -140,7 +141,7 @@ public class MultiPartCryptoTest {
 		}
 
 		assertTrue(mQueue.size() >= 4);
-		System.out.println(mQueue.size());
+
 		DropMessage<TestObject> msg = mQueue.take();
 		assertEquals("Test", msg.getData().getStr());
 		msg = mQueue.take();
