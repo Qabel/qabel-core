@@ -36,60 +36,62 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	Thread receiver;
 
 	public DropActor(EventEmitter emitter) {
-        super(emitter);
+		super(emitter);
 		this.emitter = emitter;
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
-        on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
+		on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
 		// registerModelObject events
 	}
 
-    /**
-     * sends a DropMessage to a Set of Contacts
-     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
-     * @param message DropMessage to be send
-     * @param contacts Receiver of the message
-     */
+	/**
+	 * sends a DropMessage to a Set of Contacts
+	 *
+	 * @param emitter  EventEmitter to be used (EventEmitter.getDefault() if unsure)
+	 * @param message  DropMessage to be send
+	 * @param contacts Receiver of the message
+	 */
 	public static <T extends Serializable & Collection<Contact>> void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, T contacts) {
-        int nbr;
-		if((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1) {
-            throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = " + nbr + ")");
-        }
+		int nbr;
+		if ((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1) {
+			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = " + nbr + ")");
+		}
 	}
 
-    /**
-     * sends a DropMessage to a Contact
-     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
-     * @param message DropMessage to be send
-     * @param contact Receiver of the message
-     */
-    public static void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, Contact contact) {
-        ArrayList<Contact> contacts = new ArrayList<>(1);
-        contacts.add(contact);
-        send(emitter, message, contacts);
-    }
+	/**
+	 * sends a DropMessage to a Contact
+	 *
+	 * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
+	 * @param message DropMessage to be send
+	 * @param contact Receiver of the message
+	 */
+	public static void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, Contact contact) {
+		ArrayList<Contact> contacts = new ArrayList<>(1);
+		contacts.add(contact);
+		send(emitter, message, contacts);
+	}
 
-    /**
-     * sends a ModelObject to a Contact via Drop
-     * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
-     * @param message ModelObject to be send
-     * @param contact Receiver of the message
-     */
-    public static void send(EventEmitter emitter, ModelObject message, Contact contact) {
-        ArrayList<Contact> contacts = new ArrayList<>(1);
-        contacts.add(contact);
-        DropMessage<ModelObject> dm = new DropMessage<>(contact.getContactOwner(), message);
-        send(emitter, dm, contacts);
-    }
+	/**
+	 * sends a ModelObject to a Contact via Drop
+	 *
+	 * @param emitter EventEmitter to be used (EventEmitter.getDefault() if unsure)
+	 * @param message ModelObject to be send
+	 * @param contact Receiver of the message
+	 */
+	public static void send(EventEmitter emitter, ModelObject message, Contact contact) {
+		ArrayList<Contact> contacts = new ArrayList<>(1);
+		contacts.add(contact);
+		DropMessage<ModelObject> dm = new DropMessage<>(contact.getContactOwner(), message);
+		send(emitter, dm, contacts);
+	}
 
 	/**
 	 * Handles a received DropMessage. Puts this DropMessage into the registered
 	 * Queues.
 	 *
-	 * @param dm
-	 *            DropMessage which should be handled
+	 * @param dm DropMessage which should be handled
 	 */
 	private void handleDrop(DropMessage<? extends ModelObject> dm) {
 		Class<? extends ModelObject> cls = dm.getModelObject();
@@ -114,7 +116,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		receiver = new Thread() {
 			@Override
 			public void run() {
-				while(isInterrupted()==false) {
+				while (isInterrupted() == false) {
 					retrieve();
 				}
 			}
@@ -166,8 +168,9 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	/**
 	 * Sends the message and waits for acknowledgement.
 	 * Uses sendAndForget() for now.
-	 *
+	 * <p/>
 	 * TODO: implement
+	 *
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
@@ -200,7 +203,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	/**
 	 * Sends the object to one contact and does not wait for acknowledgement
 	 *
-	 * @param object Object to send
+	 * @param object  Object to send
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
 	 * @throws QblDropPayloadSizeException
@@ -257,23 +260,23 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			byte binaryFormatVersion = cipherMessage[0];
 
 			switch (binaryFormatVersion) {
-			case 0:
-				try {
-					binMessage = new BinaryDropMessageV0(cipherMessage);
-				} catch (QblVersionMismatchException e) {
-					logger.error("Version mismatch in binary drop message", e);
-					throw new RuntimeException("Version mismatch should not happen", e);
-				} catch (QblDropInvalidMessageSizeException e) {
-					logger.info("Binary drop message version 0 with unexpected size discarded.");
-					// Invalid message uploads may happen with malicious intent
-					// or by broken clients. Skip.
+				case 0:
+					try {
+						binMessage = new BinaryDropMessageV0(cipherMessage);
+					} catch (QblVersionMismatchException e) {
+						logger.error("Version mismatch in binary drop message", e);
+						throw new RuntimeException("Version mismatch should not happen", e);
+					} catch (QblDropInvalidMessageSizeException e) {
+						logger.info("Binary drop message version 0 with unexpected size discarded.");
+						// Invalid message uploads may happen with malicious intent
+						// or by broken clients. Skip.
+						continue;
+					}
+					break;
+				default:
+					logger.warn("Unknown binary drop message version " + binaryFormatVersion);
+					// cannot handle this message -> skip
 					continue;
-				}
-				break;
-			default:
-				logger.warn("Unknown binary drop message version " + binaryFormatVersion);
-				// cannot handle this message -> skip
-				continue;
 			}
 			for (Contact c : contacts) {
 				DropMessage<?> dropMessage = binMessage.disassembleMessageFrom(c);
@@ -293,15 +296,15 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		return plainMessages;
 	}
 
-    @Override
-    public void onEvent(String event, MessageInfo info, Object... data) {
-        if(EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false) {
-            return;
-        }
-        try {
-            send((DropMessage<?>)data[0], (Collection)data[1]);
-        } catch (QblDropPayloadSizeException e) {
-            e.printStackTrace();
-        }
-    }
+	@Override
+	public void onEvent(String event, MessageInfo info, Object... data) {
+		if (EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false) {
+			return;
+		}
+		try {
+			send((DropMessage<?>) data[0], (Collection) data[1]);
+		} catch (QblDropPayloadSizeException e) {
+			e.printStackTrace();
+		}
+	}
 }
