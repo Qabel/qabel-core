@@ -28,7 +28,7 @@ public class Contact extends Entity {
 
 	/**
 	 * Returns the primary public key of the contact
-	 * @return QblPrimaryPublicKey
+	 * @return QblECPublicKey
 	 */
 	@Override
 	public QblECPublicKey getEcPublicKey() {

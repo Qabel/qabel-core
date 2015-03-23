@@ -59,7 +59,7 @@ public class Identity extends Entity {
 
 	/**
 	 * Returns the primary key pair of the identity
-	 * @return QblPrimaryKeyPair
+	 * @return QblECKeyPair
 	 */
 	public QblECKeyPair getPrimaryKeyPair()
 	{
