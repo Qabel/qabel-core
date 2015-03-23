@@ -54,8 +54,9 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
      */
 	public static <T extends Serializable & Collection<Contact>> void send(EventEmitter emitter, DropMessage<? extends ModelObject> message, T contacts) {
         int nbr;
-		if((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1)
-			throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = "+nbr+")");
+		if((nbr = emitter.emit(EVENT_ACTION_DROP_MESSAGE_SEND, message, contacts)) != 1) {
+            throw new RuntimeException("EVENT_ACTION_DROP_MESSAGE_SEND should only listened by one Listener (listener count = " + nbr + ")");
+        }
 	}
 
     /**
@@ -86,7 +87,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	/**
 	 * Handles a received DropMessage. Puts this DropMessage into the registered
 	 * Queues.
-	 * 
+	 *
 	 * @param dm
 	 *            DropMessage which should be handled
 	 */
@@ -165,12 +166,12 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	/**
 	 * Sends the message and waits for acknowledgement.
 	 * Uses sendAndForget() for now.
-	 * 
+	 *
 	 * TODO: implement
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
-	 * @throws QblDropPayloadSizeException 
+	 * @throws QblDropPayloadSizeException
 	 */
 	private DropResult send(DropMessage<? extends ModelObject> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
 		return sendAndForget(message, contacts);
@@ -182,11 +183,11 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
 	 * @return DropResult which tell you the state of the sending
-	 * @throws QblDropPayloadSizeException 
+	 * @throws QblDropPayloadSizeException
 	 */
 	private <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
 		DropResult result;
-		
+
 		result = new DropResult();
 
 		for (Contact contact : contacts) {
@@ -202,7 +203,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * @param object Object to send
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
-	 * @throws QblDropPayloadSizeException 
+	 * @throws QblDropPayloadSizeException
 	 */
 	private <T extends ModelObject> DropResultContact sendAndForget(T object, Contact contact) throws QblDropPayloadSizeException {
 		DropHTTP http = new DropHTTP();
@@ -218,7 +219,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * @param message Message to send
 	 * @param contact Contact to send message to
 	 * @return DropResultContact which tell you the state of the sending
-	 * @throws QblDropPayloadSizeException 
+	 * @throws QblDropPayloadSizeException
 	 */
 	private <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact) throws QblDropPayloadSizeException {
 		DropResultContact result;
@@ -232,7 +233,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			HTTPResult<?> dropResult = http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact));
 			result.addErrorCode(dropResult.getResponseCode());
 		}
-		
+
 		return result;
 	}
 
@@ -254,7 +255,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		for (byte[] cipherMessage : cipherMessages.getData()) {
 			AbstractBinaryDropMessage binMessage;
 			byte binaryFormatVersion = cipherMessage[0];
-			
+
 			switch (binaryFormatVersion) {
 			case 0:
 				try {
@@ -294,8 +295,9 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 
     @Override
     public void onEvent(String event, MessageInfo info, Object... data) {
-        if(EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false)
+        if(EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false) {
             return;
+        }
         try {
             send((DropMessage<?>)data[0], (Collection)data[1]);
         } catch (QblDropPayloadSizeException e) {
