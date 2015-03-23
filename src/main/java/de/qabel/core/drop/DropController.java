@@ -248,6 +248,7 @@ public class DropController {
 				try {
 					dropMessage = binMessage.disassembleMessage(identity);
 				} catch (QblSpoofedSenderException e) {
+					//TODO: Notify the user about the spoofed message
 					break;
 				}
 				if (dropMessage != null) {
