@@ -1,3 +1,7 @@
+/*
+* Source: TweetNaCl (http://tweetnacl.cr.yp.to/20140427/tweetnacl.c)
+*/
+
 #include "curve25519.h"
 
 typedef unsigned char u8;
