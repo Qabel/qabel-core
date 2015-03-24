@@ -3,6 +3,9 @@ package de.qabel.core.crypto;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
+/**
+ * Elliptic curve key pair
+ */
 public class QblECKeyPair {
 
 	public static final int KEY_SIZE_BYTE = 32;
@@ -12,9 +15,7 @@ public class QblECKeyPair {
 	private QblECPublicKey pubKey;
 
 	/**
-	 * Creates a new EC key pair with private number d and public point d*P
-	 * where P is the base point of curve25519
-	 * 
+	 * Creates an elliptic curve key pair with a given private key
 	 * @param privateKey
 	 *            private key which is used to calculate public point
 	 */
@@ -27,14 +28,14 @@ public class QblECKeyPair {
 	}
 
 	/**
-	 * Generates a new EC random key pair
+	 * Generates an elliptic curve key pair with a random private key
 	 */
 	public QblECKeyPair() {
 		this(generatePrivateKey());
 	}
 
 	/**
-	 * Generates a valid random Curve25519 private key.
+	 * Generates a random Curve25519 private key.
 	 * @return random private key
 	 */
 	static private byte[] generatePrivateKey(){
