@@ -34,6 +34,15 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	GsonBuilder gb;
 	Gson gson;
 	Thread receiver;
+	private long interval = 1000;
+
+	public void setInterval(long interval) {
+		this.interval = interval;
+	}
+
+	public long getInterval() {
+		return interval;
+	}
 
 	public DropActor(EventEmitter emitter) {
 		super(emitter);
@@ -118,6 +127,11 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			public void run() {
 				while (isInterrupted() == false) {
 					retrieve();
+					try {
+						Thread.sleep(interval);
+					} catch (InterruptedException e) {
+						// Ignore interrupts.
+					}
 				}
 			}
 		};

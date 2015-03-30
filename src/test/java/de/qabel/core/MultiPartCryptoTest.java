@@ -140,7 +140,7 @@ public class MultiPartCryptoTest {
 			e.printStackTrace();
 		}
 
-		assertTrue(mQueue.size() >= 4);
+		assertTrue("Should contain for or more. contains" + mQueue.size() , mQueue.size() >= 4);
 
 		DropMessage<TestObject> msg = mQueue.take();
 		assertEquals("Test", msg.getData().getStr());

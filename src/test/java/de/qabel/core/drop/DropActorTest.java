@@ -3,10 +3,7 @@ package de.qabel.core.drop;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.ackack.event.EventEmitter;
-import de.qabel.core.config.Contact;
-import de.qabel.core.config.Contacts;
-import de.qabel.core.config.Identities;
-import de.qabel.core.config.Identity;
+import de.qabel.core.config.*;
 import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
@@ -15,6 +12,7 @@ import org.junit.*;
 
 import java.awt.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,7 +23,7 @@ public class DropActorTest {
     private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
     private Identity sender, recipient;
     private Contact senderContact, recipientContact;
-    private DropActor controller;
+    private DropCommunicatorUtil<TestMessage> controller;
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
@@ -39,7 +37,7 @@ public class DropActorTest {
     }
     
     @Before
-    public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException {
+    public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
     	QblPrimaryKeyPair qpkpSender = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
     	QblPrimaryKeyPair qpkpRecipient = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
     	sender = new Identity("Bernd", null, qpkpSender);
@@ -59,11 +57,24 @@ public class DropActorTest {
     	contacts.add(recipientContact);
         emitter = new EventEmitter();
 
-        controller = new DropActor(emitter);
+        DropServers servers = new DropServers();
+
+        DropServer iDropServer = new DropServer(new URL(iUrl), null, true);
+        DropServer cDropServer = new DropServer(new URL(cUrl), null, true);
+        servers.add(iDropServer);
+        servers.add(cDropServer);
+
+        controller = new DropCommunicatorUtil<TestMessage>(emitter);
+        controller.start(contacts, servers);
+    }
+
+    @After
+    public void tearDown() throws InterruptedException {
+        controller.stop();
     }
 
     @Test
-    public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {
+    public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
 
@@ -75,16 +86,16 @@ public class DropActorTest {
     }
 
     @Test
-    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {
+    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
 
         DropActor.send(emitter, m, recipientContact);
 
-        retrieveAutoTest();
+        retrieveTest();
     }
 
     @Test
-    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException {    	
+    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
@@ -93,23 +104,8 @@ public class DropActorTest {
         retrieveTest();
     }
 
-    public void retrieveTest() throws MalformedURLException, QblDropInvalidURL {
-        Collection<DropMessage<?>> result = controller.retrieve(
-        		new DropURL(cUrl).getUrl(), contacts.getContacts());
-        //We expect at least one drop message from sender
-        Assert.assertTrue(result.size() >= 1);
-        for (DropMessage<?> dm : result){
-        	 Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
-        }
-    }
-
-    public void retrieveAutoTest() throws MalformedURLException, QblDropInvalidURL {
-        Collection<DropMessage<?>> result = controller.retrieve(
-        		new DropURL(cUrl).getUrl(), contacts.getContacts());
-        //We expect at least one drop message from sender
-        Assert.assertTrue(result.size() >= 1);
-        for (DropMessage<?> dm : result){
-            Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
-        }
+    public void retrieveTest() throws MalformedURLException, QblDropInvalidURL, InterruptedException {
+        DropMessage<?> dm = controller.retrieve();
+		 Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
     }
 }
