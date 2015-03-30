@@ -7,6 +7,10 @@ import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.Responsible;
 
+/**
+ * Actor which handles the access to contacts of Qabel.
+ *
+ */
 public class ContactsActor extends Actor {
 	static Contacts contacts;
 	static ContactsActor defaultContactsActor;
@@ -26,12 +30,25 @@ public class ContactsActor extends Actor {
 		ContactsActor.contacts = contacts;
 	}
 
+	/**
+	 * Add new and write changed contacts
+	 * @param contacts Contacts to be written
+	 * @return True if contacts have been sent to actor
+	 */
 	public boolean writeContacts(final Contact... contacts) {
 		MessageInfo info = new MessageInfo();
 		info.setType(WRITE_CONTACTS);
 		return post(info, (Serializable[]) contacts);
 	}
 
+	/**
+	 * Retrieve contacts by key identifier. If no key identifier is passed all
+	 * contacts will be retrieved.
+	 * @param sender Sending actor
+	 * @param responsible Class to handle the call back
+	 * @param keyIdentifiers Key identifiers of requested contacts (all if empty)
+	 * @return True if request has been sent to actor
+	 */
 	public boolean retrieveContacts(Actor sender, Responsible responsible, final String... keyIdentifiers) {
 		MessageInfo info = new MessageInfo();
 		info.setSender(sender);
@@ -40,6 +57,11 @@ public class ContactsActor extends Actor {
 		return post(info, (Serializable[]) keyIdentifiers);
 	}
 
+	/**
+	 * Remove one or more contacts.
+	 * @param keyIdentifiers Key identifiers of contacts to be removed
+	 * @return True if request has been sent to actor
+	 */
 	public boolean removeContacts(final String... keyIdentifiers) {
 		MessageInfo info = new MessageInfo();
 		info.setType(ContactsActor.REMOVE_CONTACTS);
