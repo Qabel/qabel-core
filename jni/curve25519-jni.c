@@ -16,8 +16,8 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env, jobject obj,
 	jbyte _result[length];
 	result = (*env)->NewByteArray(env, length);
 
-	_n = (jbyte *) (*env)->GetByteArrayElements(env, n, &qIsCopy);
-	_p = (jbyte *) (*env)->GetByteArrayElements(env, p, &pIsCopy);
+	_n = (*env)->GetByteArrayElements(env, n, &qIsCopy);
+	_p = (*env)->GetByteArrayElements(env, p, &pIsCopy);
 
 	crypto_scalarmult((unsigned char *) _result, (unsigned char *) _n, (unsigned char *) _p);
 
@@ -30,7 +30,7 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env, jobject obj,
 
 	(*env)->SetByteArrayRegion(env, result, 0, length, _result);
 
-	return (result);
+	return result;
 }
 
 JNIEXPORT jbyteArray JNICALL
@@ -45,7 +45,7 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmultBase(JNIEnv * env, jobject 
 	jbyte _result[length];
 	result = (*env)->NewByteArray(env, length);
 
-	_n = (jbyte *) (*env)->GetByteArrayElements(env, n, &qIsCopy);
+	_n = (*env)->GetByteArrayElements(env, n, &qIsCopy);
 
 	crypto_scalarmult_base((unsigned char *) _result, (unsigned char *) _n);
 
@@ -55,5 +55,5 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmultBase(JNIEnv * env, jobject 
 
 	(*env)->SetByteArrayRegion(env, result, 0, length, _result);
 
-	return (result);
+	return result;
 }
