@@ -13,7 +13,7 @@ install:
  - git clone https://github.com/qabel/qabel-drop
  - virtualenv qabel-drop
  - source qabel-drop/bin/activate
- - pip install -r qabel-drop/requirements.txt
+ - pip install -r qabel-drop/requirements.txt > /dev/null 2>&1 &
  - cd qabel-drop
  - ./drop_server.py > /dev/null 2>&1 &
  - cd ..
