@@ -33,7 +33,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	private Contacts mContacts;
 	GsonBuilder gb;
 	Gson gson;
-	Thread receiver;
+	ReceiverThread receiver;
 	private long interval = 1000;
 
 	public void setInterval(long interval) {
@@ -122,24 +122,12 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	}
 
 	private void startRetriever() {
-		receiver = new Thread() {
-			@Override
-			public void run() {
-				while (isInterrupted() == false) {
-					retrieve();
-					try {
-						Thread.sleep(interval);
-					} catch (InterruptedException e) {
-						// Ignore interrupts.
-					}
-				}
-			}
-		};
+		receiver = new ReceiverThread();
 		receiver.start();
 	}
 
 	private void stopRetriever() throws InterruptedException {
-		receiver.interrupt();
+		receiver.shutdown();
 		receiver.join();
 	}
 
@@ -319,6 +307,25 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			send((DropMessage<?>) data[0], (Collection) data[1]);
 		} catch (QblDropPayloadSizeException e) {
 			e.printStackTrace();
+		}
+	}
+
+	private class ReceiverThread extends Thread {
+		boolean run = true;
+		@Override
+		public void run() {
+			try {
+				while (run && isInterrupted() == false) {
+					retrieve();
+					Thread.sleep(interval);
+				}
+			} catch (InterruptedException e) {
+				// Ignore interrupts.
+			}
+		}
+		public void shutdown() {
+			run = false;
+			this.interrupt();
 		}
 	}
 }
