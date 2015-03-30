@@ -26,24 +26,24 @@ public class ContactsActor extends Actor {
 		ContactsActor.contacts = contacts;
 	}
 
-	public boolean writeContacts(final Contact... data) {
+	public boolean writeContacts(final Contact... contacts) {
 		MessageInfo info = new MessageInfo();
 		info.setType(WRITE_CONTACTS);
-		return post(info, (Serializable[]) data);
+		return post(info, (Serializable[]) contacts);
 	}
 
-	public boolean retrieveContacts(Actor sender, Responsible responsible, final String... data) {
+	public boolean retrieveContacts(Actor sender, Responsible responsible, final String... keyIdentifiers) {
 		MessageInfo info = new MessageInfo();
 		info.setSender(sender);
 		info.setResponsible(responsible);
 		info.setType(ContactsActor.RETRIEVE_CONTACTS);
-		return post(info, (Serializable[]) data);
+		return post(info, (Serializable[]) keyIdentifiers);
 	}
 
-	public boolean removeContacts(final String... data) {
+	public boolean removeContacts(final String... keyIdentifiers) {
 		MessageInfo info = new MessageInfo();
 		info.setType(ContactsActor.REMOVE_CONTACTS);
-		return post(info, (Serializable[]) data);
+		return post(info, (Serializable[]) keyIdentifiers);
 	}
 
 	@Override
