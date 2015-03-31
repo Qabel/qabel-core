@@ -25,4 +25,4 @@ install:
  - cd ..
 
 script:
- - ./gradlew check
+ - travis_wait ./gradlew check
