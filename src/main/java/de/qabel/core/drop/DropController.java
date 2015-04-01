@@ -256,10 +256,11 @@ public class DropController {
 						if (c.getKeyIdentifier().equals(dropMessage.getSenderKeyId())){
 							if (dropMessage.registerSender(c)){
 								plainMessages.add(dropMessage);
+								break;
 							}
 						}
 					}
-					break; // sender found for this message
+					break;
 				}
 			}
 		}
