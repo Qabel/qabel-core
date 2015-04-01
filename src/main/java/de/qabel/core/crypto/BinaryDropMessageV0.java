@@ -86,9 +86,9 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 			decryptedPlaintext = cu.readBox(identity.getPrimaryKeyPair(),
 					Arrays.copyOfRange(binaryMessage, HEADER_SIZE, binaryMessage.length));
 		} catch (InvalidKeyException e) {
-			logger.debug("Message not meant for this recipient");
+			logger.debug("Message invalid or not meant for this recipient");
 		} catch (InvalidCipherTextException e) {
-			logger.debug("Message not meant for this recipient");
+			logger.debug("Message invalid or not meant for this recipient: " + e.getMessage());
 		}
 		return decryptedPlaintext;
 	}
