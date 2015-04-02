@@ -96,7 +96,7 @@ public class Contact extends Entity {
 	}
 
 	/**
-	 * Creates and instance of Contact without any attributes set
+	 * Creates an instance of Contact without any attributes set
 	 * Attention: This constructor is intended for deserialization purposes when getting copied by ContactsActor
 	 */
 	protected Contact() {
