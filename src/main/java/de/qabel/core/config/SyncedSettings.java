@@ -7,68 +7,12 @@ import java.util.Set;
 import com.google.gson.JsonParseException;
 
 public class SyncedSettings {
-	/**
-	 * <pre>
-	 *           1     0..*
-	 * SyncedSettings ------------------------- SyncedModuleSettings
-	 *           syncedSettings        &lt;       syncedModuleSettings
-	 * </pre>
-	 * Field name in serialized json: "module_data"
-	 */
 	private Set<SyncedModuleSettings> syncedModuleSettings;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- Identities
-	 *           syncedSettings        &gt;       identities
-	 * </pre>
-	 * Field name in serialized json: "identities"
-	 */
 	private Identities identities;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- Accounts
-	 *           syncedSettings        &gt;       accounts
-	 * </pre>
-	 * Field name in serialized json: "accounts"
-	 */
 	private Accounts accounts;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- Contacts
-	 *           syncedSettings        &gt;       contacts
-	 * </pre>
-	 * Field name in serialized json: "contacts"
-	 */
 	private Contacts contacts;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- DropServers
-	 *           syncedSettings        &gt;       dropServers
-	 * </pre>
-	 * Field name in serialized json: "drop_servers"
-	 */
 	private DropServers dropServers;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- StorageServers
-	 *           syncedSettings        &gt;       storageServers
-	 * </pre>
-	 * Field name in serialized json: "storage_servers"
-	 */
 	private StorageServers storageServers;
-	/**
-	 * <pre>
-	 *           1     1
-	 * SyncedSettings ------------------------- StorageVolumes
-	 *           syncedSettings        &gt;       storageVolumes
-	 * </pre>
-	 * Field name in serialized json: "storage_volumes"
-	 */
 	private StorageVolumes storageVolumes;
 	
 	/**
@@ -94,98 +38,49 @@ public class SyncedSettings {
 		return this.syncedModuleSettings;
 	}
 
-	/**
-	 * Sets identities
-	 * @param value
-	 */
 	public void setIdentities(Identities value) {
 		this.identities = value;
 	}
-
-	/**
-	 * Returns identities
-	 * @return Identities
-	 */
 	public Identities getIdentities() {
 		return this.identities;
 	}
-
-	/**
-	 * Returns contacts
-	 * @return Contacts
-	 */
 	public Contacts getContacts() {
 		return this.contacts;
 	}
 
-	/**
-	 * Sets contacts
-	 * @param value
-	 */
+
 	public void setContacts(Contacts value) {
 		this.contacts = value;
 	}
 
-	/**
-	 * Sets accounts
-	 * @param value
-	 */
 	public void setAccounts(Accounts value) {
 		this.accounts = value;
 	}
 
-	/**
-	 * Returns accounts
-	 * @return Accounts
-	 */
 	public Accounts getAccounts() {
 		return this.accounts;
 	}
 
-	/**
-	 * Sets dropServers
-	 * @param value
-	 */
 	public void setDropServers(DropServers value) {
 		this.dropServers = value;
 	}
 
-	/**
-	 * Returns dropServers
-	 * @return DropServers
-	 */
 	public DropServers getDropServers() {
 		return this.dropServers;
 	}
 
-	/**
-	 * Sets storageServers
-	 * @param value
-	 */
 	public void setStorageServers(StorageServers value) {
 		this.storageServers = value;
 	}
 
-	/**
-	 * Returns storageServers
-	 * @return StorageServers
-	 */
 	public StorageServers getStorageServers() {
 		return this.storageServers;
 	}
 
-	/**
-	 * Sets storageVolumes
-	 * @param value
-	 */
 	public void setStorageVolumes(StorageVolumes value) {
 		this.storageVolumes = value;
 	}
 
-	/**
-	 * Returns storageVolumes
-	 * @return StorageVolumes
-	 */
 	public StorageVolumes getStorageVolumes() {
 		return this.storageVolumes;
 	}
@@ -202,7 +97,7 @@ public class SyncedSettings {
 
 	/**
 	 * Deserializes a Json String
-	 * @param json
+	 * @param json Json to deserialize
 	 * @return SyncedSettings
 	 * @throws IOException
 	 * @throws JsonParseException

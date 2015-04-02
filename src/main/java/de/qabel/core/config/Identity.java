@@ -24,10 +24,10 @@ public class Identity extends Entity {
 	private QblECKeyPair primaryKeyPair;
 
 	/**
-	 * Creates an instance of Identity
-	 * @param alias
-	 * @param drops
-	 * @param primaryKeyPair
+	 * Creates an instance of Identity.
+	 * @param alias Name of the identity.
+	 * @param drops Drops of the identity.
+	 * @param primaryKeyPair Primary Key pair of the identity.
 	 */
 	public Identity(String alias, Collection<DropURL> drops,
 					QblECKeyPair primaryKeyPair) {
@@ -41,7 +41,7 @@ public class Identity extends Entity {
 	}
 
 	/**
-	 * Returns the alias name of the identity
+	 * Returns the alias name of the identity.
 	 * @return alias
 	 */
 	public String getAlias() {
@@ -49,8 +49,8 @@ public class Identity extends Entity {
 	}
 
 	/**
-	 * Sets the primary key pair of the identity
-	 * @param key
+	 * Sets the primary key pair of the identity.
+	 * @param key Primary Key pair of the identity.
 	 */
 	public void setPrimaryKeyPair(QblECKeyPair key)
 	{

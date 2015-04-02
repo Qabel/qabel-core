@@ -9,18 +9,12 @@ import de.qabel.core.module.ModuleManager;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#settings-client-notes
  */
 public class Settings {
-	/**
-	 * <pre>
-	 *           1     1
-	 * Settings ------------------------- LocalSettings
-	 *           settings        &gt;       localSettings
-	 * </pre>
-	 */
+
 	private LocalSettings localSettings;
 
 	/**
 	 * Sets the local settings
-	 * @param value
+	 * @param value Value to set the local settings to.
 	 */
 	public void setLocalSettings(LocalSettings value) {
 		this.localSettings = value;
@@ -61,8 +55,7 @@ public class Settings {
 	private Set<ModuleManager> moduleManager;
 
 	/**
-	 * Returns a set of module manager
-	 * @return
+	 * @return Returns a set of module manager
 	 */
 	public Set<ModuleManager> getModuleManager() {
 		if (this.moduleManager == null) {

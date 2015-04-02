@@ -14,15 +14,7 @@ import com.google.gson.annotations.SerializedName;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
  */
 public class LocalSettings {
-	/**
-	 * <pre>
-	 *           1     0..*
-	 * LocalSettings ------------------------> LocaleModuleSettings
-	 *           localSettings        &gt;       localeModuleSettings
-	 * </pre>
-	 * Set of module specific local settings
-	 * Field name in serialized json: "module_data"
-	 */
+
 	private Set<LocaleModuleSettings> localeModuleSettings;
 	/**
 	 * Poll interval of the client
@@ -42,9 +34,9 @@ public class LocalSettings {
 	final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 	
 	/**
-	 * Creates an instance of LocalSettings
-	 * @param pollInterval
-	 * @param dropLastUpdate
+	 * Creates an instance of LocalSettings.
+	 * @param pollInterval Poll interval of the client.
+	 * @param dropLastUpdate Date of the last time the core asked the drop servers for new messages.
 	 */
 	public LocalSettings(long pollInterval, Date dropLastUpdate) {
 		this.setPollInterval(pollInterval);
@@ -52,7 +44,7 @@ public class LocalSettings {
 	}
 
 	/**
-	 * Returns a set of module specific local settings
+	 * Returns a set of module specific local settings.
 	 * @return Set<LocaleModuleSettings>
 	 */
 	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
@@ -63,24 +55,23 @@ public class LocalSettings {
 	}
 
 	/**
-	 * Sets the poll interval
-	 * @param value
+	 * Sets the poll interval.
+	 * @param value Value to set the poll interval to.
 	 */
 	public void setPollInterval(long value) {
 		this.pollInterval = value;
 	}
 
-	/**
-	 * Returns the poll interval
-	 * @return
+	/*
+	 * @return Returns the poll interval.
 	 */
 	public long getPollInterval() {
 		return this.pollInterval;
 	}
 
 	/**
-	 * Sets the date of last drop update
-	 * @param value
+	 * Sets the date of last drop update.
+	 * @param value Date of the last time the core asked the drop servers for new messages.
 	 */
 	public void setdropLastUpdate(Date value) {
 		this.dropLastUpdate = value;
@@ -95,7 +86,7 @@ public class LocalSettings {
 	}
 
 	/**
-	 * Serializes this class to a Json String
+	 * Serializes this class to a Json String.
 	 * @return Json String
 	 * @throws IOException
 	 */
@@ -108,8 +99,8 @@ public class LocalSettings {
 	}
 
 	/**
-	 * Deserializes a Json String
-	 * @param json
+	 * Deserializes a Json String.
+	 * @param json Json String to deserialize.
 	 * @return LocalSettings
 	 * @throws IOException
 	 * @throws JsonParseException

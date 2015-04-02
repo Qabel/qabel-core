@@ -32,7 +32,7 @@ public class StorageBlob {
 	/**
 	 * Generates a StorageBlob from an InputStream.
 	 * 
-	 * @param bolb The blob.
+	 * @param blob The blob.
 	 * @param name Name of the blob, if null then a random name will be set.
 	 * @throws IOException if maximum blob size was exceeded while reading.
 	 * @throws QblStorageInvalidBlobName if name contains non-Base64url characters.

@@ -21,7 +21,7 @@ public class SyncSettingItem {
 
     /**
      * Set id of the item
-     * @param Id of the item
+     * @param id Id of the item
      */
     public void setId(int id) {
         this.id = id;
@@ -37,7 +37,7 @@ public class SyncSettingItem {
 
     /**
      * Set created date of the item
-     * @param Created date of the item
+     * @param created Created date of the item
      */
     public void setCreated(Long created) {
         this.created = created;
@@ -53,7 +53,7 @@ public class SyncSettingItem {
 
     /**
      * Set updated date of the item
-     * @param Updated date of the item
+     * @param updated Updated date of the item
      */
     public void setUpdated(Long updated) {
         this.updated = updated;
@@ -69,7 +69,7 @@ public class SyncSettingItem {
 
     /**
      * Set delete date of the item
-     * @param Delete date of the item
+     * @param deleted Delete date of the item
      */
     public void setDeleted(Long deleted) {
         this.deleted = deleted;
