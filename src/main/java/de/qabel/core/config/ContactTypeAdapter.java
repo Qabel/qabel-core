@@ -12,8 +12,8 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
-import de.qabel.core.crypto.QblPrimaryPublicKey;
-import de.qabel.core.crypto.QblPrimaryPublicKeyTypeAdapter;
+import de.qabel.core.crypto.QblECPublicKey;
+import de.qabel.core.crypto.QblEcPublicKeyTypeAdapter;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
@@ -24,10 +24,10 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		GsonBuilder builder = new GsonBuilder();
 		out.beginObject();
 		out.name("keys");
-		builder.registerTypeAdapter(QblPrimaryPublicKey.class, new QblPrimaryPublicKeyTypeAdapter());
+		builder.registerTypeAdapter(QblECPublicKey.class, new QblEcPublicKeyTypeAdapter());
 		Gson gson = builder.create();
-		TypeAdapter<QblPrimaryPublicKey> primaryKeyAdapter = gson.getAdapter(QblPrimaryPublicKey.class);
-		primaryKeyAdapter.write(out, value.getPrimaryPublicKey());
+		TypeAdapter<QblECPublicKey> primaryKeyAdapter = gson.getAdapter(QblECPublicKey.class);
+		primaryKeyAdapter.write(out, value.getEcPublicKey());
 		
 		out.name("my_identity");
 		out.value(value.getContactOwnerKeyId());
@@ -65,15 +65,15 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		}
 		Contact contact;
 		String contactOwnerKeyId = null;
-		QblPrimaryPublicKey qppk = null;
+		QblECPublicKey ecPublicKey = null;
 		Collection<DropURL> dropURLs = null;
 		SyncSettingItem syncItem = new SyncSettingItem();
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
 			case "keys":
-				QblPrimaryPublicKeyTypeAdapter publicKeyTypeAdapter = new QblPrimaryPublicKeyTypeAdapter();
-				qppk = publicKeyTypeAdapter.read(in);
+				QblEcPublicKeyTypeAdapter publicKeyTypeAdapter = new QblEcPublicKeyTypeAdapter();
+				ecPublicKey = publicKeyTypeAdapter.read(in);
 				break;
 			case "my_identity":
 				contactOwnerKeyId = in.nextString();
@@ -113,11 +113,11 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		}
 		in.endObject();
 		
-		if(qppk == null || contactOwnerKeyId == null || dropURLs == null) {
+		if(ecPublicKey == null || contactOwnerKeyId == null || dropURLs == null) {
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
+		contact = new Contact(contactOwnerKeyId, dropURLs, ecPublicKey);
 
 		// copy all sync item properties
 		contact.setId(syncItem.getId());

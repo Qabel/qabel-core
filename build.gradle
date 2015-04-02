@@ -29,6 +29,11 @@ dependencies {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2.1'
 }
+
+tasks.withType(Test) {
+    systemProperty "java.library.path", "."
+}
+
 sourceSets {
 	main {
 	    resources.srcDirs += ['src/resources/config/'] 

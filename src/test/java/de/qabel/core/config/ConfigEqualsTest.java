@@ -2,13 +2,13 @@ package de.qabel.core.config;
 
 import static org.junit.Assert.*;
 
+import de.qabel.core.crypto.QblECPublicKeyTestFactory;
+import de.qabel.core.crypto.QblEcPairTestFactory;
 import org.junit.Test;
 import org.meanbean.test.Configuration;
 import org.meanbean.test.ConfigurationBuilder;
 import org.meanbean.test.EqualsMethodTester;
 
-import de.qabel.core.crypto.QblPrimaryKeyPairTestFactory;
-import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
 
 public class ConfigEqualsTest {
 
@@ -217,7 +217,7 @@ public class ConfigEqualsTest {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.overrideFactory("drops", new DropUrlListTestFactory())
-			.overrideFactory("primaryKeyPair", new QblPrimaryKeyPairTestFactory())
+			.overrideFactory("primaryKeyPair", new QblEcPairTestFactory())
 			.iterations(10)
 			.build();
 		tester.testEqualsMethod(new IdentityEquivalentTestFactory(), config);
@@ -237,11 +237,8 @@ public class ConfigEqualsTest {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.iterations(10)
-			.overrideFactory("primaryPublicKey", new QblPrimaryPublicKeyTestFactory())
+			.overrideFactory("ecPublicKey", new QblECPublicKeyTestFactory())
 			.overrideFactory("contactOwner", new IdentityTestFactory())
-			.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
-			.ignoreProperty("signaturePublicKey") // is already checked as part of primaryPublicKey
-			.ignoreProperty("encryptionPublicKey") // is already checked as part of primaryPublicKey
 			.build();
 		tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
 	}

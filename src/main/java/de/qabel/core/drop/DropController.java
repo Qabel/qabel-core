@@ -7,22 +7,22 @@ import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import de.qabel.core.config.Contact;
-import de.qabel.core.config.Contacts;
-import de.qabel.core.config.DropServer;
-import de.qabel.core.config.DropServers;
+import de.qabel.core.config.*;
 import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
+import de.qabel.core.exceptions.QblSpoofedSenderException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
 import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bouncycastle.util.encoders.Hex;
 
 public class DropController {
 	Map<Class<? extends ModelObject>, Set<DropCallback<? extends ModelObject>>> mCallbacks;
 	private DropServers mDropServers;
+	private Identities mIdentities;
 	private Contacts mContacts;
 	GsonBuilder gb;
 	Gson gson;
@@ -93,7 +93,8 @@ public class DropController {
 		for (DropServer server : servers) {
 			DropController drop = new DropController();
 			Collection<DropMessage<?>> results = drop
-					.retrieve(server.getUrl(), getContacts().getContacts());
+					.retrieve(server.getUrl(), getIdentities().getIdentities(),
+							getContacts().getContacts());
 			for (DropMessage<? extends ModelObject> dm : results) {
 				handleDrop(dm);
 			}
@@ -108,12 +109,20 @@ public class DropController {
 		this.mDropServers = mDropServers;
 	}
 
+	public Identities getIdentities() {
+		return mIdentities;
+	}
+
+	public void setIdentities(Identities identities) {
+		this.mIdentities = identities;
+	}
+
 	public Contacts getContacts() {
 		return mContacts;
 	}
 
-	public void setContacts(Contacts mContacts) {
-		this.mContacts = mContacts;
+	public void setContacts(Contacts contacts) {
+		this.mContacts = contacts;
 	}
 
 
@@ -198,15 +207,17 @@ public class DropController {
 	 * Retrieves a drop message from given URL
 	 *
 	 * @param url      URL where to retrieve the drop from
-	 * @param contacts Contacts to check the signature with
+	 * @param identities Identities to decrypt message with
+	 * @param contacts Contacts to search sender in
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage<?>> retrieve(URL url, Collection<Contact> contacts) {
+	public Collection<DropMessage<?>> retrieve(URL url, Collection<Identity> identities,
+											   Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
 		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
 
-		List<Contact> ccc = new ArrayList<Contact>(contacts);
+		List<Identity> ccc = new ArrayList<Identity>(identities);
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages.getData()) {
@@ -232,18 +243,24 @@ public class DropController {
 				// cannot handle this message -> skip
 				continue;
 			}
-			for (Contact c : contacts) {
-				DropMessage<?> dropMessage = binMessage.disassembleMessageFrom(c);
+			for (Identity identity : identities) {
+				DropMessage<?> dropMessage = null;
+				try {
+					dropMessage = binMessage.disassembleMessage(identity);
+				} catch (QblSpoofedSenderException e) {
+					//TODO: Notify the user about the spoofed message
+					break;
+				}
 				if (dropMessage != null) {
-					boolean unspoofed = dropMessage.registerSender(c);
-					if (!unspoofed) {
-						logger.info("Spoofing of sender infomation detected."
-								+ " Claim: " + dropMessage.getSenderKeyId()
-								+ " Signer: " + c.getKeyIdentifier());
-						break;
+					for (Contact c : contacts) {
+						if (c.getKeyIdentifier().equals(dropMessage.getSenderKeyId())){
+							if (dropMessage.registerSender(c)){
+								plainMessages.add(dropMessage);
+								break;
+							}
+						}
 					}
-					plainMessages.add(dropMessage);
-					break; // sender found for this message
+					break;
 				}
 			}
 		}

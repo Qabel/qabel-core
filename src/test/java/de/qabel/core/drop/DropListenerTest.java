@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import de.qabel.core.crypto.QblECKeyPair;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.qabel.core.config.Identity;
-import de.qabel.core.crypto.QblKeyFactory;
 
 public class DropListenerTest {
 	private Identity sender;
@@ -24,8 +24,7 @@ public class DropListenerTest {
 	
 	@Before
 	public void setup() {
-		sender = new Identity("Bernd", new ArrayList<DropURL>(),
-				QblKeyFactory.getInstance().generateQblPrimaryKeyPair());;
+		sender = new Identity("Bernd", new ArrayList<DropURL>(), new QblECKeyPair());
 	}
 
 	@Test

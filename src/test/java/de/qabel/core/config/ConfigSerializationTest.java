@@ -4,11 +4,11 @@ package de.qabel.core.config;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
+import de.qabel.core.crypto.QblECKeyPair;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -16,10 +16,6 @@ import static org.junit.Assert.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import de.qabel.core.crypto.QblEncPublicKey;
-import de.qabel.core.crypto.QblKeyFactory;
-import de.qabel.core.crypto.QblPrimaryKeyPair;
-import de.qabel.core.crypto.QblSignPublicKey;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
@@ -41,13 +37,11 @@ public class ConfigSerializationTest {
 		//generate "identities" array
 		syncedSettings.setIdentities(new Identities());
 		//generate and add an "identities" entry
-		QblPrimaryKeyPair key;
+		QblECKeyPair key;
 		Collection<DropURL> drops; 
 		Identity identity;
 			
-		key = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-		key.generateEncKeyPair();
-		key.generateSignKeyPair();
+		key = new QblECKeyPair();
 		drops = new ArrayList<DropURL>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
@@ -81,21 +75,12 @@ public class ConfigSerializationTest {
 	public void contactTest() {
 		Contact contact;
 		Contact deserializedContact;
-		QblKeyFactory kf = QblKeyFactory.getInstance();
 		try {
 			
-			Identity i = new Identity("alias", new ArrayList<DropURL>(), kf.generateQblPrimaryKeyPair());
+			Identity i = new Identity("alias", new ArrayList<DropURL>(), new QblECKeyPair());
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
-			QblPrimaryKeyPair qpkp = kf.generateQblPrimaryKeyPair();
-			qpkp.generateEncKeyPair();
-			qpkp.generateSignKeyPair();
-			contact = new Contact(i, null, qpkp.getQblPrimaryPublicKey());
-			for(QblEncPublicKey key : qpkp.getQblEncPublicKeys()) {
-				contact.addEncryptionPublicKey(key);
-			}
-			for(QblSignPublicKey key : qpkp.getQblSignPublicKeys()) {
-				contact.addSignaturePublicKey(key);
-			}
+			QblECKeyPair ecKeyPair = new QblECKeyPair();
+			contact = new Contact(i, null, ecKeyPair.getPub());
 			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			
 			GsonBuilder builder = new GsonBuilder();
@@ -109,9 +94,6 @@ public class ConfigSerializationTest {
 			assertEquals(contact, deserializedContact);
 			
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (QblDropInvalidURL e) {
