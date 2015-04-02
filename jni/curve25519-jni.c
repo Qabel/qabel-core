@@ -19,6 +19,11 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmult(JNIEnv * env, jobject obj,
 	_n = (*env)->GetByteArrayElements(env, n, &qIsCopy);
 	_p = (*env)->GetByteArrayElements(env, p, &pIsCopy);
 
+	if (_n == NULL || _p == NULL) {
+		jclass Exception = (*env)->FindClass(env, "java/lang/RuntimeException");
+		(*env)->ThrowNew(env, Exception, "Could not get byte array elements!");
+	}
+
 	crypto_scalarmult((unsigned char *) _result, (unsigned char *) _n, (unsigned char *) _p);
 
 	if (qIsCopy) {
@@ -46,6 +51,11 @@ Java_de_qabel_core_crypto_Curve25519_cryptoScalarmultBase(JNIEnv * env, jobject 
 	result = (*env)->NewByteArray(env, length);
 
 	_n = (*env)->GetByteArrayElements(env, n, &qIsCopy);
+
+	if (_n == NULL) {
+		jclass Exception = (*env)->FindClass(env, "java/lang/RuntimeException");
+		(*env)->ThrowNew(env, Exception, "Could not get byte array elements!");
+	}
 
 	crypto_scalarmult_base((unsigned char *) _result, (unsigned char *) _n);
 
