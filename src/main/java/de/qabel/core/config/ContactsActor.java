@@ -12,12 +12,13 @@ import de.qabel.ackack.Responsible;
  *
  */
 public class ContactsActor extends Actor {
-	static Contacts contacts;
+	static Contacts defaultContacts;
 	static ContactsActor defaultContactsActor;
+	Contacts contacts;
 
 	static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
-			defaultContactsActor = new ContactsActor(contacts);
+			defaultContactsActor = new ContactsActor(defaultContacts);
 		}
 		return defaultContactsActor;
 	}
@@ -27,7 +28,7 @@ public class ContactsActor extends Actor {
 	private static final String REMOVE_CONTACTS = "removeContacts";
 
 	public ContactsActor (Contacts contacts) {
-		ContactsActor.contacts = contacts;
+		this.contacts = contacts;
 	}
 
 	/**
@@ -75,7 +76,7 @@ public class ContactsActor extends Actor {
 			Contact contact;
 			for (int i = data.length-1; i>=0; i--) {
 				contact = (Contact) data[i];
-				contacts.replace(contact);
+				this.contacts.replace(contact);
 			}
 			break;
 		case RETRIEVE_CONTACTS:
@@ -83,18 +84,18 @@ public class ContactsActor extends Actor {
 			if(data.length > 0) {
 				ArrayList<Contact> contactsList = new ArrayList<Contact>();
 				for(int i = data.length-1; i >= 0; i--){
-					contactsList.add(ContactsActor.contacts.getByKeyIdentifier((String) data[i]));
+					contactsList.add(this.contacts.getByKeyIdentifier((String) data[i]));
 				}
 				contactsArray = (Contact[]) contactsList.toArray(new Contact[0]);
 			}
 			else {
-				contactsArray = ContactsActor.contacts.getContacts().toArray(new Contact[0]);
+				contactsArray = this.contacts.getContacts().toArray(new Contact[0]);
 			}
 			info.response((Serializable[]) contactsArray);
 			break;
 		case REMOVE_CONTACTS:
 			for (int i = data.length-1; i>=0; i--) {
-				contacts.remove(data[i].toString());
+				this.contacts.remove(data[i].toString());
 			}
 			break;
 		}
