@@ -6,6 +6,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -65,7 +66,7 @@ public class ModuleManager {
 	 *           moduleManager        &gt;       modules
 	 * </pre>
 	 */
-	private HashSet<ModuleThread> modules;
+	private HashMap<Module, ModuleThread> modules;
 
 	Thread dropReceiverThread = new Thread() {
 		public void run() {
@@ -73,9 +74,9 @@ public class ModuleManager {
 		};
 	};
 	
-	public Set<ModuleThread> getModules() {
+	public HashMap<Module, ModuleThread> getModules() {
 		if (this.modules == null) {
-			this.modules = new HashSet<ModuleThread>();
+			this.modules = new HashMap<Module, ModuleThread>();
 		}
 		return this.modules;
 	}
@@ -91,7 +92,7 @@ public class ModuleManager {
 		m.setModuleManager(this);
 		m.init();
         ModuleThread t = new ModuleThread(m);
-		getModules().add(t);
+		getModules().put(m, t);
 		t.start();
 	}
 	
@@ -112,7 +113,7 @@ public class ModuleManager {
 	 */
 	public void shutdown() {
 		while(getModules().isEmpty() == false) {
-			getModules().iterator().next().getModule().stopModule();
+			getModules().values().iterator().next().getModule().stopModule();
 		}
 	}
 	/**

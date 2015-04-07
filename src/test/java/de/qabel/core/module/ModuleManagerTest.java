@@ -20,7 +20,13 @@ public class ModuleManagerTest {
             // Empty
         }
 
-        public synchronized boolean isStarted() {
+		@Override
+		public void run() {
+			setRunning(true);
+			super.run();
+		}
+
+		public synchronized boolean isStarted() {
 			return isRunning;
 		}
 
@@ -33,10 +39,10 @@ public class ModuleManagerTest {
 	public void liveCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager();
 		mm.startModule(TestModule.class);
-		TestModule module = (TestModule) mm.getModules().iterator().next().getModule();
+		TestModule module = (TestModule) mm.getModules().values().iterator().next().getModule();
 		assertTrue(module.isInit);
 		assertFalse(module.isStarted());
-		Thread.sleep(200);
+		Thread.sleep(2000);
 		assertTrue(module.isStarted());
 		mm.shutdown();
 	}
