@@ -9,19 +9,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.*;
-import de.qabel.core.config.Contact;
-import de.qabel.core.config.Contacts;
-import de.qabel.core.config.DropServer;
-import de.qabel.core.config.DropServers;
+import de.qabel.core.config.*;
 import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
+import de.qabel.core.exceptions.QblSpoofedSenderException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
 import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.math.raw.Mod;
 
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
 
@@ -30,6 +27,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	private static final String PRIVATE_TYPE_MESSAGE_INPUT = "MessageInput";
 	private final EventEmitter emitter;
 	private DropServers mDropServers;
+	private Identities mIdentities;
 	private Contacts mContacts;
 	GsonBuilder gb;
 	Gson gson;
@@ -139,7 +137,8 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				.getDropServers());
 		for (DropServer server : servers) {
 			Collection<DropMessage<?>> results = this
-					.retrieve(server.getUrl(), getContacts().getContacts());
+					.retrieve(server.getUrl(), getIdentities().getIdentities(),
+							getContacts().getContacts());
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
@@ -154,6 +153,14 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 
 	public void setDropServers(DropServers mDropServers) {
 		this.mDropServers = mDropServers;
+	}
+
+	public Identities getIdentities() {
+		return mIdentities;
+	}
+
+	public void setIdentities(Identities identities) {
+		this.mIdentities = identities;
 	}
 
 	public Contacts getContacts() {
@@ -246,10 +253,12 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * Retrieves a drop message from given URL
 	 *
 	 * @param url      URL where to retrieve the drop from
+	 * @param identities Identities to decrypt message with
 	 * @param contacts Contacts to check the signature with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage<?>> retrieve(URL url, Collection<Contact> contacts) {
+	public Collection<DropMessage<?>> retrieve(URL url, Collection<Identity> identities,
+											   Collection<Contact> contacts) {
 		DropHTTP http = new DropHTTP();
 		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
@@ -280,18 +289,24 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 					// cannot handle this message -> skip
 					continue;
 			}
-			for (Contact c : contacts) {
-				DropMessage<?> dropMessage = binMessage.disassembleMessageFrom(c);
+			for (Identity identity : identities) {
+				DropMessage<?> dropMessage = null;
+				try {
+					dropMessage = binMessage.disassembleMessage(identity);
+				} catch (QblSpoofedSenderException e) {
+					//TODO: Notify the user about the spoofed message
+					break;
+				}
 				if (dropMessage != null) {
-					boolean unspoofed = dropMessage.registerSender(c);
-					if (!unspoofed) {
-						logger.info("Spoofing of sender infomation detected."
-								+ " Claim: " + dropMessage.getSenderKeyId()
-								+ " Signer: " + c.getKeyIdentifier());
-						break;
+					for (Contact c : contacts) {
+						if (c.getKeyIdentifier().equals(dropMessage.getSenderKeyId())){
+							if (dropMessage.registerSender(c)){
+								plainMessages.add(dropMessage);
+								break;
+							}
+						}
 					}
-					plainMessages.add(dropMessage);
-					break; // sender found for this message
+					break;
 				}
 			}
 		}

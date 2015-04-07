@@ -1,7 +1,5 @@
 package de.qabel.core.drop;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.config.*;
 import de.qabel.core.crypto.*;
@@ -10,11 +8,9 @@ import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.*;
 
-import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -38,24 +34,22 @@ public class DropActorTest {
     
     @Before
     public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
-    	QblPrimaryKeyPair qpkpSender = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    	QblPrimaryKeyPair qpkpRecipient = QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-    	sender = new Identity("Bernd", null, qpkpSender);
+        emitter = new EventEmitter();
+    	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
-    	recipient = new Identity("Bernd", null, qpkpRecipient);
+    	recipient = new Identity("Bob", null, new QblECKeyPair());
     	recipient.addDrop(new DropURL(cUrl));
 
-    	recipientContact = new Contact(sender, recipient.getDropUrls(), qpkpRecipient.getQblPrimaryPublicKey());
-    	senderContact = new Contact(recipient, sender.getDropUrls(), qpkpSender.getQblPrimaryPublicKey());
+    	recipientContact = new Contact(this.sender, this.recipient.getDropUrls(), recipient.getEcPublicKey());
+    	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
-    	identities.add(sender);
-    	identities.add(recipient);
+    	identities.add(this.sender);
+    	identities.add(this.recipient);
 
     	contacts = new Contacts();
     	contacts.add(senderContact);
     	contacts.add(recipientContact);
-        emitter = new EventEmitter();
 
         DropServers servers = new DropServers();
 
@@ -65,7 +59,7 @@ public class DropActorTest {
         servers.add(cDropServer);
 
         controller = new DropCommunicatorUtil<TestMessage>(emitter);
-        controller.start(contacts, servers);
+        controller.start(contacts, identities, servers);
     }
 
     @After
@@ -76,10 +70,12 @@ public class DropActorTest {
     @Test
     public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
+
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
 
         HashSet<Contact> recipients = new HashSet<Contact>();
         recipients.add(recipientContact);
+
         DropActor.send(emitter, dm, new HashSet<>(contacts.getContacts()));
 
         retrieveTest();
@@ -105,7 +101,7 @@ public class DropActorTest {
     }
 
     public void retrieveTest() throws MalformedURLException, QblDropInvalidURL, InterruptedException {
-        DropMessage<?> dm = controller.retrieve();
-		 Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
+		DropMessage<?> dm = controller.retrieve();
+		Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
     }
 }

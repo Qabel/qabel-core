@@ -1,11 +1,11 @@
 package de.qabel.core.drop;
 
+import de.qabel.core.crypto.QblECKeyPair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.qabel.core.config.Identity;
-import de.qabel.core.crypto.QblKeyFactory;
 
 public class AcknowledgeIdGenerationTest {
 	private class DummyMessage extends ModelObject {
@@ -16,7 +16,7 @@ public class AcknowledgeIdGenerationTest {
 
 	@Before
 	public void setup() {
-		sender = new Identity("Bernd", null, QblKeyFactory.getInstance().generateQblPrimaryKeyPair());
+		sender = new Identity("Bernd", null, new QblECKeyPair());
 	}
 
 	@Test

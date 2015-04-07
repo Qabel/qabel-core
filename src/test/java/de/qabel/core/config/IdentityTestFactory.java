@@ -2,7 +2,7 @@ package de.qabel.core.config;
 
 import org.meanbean.lang.Factory;
 
-import de.qabel.core.crypto.QblPrimaryKeyPairTestFactory;
+import de.qabel.core.crypto.QblEcPairTestFactory;
 
 /**
  * IdentityTestFactory
@@ -11,11 +11,11 @@ import de.qabel.core.crypto.QblPrimaryKeyPairTestFactory;
  */
 class IdentityTestFactory implements Factory<Identity> {
 	DropUrlListTestFactory urlListFactory;
-	QblPrimaryKeyPairTestFactory qpkpFactory;
+	QblEcPairTestFactory qpkpFactory;
 
 	IdentityTestFactory() {
 		urlListFactory = new DropUrlListTestFactory();
-		qpkpFactory = new QblPrimaryKeyPairTestFactory();
+		qpkpFactory = new QblEcPairTestFactory();
 	}
 
 	@Override

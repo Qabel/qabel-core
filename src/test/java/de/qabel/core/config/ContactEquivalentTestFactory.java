@@ -2,10 +2,9 @@ package de.qabel.core.config;
 
 import java.util.Date;
 
+import de.qabel.core.crypto.QblECKeyPair;
+import de.qabel.core.crypto.QblECPublicKey;
 import org.meanbean.lang.EquivalentFactory;
-
-import de.qabel.core.crypto.QblPrimaryPublicKey;
-import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
 
 /**
  * ContactEquivalentTestFactory
@@ -13,18 +12,18 @@ import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
  * Attention: For testing purposes only
  */
 class ContactEquivalentTestFactory implements EquivalentFactory<Contact> {
-	QblPrimaryPublicKey qppk;
+	QblECPublicKey ecPublicKey;
 	Identity identity;
 	long created = new Date().getTime();
 
 	ContactEquivalentTestFactory() {
-		qppk = new QblPrimaryPublicKeyTestFactory().create();
+		ecPublicKey = new QblECKeyPair().getPub();
 		identity = new IdentityEquivalentTestFactory().create();
 	}
 
 	@Override
 	public Contact create() {
-		Contact c = new Contact(identity, null, qppk);
+		Contact c = new Contact(identity, null, ecPublicKey);
 		c.setCreated(created);
 		return c;
 	}

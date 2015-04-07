@@ -1,12 +1,8 @@
 package de.qabel.core;
 
-import de.qabel.ackack.MessageInfo;
-import de.qabel.ackack.event.EventActor;
 import de.qabel.ackack.event.EventEmitter;
-import de.qabel.ackack.event.EventListener;
 import de.qabel.core.config.*;
-import de.qabel.core.crypto.QblKeyFactory;
-import de.qabel.core.crypto.QblPrimaryKeyPair;
+import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
@@ -24,34 +20,29 @@ import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class MultiPartCryptoTest {
 
-	private EventEmitter emitter;
-	private Thread dropThread;
-	private EventActor receiveActor;
-	private Thread receiverThread;
+    private EventEmitter emitter;
+    private Contacts contacts;
+    private Identities identities;
+    private DropServers servers;
 
-	static class TestObject extends ModelObject {
-		public TestObject() {
-		}
+    static class TestObject extends ModelObject {
+        public TestObject() { }
+        private String str;
 
-		private String str;
+        public String getStr() {
+            return str;
+        }
 
-		public String getStr() {
-			return str;
-		}
-
-		public void setStr(String str) {
-			this.str = str;
-		}
-	}
+        public void setStr(String str) {
+            this.str = str;
+        }
+    }
 
 	static class UnwantedTestObject extends ModelObject {
-		public UnwantedTestObject() {
-		}
-
+		public UnwantedTestObject() { }
 		private String str;
 
 		public String getStr() {
@@ -63,152 +54,118 @@ public class MultiPartCryptoTest {
 		}
 	}
 
-	private DropActor dropController;
-	private Identity alice;
-	LinkedBlockingQueue<DropMessage<TestObject>> mQueue = new LinkedBlockingQueue<>();
+    private DropCommunicatorUtil dropController;
+    private Identity alice;
 
-	@Before
-	public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
-		emitter = new EventEmitter();
-		dropController = new DropActor(emitter);
+    @Before
+    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
+        emitter = new EventEmitter();
+        dropController = new DropCommunicatorUtil(emitter);
 
-		receiveActor = new EventActor(emitter);
-		receiveActor.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, new EventListener() {
-			@Override
-			public void onEvent(String event, MessageInfo info, Object... data) {
-				DropMessage<?> dm = (DropMessage<?>) data[0];
-				if (!(dm.getData() instanceof TestObject))
-					return;
-				if (DropActor.EVENT_DROP_MESSAGE_RECEIVED.equals(event)) {
-					try {
-						mQueue.put((DropMessage<TestObject>) data[0]);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		});
+        loadContactsAndIdentities();
+        loadDropServers();
+        dropController.start(contacts, identities, servers);
+    }
 
-		dropThread = new Thread(dropController, "drop");
-		receiverThread = new Thread(receiveActor, "receiver");
+    @After
+    public void tearDown() throws InterruptedException {
+        dropController.stop();
+    }
 
-		loadContacts();
-		loadDropServers();
-		dropThread.start();
-		receiverThread.start();
-		Thread.sleep(1000);
-	}
 
-	@After
-	public void tearDown() throws InterruptedException {
-		dropController.stop();
-		receiveActor.stop();
-		dropThread.join();
-		receiverThread.join();
-	}
+    @Test
+    public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
-	@Test
-	public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-
-		this.sendMessage();
+        this.sendMessage();
 		this.sendUnwantedMessage();
 
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-		assertTrue(mQueue.size() >= 1);
+        DropMessage<TestObject> msg = dropController.retrieve();
 
-		DropMessage<TestObject> msg = mQueue.take();
+        assertEquals("Test", msg.getData().getStr());
+    }
 
-		assertEquals("Test", msg.getData().getStr());
-	}
-
-	@Test
-	public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
+    @Test
+    public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 
 		this.sendUnwantedMessage();
-		this.sendMessage();
-		this.sendMessage();
-		this.sendMessage();
+        this.sendMessage();
+        this.sendMessage();
+        this.sendMessage();
 		this.sendUnwantedMessage();
-		this.sendMessage();
+        this.sendMessage();
 
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-		assertTrue("Should contain for or more. contains" + mQueue.size(), mQueue.size() >= 4);
+        DropMessage<TestObject> msg = dropController.retrieve();
+        assertEquals("Test", msg.getData().getStr());
+        msg = dropController.retrieve();
+        assertEquals("Test", msg.getData().getStr());
+        msg = dropController.retrieve();
+        assertEquals("Test", msg.getData().getStr());
+        msg = dropController.retrieve();
+        assertEquals("Test", msg.getData().getStr());
+    }
 
-		DropMessage<TestObject> msg = mQueue.take();
-		assertEquals("Test", msg.getData().getStr());
-		msg = mQueue.take();
-		assertEquals("Test", msg.getData().getStr());
-		msg = mQueue.take();
-		assertEquals("Test", msg.getData().getStr());
-		msg = mQueue.take();
-		assertEquals("Test", msg.getData().getStr());
-	}
+    private void loadContactsAndIdentities() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
+        QblECKeyPair alicesKey = new QblECKeyPair();
+        Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
+        alicesDrops.add(
+                new DropURL(
+                        "http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alice = new Identity("Alice", alicesDrops, alicesKey);
 
-	private void loadContacts() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
-		QblPrimaryKeyPair alicesKey =
-				QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-		Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
-		alicesDrops.add(
-				new DropURL(
-						"http://localhost:6000/12345678901234567890123456789012345678alice"));
-		alice = new Identity("Alice", alicesDrops, alicesKey);
+        QblECKeyPair bobsKey = new QblECKeyPair();
+        Identity bob = new Identity("Bob", new ArrayList<DropURL>(), bobsKey);
+        bob.addDrop(new DropURL(
+        		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-		QblPrimaryKeyPair bobsKey =
-				QblKeyFactory.getInstance().generateQblPrimaryKeyPair();
-		Identity bob = new Identity("Bob", new ArrayList<DropURL>(), bobsKey);
-		bob.addDrop(new DropURL(
-				"http://localhost:6000/1234567890123456789012345678901234567890bob"));
+		Contact alicesContact = new Contact(alice, null, bobsKey.getPub());
+        alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-		Contact alicesContact = new Contact(alice, null, bobsKey.getQblPrimaryPublicKey());
-		alicesContact.addEncryptionPublicKey(bobsKey.getQblEncPublicKeys().get(0));
-		alicesContact.addSignaturePublicKey(bobsKey.getQblSignPublicKeys().get(0));
-		alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        Contact bobsContact = new Contact(bob, null, alicesKey.getPub());
+        alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
-		Contact bobsContact = new Contact(bob, null, alicesKey.getQblPrimaryPublicKey());
-		bobsContact.addEncryptionPublicKey(alicesKey.getQblEncPublicKeys().get(0));
-		bobsContact.addSignaturePublicKey(alicesKey.getQblSignPublicKeys().get(0));
-		alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        contacts = new Contacts();
+        contacts.add(alicesContact);
+        contacts.add(bobsContact);
 
-		Contacts contacts = new Contacts();
-		contacts.add(alicesContact);
-		contacts.add(bobsContact);
+        identities = new Identities();
+		identities.add(alice);
+		identities.add(bob);
+    }
 
-		dropController.setContacts(contacts);
-	}
+    private void loadDropServers() throws MalformedURLException {
+        servers = new DropServers();
 
-	private void loadDropServers() throws MalformedURLException {
-		DropServers servers = new DropServers();
+        DropServer alicesServer = new DropServer();
+        alicesServer.setUrl(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
-		DropServer alicesServer = new DropServer();
-		alicesServer.setUrl(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        DropServer bobsServer = new DropServer();
+        bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-		DropServer bobsServer = new DropServer();
-		bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        servers.add(alicesServer);
+        servers.add(bobsServer);
 
-		servers.add(alicesServer);
-		servers.add(bobsServer);
+    }
 
-		dropController.setDropServers(servers);
-	}
+    private void sendMessage() throws QblDropPayloadSizeException {
+        TestObject data = new TestObject();
+        data.setStr("Test");
+        DropMessage<TestObject> dm = new DropMessage<TestObject>(alice, data);
 
-	private void sendMessage() throws QblDropPayloadSizeException {
-		TestObject data = new TestObject();
-		data.setStr("Test");
-		DropMessage<TestObject> dm = new DropMessage<TestObject>(alice, data);
-
-		// Send hello world to all contacts.
-		DropActor.send(emitter, dm, new HashSet<>(dropController.getContacts().getContacts()));
-	}
+        // Send hello world to all contacts.
+        DropActor.send(emitter, dm, new HashSet(contacts.getContacts()));
+    }
 
 	private void sendUnwantedMessage() throws QblDropPayloadSizeException {
 		UnwantedTestObject data = new UnwantedTestObject();
@@ -216,6 +173,6 @@ public class MultiPartCryptoTest {
 		DropMessage<UnwantedTestObject> dm = new DropMessage<UnwantedTestObject>(alice, data);
 
 		// Send an unknown drop message to all contacts.
-		DropActor.send(emitter, dm, new HashSet<>(dropController.getContacts().getContacts()));
+        DropActor.send(emitter, dm, new HashSet(contacts.getContacts()));
 	}
 }

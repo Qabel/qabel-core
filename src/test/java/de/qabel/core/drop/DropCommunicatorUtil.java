@@ -6,6 +6,7 @@ import de.qabel.ackack.event.EventEmitter;
 import de.qabel.ackack.event.EventListener;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServers;
+import de.qabel.core.config.Identities;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -21,11 +22,11 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 	private Thread actorThread;
 	private Thread dropActorThread;
 
-	DropCommunicatorUtil(EventEmitter emitter) {
+	public DropCommunicatorUtil(EventEmitter emitter) {
 		this.emitter = emitter;
 	}
 
-	public void start(Contacts contacts, DropServers dropServers) throws InterruptedException {
+	public void start(Contacts contacts, Identities identities, DropServers dropServers) throws InterruptedException {
 		this.actor = new EventActor(emitter);
 		this.actor.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, new EventListener() {
 			@Override
@@ -40,6 +41,7 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 		this.dropActor = new DropActor(emitter);
 		this.dropActor.setContacts(contacts);
 		this.dropActor.setDropServers(dropServers);
+		this.dropActor.setIdentities(identities);
 		this.actorThread = new Thread(actor, "actor");
 		this.dropActorThread = new Thread(dropActor, "dropActor");
 		this.dropActor.setInterval(500);

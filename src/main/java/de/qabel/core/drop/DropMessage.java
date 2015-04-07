@@ -60,7 +60,7 @@ public class DropMessage<T extends ModelObject> implements Serializable {
         return sender;
     }
 
-    String getSenderKeyId() {
+    public String getSenderKeyId() {
     	return senderKeyId;
     }
 
