@@ -9,9 +9,6 @@ import java.util.*;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact extends Entity {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 3971315594579958553L;
 	/**
 	 * Primary public key of the contact

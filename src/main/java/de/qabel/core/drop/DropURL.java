@@ -16,9 +16,6 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
  * Class DropURL represents a URL fully identifying a drop.
  */
 public class DropURL implements Serializable {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 8103657475203731210L;
 
 	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());

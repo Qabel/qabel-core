@@ -14,9 +14,6 @@ import java.util.Set;
  * @see Entity
  */
 abstract public class EntityMap<T extends Entity> implements Serializable {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -8004819460313825206L;
 	private final Map<String, T> entities = new HashMap<>();
 

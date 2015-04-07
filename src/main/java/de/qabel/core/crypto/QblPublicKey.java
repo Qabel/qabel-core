@@ -12,9 +12,6 @@ import javax.xml.bind.DatatypeConverter;
  *
  */
 abstract class QblPublicKey implements Serializable {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -4628010517988146094L;
 	private RSAPublicKey publicKey;
 	private byte[] publicKeyFingerprint;

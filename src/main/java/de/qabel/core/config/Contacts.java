@@ -7,9 +7,6 @@ import java.util.Set;
  */
 
 public class Contacts extends EntityMap<Contact> {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 797772892917209247L;
 
 	/**
