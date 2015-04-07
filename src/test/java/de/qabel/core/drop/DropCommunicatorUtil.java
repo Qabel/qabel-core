@@ -7,6 +7,7 @@ import de.qabel.ackack.event.EventListener;
 import de.qabel.core.config.Contacts;
 import de.qabel.core.config.DropServers;
 import de.qabel.core.config.Identities;
+import de.qabel.core.module.Module;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -21,9 +22,13 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 	private DropActor dropActor;
 	private Thread actorThread;
 	private Thread dropActorThread;
-
+	Class<?> cls;
 	public DropCommunicatorUtil(EventEmitter emitter) {
 		this.emitter = emitter;
+	}
+
+	public void setCls(Class<?> cls) {
+		this.cls = cls;
 	}
 
 	public void start(Contacts contacts, Identities identities, DropServers dropServers) throws InterruptedException {
@@ -32,7 +37,9 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 			@Override
 			public void onEvent(String event, MessageInfo info, Object... data) {
 				try {
-					inputqueue.put((DropMessage<T>) data[0]);
+					DropMessage<T> dropMessage = (DropMessage<T>) data[0];
+					if(dropMessage.getClass() == cls || cls == null)
+						inputqueue.put(dropMessage);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

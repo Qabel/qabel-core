@@ -11,7 +11,6 @@ import org.junit.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
-import java.util.Collection;
 import java.util.HashSet;
 
 public class DropActorTest {

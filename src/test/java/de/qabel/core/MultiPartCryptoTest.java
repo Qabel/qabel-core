@@ -79,6 +79,8 @@ public class MultiPartCryptoTest {
         this.sendMessage();
 		this.sendUnwantedMessage();
 
+        dropController.setCls(TestObject.class);
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
@@ -105,6 +107,8 @@ public class MultiPartCryptoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        dropController.setCls(TestObject.class);
 
         DropMessage<TestObject> msg = dropController.retrieve();
         assertEquals("Test", msg.getData().getStr());
