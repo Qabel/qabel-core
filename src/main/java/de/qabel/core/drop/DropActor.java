@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
+	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
 
 	public static final String EVENT_DROP_MESSAGE_RECEIVED = "dropMessageReceived";
 	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";
@@ -32,9 +33,11 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	GsonBuilder gb;
 	Gson gson;
 	ReceiverThread receiver;
-	private long interval = 1000;
+	private long interval = 1000L;
 
 	public void setInterval(long interval) {
+		if(interval < 0)
+			throw new IllegalArgumentException("interval must be greater equal 0");
 		this.interval = interval;
 	}
 
@@ -171,8 +174,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		this.mContacts = mContacts;
 	}
 
-
-	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
 
 	/**
 	 * Sends the message and waits for acknowledgement.
