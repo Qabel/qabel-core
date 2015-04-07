@@ -132,7 +132,7 @@ public abstract class AbstractBinaryDropMessage {
 
 		if (!dropMessage.getSenderKeyId().equals(decryptedPlaintext.getSenderKey().getReadableKeyIdentifier())){
 			logger.info("Spoofing of sender information detected."
-					+ " Expected: " + dropMessage.getSender().getKeyIdentifier()
+					+ " Expected: " + dropMessage.getSenderKeyId()
 					+ " Actual: " + decryptedPlaintext.getSenderKey().getReadableKeyIdentifier());
 			throw new QblSpoofedSenderException();
 		}
