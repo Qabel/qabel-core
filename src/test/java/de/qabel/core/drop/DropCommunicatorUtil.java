@@ -12,9 +12,6 @@ import de.qabel.core.module.Module;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by tox on 3/29/15.
- */
 public class DropCommunicatorUtil <T extends ModelObject> {
 	private final EventEmitter emitter;
 	LinkedBlockingQueue<DropMessage<T>> inputqueue = new LinkedBlockingQueue<>();
