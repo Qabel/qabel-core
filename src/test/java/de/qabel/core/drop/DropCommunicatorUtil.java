@@ -38,7 +38,7 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 			public void onEvent(String event, MessageInfo info, Object... data) {
 				try {
 					DropMessage<T> dropMessage = (DropMessage<T>) data[0];
-					if(dropMessage.getClass() == cls || cls == null)
+					if(cls == null || dropMessage.getData().getClass().isAssignableFrom(cls))
 						inputqueue.put(dropMessage);
 				} catch (InterruptedException e) {
 					e.printStackTrace();

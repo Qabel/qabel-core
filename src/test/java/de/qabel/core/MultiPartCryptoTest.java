@@ -75,11 +75,11 @@ public class MultiPartCryptoTest {
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
+        dropController.setCls(TestObject.class);
 
         this.sendMessage();
 		this.sendUnwantedMessage();
 
-        dropController.setCls(TestObject.class);
 
         try {
             Thread.sleep(2000);
@@ -94,6 +94,7 @@ public class MultiPartCryptoTest {
 
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
+        dropController.setCls(TestObject.class);
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -108,7 +109,6 @@ public class MultiPartCryptoTest {
             e.printStackTrace();
         }
 
-        dropController.setCls(TestObject.class);
 
         DropMessage<TestObject> msg = dropController.retrieve();
         assertEquals("Test", msg.getData().getStr());
