@@ -65,6 +65,7 @@ Regarding the look and feel most -- but not all -- of this is reflected by the E
 * Use tabs instead of spaces.
 * Try to fit your code into **80** characters but do not wrap your line of code just for the sake of wrapping it. Use **120** in your auto format settings.
 * Statements like ```if``` always with ```{ }```. Do not just write ```if (foo) bar;```
+* Our code does not need to be compatible to versions below Java 7. That means you can and should use Java 7 features and syntax.
 
 Be consistent. The code should look the same regardless who wrote the code. Look into the code if you are unsure about how to do something.
 Example:

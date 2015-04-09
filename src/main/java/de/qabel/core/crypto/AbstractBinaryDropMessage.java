@@ -2,6 +2,8 @@ package de.qabel.core.crypto;
 
 import java.util.Arrays;
 
+import de.qabel.core.config.Identity;
+import de.qabel.core.exceptions.QblSpoofedSenderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -104,38 +106,37 @@ public abstract class AbstractBinaryDropMessage {
 	 */
 	abstract public byte[] assembleMessageFor(Contact recipient);
 
-	abstract byte[] disassembleRawMessageFrom(Contact sender);
+	abstract DecryptedPlaintext disassembleRawMessage(Identity identity);
 
 	/**
 	 * Disassemble binary transport message assuming it sent by the given
 	 * sender.
 	 * 
-	 * @param sender Assumed sender.
+	 * @param identity Identity to decrypt message with.
 	 * @return Disassembled drop message or null if either the sender assumption
-	 *         was wrong or the message verification faild.
+	 *         was wrong or the message verification failed.
 	 */
-	public DropMessage<?> disassembleMessageFrom(Contact sender) {
-		byte[] rawPlainText = disassembleRawMessageFrom(sender);
-		if (rawPlainText == null) {
-			// tried wrong sender
+	public DropMessage<?> disassembleMessage(Identity identity) throws QblSpoofedSenderException {
+		DecryptedPlaintext decryptedPlaintext = disassembleRawMessage(identity);
+		if (decryptedPlaintext == null){
 			return null;
 		}
+
 		DropMessage<?> dropMessage = deserialize(new String(
-				discardPaddingBytes(rawPlainText)));
+				discardPaddingBytes(decryptedPlaintext.getPlaintext())));
 		if (dropMessage == null) {
 			logger.debug("Message could not be deserialized. Msg: "
-					+ new String(rawPlainText));
+					+ new String(decryptedPlaintext.getPlaintext()));
 			return null;
 		}
-		// spoofing detection currently not supported
-		// if (dropMessage.getSender() != new
-		// String(sender.getSignPublicKeys().get(0).getPublicKeyFingerprint()))
-		// {
-		// // invalid sender claim
-		// logger.info("Drop message contained spoofed sender field.");
-		// return null;
-		// }
+
+		if (!dropMessage.getSenderKeyId().equals(decryptedPlaintext.getSenderKey().getReadableKeyIdentifier())){
+			logger.info("Spoofing of sender information detected."
+					+ " Expected: " + dropMessage.getSenderKeyId()
+					+ " Actual: " + decryptedPlaintext.getSenderKey().getReadableKeyIdentifier());
+			throw new QblSpoofedSenderException();
+		}
+
 		return dropMessage;
 	}
-
 }

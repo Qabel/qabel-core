@@ -6,165 +6,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import javax.crypto.BadPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import de.qabel.core.crypto.CryptoUtils;
 
 public class CryptoUtilsTest {
 	
 	private final static String SYMM_KEY_ALGORITHM = "AES";
 
 	final CryptoUtils cu = new CryptoUtils();
-	final QblPrimaryKeyPair qpkp = new QblPrimaryKeyPair();
-	final QblPrimaryKeyPair qpkp2 = new QblPrimaryKeyPair();
-	final String jsonTestString = "{\"version\":1,\"time\":100,\"sender\":20,\"model\":\"de.example.qabel.MailMessage\",\"data\":\"{\"sender\":\"a@a.com\",\"content\":\"hello world\",\"recipient\":\"b@b.com\"}\"}";
 	String testFileName = "src/test/java/de/qabel/core/crypto/testFile";
 
 	@Rule
 	public ExpectedException exception = ExpectedException.none();
-
-	@Test
-	public void sha512Test() {
-		String str = "The quick brown fox jumps over the lazy dog";
-		String digest = cu.getSHA512sumHumanReadable(str);
-		String expectedDigest = "07:e5:47:d9:58:6f:6a:73:f7:3f:ba:c0:43:5e:d7:69:51:21:8f:b7:d0:c8:d7:88:a3:09:d7:85:43:6b:bb:64:2e:93:a2:52:a9:54:f2:39:12:54:7d:1e:8a:3b:5e:d6:e1:bf:d7:09:78:21:23:3f:a0:53:8f:3d:b8:54:fe:e6";
-
-		assertEquals(digest, expectedDigest);
-	}
-
-	@Test
-	public void encryptHybridTest() throws BadPaddingException, InvalidKeyException {
-		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
-
-		assertEquals(
-				cu.decryptHybridAndValidateSignature(cipherText, qpkp, qpkp.getQblSignPublicKeys().get(0)),
-				jsonTestString);
-
-	}
-
-	@Test
-	public void encryptHybridTestInvalidSignature() throws InvalidKeyException {
-		byte[] cipherText = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
-
-		assertNull(cu.decryptHybridAndValidateSignature(cipherText, qpkp,
-				qpkp2.getQblSignPublicKeys().get(0)));
-	}
-
-	@Test
-	public void decryptHybridWithWrongKeyTest() throws BadPaddingException, InvalidKeyException {
-		// exception.expect(BadPaddingException.class);
-
-		byte[] ciphertext = cu.encryptHybridAndSign(jsonTestString,
-				qpkp.getQblEncPublicKeys().get(0), qpkp.getSignKeyPairs().get(0));
-		assertNull(cu.decryptHybridAndValidateSignature(ciphertext, qpkp2,
-				qpkp.getQblSignPublicKeys().get(0)));
-
-	}
-
-	@Test
-	public void symmetricCryptoTest() throws UnsupportedEncodingException, InvalidKeyException {
-		// Test case from http://tools.ietf.org/html/rfc3686
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("F6D66D6BD52D59BB0796365879EFF886C66DD51A5B6A99744B50590C87A23884")
-				,SYMM_KEY_ALGORITHM);
-		byte[] nonce = Hex.decode("00FAAC24C1585EF15A43D875");
-		byte[] plainText = Hex.decode("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F");
-		byte[] cipherTextExpected = Hex.decode("F05E231B3894612C49EE000B804EB2A9B8306B508F839D6A5530831D9344AF1C");
-
-		byte[] cipherText = cu.encryptSymmetric(plainText, key, nonce);
-		byte[] plainTextTwo = cu.decryptSymmetric(cipherText, key);
-		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(cipherTextExpected),Hex.toHexString(cipherText));
-		assertEquals(Hex.toHexString(plainText), Hex.toHexString(plainTextTwo));
-	}
-	
-	@Test
-	public void calcHmacTest() throws UnsupportedEncodingException, InvalidKeyException {
-		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
-		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
-		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
-		byte[] hmacResult = cu.calcHmac(text, key);
-		assertArrayEquals(hmac, hmacResult);
-	}
-	
-	@Test
-	public void hmacValidationTest() throws InvalidKeyException {
-		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
-		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
-		byte[] hmac = Hex.decode("b0ba465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
-		boolean hmacValidation = cu.validateHmac(text, hmac, key);
-		assertEquals(hmacValidation, true);
-	}
-	
-	@Test
-	public void invalidHmacValidationTest() throws InvalidKeyException {
-		// Test case from http://www.ietf.org/rfc/rfc4231.txt
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("0102030405060708090a0b0c0d0e0f10111213141516171819"), SYMM_KEY_ALGORITHM);
-		byte[] text = Hex.decode("cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd");
-		byte[] wrongHmac = Hex.decode("a1aa465637458c6990e5a8c5f61d4af7e576d97ff94b872de76f8050361ee3dba91ca5c11aa25eb4d679275cc5788063a5f19741120c4f2de2adebeb10a298dd");
-		boolean wrongHmacValidaition = cu.validateHmac(text, wrongHmac, key);
-		assertEquals(wrongHmacValidaition, false);
-	}
-
-	@Test
-	public void autheticatedSymmetricCryptoTest() throws UnsupportedEncodingException, InvalidKeyException {
-		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
-		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
-		byte[] plainText = Hex.decode("d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b391aafd255");
-		byte[] cipherTextExpected = Hex.decode("522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad");
-		byte[] authenticationTagExpected = Hex.decode("b094dac5d93471bdec1a502270e3cc6c");
-		
-		byte[] cipherText = cu.encryptAuthenticatedSymmetric(plainText, key, nonce);
-		byte[] plainTextTwo = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
-		assertEquals(Hex.toHexString(nonce) + Hex.toHexString(cipherTextExpected) + Hex.toHexString(authenticationTagExpected), Hex.toHexString(cipherText));
-		assertEquals(Hex.toHexString(plainText), Hex.toHexString(plainTextTwo));
-	}
-	
-	@Test
-	public void invalidAutheticatedSymmetricCryptoTest() throws UnsupportedEncodingException, InvalidKeyException {
-		// Test case from http://csrc.nist.gov/groups/ST/toolkit/BCM/documents/proposedmodes/gcm/gcm-spec.pdf
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
-		String nonce = "cafebabefacedbaddecaf888";
-		String encryptedPlainText = "522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662898015ad";
-		String ivalidAuthenticationTag = "a194dac5d93471bdec1a502270e3cc6c";
-		byte[] cipherText = Hex.decode(nonce + encryptedPlainText + ivalidAuthenticationTag);
-		
-		byte[] plainText = cu.decryptAuthenticatedSymmetricAndValidateTag(cipherText, key);
-		assertEquals(plainText, null);
-	}
-
-	@Test
-	public void fileEncryptionTest() throws IOException, InvalidKeyException {
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
-		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
-		File testFile = new File(testFileName);
-		File testFileEnc = new File(testFileName + ".enc");
-		
-		cu.encryptFileAuthenticatedSymmetric(testFile, new FileOutputStream(testFileEnc), key, nonce);
-
-		try {
-			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName + ".enc"))),
-					Hex.toHexString(cu.encryptAuthenticatedSymmetric(
-							Files.readAllBytes(Paths.get(testFileName)), key, nonce)));
-		} finally {
-			// tidy-up
-			testFileEnc.delete();
-		}
-	}
 
 	@Test
 	public void fileDecryptionTest() throws IOException, InvalidKeyException {
@@ -187,5 +48,104 @@ public class CryptoUtilsTest {
 			testFileEnc.delete();
 			testFileDec.delete();
 		}
+	}
+
+	/**
+	 * Test data from "Cryptography in NaCl" paper (http://cr.yp.to/highspeed/naclcrypto-20090310.pdf)
+	 */
+	@Test
+	public void ecPointConstructionTest() {
+		byte[] randomDataForPrivateKey = Hex.decode("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a");
+		byte[] expectedPublicKey = Hex.decode("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a");
+
+		QblECKeyPair testKey = new QblECKeyPair(randomDataForPrivateKey);
+		assertArrayEquals(expectedPublicKey, testKey.getPub().getKey());
+	}
+
+	/**
+	 * Test data from "Cryptography in NaCl" paper (http://cr.yp.to/highspeed/naclcrypto-20090310.pdf)
+	 */
+	@Test
+	public void dhKeyAgreementTestNaClVector() {
+		QblECKeyPair aliceKey = new QblECKeyPair(Hex.decode("77076d0a7318a57d3c16c17251b26645df4c2f87ebc0992ab177fba51db92c2a"));
+		QblECKeyPair bobKey = new QblECKeyPair(Hex.decode("5dab087e624a8a4b79e17f8b83800ee66f3bb1292618b6fd1c2f8b27ff88e0eb"));
+		byte[] expectedSharedSecret = Hex.decode("4a5d9d5ba4ce2de1728e3bf480350f25e07e21c947d19e3376f09b3c1e161742");
+		byte[] sharedSecAlice = aliceKey.ECDH(bobKey.getPub());
+		byte[] sharedSecBob = bobKey.ECDH(aliceKey.getPub());
+
+		assertArrayEquals(expectedSharedSecret, sharedSecAlice);
+		assertArrayEquals(expectedSharedSecret, sharedSecBob);
+	}
+
+	@Test
+	public void dhKeyAgreementTest() {
+		QblECKeyPair aliceKey = new QblECKeyPair(Hex.decode("5AC99F33632E5A768DE7E81BF854C27C46E3FBF2ABBACD29EC4AFF517369C660"));
+		QblECKeyPair bobKey = new QblECKeyPair(Hex.decode("47DC3D214174820E1154B49BC6CDB2ABD45EE95817055D255AA35831B70D3260"));
+		byte[] sharedSecAlice = aliceKey.ECDH(bobKey.getPub());
+		byte[] sharedSecBob = bobKey.ECDH(aliceKey.getPub());
+
+		assertArrayEquals(sharedSecAlice, sharedSecBob);
+	}
+
+	@Test
+	public void dhKeyAgreementTestRandomKeys() {
+		QblECKeyPair aliceKey = new QblECKeyPair();
+		QblECKeyPair bobKey = new QblECKeyPair();
+		byte[] sharedSecAlice = aliceKey.ECDH(bobKey.getPub());
+		byte[] sharedSecBob = bobKey.ECDH(aliceKey.getPub());
+
+		assertArrayEquals(sharedSecAlice, sharedSecBob);
+	}
+
+	@Test
+	public void noiseTest() throws InvalidKeyException, InvalidCipherTextException {
+		CryptoUtils cu = new CryptoUtils();
+		QblECKeyPair aliceKey = new QblECKeyPair();
+		QblECKeyPair bobKey = new QblECKeyPair();
+		byte[] ciphertext = cu.createBox(aliceKey, bobKey.getPub(), "n0i$e".getBytes(), 0);
+		DecryptedPlaintext plaintext = cu.readBox(bobKey, ciphertext);
+		assertEquals("n0i$e", new String(plaintext.getPlaintext()));
+	}
+
+	@Test
+	public void noiseTestWithNullData() throws InvalidKeyException, InvalidCipherTextException {
+		CryptoUtils cu = new CryptoUtils();
+		QblECKeyPair aliceKey = new QblECKeyPair();
+		QblECKeyPair bobKey = new QblECKeyPair();
+		byte[] ciphertext = cu.createBox(aliceKey, bobKey.getPub(), null, 0);
+		DecryptedPlaintext plaintext = cu.readBox(bobKey, ciphertext);
+		assertEquals("", new String(plaintext.getPlaintext()));
+	}
+
+	@Test
+	public void noiseTestNegativePadLength() throws InvalidKeyException, InvalidCipherTextException {
+		CryptoUtils cu = new CryptoUtils();
+		QblECKeyPair aliceKey = new QblECKeyPair();
+		QblECKeyPair bobKey = new QblECKeyPair();
+		byte[] ciphertext = cu.createBox(aliceKey, bobKey.getPub(), "n0i$e".getBytes(), -1);
+		DecryptedPlaintext plaintext = cu.readBox(bobKey, ciphertext);
+		assertEquals("n0i$e", new String(plaintext.getPlaintext()));
+	}
+
+	@Test
+	public void noiseBoxFromGoImplementation() throws InvalidCipherTextException, InvalidKeyException {
+		CryptoUtils cu = new CryptoUtils();
+		String expectedPlainText = "yellow submarines";
+		byte[] box = Hex.decode("539edb6df8541fb8e56c97c6a8cd061fe1c6c874a374d8501f8a285ed5ec092244178f74e77071918e3f2c3e3d2a256916c33a85f409844bbd1b749719b2f2e71e210f763928d856479e7078cb0413e1e25f3e6685caaee9d10b2a0756d7c1769ccad1ee13bcbaf1186cec727a94b01e2be042da07");
+		byte[] bobKey = Hex.decode("782e3b1ea317f7f808e1156d1282b4e7d0e60e4b7c0f205a5ce804f0a1a3a155");
+		QblECKeyPair qblBobKey = new QblECKeyPair(bobKey);
+		DecryptedPlaintext plaintext = cu.readBox(qblBobKey, box);
+		assertEquals(expectedPlainText, new String(plaintext.getPlaintext()));
+	}
+
+	@Test
+	public void noiseBoxFromGoImplementationWithPadding() throws InvalidCipherTextException, InvalidKeyException {
+		CryptoUtils cu = new CryptoUtils();
+		String expectedPlainText = "orange submarine";
+		byte[] box = Hex.decode("a63794c4f7033b9c769023f28c12390a7b89296452a4695e35a952625839ae2d9d19715ba2130a6ae49aaf0ea5ab3eacededbb7676724618abb1fe648328086ed253a75d9672540c319114c4891cc6a1356ae7a8f3c9866c704b145efaa0313c9e52f609a4f6c41070ad4741c3ef637e7b7e0a7a7b03a0261607a9");
+		byte[] bobKey = Hex.decode("a0c2b2bcb68bbe50b01181bfbcbff28ee00f37e44103d3a591dbae6cd5fb9f6a");
+		QblECKeyPair qblBobKey = new QblECKeyPair(bobKey);
+		DecryptedPlaintext plaintext = cu.readBox(qblBobKey, box);
+		assertEquals(expectedPlainText, new String(plaintext.getPlaintext()));
 	}
 }

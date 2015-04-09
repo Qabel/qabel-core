@@ -2,7 +2,7 @@ package de.qabel.core.config;
 
 import org.meanbean.lang.Factory;
 
-import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
+import de.qabel.core.crypto.QblECPublicKeyTestFactory;
 
 /**
  * ContactTestFactory
@@ -11,11 +11,11 @@ import de.qabel.core.crypto.QblPrimaryPublicKeyTestFactory;
  */
 class ContactTestFactory implements Factory<Contact>{
 	IdentityTestFactory idFactory;
-	QblPrimaryPublicKeyTestFactory qppkFactory;
+	QblECPublicKeyTestFactory qppkFactory;
 
 	ContactTestFactory() {
 		idFactory = new IdentityTestFactory();
-		qppkFactory = new QblPrimaryPublicKeyTestFactory();
+		qppkFactory = new QblECPublicKeyTestFactory();
 	}
 
 	@Override

@@ -1,11 +1,12 @@
 package de.qabel.core.drop;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
 import de.qabel.core.config.Entity;
 
-public class DropMessage<T extends ModelObject>{
+public class DropMessage<T extends ModelObject> implements Serializable {
 	/**
 	 * Acknowledge ID indicating that the sender does not
 	 * wish to receive an acknowledgement.
@@ -15,10 +16,10 @@ public class DropMessage<T extends ModelObject>{
 	 * Model object reserved for internal drop protocol purposes only.
 	 */
 	public static final String INTERNAL_MODEL_OBJECT = "drop";
-	
+
 	private static final int VERSION = 1;
 
-	
+
     private Date created;
     private String acknowledgeId;
     private Entity sender;
@@ -59,7 +60,7 @@ public class DropMessage<T extends ModelObject>{
         return sender;
     }
 
-    String getSenderKeyId() {
+    public String getSenderKeyId() {
     	return senderKeyId;
     }
 

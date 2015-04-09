@@ -2,6 +2,7 @@ package de.qabel.core.module;
 
 import static org.junit.Assert.*;
 
+import de.qabel.core.drop.DropMessage;
 import org.junit.Test;
 
 public class ModuleManagerTest {
@@ -9,26 +10,20 @@ public class ModuleManagerTest {
 		public boolean isInit = false;
 		private boolean isRunning = false;
 
-		public TestModule() {
-			super(TestModule.class.getName());
-		}
-
 		@Override
 		public void init() {
 			isInit = true;
 		}
 
+        @Override
+        protected void onDropMessage(DropMessage<?> dm) {
+            // Empty
+        }
+
 		@Override
 		public void run() {
-			try {
-				while (!this.isInterrupted()) {
-					sleep(100);
-					setRunning(true);
-				}
-				setRunning(false);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			setRunning(true);
+			super.run();
 		}
 
 		public synchronized boolean isStarted() {
@@ -44,10 +39,10 @@ public class ModuleManagerTest {
 	public void liveCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager();
 		mm.startModule(TestModule.class);
-		TestModule module = (TestModule) mm.getModules().iterator().next();
+		TestModule module = (TestModule) mm.getModules().values().iterator().next().getModule();
 		assertTrue(module.isInit);
 		assertFalse(module.isStarted());
-		Thread.sleep(200);
+		Thread.sleep(2000);
 		assertTrue(module.isStarted());
 		mm.shutdown();
 	}
