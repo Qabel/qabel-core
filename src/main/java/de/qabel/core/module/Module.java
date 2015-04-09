@@ -65,11 +65,13 @@ public abstract class Module extends EventActor implements EventListener {
 
 	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
-		if(!event.equals(DropActor.EVENT_DROP_MESSAGE_RECEIVED))
+		if(!event.equals(DropActor.EVENT_DROP_MESSAGE_RECEIVED)) {
 			return;
+		}
 		DropMessage<?> dm = (DropMessage<?>) data[0];
-        if(modelObjects.contains(dm.getClass()))
-            onDropMessage(dm);
+        if(modelObjects.contains(dm.getClass())) {
+			onDropMessage(dm);
+		}
 	}
 
     void onDropMessage(DropMessage<?> dm) {

@@ -109,7 +109,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		emitter.emit("dropMessage", dm);
 	}
 
-
 	@Override
 	public void run() {
 		startRetriever();
@@ -199,9 +198,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * @throws QblDropPayloadSizeException
 	 */
 	private <T extends ModelObject> DropResult sendAndForget(DropMessage<T> message, Collection<Contact> contacts) throws QblDropPayloadSizeException {
-		DropResult result;
-
-		result = new DropResult();
+		DropResult result = new DropResult();
 
 		for (Contact contact : contacts) {
 			result.addContactResult(this.sendAndForget(message, contact));
@@ -235,11 +232,8 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * @throws QblDropPayloadSizeException
 	 */
 	private <T extends ModelObject> DropResultContact sendAndForget(DropMessage<T> message, Contact contact) throws QblDropPayloadSizeException {
-		DropResultContact result;
-		DropHTTP http;
-
-		result = new DropResultContact(contact);
-		http = new DropHTTP();
+		DropResultContact result = new DropResultContact(contact);
+		DropHTTP http = new DropHTTP();
 
 		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(message);
 		for (DropURL u : contact.getDropUrls()) {
@@ -322,7 +316,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		try {
 			send((DropMessage<?>) data[0], (Collection) data[1]);
 		} catch (QblDropPayloadSizeException e) {
-			e.printStackTrace();
+			logger.warn("Failed to send message", e);
 		}
 	}
 
