@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -12,7 +13,7 @@ import de.qabel.core.drop.DropURL;
  * Entity is an abstract class for a participant in a Qabel Drop
  * communication.
  */
-public abstract class Entity extends SyncSettingItem {
+public abstract class Entity extends SyncSettingItem implements Serializable {
 	private final Set<DropURL> dropUrls;
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); // TODO: Will
 

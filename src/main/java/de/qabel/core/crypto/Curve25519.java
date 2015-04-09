@@ -1,6 +1,8 @@
 package de.qabel.core.crypto;
 
-public class Curve25519 {
+import java.io.Serializable;
+
+public class Curve25519 implements Serializable {
 
 	static {
 		System.loadLibrary("curve25519");

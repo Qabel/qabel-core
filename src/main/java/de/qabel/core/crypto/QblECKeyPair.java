@@ -1,12 +1,13 @@
 package de.qabel.core.crypto;
 
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
  * Elliptic curve key pair
  */
-public class QblECKeyPair {
+public class QblECKeyPair implements Serializable {
 
 	public static final int KEY_SIZE_BYTE = 32;
 

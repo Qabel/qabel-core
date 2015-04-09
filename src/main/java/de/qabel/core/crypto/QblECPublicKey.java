@@ -2,12 +2,13 @@ package de.qabel.core.crypto;
 
 import org.bouncycastle.util.encoders.Hex;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * Elliptic curve public key
  */
-public class QblECPublicKey {
+public class QblECPublicKey implements Serializable {
 	public static final int KEY_SIZE_BYTE = 32;
 	private byte[] pubKey;
 
