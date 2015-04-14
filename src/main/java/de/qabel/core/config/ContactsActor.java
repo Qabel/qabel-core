@@ -12,8 +12,8 @@ import de.qabel.ackack.Responsible;
  *
  */
 public class ContactsActor extends Actor {
-	static ContactsActor defaultContactsActor = null;
-	Contacts contacts;
+	private static ContactsActor defaultContactsActor = null;
+	private Contacts contacts;
 
 	static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
