@@ -2,6 +2,7 @@ package de.qabel.core.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
@@ -14,10 +15,11 @@ import de.qabel.ackack.Responsible;
 public class ContactsActor extends Actor {
 	private static ContactsActor defaultContactsActor = null;
 	private Contacts contacts;
+	private Persistence persistence;
 
-	static ContactsActor getDefault() {
+	static ContactsActor getDefault(String password) {
 		if (defaultContactsActor == null) {
-			defaultContactsActor = new ContactsActor(new Contacts());
+			defaultContactsActor = new ContactsActor(password);
 		}
 		return defaultContactsActor;
 	}
@@ -26,8 +28,20 @@ public class ContactsActor extends Actor {
 	private static final String RETRIEVE_CONTACTS = "retrieveContacts";
 	private static final String REMOVE_CONTACTS = "removeContacts";
 
-	public ContactsActor (Contacts contacts) {
+	public ContactsActor (Contacts contacts, String password) {
 		this.contacts = contacts;
+		this.persistence = new SQLitePersistence(password);
+	}
+
+	public ContactsActor (String password) {
+		this.persistence = new SQLitePersistence(password);
+		this.contacts = new Contacts();
+		List a = persistence.getEntities(Contact.class);
+
+		for (Object o: a) {
+			Contact c = (Contact) o;
+			contacts.add(c);
+		}
 	}
 
 	/**
@@ -76,6 +90,7 @@ public class ContactsActor extends Actor {
 			for (int i = data.length-1; i>=0; i--) {
 				contact = (Contact) data[i];
 				this.contacts.replace(contact);
+				persistence.persistEntity(contact.getPersistenceID(), contact);
 			}
 			break;
 		case RETRIEVE_CONTACTS:
@@ -95,6 +110,7 @@ public class ContactsActor extends Actor {
 		case REMOVE_CONTACTS:
 			for (int i = data.length-1; i>=0; i--) {
 				this.contacts.remove(data[i].toString());
+				persistence.removeEntity(contacts.getByKeyIdentifier(data[i].toString()).getPersistenceID(), Contact.class);
 			}
 			break;
 		}
