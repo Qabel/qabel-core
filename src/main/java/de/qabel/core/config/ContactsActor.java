@@ -109,8 +109,8 @@ public class ContactsActor extends Actor {
 			break;
 		case REMOVE_CONTACTS:
 			for (int i = data.length-1; i>=0; i--) {
-				this.contacts.remove(data[i].toString());
 				persistence.removeEntity(contacts.getByKeyIdentifier(data[i].toString()).getPersistenceID(), Contact.class);
+				this.contacts.remove(data[i].toString());
 			}
 			break;
 		}
