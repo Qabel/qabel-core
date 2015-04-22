@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,6 +16,7 @@ import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
 public class ContactsActorTest {
+	private final static String encryptionPassword = "qabel";
 	ArrayList<Contact> receivedContacts = null;
 	ContactTestFactory contactFactory = new ContactTestFactory();
 	ContactsTestFactory contactsFactory = new ContactsTestFactory();
@@ -26,7 +28,7 @@ public class ContactsActorTest {
 	@Before
 	public void setUp() {
 		contacts = contactsFactory.create();
-		contactsActor = new ContactsActor(contacts);
+		contactsActor = new ContactsActor(contacts, encryptionPassword);
 	}
 
 	@Test
@@ -222,6 +224,64 @@ public class ContactsActorTest {
 		// Assure that new testDropUrl is contained in the DropUrl list
 		Assert.assertTrue(writtenContact1.getDropUrls().contains(testDropUrl));
 		Assert.assertTrue(writtenContact2.getDropUrls().contains(testDropUrl));
+	}
+
+	@Test
+	public void perstistenceTest() throws InterruptedException {
+
+		ContactsActor ca1 = new ContactsActor(encryptionPassword);
+		TestPersistActor tpa = new TestPersistActor();
+
+		Contact testContactAddMulti1 = contactFactory.create();
+		Contact testContactAddMulti2 = contactFactory.create();
+
+		Thread actorThread = new Thread(tpa);
+		Thread contactActorThread = new Thread(ca1);
+		actorThread.start();
+		contactActorThread.start();
+		tpa.writeContacts(ca1, testContactAddMulti1, testContactAddMulti2);
+		contactActorThread.join();
+		actorThread.join();
+
+		ContactsActor ca2 = new ContactsActor(encryptionPassword);
+		TestPersistActor tpa2 = new TestPersistActor();
+
+		Thread actorThread2 = new Thread(tpa2);
+		Thread contactActorThread2 = new Thread(ca2);
+		actorThread2.start();
+		contactActorThread2.start();
+		List<Contact> c = new ArrayList<>();
+		tpa2.retrieveContacts(ca2, c);
+		actorThread2.join();
+
+		tpa2.removeContacts(ca2, testContactAddMulti1.getKeyIdentifier());
+		tpa2.removeContacts(ca2, testContactAddMulti2.getKeyIdentifier());
+		actorThread2.join();
+
+		Assert.assertTrue(c.contains(testContactAddMulti1));
+		Assert.assertTrue(c.contains(testContactAddMulti2));
+	}
+
+	class TestPersistActor extends Actor {
+		public void retrieveContacts(ContactsActor ca, final List<Contact> contacts, String...data) {
+			ca.retrieveContacts(this, new Responsible() {
+				@Override
+				public void onResponse(Serializable... data) {
+					for (Contact c : Arrays.asList((Contact[]) data)) {
+						contacts.add(c);
+					}
+					stop();
+				}
+			}, data);
+		}
+		public void writeContacts(ContactsActor ca, Contact...data) {
+			ca.writeContacts(data);
+			stop();
+		}
+		public void removeContacts(ContactsActor ca, String...data) {
+			ca.removeContacts(data);
+			stop();
+		}
 	}
 
 	class TestActor extends Actor {
