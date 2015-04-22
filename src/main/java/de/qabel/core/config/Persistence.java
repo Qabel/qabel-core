@@ -48,7 +48,7 @@ public abstract class Persistence {
 	/**
 	 * Initializes the persistence class
 	 */
-	final void init(String password) {
+	final void init(char[] password) {
 		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
 		initCalled = true;
 	}
@@ -68,7 +68,7 @@ public abstract class Persistence {
 	 * @param newPassword New password
 	 * @return True if password has been changed
 	 */
-	final boolean changePassword(String oldPassword, String newPassword) {
+	final boolean changePassword(char[] oldPassword, char[] newPassword) {
 		return reEncryptMasterKey(deriveKey(oldPassword, getSalt(false)), deriveKey(newPassword, getSalt(true)));
 	}
 
@@ -144,12 +144,12 @@ public abstract class Persistence {
 	 * @param salt Salt for key derivation
 	 * @return Encryption key for serialization/deserialization
 	 */
-	private KeyParameter deriveKey(String password, byte[] salt) {
+	private KeyParameter deriveKey(char[] password, byte[] salt) {
 		SecretKey key;
 		try {
 			SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
 			key = secretKeyFactory.generateSecret(
-					new PBEKeySpec(password.toCharArray(), salt,
+					new PBEKeySpec(password, salt,
 							PBKDF2_ROUNDS, AES_KEY_SIZE_BIT));
 			return new KeyParameter(key.getEncoded());
 		} catch (InvalidKeySpecException e) {

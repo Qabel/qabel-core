@@ -28,7 +28,7 @@ public class SQLitePersistence extends Persistence {
 	 * Stores entities in a local SQLite database
 	 * @param password Password to encrypt data.
 	 */
-	public SQLitePersistence(String password) {
+	public SQLitePersistence(char[] password) {
 		super();
 		try {
 			Class.forName("org.sqlite.JDBC");
