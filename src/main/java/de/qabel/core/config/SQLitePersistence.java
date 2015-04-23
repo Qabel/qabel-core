@@ -228,7 +228,7 @@ public class SQLitePersistence extends Persistence {
 			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
 			statement.setBytes(2, nonce);
-			statement.setBytes(3, serialize(object, nonce));
+			statement.setBytes(3, serialize(id, object, nonce));
 			statement.executeUpdate();
 			statement.close();
 		} catch (SQLException | InvalidKeySpecException | InvalidCipherTextException
@@ -247,7 +247,7 @@ public class SQLitePersistence extends Persistence {
 					"SET BLOB = ? " +
 					" WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
-			statement.setBytes(1, serialize(object, getNonce(id, object)));
+			statement.setBytes(1, serialize(id, object, getNonce(id, object)));
 			statement.setString(2, id);
 			statement.executeUpdate();
 			statement.close();
@@ -286,7 +286,7 @@ public class SQLitePersistence extends Persistence {
 			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
 			ResultSet rs = statement.executeQuery(sql);
-			object = deserialize(rs.getBytes("BLOB"), rs.getBytes("NONCE"));
+			object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
 		} catch (SQLException | InvalidCipherTextException
 				| IOException | ClassNotFoundException e) {
 			logger.error("Cannot get entity!", e);
@@ -298,12 +298,12 @@ public class SQLitePersistence extends Persistence {
 	List<Object> getEntities(Class cls) {
 		List<Object> objects = new ArrayList<>();
 		try {
-			String sql = "SELECT BLOB, NONCE FROM " +
+			String sql = "SELECT ID, BLOB, NONCE FROM " +
 					"\"" + cls.getCanonicalName() + "\"";
 			Statement statement = c.createStatement();
 			ResultSet rs = statement.executeQuery(sql);
 			while (rs.next()) {
-				objects.add(deserialize(rs.getBytes("BLOB"), rs.getBytes("NONCE")));
+				objects.add(deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
 			}
 		} catch (SQLException | InvalidCipherTextException
 				| ClassNotFoundException | IOException e) {

@@ -171,13 +171,13 @@ public abstract class Persistence {
 	 * @throws InvalidKeySpecException
 	 * @throws InvalidCipherTextException
 	 */
-	byte[] serialize(Serializable object, byte[] nonce) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidCipherTextException {
+	byte[] serialize(String id, Serializable object, byte[] nonce) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidCipherTextException {
 		checkInitCalled();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
 		oos.writeObject(object);
 		oos.close();
-		return cryptoutils.encrypt(keyParameter, nonce, baos.toByteArray(), null);
+		return cryptoutils.encrypt(keyParameter, nonce, baos.toByteArray(), id.getBytes());
 	}
 
 	/**
@@ -189,9 +189,9 @@ public abstract class Persistence {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	Object deserialize(byte[] input, byte[] nonce) throws InvalidCipherTextException, IOException, ClassNotFoundException {
+	Object deserialize(String id, byte[] input, byte[] nonce) throws InvalidCipherTextException, IOException, ClassNotFoundException {
 		checkInitCalled();
-		ByteArrayInputStream bais = new ByteArrayInputStream(cryptoutils.decrypt(keyParameter, nonce, input, null));
+		ByteArrayInputStream bais = new ByteArrayInputStream(cryptoutils.decrypt(keyParameter, nonce, input, id.getBytes()));
 		try (ObjectInputStream ois = new ObjectInputStream(bais)) {
 			return ois.readObject();
 		}
