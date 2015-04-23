@@ -6,8 +6,6 @@ import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.KeyParameter;
 
 import java.io.*;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +59,9 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	KeyParameter getMasterKey(KeyParameter encryptionKey) {
+		if (encryptionKey == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		byte[] masterKey = null;
 		byte[] masterKeyNonce = getConfigValue(STR_MASTER_KEY_NONCE);
 
@@ -96,6 +97,9 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
+		if (oldKey == null || newKey == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		KeyParameter oldMasterKey = getMasterKey(oldKey);
 		boolean success = false;
 		try {
@@ -142,6 +146,12 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	private byte[] getConfigValue(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (name.length() == 0) {
+			throw new IllegalArgumentException("Name cannot be empty!");
+		}
 		byte[] value = null;
 		try {
 			String sql = "SELECT DATA FROM CONFIG WHERE ID = ?";
@@ -159,6 +169,12 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	private boolean setConfigValue(String name, byte[] data) {
+		if (name == null || data == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (name.length() == 0) {
+			throw new IllegalArgumentException("Name cannot be empty!");
+		}
 		try {
 			String sql = "INSERT INTO CONFIG " +
 					" VALUES(?, ?)";
@@ -175,6 +191,12 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	private boolean deleteConfigValue(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (name.length() == 0) {
+			throw new IllegalArgumentException("Name cannot be empty!");
+		}
 		try {
 			String sql = "DELETE FROM CONFIG WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
@@ -189,6 +211,12 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	private byte[] getNonce(String id, Serializable object) {
+		if (id == null || object == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		byte[] nonce = null;
 		try {
 			String sql = "SELECT NONCE FROM " +
@@ -207,6 +235,12 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	boolean persistEntity(String id, Serializable object) {
+		if (id == null || object == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		try {
 			String sql = "CREATE TABLE IF NOT EXISTS " +
 					"\"" + object.getClass().getCanonicalName() + "\"" +
@@ -231,16 +265,21 @@ public class SQLitePersistence extends Persistence {
 			statement.setBytes(3, serialize(id, object, nonce));
 			statement.executeUpdate();
 			statement.close();
-		} catch (SQLException | InvalidKeySpecException | InvalidCipherTextException
-				| NoSuchAlgorithmException | IOException e) {
+		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot persist entity!", e);
-			return false;
+			throw new IllegalArgumentException("Cannot persist entity!");
 		}
 		return true;
 	}
 
 	@Override
 	boolean updateEntity(String id, Serializable object) {
+		if (id == null || object == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		try {
 			String sql = "UPDATE " +
 					"\"" + object.getClass().getCanonicalName() + "\"" +
@@ -251,8 +290,7 @@ public class SQLitePersistence extends Persistence {
 			statement.setString(2, id);
 			statement.executeUpdate();
 			statement.close();
-		} catch (SQLException | IOException | InvalidKeySpecException
-				| InvalidCipherTextException | NoSuchAlgorithmException e) {
+		} catch (SQLException e) {
 			logger.error("Cannot update entity!", e);
 			return false;
 		}
@@ -261,6 +299,12 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	boolean removeEntity(String id, Class cls) {
+		if (id == null || cls == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		try {
 			String sql = "DELETE FROM " +
 					"\"" + cls.getCanonicalName() + "\"" +
@@ -278,6 +322,12 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	Object getEntity(String id, Class cls) {
+		if (id == null || cls == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		Object object = null;
 		try {
 			String sql = "SELECT BLOB, NONCE FROM " +
@@ -287,8 +337,7 @@ public class SQLitePersistence extends Persistence {
 			statement.setString(1, id);
 			ResultSet rs = statement.executeQuery(sql);
 			object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
-		} catch (SQLException | InvalidCipherTextException
-				| IOException | ClassNotFoundException e) {
+		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
 		}
 		return object;
@@ -296,6 +345,9 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	List<Object> getEntities(Class cls) {
+		if (cls == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		List<Object> objects = new ArrayList<>();
 		try {
 			String sql = "SELECT ID, BLOB, NONCE FROM " +
@@ -305,8 +357,7 @@ public class SQLitePersistence extends Persistence {
 			while (rs.next()) {
 				objects.add(deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
 			}
-		} catch (SQLException | InvalidCipherTextException
-				| ClassNotFoundException | IOException e) {
+		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entities!", e);
 		}
 		return objects;
@@ -314,6 +365,9 @@ public class SQLitePersistence extends Persistence {
 
 	@Override
 	boolean dropTable(Class cls) {
+		if (cls == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		try {
 			String sql = "DROP TABLE " +
 					"\"" + cls.getCanonicalName() + "\"";

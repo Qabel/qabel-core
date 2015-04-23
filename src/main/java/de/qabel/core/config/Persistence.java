@@ -34,6 +34,7 @@ public abstract class Persistence {
 
 	private boolean initCalled;
 	private KeyParameter keyParameter;
+	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
 	/**
@@ -42,6 +43,12 @@ public abstract class Persistence {
 	 */
 	public Persistence() {
 		this.cryptoutils = new CryptoUtils();
+		try {
+			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
+		} catch (NoSuchAlgorithmException e) {
+			logger.fatal("Cannot find selected algorithm!", e);
+			throw new RuntimeException("Cannot find selected algorithm!", e);
+		}
 		initCalled = false;
 	}
 
@@ -49,6 +56,9 @@ public abstract class Persistence {
 	 * Initializes the persistence class
 	 */
 	final void init(char[] password) {
+		if (password == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
 		initCalled = true;
 	}
@@ -69,6 +79,9 @@ public abstract class Persistence {
 	 * @return True if password has been changed
 	 */
 	final boolean changePassword(char[] oldPassword, char[] newPassword) {
+		if (oldPassword == null || newPassword == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
 		return reEncryptMasterKey(deriveKey(oldPassword, getSalt(false)), deriveKey(newPassword, getSalt(true)));
 	}
 
@@ -106,7 +119,7 @@ public abstract class Persistence {
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract boolean updateEntity(String id, Serializable object);
+	abstract boolean updateEntity(String id, Serializable object) throws IllegalArgumentException;
 
 	/**
 	 * Removes a persisted entity
@@ -119,8 +132,8 @@ public abstract class Persistence {
 	/**
 	 * Get an entity
 	 * @param id ID of the stored entity
-	 * @param cls Class of the entity to reveice
-	 * @return Stored entity
+	 * @param cls Class of the entity to receive
+	 * @return Stored entity or null if entity not found
 	 */
 	abstract Object getEntity(String id, Class cls);
 
@@ -144,20 +157,17 @@ public abstract class Persistence {
 	 * @param salt Salt for key derivation
 	 * @return Encryption key for serialization/deserialization
 	 */
-	private KeyParameter deriveKey(char[] password, byte[] salt) {
+	private KeyParameter deriveKey(char[] password, byte[] salt) throws IllegalArgumentException {
+		if (password == null || salt == null) {
+			throw new IllegalArgumentException("Arguments cannot be null");
+		}
 		SecretKey key;
 		try {
-			SecretKeyFactory secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
-			key = secretKeyFactory.generateSecret(
-					new PBEKeySpec(password, salt,
-							PBKDF2_ROUNDS, AES_KEY_SIZE_BIT));
+			key = secretKeyFactory.generateSecret(new PBEKeySpec(password, salt, PBKDF2_ROUNDS, AES_KEY_SIZE_BIT));
 			return new KeyParameter(key.getEncoded());
 		} catch (InvalidKeySpecException e) {
 			logger.error("Invalid KeySpec!", e);
-			return null;
-		} catch (NoSuchAlgorithmException e) {
-			logger.error("Invalid algorithm!", e);
-			return null;
+			throw new IllegalArgumentException("Cannot derive key from provided arguments!", e);
 		}
 	}
 
@@ -166,18 +176,27 @@ public abstract class Persistence {
 	 * @param object Object to serialize
 	 * @param nonce Nonce for encryption
 	 * @return Encrypted serialized object
-	 * @throws IOException
-	 * @throws NoSuchAlgorithmException
-	 * @throws InvalidKeySpecException
-	 * @throws InvalidCipherTextException
+	 * @throws IllegalArgumentException
 	 */
-	byte[] serialize(String id, Serializable object, byte[] nonce) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidCipherTextException {
+	byte[] serialize(String id, Serializable object, byte[] nonce) throws IllegalArgumentException {
+		if (id == null || object == null || nonce == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		if (id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
 		checkInitCalled();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(object);
-		oos.close();
-		return cryptoutils.encrypt(keyParameter, nonce, baos.toByteArray(), id.getBytes());
+		byte[] encryptedObject;
+		try {
+			ObjectOutputStream oos = new ObjectOutputStream(baos);
+			oos.writeObject(object);
+			oos.close();
+			encryptedObject = cryptoutils.encrypt(keyParameter, nonce, baos.toByteArray(), id.getBytes());
+		} catch (InvalidCipherTextException | IOException e) {
+			throw new IllegalArgumentException("Cannot serialize object!", e);
+		}
+		return encryptedObject;
 	}
 
 	/**
@@ -185,15 +204,25 @@ public abstract class Persistence {
 	 * @param input Encrypted byte array to deserialize
 	 * @param nonce Nonce for decryption
 	 * @return Deserialized object
-	 * @throws InvalidCipherTextException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
+	 * @throws IllegalArgumentException
 	 */
-	Object deserialize(String id, byte[] input, byte[] nonce) throws InvalidCipherTextException, IOException, ClassNotFoundException {
-		checkInitCalled();
-		ByteArrayInputStream bais = new ByteArrayInputStream(cryptoutils.decrypt(keyParameter, nonce, input, id.getBytes()));
-		try (ObjectInputStream ois = new ObjectInputStream(bais)) {
-			return ois.readObject();
+	Object deserialize(String id, byte[] input, byte[] nonce) throws IllegalArgumentException {
+		if(id == null || input == null || nonce == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
+		if(id.length() == 0) {
+			throw new IllegalArgumentException("ID cannot be empty!");
+		}
+		checkInitCalled();
+		Object decryptedObject;
+		try {
+			ByteArrayInputStream bais = new ByteArrayInputStream(cryptoutils.decrypt(keyParameter, nonce, input, id.getBytes()));
+			try (ObjectInputStream ois = new ObjectInputStream(bais)) {
+				decryptedObject = ois.readObject();
+			}
+		} catch (InvalidCipherTextException | ClassNotFoundException | IOException e) {
+			throw new IllegalArgumentException("Cannot deserialize object!", e);
+		}
+		return decryptedObject;
 	}
 }
