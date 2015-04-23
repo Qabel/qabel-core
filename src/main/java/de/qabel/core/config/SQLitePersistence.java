@@ -116,7 +116,6 @@ public class SQLitePersistence extends Persistence {
 			logger.error("Cannot re-encrypt master key!", e);
 			try {
 				c.rollback();
-				c.setAutoCommit(true);
 			} catch (SQLException e1) {
 				logger.error("Cannot rollback changes!", e1);
 			}
