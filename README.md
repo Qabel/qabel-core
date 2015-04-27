@@ -15,6 +15,8 @@ Qabel Core is the core component of a Qabel Client.
    ```
    git clone https://github.com/Qabel/qabel-core.git
    cd qabel-core
+   git submodule init
+   git submodule update
    ```
    
 0. build the project
