@@ -66,6 +66,8 @@ Regarding the look and feel most -- but not all -- of this is reflected by the E
 * Try to fit your code into **80** characters but do not wrap your line of code just for the sake of wrapping it. Use **120** in your auto format settings.
 * Statements like ```if``` always with ```{ }```. Do not just write ```if (foo) bar;```
 * Our code does not need to be compatible to versions below Java 7. That means you can and should use Java 7 features and syntax.
+* Developers want their software to always be in a defined and consistent state and this should be preferred but sometimes it is not possible. In such cases not only document these conditions but also handle unwanted conditions.
+  * E.g. there are cases where an ```initialize()``` method needs to be called *after* an object has been created (i.e. the constructor has been invoked) to fully initialize this object but *before* other methods work as intended. Such dependencies must not only be documented (using Javadoc) but also the methods which depend on a call of ```initialize()``` must check if this call has happened and give a meaningful error if not. In cases like this we use an ```IllegalStateException```.
 
 Be consistent. The code should look the same regardless who wrote the code. Look into the code if you are unsure about how to do something.
 Example:
