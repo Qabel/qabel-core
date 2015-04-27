@@ -19,25 +19,41 @@ public class SQLitePersistence extends Persistence {
 	private final static String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";
 	private final static String STR_SALT = "SALT";
 	private final static String STR_DATA = "DATA";
+	private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
+	private final static String JDBC_PREFIX = "jdbc:sqlite:";
+	private final static String DEFAULT_DB_NAME = "qabel-core.sqlite";
 
 	private Connection c;
 
 	/**
 	 * Stores entities in a local SQLite database
-	 * @param password Password to encrypt data.
 	 */
-	public SQLitePersistence(char[] password) {
-		super();
+	public SQLitePersistence() {
+		super(DEFAULT_DB_NAME);
+	}
+
+	/**
+	 * Stores entities in a local SQLite database
+	 * @param dbName Database file name.
+	 */
+	public SQLitePersistence(String dbName) {
+		super(dbName);
+	}
+
+	@Override
+	boolean connect(String dbName) {
 		try {
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:qabel-core.sqlite");
+			Class.forName(JDBC_CLASS_NAME);
+			c = DriverManager.getConnection(JDBC_PREFIX + dbName);
 			createTables();
-			init(password);
 		} catch (SQLException e) {
 			logger.fatal("Cannot connect to SQLite DB!", e);
+			return false;
 		} catch (ClassNotFoundException e) {
 			logger.fatal("Cannot load JDBC class!", e);
+			return false;
 		}
+		return true;
 	}
 
 	@Override

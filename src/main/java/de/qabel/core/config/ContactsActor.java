@@ -17,9 +17,9 @@ public class ContactsActor extends Actor {
 	private Contacts contacts;
 	private Persistence persistence;
 
-	static ContactsActor getDefault(char[] password) {
+	static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
-			defaultContactsActor = new ContactsActor(password);
+			defaultContactsActor = new ContactsActor();
 		}
 		return defaultContactsActor;
 	}
@@ -28,13 +28,13 @@ public class ContactsActor extends Actor {
 	private static final String RETRIEVE_CONTACTS = "retrieveContacts";
 	private static final String REMOVE_CONTACTS = "removeContacts";
 
-	public ContactsActor (Contacts contacts, char[] password) {
+	public ContactsActor (Contacts contacts) {
 		this.contacts = contacts;
-		this.persistence = new SQLitePersistence(password);
+		this.persistence = new SQLitePersistence();
 	}
 
-	public ContactsActor (char[] password) {
-		this.persistence = new SQLitePersistence(password);
+	public ContactsActor () {
+		this.persistence = new SQLitePersistence();
 		this.contacts = new Contacts();
 		List a = persistence.getEntities(Contact.class);
 

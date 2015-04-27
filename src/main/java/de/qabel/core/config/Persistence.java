@@ -20,8 +20,6 @@ import java.util.List;
  * Serialized data is encrypted with AES256 GCM, a nonce provided to the serialize/deserialize
  * methods and a key derived from the provides password with PBKDF2 and a salt.
  *
- * Inheritors of Persistence must call init() when a call of getSalt() is possible. Usually after a database
- * connection is established.
  */
 public abstract class Persistence {
 	private final static Logger logger = LogManager.getLogger(Persistence.class.getName());
@@ -32,16 +30,12 @@ public abstract class Persistence {
 	static final int NONCE_SIZE_BYTE = 32;
 	static final int SALT_SIZE_BYTE = 32;
 
-	private boolean initCalled;
+	private static char[] PASSWORD;
 	private KeyParameter keyParameter;
 	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
-	/**
-	 * Inheritors of Persistence must call init() when a call of getSalt() is possible. Usually after a database
-	 * connection is established.
-	 */
-	public Persistence() {
+	public Persistence(String dbName) {
 		this.cryptoutils = new CryptoUtils();
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
@@ -49,27 +43,16 @@ public abstract class Persistence {
 			logger.fatal("Cannot find selected algorithm!", e);
 			throw new RuntimeException("Cannot find selected algorithm!", e);
 		}
-		initCalled = false;
+		connect(dbName);
+		this.keyParameter = getMasterKey(deriveKey(PASSWORD, getSalt(false)));
 	}
 
 	/**
-	 * Initializes the persistence class
+	 * Workaroud method to get the encryption password into the persistence class
+	 * @param password password for database encryption.
 	 */
-	final void init(char[] password) {
-		if (password == null) {
-			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
-		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
-		initCalled = true;
-	}
-
-	/**
-	 * Checks if Persistence class has been initialized.
-	 */
-	private void checkInitCalled() {
-		if (!initCalled) {
-			throw new IllegalStateException("Inheritors of Persistence must call init() after establishing a connection!");
-		}
+	public static void setPassword(char[] password) {
+		PASSWORD = password;
 	}
 
 	/**
@@ -84,6 +67,13 @@ public abstract class Persistence {
 		}
 		return reEncryptMasterKey(deriveKey(oldPassword, getSalt(false)), deriveKey(newPassword, getSalt(true)));
 	}
+
+	/**
+	 * Connect to the used database
+	 * @param dbName Database name to connect to
+	 * @return Result of the operation
+	 */
+	abstract boolean connect(String dbName);
 
 	/**
 	 * Create new or receive previously created salt.
@@ -185,7 +175,6 @@ public abstract class Persistence {
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		checkInitCalled();
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] encryptedObject;
 		try {
@@ -213,7 +202,6 @@ public abstract class Persistence {
 		if(id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		checkInitCalled();
 		Object decryptedObject;
 		try {
 			ByteArrayInputStream bais = new ByteArrayInputStream(cryptoutils.decrypt(keyParameter, nonce, input, id.getBytes()));

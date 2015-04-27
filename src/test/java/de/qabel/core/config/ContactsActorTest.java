@@ -27,8 +27,9 @@ public class ContactsActorTest {
 
 	@Before
 	public void setUp() {
+		Persistence.setPassword(encryptionPassword);
 		contacts = contactsFactory.create();
-		contactsActor = new ContactsActor(contacts, encryptionPassword);
+		contactsActor = new ContactsActor(contacts);
 	}
 
 	@Test
@@ -229,7 +230,7 @@ public class ContactsActorTest {
 	@Test
 	public void persistenceTest() throws InterruptedException {
 
-		ContactsActor ca1 = new ContactsActor(encryptionPassword);
+		ContactsActor ca1 = new ContactsActor();
 		TestPersistActor tpa = new TestPersistActor();
 
 		Contact testContactAddMulti1 = contactFactory.create();
@@ -243,7 +244,7 @@ public class ContactsActorTest {
 		contactActorThread.join();
 		actorThread.join();
 
-		ContactsActor ca2 = new ContactsActor(encryptionPassword);
+		ContactsActor ca2 = new ContactsActor();
 		TestPersistActor tpa2 = new TestPersistActor();
 
 		Thread actorThread2 = new Thread(tpa2);
