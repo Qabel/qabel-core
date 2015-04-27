@@ -245,7 +245,7 @@ public class SQLitePersistence extends Persistence {
 					"\"" + object.getClass().getCanonicalName() + "\"" +
 					"(ID TEXT PRIMARY KEY NOT NULL," +
 					"NONCE TEXT NOT NULL," +
-					"BLOB TEXT NOT NULL)";
+					"BLOB BLOB NOT NULL)";
 			Statement statement = c.createStatement();
 			statement.executeUpdate(sql);
 			statement.close();
