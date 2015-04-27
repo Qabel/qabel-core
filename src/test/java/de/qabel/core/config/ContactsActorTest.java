@@ -227,7 +227,7 @@ public class ContactsActorTest {
 	}
 
 	@Test
-	public void perstistenceTest() throws InterruptedException {
+	public void persistenceTest() throws InterruptedException {
 
 		ContactsActor ca1 = new ContactsActor(encryptionPassword);
 		TestPersistActor tpa = new TestPersistActor();
