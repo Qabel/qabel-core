@@ -9,6 +9,7 @@ import java.util.*;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
  */
 public class Contact extends Entity {
+	private static final long serialVersionUID = 3971315594579958553L;
 	/**
 	 * Primary public key of the contact
 	 * Field name in serialized json: "keys"
@@ -89,6 +90,14 @@ public class Contact extends Entity {
 		super(dropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
 		this.setEcPublicKey(pubKey);
+	}
+
+	/**
+	 * Creates an instance of Contact without any attributes set
+	 * Attention: This constructor is intended for deserialization purposes when getting copied by ContactsActor
+	 */
+	protected Contact() {
+		super(null);
 	}
 
 	@Override

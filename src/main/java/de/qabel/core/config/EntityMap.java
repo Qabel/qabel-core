@@ -13,7 +13,8 @@ import java.util.Set;
  * 
  * @see Entity
  */
-abstract public class EntityMap<T extends Entity> implements Serializable{
+abstract public class EntityMap<T extends Entity> implements Serializable {
+	private static final long serialVersionUID = -8004819460313825206L;
 	private final Map<String, T> entities = new HashMap<>();
 
 	/**
@@ -35,10 +36,19 @@ abstract public class EntityMap<T extends Entity> implements Serializable{
 		}
 	}
 
+	public boolean replace(T entity) {
+		this.remove(entity);
+		return this.add(entity);
+	}
+
 	public boolean remove(T entity) {
 		return (entity != null && this.entities.remove(entity.getKeyIdentifier()) != null);
 	}
-	
+
+	public boolean remove(String keyIdentifier) {
+		return (keyIdentifier != null && this.entities.remove(keyIdentifier) != null);
+	}
+
 	/**
 	 * Get entity by key identifier (right most 64 bit of the identity's public fingerprint)
 	 * @param keyIdentifier

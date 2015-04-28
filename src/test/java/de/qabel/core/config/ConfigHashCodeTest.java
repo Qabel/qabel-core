@@ -22,6 +22,7 @@ public class ConfigHashCodeTest {
 		.overrideFactory("ecPublicKey", new QblECPublicKeyTestFactory())
 		.overrideFactory("contactOwner", new IdentityTestFactory())
 		.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
+		.ignoreProperty("serialVersionUID")
 		.build();
 		tester.testHashCodeMethod(new ContactEquivalentTestFactory(), config);
 	}
@@ -41,6 +42,7 @@ public class ConfigHashCodeTest {
 		Configuration config = new ConfigurationBuilder()
 		.overrideFactory("ecKeyPair", new QblEcPairTestFactory())
 		.overrideFactory("drops", new DropUrlListTestFactory())
+		.ignoreProperty("serialVersionUID")
 		.build();
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}
@@ -72,7 +74,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void contactsHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new ContactsEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new ContactsEquivalentTestFactory(), config);
 	}
 
 	@Test

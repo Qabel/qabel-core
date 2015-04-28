@@ -1,12 +1,14 @@
 package de.qabel.core.config;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Class SyncSettingItem: Class to store common setting for synced item
  */
-public class SyncSettingItem {
-    private int id = 0;
+public class SyncSettingItem implements Serializable {
+	private static final long serialVersionUID = 1798935486715989955L;
+	private int id = 0;
     private long created = new Date().getTime();
     private long updated = 0;
     private long deleted = 0;

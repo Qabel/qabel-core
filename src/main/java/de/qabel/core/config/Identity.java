@@ -11,6 +11,7 @@ import com.google.gson.annotations.SerializedName;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity
  */
 public class Identity extends Entity {
+	private static final long serialVersionUID = 3949018763372790094L;
 	/**
 	 * Alias name of the identity
 	 * Field name in serialized json: "alias"
