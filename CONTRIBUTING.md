@@ -69,6 +69,31 @@ Regarding the look and feel most -- but not all -- of this is reflected by the E
 * Developers want their software to always be in a defined and consistent state and this should be preferred but sometimes it is not possible. In such cases not only document these conditions but also handle unwanted conditions.
   * E.g. there are cases where an ```initialize()``` method needs to be called *after* an object has been created (i.e. the constructor has been invoked) to fully initialize this object but *before* other methods work as intended. Such dependencies must not only be documented (using Javadoc) but also the methods which depend on a call of ```initialize()``` must check if this call has happened and give a meaningful error if not. In cases like this we use an ```IllegalStateException```.
 
+#### Documentation
+Qabel is a big project and it has a lot of code which will be called from other components -- e.g. from a module. Code -- especially public methods or classes -- must be well documented. *Well* means class, method and parameter names should speak for themselves. Nevertheless often additional Javadoc is needed to understand what is going on. These comments should contain actual information and not repeat things the class, method or parameter names should provide anyway.
+
+Bad example:
+```Java
+/**
+ * Get the Runtime.
+ * @return Returns the time.
+ */
+public long getTime();
+```
+
+Good example:
+```Java
+/*
+ * Get the runtime since application start.
+ * @return Returns runtime in milliseconds.
+ */
+public long getRuntime();
+```
+
+As it can be seen even simple getter or setter might need Javadoc to provide valuable information. Of course this does *not* mean every trivial getter and setter need Javadoc.
+
+Code should speak for itself. Nevertheless there will be code which needs an inline comment to explain some details to the reader (i.e. developer).
+
 #### Be consistent
 The code should look the same regardless who wrote the code. Look into the code if you are unsure about how to do something.
 Example:
