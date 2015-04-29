@@ -239,7 +239,7 @@ public class SQLitePersistence extends Persistence {
 					" WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
-			ResultSet rs = statement.executeQuery(sql);
+			ResultSet rs = statement.executeQuery();
 			nonce = rs.getBytes("NONCE");
 			statement.close();
 		} catch (SQLException e) {
@@ -350,7 +350,7 @@ public class SQLitePersistence extends Persistence {
 					" WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
-			ResultSet rs = statement.executeQuery(sql);
+			ResultSet rs = statement.executeQuery();
 			object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
