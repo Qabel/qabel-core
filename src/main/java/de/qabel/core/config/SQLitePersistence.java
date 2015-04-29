@@ -281,8 +281,8 @@ public class SQLitePersistence extends Persistence {
 			statement.executeUpdate();
 			statement.close();
 		} catch (SQLException | IllegalArgumentException e) {
-			logger.error("Cannot persist entity!", e);
-			throw new IllegalArgumentException("Cannot persist entity!");
+			logger.error("Cannot persist or already persisted entity!", e);
+			throw new IllegalArgumentException("Cannot persist or already persisted entity!");
 		}
 		return true;
 	}
