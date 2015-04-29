@@ -61,7 +61,7 @@ public abstract class Persistence {
 	 * @param newPassword New password
 	 * @return True if password has been changed
 	 */
-	final boolean changePassword(char[] oldPassword, char[] newPassword) {
+	final public boolean changePassword(char[] oldPassword, char[] newPassword) {
 		if (oldPassword == null || newPassword == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -101,7 +101,7 @@ public abstract class Persistence {
 	 * @param object Entity to persist
 	 * @return Result of the operation
 	 */
-	abstract boolean persistEntity(String id, Serializable object);
+	abstract public boolean persistEntity(String id, Serializable object);
 
 	/**
 	 * Updated a previously stored entity
@@ -109,7 +109,7 @@ public abstract class Persistence {
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract boolean updateEntity(String id, Serializable object) throws IllegalArgumentException;
+	abstract public boolean updateEntity(String id, Serializable object) throws IllegalArgumentException;
 
 	/**
 	 * Removes a persisted entity
@@ -117,7 +117,7 @@ public abstract class Persistence {
 	 * @param cls Class of persisted entity
 	 * @return Result of the operation
 	 */
-	abstract boolean removeEntity(String id, Class cls);
+	abstract public boolean removeEntity(String id, Class cls);
 
 	/**
 	 * Get an entity
@@ -125,21 +125,21 @@ public abstract class Persistence {
 	 * @param cls Class of the entity to receive
 	 * @return Stored entity or null if entity not found
 	 */
-	abstract Object getEntity(String id, Class cls);
+	abstract public Object getEntity(String id, Class cls);
 
 	/**
 	 * Get all entities of the provides Class
 	 * @param cls Class to get all stored entities for
 	 * @return List of stored entities
 	 */
-	abstract List<Object> getEntities(Class cls);
+	abstract public List<Object> getEntities(Class cls);
 
 	/**
 	 * Drops the table for the provided Class
 	 * @param cls Class to drop table for
 	 * @return Result of the operation
 	 */
-	abstract boolean dropTable(Class cls);
+	abstract public boolean dropTable(Class cls);
 
 	/**
 	 * Derives the encryption key from the password and a salt.

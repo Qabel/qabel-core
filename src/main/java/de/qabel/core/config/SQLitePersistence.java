@@ -249,7 +249,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	boolean persistEntity(String id, Serializable object) {
+	public boolean persistEntity(String id, Serializable object) {
 		if (id == null || object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -288,7 +288,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	boolean updateEntity(String id, Serializable object) {
+	public boolean updateEntity(String id, Serializable object) {
 		if (id == null || object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -313,7 +313,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	boolean removeEntity(String id, Class cls) {
+	public boolean removeEntity(String id, Class cls) {
 		if (id == null || cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -336,7 +336,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	Object getEntity(String id, Class cls) {
+	public Object getEntity(String id, Class cls) {
 		if (id == null || cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -359,7 +359,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	List<Object> getEntities(Class cls) {
+	public List<Object> getEntities(Class cls) {
 		if (cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -379,7 +379,7 @@ public class SQLitePersistence extends Persistence {
 	}
 
 	@Override
-	boolean dropTable(Class cls) {
+	public boolean dropTable(Class cls) {
 		if (cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
