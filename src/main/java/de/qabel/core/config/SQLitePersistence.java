@@ -225,8 +225,8 @@ public class SQLitePersistence extends Persistence {
 		return true;
 	}
 
-	private byte[] getNonce(String id, Serializable object) {
-		if (id == null || object == null) {
+	private byte[] getNonce(String id, Class cls) {
+		if (id == null || cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		if (id.length() == 0) {
@@ -235,7 +235,7 @@ public class SQLitePersistence extends Persistence {
 		byte[] nonce = null;
 		try {
 			String sql = "SELECT NONCE FROM " +
-					"\"" + object.getClass().getCanonicalName() + "\"" +
+					"\"" + cls.getCanonicalName() + "\"" +
 					" WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
@@ -301,7 +301,7 @@ public class SQLitePersistence extends Persistence {
 					"SET BLOB = ? " +
 					" WHERE ID = ?";
 			PreparedStatement statement = c.prepareStatement(sql);
-			statement.setBytes(1, serialize(id, object, getNonce(id, object)));
+			statement.setBytes(1, serialize(id, object, getNonce(id, object.getClass())));
 			statement.setString(2, id);
 			statement.executeUpdate();
 			statement.close();
