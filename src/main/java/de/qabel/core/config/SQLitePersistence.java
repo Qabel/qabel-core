@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Stores entities in a local SQLite database
  */
-public class SQLitePersistence extends Persistence {
+public class SQLitePersistence extends Persistence<String> {
 	private final static Logger logger = LogManager.getLogger(SQLitePersistence.class.getName());
 	private final static String STR_MASTER_KEY = "MASTERKEY";
 	private final static String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";

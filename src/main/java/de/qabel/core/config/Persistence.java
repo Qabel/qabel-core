@@ -21,7 +21,7 @@ import java.util.List;
  * methods and a key derived from the provides password with PBKDF2 and a salt.
  *
  */
-public abstract class Persistence {
+public abstract class Persistence<T> {
 	private final static Logger logger = LogManager.getLogger(Persistence.class.getName());
 	private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
 	private static final int PBKDF2_ROUNDS = 65536;
@@ -35,7 +35,7 @@ public abstract class Persistence {
 	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
-	public Persistence(String dbName) {
+	public Persistence(T dbName) {
 		this.cryptoutils = new CryptoUtils();
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
@@ -73,7 +73,7 @@ public abstract class Persistence {
 	 * @param dbName Database name to connect to
 	 * @return Result of the operation
 	 */
-	abstract boolean connect(String dbName);
+	abstract boolean connect(T dbName);
 
 	/**
 	 * Create new or receive previously created salt.
