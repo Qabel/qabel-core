@@ -112,7 +112,7 @@ public abstract class Persistence<T> {
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract public boolean updateEntity(String id, Serializable object) throws IllegalArgumentException;
+	abstract public boolean updateEntity(String id, Serializable object);
 
 	/**
 	 * Removes a persisted entity
