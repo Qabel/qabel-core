@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
@@ -53,9 +54,14 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 		
 		// SyncedModuleSettings
 		out.name("module_data");
-		out.beginObject();
-		// TODO: call serialization of SyncedModuleSettings
-		out.endObject();
+		TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
+			.registerTypeAdapter(SyncedModuleSettings.class, new SyncedModuleSettingsTypeAdapter())
+			.create().getAdapter(SyncedModuleSettings.class);
+		out.beginArray();
+		for (SyncedModuleSettings settings : value.getSyncedModuleSettings()) {
+			adapter.write(out, settings);
+		}
+		out.endArray();
 		
 		
 		out.endObject();
@@ -114,8 +120,14 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 				break;
 			case "module_data":
 				syncedModuleSettings = new HashSet<SyncedModuleSettings>();
-				in.beginObject();
-				in.endObject();
+				TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
+					.registerTypeAdapter(SyncedModuleSettings.class, new SyncedModuleSettingsTypeAdapter())
+					.create().getAdapter(SyncedModuleSettings.class);
+				in.beginArray();
+				while (in.hasNext()) {
+					syncedModuleSettings.add(adapter.read(in));
+				}
+				in.endArray();
 				break;
 			}
 		}
