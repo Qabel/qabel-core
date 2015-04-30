@@ -117,6 +117,10 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		KeyParameter oldMasterKey = getMasterKey(oldKey);
+		if (oldMasterKey == null) {
+			logger.error("Cannot decrypt master key. Wrong password?");
+			return false;
+		}
 		boolean success = false;
 		try {
 			c.setAutoCommit(false);
