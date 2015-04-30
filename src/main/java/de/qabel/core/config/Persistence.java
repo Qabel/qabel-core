@@ -43,7 +43,10 @@ public abstract class Persistence<T> {
 			logger.fatal("Cannot find selected algorithm!", e);
 			throw new RuntimeException("Cannot find selected algorithm!", e);
 		}
-		connect(dbName);
+		if (!connect(dbName)) {
+			logger.fatal("Cannot connect to database!");
+			throw new RuntimeException("Cannot connect to database!");
+		}
 		this.keyParameter = getMasterKey(deriveKey(PASSWORD, getSalt(false)));
 	}
 
