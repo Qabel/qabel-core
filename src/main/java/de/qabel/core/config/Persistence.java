@@ -35,7 +35,7 @@ public abstract class Persistence<T> {
 	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
-	public Persistence(T dbName) {
+	public Persistence(T database) {
 		this.cryptoutils = new CryptoUtils();
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
@@ -43,7 +43,7 @@ public abstract class Persistence<T> {
 			logger.fatal("Cannot find selected algorithm!", e);
 			throw new RuntimeException("Cannot find selected algorithm!", e);
 		}
-		if (!connect(dbName)) {
+		if (!connect(database)) {
 			logger.fatal("Cannot connect to database!");
 			throw new RuntimeException("Cannot connect to database!");
 		}
@@ -73,10 +73,10 @@ public abstract class Persistence<T> {
 
 	/**
 	 * Connect to the used database
-	 * @param dbName Database name to connect to
+	 * @param database Database name to connect to
 	 * @return Result of the operation
 	 */
-	abstract boolean connect(T dbName);
+	abstract boolean connect(T database);
 
 	/**
 	 * Create new or receive previously created salt.

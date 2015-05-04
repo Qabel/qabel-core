@@ -21,7 +21,7 @@ public class SQLitePersistence extends Persistence<String> {
 	private final static String STR_DATA = "DATA";
 	private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
 	private final static String JDBC_PREFIX = "jdbc:sqlite:";
-	private final static String DEFAULT_DB_NAME = "qabel-core.sqlite";
+	private final static String DEFAULT_DATABASE = "qabel-core.sqlite";
 
 	private Connection c;
 
@@ -29,7 +29,7 @@ public class SQLitePersistence extends Persistence<String> {
 	 * Stores entities in a local SQLite database
 	 */
 	public SQLitePersistence() {
-		super(DEFAULT_DB_NAME);
+		super(DEFAULT_DATABASE);
 	}
 
 	/**
@@ -41,10 +41,10 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean connect(String dbName) {
+	boolean connect(String database) {
 		try {
 			Class.forName(JDBC_CLASS_NAME);
-			c = DriverManager.getConnection(JDBC_PREFIX + dbName);
+			c = DriverManager.getConnection(JDBC_PREFIX + database);
 			createTables();
 		} catch (SQLException e) {
 			logger.fatal("Cannot connect to SQLite DB!", e);
