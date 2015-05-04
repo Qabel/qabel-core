@@ -74,7 +74,7 @@ public abstract class Module extends EventActor implements EventListener {
 		}
 	}
 
-    void onDropMessage(DropMessage<?> dm) {
+    protected void onDropMessage(DropMessage<?> dm) {
 
     }
 }
