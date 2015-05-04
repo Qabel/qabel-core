@@ -3,6 +3,9 @@ package de.qabel.core.config;
 import java.io.Serializable;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.Responsible;
@@ -39,6 +42,8 @@ public class ConfigActor extends Actor {
 	private static final String REMOVE_STORAGESERVERS = "removeStorageServers";
 	private static final String REMOVE_STORAGEVOLUMES = "removeStorageVolumes";
 	private static final String REMOVE_SYNCEDMODULESETTINGS = "removeSyncedModuleSettings";
+
+	private final static Logger logger = LogManager.getLogger(ConfigActor.class.getName());
 
 	static ConfigActor getDefault() {
 		if(defaultConfigActor == null) {
@@ -478,6 +483,8 @@ public class ConfigActor extends Actor {
 			}
 			break;
 		default:
+			logger.debug("Unexpected type of MessageInfo: \"" + info.getType()
+					+ "\"");
 			break;
 		}
 		stop();
