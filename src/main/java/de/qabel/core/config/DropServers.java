@@ -42,7 +42,7 @@ public class DropServers {
 		return this.dropServers.remove(dropServer);
 	}
 
-	public boolean replace(DropServer dropServer) {
+	public boolean update(DropServer dropServer) {
 		this.remove(dropServer);
 		return this.add(dropServer);
 	}

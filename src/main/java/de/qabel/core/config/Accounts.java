@@ -32,7 +32,7 @@ public class Accounts {
 		return this.accounts.remove(account);
 	}
 
-	public boolean replace(Account account) {
+	public boolean update(Account account) {
 		this.remove(account);
 		return this.add(account);
 	}

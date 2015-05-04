@@ -37,7 +37,7 @@ public class StorageVolumes {
 		return this.storageVolumes.remove(storageVolume);
 	}
 
-	public boolean replace(StorageVolume storageVolume) {
+	public boolean update(StorageVolume storageVolume) {
 		this.remove(storageVolume);
 		return this.add(storageVolume);
 	}

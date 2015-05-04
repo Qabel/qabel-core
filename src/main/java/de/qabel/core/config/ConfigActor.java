@@ -381,14 +381,14 @@ public class ConfigActor extends Actor {
 			accounts = this.settings.getSyncedSettings()
 				.getAccounts();
 			for(int i = 0; i< data.length; i++) {
-				accounts.replace((Account) data[i]);
+				accounts.update((Account) data[i]);
 			}
 			break;
 		case WRITE_DROPSERVERS:
 			dropServers = this.settings.getSyncedSettings()
 				.getDropServers();
 			for(int i = 0; i< data.length; i++) {
-				dropServers.replace((DropServer) data[i]);
+				dropServers.update((DropServer) data[i]);
 			}
 			break;
 		case WRITE_IDENTITIES:
@@ -413,14 +413,14 @@ public class ConfigActor extends Actor {
 			storageServers = this.settings.getSyncedSettings()
 				.getStorageServers();
 			for(int i = 0; i< data.length; i++) {
-				storageServers.replace((StorageServer) data[i]);
+				storageServers.update((StorageServer) data[i]);
 			}
 			break;
 		case WRITE_STORAGEVOLUMES:
 			storageVolumes = this.settings.getSyncedSettings()
 				.getStorageVolumes();
 			for(int i = 0; i< data.length; i++) {
-				storageVolumes.replace((StorageVolume) data[i]);
+				storageVolumes.update((StorageVolume) data[i]);
 			}
 			break;
 		case WRITE_SYNCEDMODULESETTINGS:

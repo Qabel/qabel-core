@@ -48,7 +48,7 @@ public class StorageServers {
 				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
 	}
 
-	public boolean replace(StorageServer storageServer) {
+	public boolean update(StorageServer storageServer) {
 		this.remove(storageServer);
 		return this.add(storageServer);
 	}
