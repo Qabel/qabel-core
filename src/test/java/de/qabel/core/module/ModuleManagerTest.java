@@ -36,12 +36,11 @@ public class ModuleManagerTest {
 	}
 
 	@Test
-	public void liveCycleTest() throws Exception {
+	public void lifeCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager();
 		mm.startModule(TestModule.class);
 		TestModule module = (TestModule) mm.getModules().values().iterator().next().getModule();
 		assertTrue(module.isInit);
-		assertFalse(module.isStarted());
 		Thread.sleep(2000);
 		assertTrue(module.isStarted());
 		mm.shutdown();
