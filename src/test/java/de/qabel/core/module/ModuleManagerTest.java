@@ -2,6 +2,8 @@ package de.qabel.core.module;
 
 import static org.junit.Assert.*;
 
+import de.qabel.ackack.event.EventEmitter;
+import de.qabel.core.drop.DropCommunicatorUtil;
 import de.qabel.core.drop.DropMessage;
 import org.junit.Test;
 
@@ -9,6 +11,10 @@ public class ModuleManagerTest {
 	static class TestModule extends Module {
 		public boolean isInit = false;
 		private boolean isRunning = false;
+
+		protected TestModule(EventEmitter emitter) {
+			super(emitter);
+		}
 
 		@Override
 		public void init() {

@@ -7,6 +7,7 @@ import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
+import de.qabel.core.module.ModuleManager;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import java.util.HashSet;
 
 public class MultiPartCryptoTest {
 
-    private EventEmitter emitter;
+    private EventEmitter emitter = new EventEmitter();
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
@@ -54,28 +55,25 @@ public class MultiPartCryptoTest {
 		}
 	}
 
-    private DropCommunicatorUtil dropController;
+    private DropCommunicatorUtil communicatorUtil;
     private Identity alice;
 
     @Before
-    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
-        emitter = new EventEmitter();
-        dropController = new DropCommunicatorUtil(emitter);
-
+    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
         loadContactsAndIdentities();
         loadDropServers();
-        dropController.start(contacts, identities, servers);
+        communicatorUtil = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
     }
 
     @After
     public void tearDown() throws InterruptedException {
-        dropController.stop();
+        communicatorUtil.stopModule();
     }
 
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
         this.sendMessage();
 		this.sendUnwantedMessage();
@@ -87,14 +85,14 @@ public class MultiPartCryptoTest {
             e.printStackTrace();
         }
 
-        DropMessage<TestObject> msg = dropController.retrieve();
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
 
         assertEquals("Test", msg.getData().getStr());
     }
 
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -110,13 +108,13 @@ public class MultiPartCryptoTest {
         }
 
 
-        DropMessage<TestObject> msg = dropController.retrieve();
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
     }
 
