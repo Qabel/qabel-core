@@ -107,7 +107,7 @@ public abstract class Persistence<T> {
 	abstract public boolean persistEntity(String id, Serializable object);
 
 	/**
-	 * Updated a previously stored entity
+	 * Updates a previously stored entity
 	 * @param id ID of the stored entity
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
@@ -165,7 +165,7 @@ public abstract class Persistence<T> {
 	}
 
 	/**
-	 * Serialized a Serializable object into an encrypted byte array
+	 * Serializes a Serializable object into an encrypted byte array
 	 * @param object Object to serialize
 	 * @param nonce Nonce for encryption
 	 * @return Encrypted serialized object
