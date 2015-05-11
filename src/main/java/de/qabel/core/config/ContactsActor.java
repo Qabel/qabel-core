@@ -15,7 +15,7 @@ public class ContactsActor extends Actor {
 	private static ContactsActor defaultContactsActor = null;
 	private Contacts contacts;
 
-	static ContactsActor getDefault() {
+	public static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
 			defaultContactsActor = new ContactsActor(new Contacts());
 		}
