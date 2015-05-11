@@ -138,9 +138,13 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
 				.getDropServers());
 		for (DropServer server : servers) {
+			Identities identitiesContainer = getIdentities();
+			Set<Identity> identities = identitiesContainer.getIdentities();
+			Contacts contactsContainer = getContacts();
+			Set<Contact> contacts = contactsContainer.getContacts();
+
 			Collection<DropMessage<?>> results = this
-					.retrieve(server.getUrl(), getIdentities().getIdentities(),
-							getContacts().getContacts());
+					.retrieve(server.getUrl(), identities, contacts);
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
