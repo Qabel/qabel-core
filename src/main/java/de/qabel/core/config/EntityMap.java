@@ -15,18 +15,18 @@ import java.util.Set;
  */
 abstract public class EntityMap<T extends Entity> implements Serializable {
 	private static final long serialVersionUID = -8004819460313825206L;
-	private final Map<String, T> entities = new HashMap<>();
+	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
 
 	/**
 	 * Returns unmodifiable set of contained contacts
 	 * 
 	 * @return Set<Contact>
 	 */
-	public Set<T> getEntities() {
+	public synchronized Set<T> getEntities() {
 		return Collections.unmodifiableSet(new HashSet<>(entities.values()));
 	}
 
-	public boolean add(T entity) {
+	public synchronized boolean add(T entity) {
 		if (this.entities.containsKey(entity.getKeyIdentifier())) {
 			return false;
 		}
@@ -36,16 +36,16 @@ abstract public class EntityMap<T extends Entity> implements Serializable {
 		}
 	}
 
-	public boolean replace(T entity) {
+	public synchronized boolean replace(T entity) {
 		this.remove(entity);
 		return this.add(entity);
 	}
 
-	public boolean remove(T entity) {
+	public synchronized boolean remove(T entity) {
 		return (entity != null && this.entities.remove(entity.getKeyIdentifier()) != null);
 	}
 
-	public boolean remove(String keyIdentifier) {
+	public synchronized boolean remove(String keyIdentifier) {
 		return (keyIdentifier != null && this.entities.remove(keyIdentifier) != null);
 	}
 
@@ -54,7 +54,7 @@ abstract public class EntityMap<T extends Entity> implements Serializable {
 	 * @param keyIdentifier
 	 * @return entity to which the key identifier is mapped or null if there is no mapping for this key identifier
 	 */
-	public T getByKeyIdentifier(String keyIdentifier) {
+	public synchronized T getByKeyIdentifier(String keyIdentifier) {
 		return this.entities.get(keyIdentifier);
 	}
 
