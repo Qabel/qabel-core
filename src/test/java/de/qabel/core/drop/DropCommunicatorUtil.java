@@ -4,9 +4,7 @@ import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.EventActor;
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.ackack.event.EventListener;
-import de.qabel.core.config.Contacts;
-import de.qabel.core.config.DropServers;
-import de.qabel.core.config.Identities;
+import de.qabel.core.config.*;
 import de.qabel.core.module.Module;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -15,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class DropCommunicatorUtil <T extends ModelObject> {
 	private final EventEmitter emitter;
 	LinkedBlockingQueue<DropMessage<T>> inputqueue = new LinkedBlockingQueue<>();
+	private ContactsActor contactsActor;
 	private EventActor actor;
 	private DropActor dropActor;
 	private Thread actorThread;
@@ -22,6 +21,7 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 	Class<?> cls;
 	public DropCommunicatorUtil(EventEmitter emitter) {
 		this.emitter = emitter;
+		this.contactsActor = ContactsActor.getDefault();
 	}
 
 	public void setCls(Class<?> cls) {
@@ -43,7 +43,7 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 			}
 		});
 		this.dropActor = new DropActor(emitter);
-		this.dropActor.setContacts(contacts);
+		this.contactsActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
 		this.dropActor.setDropServers(dropServers);
 		this.dropActor.setIdentities(identities);
 		this.actorThread = new Thread(actor, "actor");
@@ -58,6 +58,7 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 	public void stop() throws InterruptedException {
 		this.actor.stop();
 		this.dropActor.stop();
+		this.dropActor.unregister();
 		this.actorThread.join();
 		this.dropActorThread.join();
 	}
