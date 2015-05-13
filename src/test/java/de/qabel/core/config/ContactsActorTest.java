@@ -27,6 +27,8 @@ public class ContactsActorTest {
 	public void setUp() {
 		contacts = contactsFactory.create();
 		contactsActor = new ContactsActor(contacts);
+		Thread contactsActorThread = new Thread(contactsActor);
+		contactsActorThread.start();
 	}
 
 	@Test
@@ -35,12 +37,9 @@ public class ContactsActorTest {
 		contacts.add(testContactRetrieveSingle);
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.retrieveContacts(testContactRetrieveSingle.getKeyIdentifier());
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertEquals(1, receivedContacts.size());
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveSingle));
 	}
@@ -53,13 +52,10 @@ public class ContactsActorTest {
 		contacts.add(testContactRetrieveMultiple2);
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.retrieveContacts(testContactRetrieveMultiple1.getKeyIdentifier(),
 				testContactRetrieveMultiple2.getKeyIdentifier());
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveMultiple1));
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveMultiple2));
 		Assert.assertEquals(2, receivedContacts.size());
@@ -68,12 +64,9 @@ public class ContactsActorTest {
 	@Test
 	public void retrieveAllContactsTest() throws InterruptedException {
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.retrieveContacts();
 		actorThread.join();
-		contactActorThread.join();
 
 		Assert.assertTrue(contacts.getContacts().containsAll(receivedContacts));
 		Assert.assertTrue(receivedContacts.containsAll(contacts.getContacts()));
@@ -84,12 +77,9 @@ public class ContactsActorTest {
 		Contact testContactAddSingle = contactFactory.create();
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.writeContacts(testContactAddSingle);
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertTrue(contacts.getContacts().contains(testContactAddSingle));
 	}
 
@@ -99,12 +89,9 @@ public class ContactsActorTest {
 		Contact testContactAddMulti2 = contactFactory.create();
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.writeContacts(testContactAddMulti1, testContactAddMulti2);
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertTrue(contacts.getContacts().contains(testContactAddMulti1));
 		Assert.assertTrue(contacts.getContacts().contains(testContactAddMulti2));
 	}
@@ -114,12 +101,9 @@ public class ContactsActorTest {
 		Contact testContactRemoveSingle = contactFactory.create();
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.removeContacts(testContactRemoveSingle.getKeyIdentifier());
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertFalse(contacts.getContacts().contains(testContactRemoveSingle));
 	}
 
@@ -131,13 +115,10 @@ public class ContactsActorTest {
 		contacts.add(testContactRemoveMultiple2);
 
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.removeContacts(testContactRemoveMultiple1.getKeyIdentifier(),
 				testContactRemoveMultiple2.getKeyIdentifier());
 		actorThread.join();
-		contactActorThread.join();
 		Assert.assertFalse(contacts.getContacts().contains(testContactRemoveMultiple1));
 		Assert.assertFalse(contacts.getContacts().contains(testContactRemoveMultiple2));
 	}
@@ -151,12 +132,9 @@ public class ContactsActorTest {
 
 		// Retrieve new test Contact via ContactsActor
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.retrieveContacts(testContactIdentifier);
 		actorThread.join();
-		contactActorThread.join();
 		Contact testContactChanged = receivedContacts.get(0);
 
 		// Create new test DropURL
@@ -171,7 +149,6 @@ public class ContactsActorTest {
 		testContactChanged.addDrop(testDropUrl);
 		testActor.writeContacts(testContactChanged);
 		actorThread.join();
-		contactActorThread.join();
 
 		// Get changed Contact from Contacts list
 		Contact writtenContact = contacts.getByKeyIdentifier(testContactIdentifier);
@@ -191,12 +168,9 @@ public class ContactsActorTest {
 
 		// Retrieve new test Contact via ContactsActor
 		Thread actorThread = new Thread(testActor);
-		Thread contactActorThread = new Thread(contactsActor);
 		actorThread.start();
-		contactActorThread.start();
 		testActor.retrieveContacts(testContactIdentifier1, testContactIdentifier2);
 		actorThread.join();
-		contactActorThread.join();
 		Contact testContactChanged1 = receivedContacts.get(0);
 		Contact testContactChanged2 = receivedContacts.get(1);
 
@@ -213,7 +187,6 @@ public class ContactsActorTest {
 		testContactChanged2.addDrop(testDropUrl);
 		testActor.writeContacts(testContactChanged1, testContactChanged2);
 		actorThread.join();
-		contactActorThread.join();
 
 		// Get changed Contact from Contacts list
 		Contact writtenContact1 = contacts.getByKeyIdentifier(testContactIdentifier1);
