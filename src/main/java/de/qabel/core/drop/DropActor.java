@@ -8,7 +8,9 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.Responsible;
 import de.qabel.ackack.event.*;
+import de.qabel.core.EventNameConstants;
 import de.qabel.core.config.*;
 import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
@@ -48,12 +50,36 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	public DropActor(EventEmitter emitter) {
 		super(emitter);
 		this.emitter = emitter;
+		this.mContacts = new Contacts();
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 		gson = gb.create();
 		on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
+		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
+		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
+
+		ContactsActor contactsActor = ContactsActor.getDefault();
+		contactsActor.retrieveContacts(this, new Responsible() {
+			@Override
+			public void onResponse(Serializable... data) {
+				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
+				for (Contact c : receivedContacts) {
+					mContacts.add(c);
+				}
+			}
+		});
 		// registerModelObject events
+	}
+
+	/**
+	 * Unregister the DropActor from the EventEmitter. This method is mainly for testing purposes
+	 * when a DropActor shouldn't be used anymore. Usually one DropActor is used for the whole runtime.
+	 */
+	public void unregister() {
+		emitter.unregister(EVENT_ACTION_DROP_MESSAGE_SEND, this);
+		emitter.unregister(EventNameConstants.EVENT_CONTACT_ADDED, this);
+		emitter.unregister(EventNameConstants.EVENT_CONTACT_REMOVED, this);
 	}
 
 	/**
@@ -139,8 +165,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				.getDropServers());
 		for (DropServer server : servers) {
 			Collection<DropMessage<?>> results = this
-					.retrieve(server.getUrl(), getIdentities().getIdentities(),
-							getContacts().getContacts());
+					.retrieve(server.getUrl(), getIdentities().getIdentities());
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
@@ -164,15 +189,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	public void setIdentities(Identities identities) {
 		this.mIdentities = identities;
 	}
-
-	public Contacts getContacts() {
-		return mContacts;
-	}
-
-	public void setContacts(Contacts mContacts) {
-		this.mContacts = mContacts;
-	}
-
 
 	/**
 	 * Sends the message and waits for acknowledgement.
@@ -249,16 +265,14 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 *
 	 * @param url      URL where to retrieve the drop from
 	 * @param identities Identities to decrypt message with
-	 * @param contacts Contacts to check the signature with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage<?>> retrieve(URL url, Collection<Identity> identities,
-											   Collection<Contact> contacts) {
+	public Collection<DropMessage<?>> retrieve(URL url, Collection<Identity> identities) {
 		DropHTTP http = new DropHTTP();
 		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
 
-		List<Contact> ccc = new ArrayList<Contact>(contacts);
+		List<Contact> ccc = new ArrayList<Contact>(mContacts.getContacts());
 		Collections.shuffle(ccc, new SecureRandom());
 
 		for (byte[] cipherMessage : cipherMessages.getData()) {
@@ -293,7 +307,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 					break;
 				}
 				if (dropMessage != null) {
-					for (Contact c : contacts) {
+					for (Contact c : ccc) {
 						if (c.getKeyIdentifier().equals(dropMessage.getSenderKeyId())){
 							if (dropMessage.registerSender(c)){
 								plainMessages.add(dropMessage);
@@ -310,13 +324,27 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 
 	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
-		if (EVENT_ACTION_DROP_MESSAGE_SEND.equals(event) == false) {
-			return;
-		}
-		try {
-			send((DropMessage<?>) data[0], (Collection) data[1]);
-		} catch (QblDropPayloadSizeException e) {
-			logger.warn("Failed to send message", e);
+		switch (event) {
+			case EVENT_ACTION_DROP_MESSAGE_SEND:
+				try {
+					send((DropMessage<?>) data[0], (Collection) data[1]);
+				} catch (QblDropPayloadSizeException e) {
+					logger.warn("Failed to send message", e);
+				}
+				break;
+			case EventNameConstants.EVENT_CONTACT_ADDED:
+				if (data[0] instanceof Contact) {
+					mContacts.add((Contact) data[0]);
+				}
+				break;
+			case EventNameConstants.EVENT_CONTACT_REMOVED:
+				if (data[0] instanceof String) {
+					mContacts.remove((String) data[0]);
+				}
+				break;
+			default:
+				logger.debug("Received unknown event: " + event);
+				break;
 		}
 	}
 
