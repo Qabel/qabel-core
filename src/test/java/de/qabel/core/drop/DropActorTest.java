@@ -22,6 +22,7 @@ public class DropActorTest {
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
+	private Thread contactsActorThread;
 
     static class TestMessage extends ModelObject {
         public String content;
@@ -33,7 +34,9 @@ public class DropActorTest {
     
     @Before
     public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
-        emitter = new EventEmitter();
+        contactsActorThread = new Thread(ContactsActor.getDefault());
+        contactsActorThread.start();
+        emitter = EventEmitter.getDefault();
     	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
     	recipient = new Identity("Bob", null, new QblECKeyPair());
@@ -64,6 +67,7 @@ public class DropActorTest {
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
+		ContactsActor.getDefault().stop();
     }
 
     @Test
