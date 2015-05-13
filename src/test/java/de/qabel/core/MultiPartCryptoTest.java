@@ -27,6 +27,8 @@ public class MultiPartCryptoTest {
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
+    private Thread contactsActorThread;
+
 
     static class TestObject extends ModelObject {
         public TestObject() { }
@@ -59,7 +61,9 @@ public class MultiPartCryptoTest {
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
-        emitter = new EventEmitter();
+        contactsActorThread = new Thread(ContactsActor.getDefault());
+        contactsActorThread.start();
+        emitter = EventEmitter.getDefault();
         dropController = new DropCommunicatorUtil(emitter);
 
         loadContactsAndIdentities();
