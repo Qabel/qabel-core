@@ -124,6 +124,5 @@ public class ContactsActor extends Actor {
 					break;
 			}
 		}
-		stop();
 	}
 }
