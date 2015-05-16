@@ -5,11 +5,13 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.event.EventActor;
+import de.qabel.core.EventNameConstants;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.qabel.ackack.Actor;
 import de.qabel.ackack.Responsible;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
@@ -21,6 +23,7 @@ public class ContactsActorTest {
 	Contacts contacts;
 
 	ContactsActor contactsActor;
+	private Thread actorThread;
 	final TestActor testActor = new TestActor();
 
 	@Before
@@ -29,15 +32,14 @@ public class ContactsActorTest {
 		contactsActor = new ContactsActor(contacts);
 		Thread contactsActorThread = new Thread(contactsActor);
 		contactsActorThread.start();
+		actorThread = new Thread(testActor);
+		actorThread.start();
 	}
 
 	@Test
 	public void retrieveSingleContactTest() throws InterruptedException {
 		Contact testContactRetrieveSingle = contactFactory.create();
 		contacts.add(testContactRetrieveSingle);
-
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.retrieveContacts(testContactRetrieveSingle.getKeyIdentifier());
 		actorThread.join();
 		Assert.assertEquals(1, receivedContacts.size());
@@ -51,8 +53,6 @@ public class ContactsActorTest {
 		contacts.add(testContactRetrieveMultiple1);
 		contacts.add(testContactRetrieveMultiple2);
 
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.retrieveContacts(testContactRetrieveMultiple1.getKeyIdentifier(),
 				testContactRetrieveMultiple2.getKeyIdentifier());
 		actorThread.join();
@@ -63,8 +63,6 @@ public class ContactsActorTest {
 
 	@Test
 	public void retrieveAllContactsTest() throws InterruptedException {
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.retrieveContacts();
 		actorThread.join();
 
@@ -76,8 +74,6 @@ public class ContactsActorTest {
 	public void addSingleContactTest() throws InterruptedException {
 		Contact testContactAddSingle = contactFactory.create();
 
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.writeContacts(testContactAddSingle);
 		actorThread.join();
 		Assert.assertTrue(contacts.getContacts().contains(testContactAddSingle));
@@ -88,8 +84,6 @@ public class ContactsActorTest {
 		Contact testContactAddMulti1 = contactFactory.create();
 		Contact testContactAddMulti2 = contactFactory.create();
 
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.writeContacts(testContactAddMulti1, testContactAddMulti2);
 		actorThread.join();
 		Assert.assertTrue(contacts.getContacts().contains(testContactAddMulti1));
@@ -100,8 +94,6 @@ public class ContactsActorTest {
 	public void removeSingleContactTest() throws InterruptedException {
 		Contact testContactRemoveSingle = contactFactory.create();
 
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.removeContacts(testContactRemoveSingle.getKeyIdentifier());
 		actorThread.join();
 		Assert.assertFalse(contacts.getContacts().contains(testContactRemoveSingle));
@@ -114,8 +106,6 @@ public class ContactsActorTest {
 		contacts.add(testContactRemoveMultiple1);
 		contacts.add(testContactRemoveMultiple2);
 
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.removeContacts(testContactRemoveMultiple1.getKeyIdentifier(),
 				testContactRemoveMultiple2.getKeyIdentifier());
 		actorThread.join();
@@ -131,8 +121,6 @@ public class ContactsActorTest {
 		contacts.add(testContactOriginal);
 
 		// Retrieve new test Contact via ContactsActor
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.retrieveContacts(testContactIdentifier);
 		actorThread.join();
 		Contact testContactChanged = receivedContacts.get(0);
@@ -167,8 +155,6 @@ public class ContactsActorTest {
 		contacts.add(testContactOriginal2);
 
 		// Retrieve new test Contact via ContactsActor
-		Thread actorThread = new Thread(testActor);
-		actorThread.start();
 		testActor.retrieveContacts(testContactIdentifier1, testContactIdentifier2);
 		actorThread.join();
 		Contact testContactChanged1 = receivedContacts.get(0);
@@ -197,23 +183,40 @@ public class ContactsActorTest {
 		Assert.assertTrue(writtenContact2.getDropUrls().contains(testDropUrl));
 	}
 
-	class TestActor extends Actor {
+	class TestActor extends EventActor implements de.qabel.ackack.event.EventListener {
+
+		private int numExpectedEvents;
+		private int numReceivedEvents;
+
+		public TestActor() {
+			on(EventNameConstants.EVENT_CONTACT_ADDED, this);
+			on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
+		}
+
 		public void retrieveContacts(String...data) {
 			contactsActor.retrieveContacts(this, new Responsible() {
 				@Override
 				public void onResponse(Serializable... data) {
-					receivedContacts = new ArrayList<Contact>(Arrays.asList((Contact[])data));
+					receivedContacts = new ArrayList<>(Arrays.asList((Contact[])data));
 					stop();
 				}
 			}, data);
 		}
 		public void writeContacts(Contact...data) {
+			numExpectedEvents = data.length;
 			contactsActor.writeContacts(data);
-			stop();
 		}
 		public void removeContacts(String...data) {
+			numExpectedEvents = data.length;
 			contactsActor.removeContacts(data);
-			stop();
+		}
+
+		@Override
+		public void onEvent(String event, MessageInfo info, Object... data) {
+			numReceivedEvents++;
+			if (numReceivedEvents == numExpectedEvents) {
+				stop();
+			}
 		}
 	}
 }
