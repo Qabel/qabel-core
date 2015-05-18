@@ -152,13 +152,11 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	private void createTables(){
-		try {
-			String sql = "CREATE TABLE IF NOT EXISTS CONFIG " +
-					"(ID TEXT PRIMARY KEY NOT NULL," +
-					"DATA TEXT NOT NULL)";
-			Statement statement = c.createStatement();
+		String sql = "CREATE TABLE IF NOT EXISTS CONFIG " +
+				"(ID TEXT PRIMARY KEY NOT NULL," +
+				"DATA TEXT NOT NULL)";
+		try (Statement statement = c.createStatement()){
 			statement.executeUpdate(sql);
-			statement.close();
 		} catch (SQLException e) {
 			logger.error("Cannot create CONFIG table!", e);
 		}
@@ -172,15 +170,14 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("Name cannot be empty!");
 		}
 		byte[] value = null;
-		try {
-			String sql = "SELECT DATA FROM CONFIG WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "SELECT DATA FROM CONFIG WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setString(1, name);
-			ResultSet rs = statement.executeQuery();
-			if (!rs.isClosed()) {
-				value = rs.getBytes(STR_DATA);
+			try (ResultSet rs = statement.executeQuery()) {
+				if (!rs.isClosed()) {
+					value = rs.getBytes(STR_DATA);
+				}
 			}
-			statement.close();
 		} catch (SQLException e) {
 			logger.info("Cannot select " + name + " from CONFIG database!", e);
 		}
@@ -194,14 +191,12 @@ public class SQLitePersistence extends Persistence<String> {
 		if (name.length() == 0) {
 			throw new IllegalArgumentException("Name cannot be empty!");
 		}
-		try {
-			String sql = "INSERT INTO CONFIG " +
-					" VALUES(?, ?)";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "INSERT INTO CONFIG " +
+				" VALUES(?, ?)";
+		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.setBytes(2, data);
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			logger.info("Cannot insert " + name + " into CONFIG database!", e);
 			return false;
@@ -216,12 +211,10 @@ public class SQLitePersistence extends Persistence<String> {
 		if (name.length() == 0) {
 			throw new IllegalArgumentException("Name cannot be empty!");
 		}
-		try {
-			String sql = "DELETE FROM CONFIG WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "DELETE FROM CONFIG WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			statement.setString(1, name);
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			logger.info("Cannot delete " + name + " from CONFIG database!", e);
 			return false;
@@ -237,15 +230,14 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		byte[] nonce = null;
-		try {
-			String sql = "SELECT NONCE FROM " +
-					"\"" + cls.getCanonicalName() + "\"" +
-					" WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "SELECT NONCE FROM " +
+				"\"" + cls.getCanonicalName() + "\"" +
+				" WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			statement.setString(1, id);
-			ResultSet rs = statement.executeQuery();
-			nonce = rs.getBytes("NONCE");
-			statement.close();
+			try (ResultSet rs = statement.executeQuery()) {
+				nonce = rs.getBytes("NONCE");
+			}
 		} catch (SQLException e) {
 			logger.error("Cannot get nonce!", e);
 		}
@@ -260,30 +252,26 @@ public class SQLitePersistence extends Persistence<String> {
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		try {
-			String sql = "CREATE TABLE IF NOT EXISTS " +
-					"\"" + object.getClass().getCanonicalName() + "\"" +
-					"(ID TEXT PRIMARY KEY NOT NULL," +
-					"NONCE TEXT NOT NULL," +
-					"BLOB BLOB NOT NULL)";
-			Statement statement = c.createStatement();
+		String sql = "CREATE TABLE IF NOT EXISTS " +
+				"\"" + object.getClass().getCanonicalName() + "\"" +
+				"(ID TEXT PRIMARY KEY NOT NULL," +
+				"NONCE TEXT NOT NULL," +
+				"BLOB BLOB NOT NULL)";
+		try (Statement statement = c.createStatement()){
 			statement.executeUpdate(sql);
-			statement.close();
 		} catch (SQLException e) {
 			logger.error("Cannot create table!", e);
 		}
 
-		try {
+		sql = "INSERT INTO " +
+				"\"" + object.getClass().getCanonicalName() + "\"" +
+				" VALUES(?, ?, ?)";
+		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			byte[] nonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
-			String sql = "INSERT INTO " +
-					"\"" + object.getClass().getCanonicalName() + "\"" +
-					" VALUES(?, ?, ?)";
-			PreparedStatement statement = c.prepareStatement(sql);
 			statement.setString(1, id);
 			statement.setBytes(2, nonce);
 			statement.setBytes(3, serialize(id, object, nonce));
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot persist or already persisted entity!", e);
 			throw new IllegalArgumentException("Cannot persist or already persisted entity!");
@@ -299,16 +287,14 @@ public class SQLitePersistence extends Persistence<String> {
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		try {
-			String sql = "UPDATE " +
-					"\"" + object.getClass().getCanonicalName() + "\"" +
-					"SET BLOB = ? " +
-					" WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "UPDATE " +
+				"\"" + object.getClass().getCanonicalName() + "\"" +
+				"SET BLOB = ? " +
+				" WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setBytes(1, serialize(id, object, getNonce(id, object.getClass())));
 			statement.setString(2, id);
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			logger.error("Cannot update entity!", e);
 			return false;
@@ -324,14 +310,12 @@ public class SQLitePersistence extends Persistence<String> {
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		try {
-			String sql = "DELETE FROM " +
-					"\"" + cls.getCanonicalName() + "\"" +
-					" WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "DELETE FROM " +
+				"\"" + cls.getCanonicalName() + "\"" +
+				" WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			statement.setString(1, id);
 			statement.executeUpdate();
-			statement.close();
 		} catch (SQLException e) {
 			logger.error("Cannot remove entity!", e);
 			return false;
@@ -348,14 +332,14 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		Object object = null;
-		try {
-			String sql = "SELECT BLOB, NONCE FROM " +
-					"\"" + cls.getCanonicalName() + "\"" +
-					" WHERE ID = ?";
-			PreparedStatement statement = c.prepareStatement(sql);
+		String sql = "SELECT BLOB, NONCE FROM " +
+				"\"" + cls.getCanonicalName() + "\"" +
+				" WHERE ID = ?";
+		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setString(1, id);
-			ResultSet rs = statement.executeQuery();
-			object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
+			try (ResultSet rs = statement.executeQuery()) {
+				object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
+			}
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
 		}
@@ -368,13 +352,13 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		List<Object> objects = new ArrayList<>();
-		try {
-			String sql = "SELECT ID, BLOB, NONCE FROM " +
-					"\"" + cls.getCanonicalName() + "\"";
-			Statement statement = c.createStatement();
-			ResultSet rs = statement.executeQuery(sql);
-			while (rs.next()) {
-				objects.add(deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
+		String sql = "SELECT ID, BLOB, NONCE FROM " +
+				"\"" + cls.getCanonicalName() + "\"";
+		try (Statement statement = c.createStatement()){
+			try (ResultSet rs = statement.executeQuery(sql)) {
+				while (rs.next()) {
+					objects.add(deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
+				}
 			}
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entities!", e);
@@ -387,12 +371,10 @@ public class SQLitePersistence extends Persistence<String> {
 		if (cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
-		try {
-			String sql = "DROP TABLE " +
-					"\"" + cls.getCanonicalName() + "\"";
-			Statement statement = c.createStatement();
+		String sql = "DROP TABLE " +
+				"\"" + cls.getCanonicalName() + "\"";
+		try (Statement statement = c.createStatement()){
 			statement.execute(sql);
-			statement.close();
 		} catch (SQLException e) {
 			logger.error("Cannot drop table!" + e);
 			return false;
