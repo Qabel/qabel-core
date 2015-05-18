@@ -36,3 +36,4 @@
 *.sublime-*
 .nb-gradle
 log/
+qabel-core.sqlite
