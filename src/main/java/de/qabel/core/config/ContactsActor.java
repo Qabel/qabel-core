@@ -44,6 +44,13 @@ public class ContactsActor extends Actor {
 		this.persistence = new SQLitePersistence();
 		this.contacts = contacts;
 		this.eventEmitter = EventEmitter.getDefault();
+
+		List persistenceEntities = persistence.getEntities(Contact.class);
+
+		for (Object object: persistenceEntities) {
+			Contact contact = (Contact) object;
+			contacts.add(contact);
+		}
 	}
 
 	/**
@@ -57,14 +64,7 @@ public class ContactsActor extends Actor {
 	}
 
 	public ContactsActor () {
-		this.persistence = new SQLitePersistence();
-		this.contacts = new Contacts();
-		List a = persistence.getEntities(Contact.class);
-
-		for (Object o: a) {
-			Contact c = (Contact) o;
-			contacts.add(c);
-		}
+		this(new Contacts());
 	}
 
 	/**
@@ -110,31 +110,39 @@ public class ContactsActor extends Actor {
 		synchronized (contacts) {
 			switch (info.getType()) {
 				case WRITE_CONTACTS:
-					Contact contact;
-					for (int i = data.length - 1; i >= 0; i--) {
-						contact = (Contact) data[i];
+					for (Object object : data) {
+						Contact contact = (Contact) object;
 						this.contacts.replace(contact);
+						if (persistence.getEntity(contact.getPersistenceID(), Contact.class) == null) {
+							persistence.persistEntity(contact.getPersistenceID(), contact);
+						}
+						else {
+							persistence.updateEntity(contact.getPersistenceID(), contact);
+						}
 						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_ADDED, contact);
 					}
 					break;
 				case RETRIEVE_CONTACTS:
 					Contact[] contactsArray;
 					if(data.length > 0) {
-						ArrayList<Contact> contactsList = new ArrayList<Contact>();
-						for (int i = data.length - 1; i >= 0; i--) {
-							contactsList.add(this.contacts.getByKeyIdentifier((String) data[i]));
+						ArrayList<Contact> contactsList = new ArrayList<>();
+						for (Object object : data) {
+							contactsList.add(this.contacts.getByKeyIdentifier((String) object));
 						}
-						contactsArray = (Contact[]) contactsList.toArray(new Contact[0]);
+						contactsArray = contactsList.toArray(new Contact[0]);
 					} else {
 						contactsArray = this.contacts.getContacts().toArray(new Contact[0]);
 					}
 					info.response((Serializable[]) contactsArray);
 					break;
 				case REMOVE_CONTACTS:
-					for (int i = data.length - 1; i >= 0; i--) {
-						persistence.removeEntity(contacts.getByKeyIdentifier(data[i].toString()).getPersistenceID(), Contact.class);
-						this.contacts.remove(data[i].toString());
-						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_REMOVED, data[i].toString());
+					for (Object object: data) {
+						Contact c = contacts.getByKeyIdentifier(object.toString());
+						if (c != null) {
+							persistence.removeEntity(c.getPersistenceID(), Contact.class);
+						}
+						this.contacts.remove(object.toString());
+						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_REMOVED, object.toString());
 					}
 					break;
 			}
