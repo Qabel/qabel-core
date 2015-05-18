@@ -45,6 +45,10 @@ public class Settings {
 		return this.syncedSettings;
 	}
 
+	public void setSyncedSettings(SyncedSettings syncedSettings) {
+		this.syncedSettings = syncedSettings;
+	}
+
 	/**
 	 * <pre>
 	 *           1     0..*

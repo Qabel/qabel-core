@@ -37,6 +37,11 @@ public class StorageVolumes {
 		return this.storageVolumes.remove(storageVolume);
 	}
 
+	public boolean update(StorageVolume storageVolume) {
+		this.remove(storageVolume);
+		return this.add(storageVolume);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

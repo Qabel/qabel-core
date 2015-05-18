@@ -32,6 +32,11 @@ public class Accounts {
 		return this.accounts.remove(account);
 	}
 
+	public boolean update(Account account) {
+		this.remove(account);
+		return this.add(account);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
