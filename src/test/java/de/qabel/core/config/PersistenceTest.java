@@ -42,8 +42,7 @@ public class PersistenceTest {
 		Assert.assertTrue(persistence.persistEntity("2", pto2));
 
 		List<Object> objects = persistence.getEntities(PersistenceTestObject.class);
-		System.out.println(objects.size());
-		Assert.assertTrue(objects.size() == 2);
+		Assert.assertEquals(2, objects.size());
 		Assert.assertTrue(objects.contains(pto));
 		Assert.assertTrue(objects.contains(pto2));
 	}
