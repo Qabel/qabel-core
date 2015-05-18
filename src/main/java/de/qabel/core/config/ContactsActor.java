@@ -17,7 +17,7 @@ public class ContactsActor extends Actor {
 	private Contacts contacts;
 	private Persistence persistence;
 
-	static ContactsActor getDefault() {
+	public static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
 			defaultContactsActor = new ContactsActor();
 		}
