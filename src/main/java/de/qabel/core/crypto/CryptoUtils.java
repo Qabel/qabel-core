@@ -99,7 +99,7 @@ public class CryptoUtils {
 	 *            Number of random bytes
 	 * @return byte[ ] with random bytes
 	 */
-	byte[] getRandomBytes(int numBytes) {
+	public byte[] getRandomBytes(int numBytes) {
 		byte[] ranBytes = new byte[numBytes];
 		secRandom.nextBytes(ranBytes);
 		return ranBytes;
@@ -523,7 +523,7 @@ public class CryptoUtils {
 	 * @return encrypted plaintext
 	 * @throws org.bouncycastle.crypto.InvalidCipherTextException on encryption errors
 	 */
-	byte[] encrypt(KeyParameter key, byte[] nonce, byte[] plaintext, byte[] associatedData) throws InvalidCipherTextException {
+	public byte[] encrypt(KeyParameter key, byte[] nonce, byte[] plaintext, byte[] associatedData) throws InvalidCipherTextException {
 		AEADParameters params = new AEADParameters(key, MAC_BIT, nonce, associatedData);
 		GCMBlockCipher gcm = new GCMBlockCipher(new AESEngine());
 		gcm.init(true, params);
@@ -543,7 +543,7 @@ public class CryptoUtils {
 	 * @return encrypted ciphertext
 	 * @throws org.bouncycastle.crypto.InvalidCipherTextException on decryption errors
 	 */
-	byte[] decrypt(KeyParameter key, byte[] nonce, byte[] ciphertext, byte[] associatedData) throws InvalidCipherTextException {
+	public byte[] decrypt(KeyParameter key, byte[] nonce, byte[] ciphertext, byte[] associatedData) throws InvalidCipherTextException {
 		AEADParameters params = new AEADParameters(key, MAC_BIT, nonce, associatedData);
 		GCMBlockCipher gcm = new GCMBlockCipher(new AESEngine());
 		gcm.init(false, params);

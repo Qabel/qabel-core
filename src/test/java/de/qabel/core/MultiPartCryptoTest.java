@@ -23,7 +23,9 @@ import java.util.HashSet;
 
 public class MultiPartCryptoTest {
 
-    private EventEmitter emitter;
+	private final static char[] encryptionPassword = "qabel".toCharArray();
+
+	private EventEmitter emitter;
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
@@ -61,6 +63,7 @@ public class MultiPartCryptoTest {
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
+        Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
         emitter = EventEmitter.getDefault();

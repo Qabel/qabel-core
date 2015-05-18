@@ -4,6 +4,7 @@ package de.qabel.core.config;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#account
  */
 public class Account extends SyncSettingItem {
+	private static final long serialVersionUID = -6902585443982494539L;
 	/**
 	 * Provider of the account
 	 * Field name in serialized json: "provider"

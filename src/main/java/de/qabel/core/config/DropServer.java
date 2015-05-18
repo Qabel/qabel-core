@@ -6,6 +6,7 @@ import java.net.URL;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#drop-server
  */
 public class DropServer extends SyncSettingItem {
+	private static final long serialVersionUID = 6784516352213179983L;
 	/**
 	 * URL to the DropServer without the drop id.
 	 * Field name in serialized json: "url"

@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +14,8 @@ import com.google.gson.annotations.SerializedName;
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
  */
-public class LocalSettings {
-
+public class LocalSettings implements Serializable {
+	private static final long serialVersionUID = 2524933619654534515L;
 	private Set<LocaleModuleSettings> localeModuleSettings;
 	/**
 	 * Poll interval of the client

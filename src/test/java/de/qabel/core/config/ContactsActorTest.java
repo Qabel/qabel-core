@@ -17,6 +17,7 @@ import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 
 public class ContactsActorTest {
+	private final static char[] encryptionPassword = "qabel".toCharArray();
 	ArrayList<Contact> receivedContacts = null;
 	ContactTestFactory contactFactory = new ContactTestFactory();
 	ContactsTestFactory contactsFactory = new ContactsTestFactory();
@@ -28,6 +29,7 @@ public class ContactsActorTest {
 
 	@Before
 	public void setUp() {
+		Persistence.setPassword(encryptionPassword);
 		contacts = contactsFactory.create();
 		contactsActor = new ContactsActor(contacts);
 		Thread contactsActorThread = new Thread(contactsActor);

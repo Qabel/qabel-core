@@ -7,6 +7,8 @@ import java.util.Set;
  */
 
 public class Identities extends EntityMap<Identity> {
+	private static final long serialVersionUID = -1644016734454696766L;
+
 	/**
 	 * Get an unmodifiable list of stored instances of Identity
 	 * @return unmodifiable set of Identity

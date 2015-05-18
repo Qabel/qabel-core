@@ -12,7 +12,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void accountHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new AccountEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new AccountEquivalentTestFactory(), config);
 	}
 
 	@Test
@@ -31,8 +34,9 @@ public class ConfigHashCodeTest {
 	public void dropServerHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
-		.overrideFactory("url", new UrlTestFactory())
-		.build();
+			.ignoreProperty("serialVersionUID")
+			.overrideFactory("url", new UrlTestFactory())
+			.build();
 		tester.testHashCodeMethod(new DropServerEquivalentTestFactory(), config);
 	}
 
@@ -51,8 +55,9 @@ public class ConfigHashCodeTest {
 	public void storageServerHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
-		.overrideFactory("url", new UrlTestFactory())
-		.build();
+			.ignoreProperty("serialVersionUID")
+			.overrideFactory("url", new UrlTestFactory())
+			.build();
 		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
 	}
 
@@ -60,6 +65,7 @@ public class ConfigHashCodeTest {
 	public void storageVolumeHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
 			.overrideFactory("storageServer", new StorageServerTestFactory())
 			.build();
 		tester.testHashCodeMethod(new StorageVolumeEquivalentTestFactory(), config);
@@ -89,7 +95,10 @@ public class ConfigHashCodeTest {
 	@Test
 	public void identitiesHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory());
+		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
+			.build();
+		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory(), config);
 	}
 
 	@Test
@@ -108,6 +117,7 @@ public class ConfigHashCodeTest {
 	public void localSettingsHashCodeTest() {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
+			.ignoreProperty("serialVersionUID")
 			.ignoreProperty("dateFormat")
 			.build();
 		tester.testHashCodeMethod(new LocalSettingsEquivalentTestFactory(), config);
