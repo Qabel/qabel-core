@@ -2,6 +2,7 @@ package de.qabel.core.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
@@ -14,10 +15,11 @@ import de.qabel.ackack.Responsible;
 public class ContactsActor extends Actor {
 	private static ContactsActor defaultContactsActor = null;
 	private Contacts contacts;
+	private Persistence persistence;
 
 	static ContactsActor getDefault() {
 		if (defaultContactsActor == null) {
-			defaultContactsActor = new ContactsActor(new Contacts());
+			defaultContactsActor = new ContactsActor();
 		}
 		return defaultContactsActor;
 	}
@@ -28,6 +30,18 @@ public class ContactsActor extends Actor {
 
 	public ContactsActor (Contacts contacts) {
 		this.contacts = contacts;
+		this.persistence = new SQLitePersistence();
+	}
+
+	public ContactsActor () {
+		this.persistence = new SQLitePersistence();
+		this.contacts = new Contacts();
+		List a = persistence.getEntities(Contact.class);
+
+		for (Object o: a) {
+			Contact c = (Contact) o;
+			contacts.add(c);
+		}
 	}
 
 	/**
@@ -76,6 +90,7 @@ public class ContactsActor extends Actor {
 			for (int i = data.length-1; i>=0; i--) {
 				contact = (Contact) data[i];
 				this.contacts.replace(contact);
+				persistence.persistEntity(contact.getPersistenceID(), contact);
 			}
 			break;
 		case RETRIEVE_CONTACTS:
@@ -94,6 +109,7 @@ public class ContactsActor extends Actor {
 			break;
 		case REMOVE_CONTACTS:
 			for (int i = data.length-1; i>=0; i--) {
+				persistence.removeEntity(contacts.getByKeyIdentifier(data[i].toString()).getPersistenceID(), Contact.class);
 				this.contacts.remove(data[i].toString());
 			}
 			break;
