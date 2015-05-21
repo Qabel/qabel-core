@@ -277,7 +277,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public boolean updateEntity(Persistable object) {
+	boolean updateEntity(Persistable object) {
 		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -295,6 +295,16 @@ public class SQLitePersistence extends Persistence<String> {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean updateOrPersistEntity(Persistable object) {
+		if (getEntity(object.getPersistenceID(), object.getClass()) == null) {
+			return persistEntity(object);
+		}
+		else {
+			return updateEntity(object);
+		}
 	}
 
 	@Override

@@ -110,8 +110,14 @@ public abstract class Persistence<T> {
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract public boolean updateEntity(Persistable object);
+	abstract boolean updateEntity(Persistable object);
 
+	/**
+	 * Updates a previously stored entity or persist a new entity
+	 * @param object Entity to replace stored entity with
+	 * @return Result of the operation
+	 */
+	abstract public boolean updateOrPersistEntity(Persistable object);
 
 	/**
 	 * Removes a persisted entity
