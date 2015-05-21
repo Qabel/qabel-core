@@ -1,14 +1,10 @@
 package de.qabel.core.config;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * EntityMaps provide funcionality to lookup an Enity based
+ * EntityMaps provide functionality to lookup an Entity based
  * on its key identifier.
  * 
  * @see Entity
@@ -27,18 +23,10 @@ abstract public class EntityMap<T extends Entity> implements Serializable {
 	}
 
 	public synchronized boolean add(T entity) {
-		if (this.entities.containsKey(entity.getKeyIdentifier())) {
+		if (this.entities.put(entity.getKeyIdentifier(), entity) == null) {
 			return false;
 		}
-		else {
-			this.entities.put(entity.getKeyIdentifier(), entity);
-			return true;
-		}
-	}
-
-	public synchronized boolean replace(T entity) {
-		this.remove(entity);
-		return this.add(entity);
+		return true;
 	}
 
 	public synchronized boolean remove(T entity) {

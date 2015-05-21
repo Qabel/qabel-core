@@ -1,8 +1,6 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#drop-servers
@@ -15,22 +13,25 @@ public class DropServers {
 	 *           dropServers        &gt;       dropServer
 	 * </pre>
 	 */
-	private final Set<DropServer> dropServers = new HashSet<DropServer>();
+	private final Map<String, DropServer> dropServers = new HashMap<>();
 
 	/**
 	 * @return Returns unmodifiable set of contained drop servers
 	 */
 	public Set<DropServer> getDropServers() {
-		return Collections.unmodifiableSet(this.dropServers);
+		return Collections.unmodifiableSet(new HashSet<>(this.dropServers.values()));
 	}
 	
 	/**
-	 * Adds a drop server.
-	 * @param dropServer DropServer to add.
-	 * @return true if successfully added, false if already contained.
+	 * Adds or updates a drop server.
+	 * @param dropServer DropServer to add or update.
+	 * @return True if newly added, false if updated
 	 */
 	public boolean add(DropServer dropServer) {
-		return this.dropServers.add(dropServer);
+		if (this.dropServers.put(dropServer.getPersistenceID(), dropServer) == null) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -39,12 +40,10 @@ public class DropServers {
 	 * @return true if dropServer was contained in list, false if not.
 	 */
 	public boolean remove(DropServer dropServer) {
-		return this.dropServers.remove(dropServer);
-	}
-
-	public boolean update(DropServer dropServer) {
-		this.remove(dropServer);
-		return this.add(dropServer);
+		if (this.dropServers.remove(dropServer.getPersistenceID()) == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

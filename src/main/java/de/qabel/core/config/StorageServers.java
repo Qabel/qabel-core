@@ -11,14 +11,14 @@ import java.util.HashSet;
  */
 public class StorageServers {
 
-	private final Map<String,StorageServer> storageServers = new HashMap<String,StorageServer>();
+	private final Map<String, StorageServer> storageServers = new HashMap<>();
 
 	/**
 	 * Returns an unmodifiable set of contained storage servers
 	 * @return Set<StorageServer>
 	 */
 	public Set<StorageServer> getStorageServers() {
-		return Collections.unmodifiableSet(new HashSet<StorageServer>(this.storageServers.values()));
+		return Collections.unmodifiableSet(new HashSet<>(this.storageServers.values()));
 	}
 	
 	protected StorageServer getStorageServerByUrl(String serverUrl) {
@@ -28,14 +28,13 @@ public class StorageServers {
 	/**
 	 * Adds a storage server
 	 * @param storageServer StorageServer to add.
-	 * @return true if successfully added, false if already contained
+	 * @return true if newly added, false if updated
 	 */
 	public boolean add(StorageServer storageServer) {
-		if (this.storageServers.containsValue(storageServer)) {
-			return false;
+		if (this.storageServers.put(storageServer.getUrl().toString(), storageServer) == null) {
+			return true;
 		}
-		this.storageServers.put(storageServer.getUrl().toString(), storageServer);
-		return true;
+		return false;
 	}
 
 	/**
@@ -46,11 +45,6 @@ public class StorageServers {
 	public boolean remove(StorageServer storageServer) {
 		return storageServer != null
 				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
-	}
-
-	public boolean update(StorageServer storageServer) {
-		this.remove(storageServer);
-		return this.add(storageServer);
 	}
 
 	@Override
