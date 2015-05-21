@@ -2,7 +2,6 @@ package de.qabel.core.config;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
@@ -45,11 +44,8 @@ public class ContactsActor extends Actor {
 		this.contacts = contacts;
 		this.eventEmitter = EventEmitter.getDefault();
 
-		List persistenceEntities = persistence.getEntities(Contact.class);
-
-		for (Object object: persistenceEntities) {
-			Contact contact = (Contact) object;
-			contacts.add(contact);
+		for (Object object: persistence.getEntities(Contact.class)) {
+			contacts.add((Contact) object);
 		}
 	}
 
@@ -112,13 +108,8 @@ public class ContactsActor extends Actor {
 				case WRITE_CONTACTS:
 					for (Object object : data) {
 						Contact contact = (Contact) object;
-						this.contacts.replace(contact);
-						if (persistence.getEntity(contact.getPersistenceID(), Contact.class) == null) {
-							persistence.persistEntity(contact.getPersistenceID(), contact);
-						}
-						else {
-							persistence.updateEntity(contact.getPersistenceID(), contact);
-						}
+						this.contacts.add(contact);
+						persistence.updateOrPersistEntity(contact);
 						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_ADDED, contact);
 					}
 					break;
