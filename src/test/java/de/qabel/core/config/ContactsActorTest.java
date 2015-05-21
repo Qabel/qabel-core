@@ -31,14 +31,6 @@ public class ContactsActorTest {
 		contactsActor = new ContactsActor();
 		Thread contactsActorThread = new Thread(contactsActor);
 		contactsActorThread.start();
-		actorThread = new Thread(testActor);
-		actorThread.start();
-	}
-
-	private void restartActor() {
-		testActor.resetNumReceivedEvents();
-		actorThread = new Thread(testActor);
-		actorThread.start();
 	}
 
 	@Test
@@ -46,11 +38,7 @@ public class ContactsActorTest {
 		Contact testContactRetrieveSingle = contactFactory.create();
 
 		testActor.writeContacts(testContactRetrieveSingle);
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts(testContactRetrieveSingle.getKeyIdentifier());
-		actorThread.join();
 
 		Assert.assertEquals(1, receivedContacts.size());
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveSingle));
@@ -62,12 +50,8 @@ public class ContactsActorTest {
 		Contact testContactRetrieveMultiple2 = contactFactory.create();
 
 		testActor.writeContacts(testContactRetrieveMultiple1, testContactRetrieveMultiple2);
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts(testContactRetrieveMultiple1.getKeyIdentifier(),
 				testContactRetrieveMultiple2.getKeyIdentifier());
-		actorThread.join();
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveMultiple1));
 		Assert.assertTrue(receivedContacts.contains(testContactRetrieveMultiple2));
 		Assert.assertEquals(2, receivedContacts.size());
@@ -85,11 +69,7 @@ public class ContactsActorTest {
 		contacts.add(testContactRetrieveAll3);
 
 		testActor.writeContacts(testContactRetrieveAll1, testContactRetrieveAll2, testContactRetrieveAll3);
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts();
-		actorThread.join();
 
 		Assert.assertTrue(receivedContacts.containsAll(contacts.getContacts()));
 	}
@@ -101,15 +81,8 @@ public class ContactsActorTest {
 		contacts.add(testContactRemoveSingle);
 
 		testActor.writeContacts(testContactRemoveSingle);
-		actorThread.join();
-
-		restartActor();
 		testActor.removeContacts(testContactRemoveSingle.getKeyIdentifier());
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts();
-		actorThread.join();
 
 		Assert.assertFalse(receivedContacts.contains(testContactRemoveSingle));
 	}
@@ -123,16 +96,9 @@ public class ContactsActorTest {
 		contacts.add(testContactRemoveMultiple2);
 
 		testActor.writeContacts(testContactRemoveMultiple1, testContactRemoveMultiple2);
-		actorThread.join();
-
-		restartActor();
 		testActor.removeContacts(testContactRemoveMultiple1.getKeyIdentifier(),
 				testContactRemoveMultiple2.getKeyIdentifier());
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts();
-		actorThread.join();
 
 		Assert.assertFalse(receivedContacts.contains(testContactRemoveMultiple1));
 		Assert.assertFalse(receivedContacts.contains(testContactRemoveMultiple2));
@@ -147,12 +113,9 @@ public class ContactsActorTest {
 		contacts.add(testContactOriginal);
 
 		testActor.writeContacts(testContactOriginal);
-		actorThread.join();
 
 		// Retrieve new test Contact via ContactsActor
-		restartActor();
 		testActor.retrieveContacts(testContactIdentifier);
-		actorThread.join();
 		Contact testContactChanged = receivedContacts.get(0);
 
 		// Create new test DropURL
@@ -166,11 +129,7 @@ public class ContactsActorTest {
 		// Add new testDropURL to test Contact and write changed Contact to Contacts
 		testContactChanged.addDrop(testDropUrl);
 		testActor.writeContacts(testContactChanged);
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts(testContactChanged.getKeyIdentifier());
-		actorThread.join();
 
 		// Assure that new testDropUrl is contained in the DropUrl list
 		Assert.assertTrue(receivedContacts.get(0).getDropUrls().contains(testDropUrl));
@@ -188,12 +147,9 @@ public class ContactsActorTest {
 		contacts.add(testContactOriginal2);
 
 		testActor.writeContacts(testContactOriginal1, testContactOriginal2);
-		actorThread.join();
 
 		// Retrieve new test Contact via ContactsActor
-		restartActor();
 		testActor.retrieveContacts(testContactIdentifier1, testContactIdentifier2);
-		actorThread.join();
 		Contact testContactChanged1 = receivedContacts.get(0);
 		Contact testContactChanged2 = receivedContacts.get(1);
 
@@ -208,13 +164,8 @@ public class ContactsActorTest {
 		// Add new testDropURL to test Contact and write changed Contact to Contacts
 		testContactChanged1.addDrop(testDropUrl);
 		testContactChanged2.addDrop(testDropUrl);
-		restartActor();
 		testActor.writeContacts(testContactChanged1, testContactChanged2);
-		actorThread.join();
-
-		restartActor();
 		testActor.retrieveContacts(testContactChanged1.getKeyIdentifier(), testContactChanged2.getKeyIdentifier());
-		actorThread.join();
 
 		// Assure that new testDropUrl is contained in the DropUrl list
 		Assert.assertTrue(receivedContacts.get(0).getDropUrls().contains(testDropUrl));
@@ -231,28 +182,40 @@ public class ContactsActorTest {
 			on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
 		}
 
+		private void restartActor() {
+			testActor.resetNumReceivedEvents();
+			actorThread = new Thread(testActor);
+			actorThread.start();
+		}
+
 		public void resetNumReceivedEvents() {
 			numReceivedEvents = 0;
 		}
 
-		public void retrieveContacts(String...data) {
+		public void retrieveContacts(String...data) throws InterruptedException {
+			restartActor();
 			contactsActor.retrieveContacts(this, new Responsible() {
 				@Override
 				public void onResponse(Serializable... data) {
-					receivedContacts = new ArrayList<>(Arrays.asList((Contact[])data));
+					receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
 					stop();
 				}
 			}, data);
+			actorThread.join();
 		}
 
-		public void writeContacts(Contact...data) {
+		public void writeContacts(Contact...data) throws InterruptedException {
+			restartActor();
 			numExpectedEvents = data.length;
 			contactsActor.writeContacts(data);
+			actorThread.join();
 		}
 
-		public void removeContacts(String...data) {
+		public void removeContacts(String...data) throws InterruptedException {
+			restartActor();
 			numExpectedEvents = data.length;
 			contactsActor.removeContacts(data);
+			actorThread.join();
 		}
 
 		@Override
