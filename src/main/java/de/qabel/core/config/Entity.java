@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import de.qabel.core.crypto.QblECPublicKey;
 import de.qabel.core.drop.DropURL;
@@ -15,9 +14,7 @@ import de.qabel.core.drop.DropURL;
  */
 public abstract class Entity extends SyncSettingItem {
 	private static final long serialVersionUID = 570661846263644501L;
-	private static final Set<UUID> uuids = new HashSet<>();
 
-	private UUID persistenceID;
 	private final Set<DropURL> dropUrls;
 	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); // TODO: Will
 
@@ -27,7 +24,6 @@ public abstract class Entity extends SyncSettingItem {
 		} else {
 			this.dropUrls = new HashSet<>();
 		}
-		this.persistenceID = genPersistenceID();
 	}
 	
 	abstract public QblECPublicKey getEcPublicKey();
@@ -41,8 +37,6 @@ public abstract class Entity extends SyncSettingItem {
 		return this.getEcPublicKey().getReadableKeyIdentifier();
 	}
 
-	public String getPersistenceID() { return persistenceID.toString(); }
-
 	public Set<DropURL> getDropUrls() {
 		return Collections.unmodifiableSet(dropUrls);
 	}
@@ -53,19 +47,6 @@ public abstract class Entity extends SyncSettingItem {
 
 	public Set<AbstractModuleSettings> getModuleSettings() {
 		return moduleSettings;
-	}
-
-	/**
-	 * Generated a random UUID for persistent storage. It ensures that Entities are using a unique UUID.
-	 * @return Unique UUID
-	 */
-	private UUID genPersistenceID(){
-		UUID uuid = UUID.randomUUID();
-		while (uuids.contains(uuid)) {
-			uuid = UUID.randomUUID();
-		}
-		uuids.add(uuid);
-		return uuid;
 	}
 
 	@Override

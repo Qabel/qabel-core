@@ -245,12 +245,9 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public boolean persistEntity(String id, Serializable object) {
-		if (id == null || object == null) {
+	public boolean persistEntity(Persistable object) {
+		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
-		if (id.length() == 0) {
-			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		String sql = "CREATE TABLE IF NOT EXISTS " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
@@ -268,9 +265,9 @@ public class SQLitePersistence extends Persistence<String> {
 				" VALUES(?, ?, ?)";
 		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			byte[] nonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
-			statement.setString(1, id);
+			statement.setString(1, object.getPersistenceID());
 			statement.setBytes(2, nonce);
-			statement.setBytes(3, serialize(id, object, nonce));
+			statement.setBytes(3, serialize(object.getPersistenceID(), object, nonce));
 			statement.executeUpdate();
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot persist or already persisted entity!", e);
@@ -280,20 +277,18 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public boolean updateEntity(String id, Serializable object) {
-		if (id == null || object == null) {
+	public boolean updateEntity(Persistable object) {
+		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
-		if (id.length() == 0) {
-			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		String sql = "UPDATE " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
 				"SET BLOB = ? " +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
-			statement.setBytes(1, serialize(id, object, getNonce(id, object.getClass())));
-			statement.setString(2, id);
+			statement.setBytes(1, serialize(object.getPersistenceID(), object, getNonce(
+					object.getPersistenceID(), object.getClass())));
+			statement.setString(2, object.getPersistenceID());
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("Cannot update entity!", e);

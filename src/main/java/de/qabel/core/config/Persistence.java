@@ -100,19 +100,18 @@ public abstract class Persistence<T> {
 
 	/**
 	 * Persists an entity
-	 * @param id ID for entity storage
 	 * @param object Entity to persist
 	 * @return Result of the operation
 	 */
-	abstract public boolean persistEntity(String id, Serializable object);
+	abstract public boolean persistEntity(Persistable object);
 
 	/**
 	 * Updates a previously stored entity
-	 * @param id ID of the stored entity
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract public boolean updateEntity(String id, Serializable object);
+	abstract public boolean updateEntity(Persistable object);
+
 
 	/**
 	 * Removes a persisted entity

@@ -1,9 +1,6 @@
 package de.qabel.core.config;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.Serializable;
@@ -38,8 +35,8 @@ public class PersistenceTest {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
 		PersistenceTestObject pto2 = new PersistenceTestObject("pto2");
 
-		Assert.assertTrue(persistence.persistEntity("1", pto));
-		Assert.assertTrue(persistence.persistEntity("2", pto2));
+		Assert.assertTrue(persistence.persistEntity(pto));
+		Assert.assertTrue(persistence.persistEntity(pto2));
 
 		List<Object> objects = persistence.getEntities(PersistenceTestObject.class);
 		Assert.assertEquals(2, objects.size());
@@ -53,65 +50,65 @@ public class PersistenceTest {
 		Assert.assertEquals(0, objects.size());
 	}
 
-	@Test (expected=IllegalArgumentException.class)
-	public void noOverwriteTest() {
-		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		PersistenceTestObject pto2 = new PersistenceTestObject("pto2");
-
-		Assert.assertTrue(persistence.persistEntity("1", pto));
-		persistence.persistEntity("1", pto2);
-	}
-
 	@Test
 	public void updateEntityTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		PersistenceTestObject pto2 = new PersistenceTestObject("pto2");
+		pto.data = "changed";
 
-		Assert.assertTrue(persistence.persistEntity("1", pto));
-		Assert.assertTrue(persistence.updateEntity("1", pto2));
+		Assert.assertTrue(persistence.persistEntity(pto));
+		Assert.assertTrue(persistence.updateEntity(pto));
 
-		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity("1", PersistenceTestObject.class);
-		Assert.assertNotEquals(pto, receivedPto);
-		Assert.assertEquals(pto2, receivedPto);
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
+		Assert.assertEquals(pto, receivedPto);
 	}
 
 	@Test
-	public void updateEntityWrongClassTest() {
+	public void updateOrPersistEntityTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		PersistenceTestObject2 pto2 = new PersistenceTestObject2("pto2");
 
-		Assert.assertTrue(persistence.persistEntity("1", pto));
-		Assert.assertFalse(persistence.updateEntity("1", pto2));
+		Assert.assertTrue(persistence.updateOrPersistEntity(pto));
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
+		Assert.assertEquals(pto, receivedPto);
+
+		pto.data = "changed";
+		Assert.assertTrue(persistence.updateOrPersistEntity(pto));
+		receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
+		Assert.assertEquals(pto, receivedPto);
 	}
 
 	@Test
 	public void updateNotStoredEntityTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		Assert.assertFalse(persistence.updateEntity("1", pto));
+		Assert.assertFalse(persistence.updateEntity(pto));
 	}
 
 	@Test
 	public void persistenceRoundTripTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		persistence.persistEntity("1", pto);
+		persistence.persistEntity(pto);
 
 		// Assure that pto has been persisted
-		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity("1", PersistenceTestObject.class);
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
 		Assert.assertEquals(pto, receivedPto);
 
-		Assert.assertTrue(persistence.removeEntity("1", PersistenceTestObject.class));
+		Assert.assertTrue(persistence.removeEntity(pto.getPersistenceID(), PersistenceTestObject.class));
 
-		PersistenceTestObject receivedPto2 = (PersistenceTestObject) persistence.getEntity("1", PersistenceTestObject.class);
+		PersistenceTestObject receivedPto2 = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
 		Assert.assertNull(receivedPto2);
 	}
 
 	@Test
 	public void dropTableTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		persistence.persistEntity("1", pto);
+		persistence.persistEntity(pto);
 
 		Assert.assertTrue(persistence.dropTable(PersistenceTestObject.class));
-		Assert.assertNull(persistence.getEntity("1", PersistenceTestObject.class));
+		Assert.assertNull(persistence.getEntity(pto.getPersistenceID(), PersistenceTestObject.class));
 	}
 
 	@Test
@@ -122,26 +119,28 @@ public class PersistenceTest {
 	@Test
 	public void changeMasterKeyTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		persistence.persistEntity("1", pto);
+		persistence.persistEntity(pto);
 
 		Assert.assertTrue(persistence.changePassword(encryptionPassword, "qabel2".toCharArray()));
 
-		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity("1", PersistenceTestObject.class);
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
 		Assert.assertEquals(pto, receivedPto);
 	}
 
 	@Test
 	public void changeMasterKeyFailTest() {
 		PersistenceTestObject pto = new PersistenceTestObject("pto");
-		persistence.persistEntity("1", pto);
+		persistence.persistEntity(pto);
 
 		Assert.assertFalse(persistence.changePassword("wrongPassword".toCharArray(), "qabel2".toCharArray()));
 
-		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity("1", PersistenceTestObject.class);
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
 		Assert.assertEquals(pto, receivedPto);
 	}
 
-	static public class PersistenceTestObject implements Serializable {
+	static public class PersistenceTestObject extends Persistable implements Serializable {
 		private static final long serialVersionUID = -9721591389456L;
 		public String data;
 
@@ -169,7 +168,7 @@ public class PersistenceTest {
 		}
 	}
 
-	static public class PersistenceTestObject2 implements Serializable {
+	static public class PersistenceTestObject2 extends Persistable implements Serializable {
 		private static final long serialVersionUID = -832569264920L;
 		public String data;
 
