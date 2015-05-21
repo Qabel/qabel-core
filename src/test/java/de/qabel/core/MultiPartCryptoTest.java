@@ -30,6 +30,7 @@ public class MultiPartCryptoTest {
     private Identities identities;
     private DropServers servers;
     private Thread contactsActorThread;
+    private Thread configActorThread;
 
 
     static class TestObject extends ModelObject {
@@ -66,6 +67,8 @@ public class MultiPartCryptoTest {
         Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
+		configActorThread = new Thread(ConfigActor.getDefault());
+		configActorThread.start();
         emitter = EventEmitter.getDefault();
         dropController = new DropCommunicatorUtil(emitter);
 

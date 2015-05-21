@@ -51,6 +51,8 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		super(emitter);
 		this.emitter = emitter;
 		this.mContacts = new Contacts();
+		this.mIdentities = new Identities();
+		this.mDropServers = new DropServers();
 		gb = new GsonBuilder();
 		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
 		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
@@ -59,6 +61,12 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
 		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
 
+		on(EventNameConstants.EVENT_IDENTITY_ADDED, this);
+		on(EventNameConstants.EVENT_IDENTITY_REMOVED, this);
+
+		on(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
+		on(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
+
 		ContactsActor contactsActor = ContactsActor.getDefault();
 		contactsActor.retrieveContacts(this, new Responsible() {
 			@Override
@@ -66,6 +74,27 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
 				for (Contact c : receivedContacts) {
 					mContacts.add(c);
+				}
+			}
+		});
+
+		ConfigActor configActor = ConfigActor.getDefault();
+		configActor.retrieveIdentities(this, new Responsible() {
+			@Override
+			public void onResponse(Serializable... data) {
+				ArrayList<Identity> receivedIdentities = new ArrayList<>(Arrays.asList((Identity[]) data));
+				for (Identity i : receivedIdentities) {
+					mIdentities.add(i);
+				}
+			}
+		});
+
+		configActor.retrieveDropServers(this, new Responsible() {
+			@Override
+			public void onResponse(Serializable... data) {
+				ArrayList<DropServer> receivedDropServer = new ArrayList<>(Arrays.asList((DropServer[]) data));
+				for (DropServer s : receivedDropServer) {
+					mDropServers.add(s);
 				}
 			}
 		});
@@ -80,6 +109,10 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		emitter.unregister(EVENT_ACTION_DROP_MESSAGE_SEND, this);
 		emitter.unregister(EventNameConstants.EVENT_CONTACT_ADDED, this);
 		emitter.unregister(EventNameConstants.EVENT_CONTACT_REMOVED, this);
+		emitter.unregister(EventNameConstants.EVENT_IDENTITY_ADDED, this);
+		emitter.unregister(EventNameConstants.EVENT_IDENTITY_REMOVED, this);
+		emitter.unregister(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
+		emitter.unregister(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
 	}
 
 	/**
@@ -161,33 +194,14 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * retrieves new DropMessages from server and emits EVENT_DROP_MESSAGE_RECEIVED event.
 	 */
 	private void retrieve() {
-		HashSet<DropServer> servers = new HashSet<DropServer>(getDropServers()
-				.getDropServers());
-		for (DropServer server : servers) {
-			Collection<DropMessage<?>> results = this
-					.retrieve(server.getUrl(), getIdentities().getIdentities());
+		for (DropServer server : mDropServers.getDropServers()) {
+			Collection<DropMessage<?>> results = this.retrieve(server.getUrl());
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
 				emitter.emit(EVENT_DROP_MESSAGE_RECEIVED, dm);
 			}
 		}
-	}
-
-	public DropServers getDropServers() {
-		return mDropServers;
-	}
-
-	public void setDropServers(DropServers mDropServers) {
-		this.mDropServers = mDropServers;
-	}
-
-	public Identities getIdentities() {
-		return mIdentities;
-	}
-
-	public void setIdentities(Identities identities) {
-		this.mIdentities = identities;
 	}
 
 	/**
@@ -264,10 +278,9 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * Retrieves a drop message from given URL
 	 *
 	 * @param url      URL where to retrieve the drop from
-	 * @param identities Identities to decrypt message with
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage<?>> retrieve(URL url, Collection<Identity> identities) {
+	public Collection<DropMessage<?>> retrieve(URL url) {
 		DropHTTP http = new DropHTTP();
 		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
@@ -298,7 +311,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 					// cannot handle this message -> skip
 					continue;
 			}
-			for (Identity identity : identities) {
+			for (Identity identity : mIdentities.getIdentities()) {
 				DropMessage<?> dropMessage = null;
 				try {
 					dropMessage = binMessage.disassembleMessage(identity);
@@ -340,6 +353,26 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			case EventNameConstants.EVENT_CONTACT_REMOVED:
 				if (data[0] instanceof String) {
 					mContacts.remove((String) data[0]);
+				}
+				break;
+			case EventNameConstants.EVENT_IDENTITY_ADDED:
+				if (data[0] instanceof Identity) {
+					mIdentities.add((Identity) data[0]);
+				}
+				break;
+			case EventNameConstants.EVENT_IDENTITY_REMOVED:
+				if (data[0] instanceof String) {
+					mIdentities.remove((String) data[0]);
+				}
+				break;
+			case EventNameConstants.EVENT_DROPSERVER_ADDED:
+				if (data[0] instanceof DropServer) {
+					mDropServers.add((DropServer) data[0]);
+				}
+				break;
+			case EventNameConstants.EVENT_DROPSERVER_REMOVED:
+				if (data[0] instanceof DropServer) {
+					mDropServers.remove((DropServer) data[0]);
 				}
 				break;
 			default:
