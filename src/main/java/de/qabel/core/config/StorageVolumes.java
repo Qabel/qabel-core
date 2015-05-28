@@ -18,11 +18,11 @@ public class StorageVolumes {
 	}
 	
 	/**
-	 * Adds a storage volume
-	 * @param storageVolume StorageVolume to add.
+	 * Put a storage volume
+	 * @param storageVolume StorageVolume to put.
 	 * @return true if newly added, false if updated
 	 */
-	public boolean add(StorageVolume storageVolume) {
+	public boolean put(StorageVolume storageVolume) {
 		if (this.storageVolumes.put(storageVolume.getPersistenceID(), storageVolume) == null) {
 			return true;
 		}

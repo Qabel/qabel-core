@@ -142,7 +142,7 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 			storageVolumes.remove(volume);
 			volume.setStorageServer(
 					storageServers.getStorageServerByUrl(volume.getServerUrlString()));
-			storageVolumes.add(volume);
+			storageVolumes.put(volume);
 		}
 		
 		syncedSettings = new SyncedSettings();

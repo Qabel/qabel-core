@@ -26,11 +26,11 @@ public class StorageServers {
 	}
 	
 	/**
-	 * Adds a storage server
-	 * @param storageServer StorageServer to add.
+	 * Put a storage server
+	 * @param storageServer StorageServer to put.
 	 * @return true if newly added, false if updated
 	 */
-	public boolean add(StorageServer storageServer) {
+	public boolean put(StorageServer storageServer) {
 		if (this.storageServers.put(storageServer.getUrl().toString(), storageServer) == null) {
 			return true;
 		}

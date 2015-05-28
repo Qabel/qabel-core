@@ -150,12 +150,12 @@ public class MultiPartCryptoTest {
         alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         contacts = new Contacts();
-        contacts.add(alicesContact);
-        contacts.add(bobsContact);
+        contacts.put(alicesContact);
+        contacts.put(bobsContact);
 
         identities = new Identities();
-		identities.add(alice);
-		identities.add(bob);
+		identities.put(alice);
+		identities.put(bob);
     }
 
     private void loadDropServers() throws MalformedURLException {
@@ -167,8 +167,8 @@ public class MultiPartCryptoTest {
         DropServer bobsServer = new DropServer();
         bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        servers.add(alicesServer);
-        servers.add(bobsServer);
+        servers.put(alicesServer);
+        servers.put(bobsServer);
 
     }
 

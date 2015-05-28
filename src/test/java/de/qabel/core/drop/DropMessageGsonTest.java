@@ -61,7 +61,7 @@ public class DropMessageGsonTest {
         m.content = "baz";
         Identity sender = new Identity("Bernd", new ArrayList<DropURL>(), new QblECKeyPair());
         Identities identities = new Identities();
-        identities.add(sender);
+        identities.put(sender);
         DropMessage<TestMessage> a = new DropMessage<TestMessage>(sender, m);
 
         GsonBuilder builder = new GsonBuilder();

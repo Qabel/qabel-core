@@ -70,15 +70,15 @@ public class ConfigActor extends Actor {
 
 	private void loadFromPersistence() {
 		for (Object object: persistence.getEntities(Account.class)) {
-			settings.getSyncedSettings().getAccounts().add((Account) object);
+			settings.getSyncedSettings().getAccounts().put((Account) object);
 		}
 
 		for (Object object: persistence.getEntities(DropServer.class)) {
-			settings.getSyncedSettings().getDropServers().add((DropServer) object);
+			settings.getSyncedSettings().getDropServers().put((DropServer) object);
 		}
 
 		for (Object object: persistence.getEntities(Identity.class)) {
-			settings.getSyncedSettings().getIdentities().add((Identity) object);
+			settings.getSyncedSettings().getIdentities().put((Identity) object);
 		}
 
 		for (Object object: persistence.getEntities(LocaleModuleSettings.class)) {
@@ -90,11 +90,11 @@ public class ConfigActor extends Actor {
 		}
 
 		for (Object object: persistence.getEntities(StorageServer.class)) {
-			settings.getSyncedSettings().getStorageServers().add((StorageServer) object);
+			settings.getSyncedSettings().getStorageServers().put((StorageServer) object);
 		}
 
 		for (Object object: persistence.getEntities(StorageVolume.class)) {
-			settings.getSyncedSettings().getStorageVolumes().add((StorageVolume) object);
+			settings.getSyncedSettings().getStorageVolumes().put((StorageVolume) object);
 		}
 
 		for (Object object: persistence.getEntities(SyncedModuleSettings.class)) {
@@ -441,7 +441,7 @@ public class ConfigActor extends Actor {
 					Accounts accounts = this.settings.getSyncedSettings().getAccounts();
 					for (Object object : data) {
 						Account account = (Account) object;
-						accounts.add(account);
+						accounts.put(account);
 						persistence.updateOrPersistEntity(account);
 						eventEmitter.emit(EventNameConstants.EVENT_ACCOUNT_ADDED, account);
 					}
@@ -452,7 +452,7 @@ public class ConfigActor extends Actor {
 					DropServers dropServers = this.settings.getSyncedSettings().getDropServers();
 					for (Object object : data) {
 						DropServer dropServer = (DropServer) object;
-						dropServers.add(dropServer);
+						dropServers.put(dropServer);
 						persistence.updateOrPersistEntity(dropServer);
 						eventEmitter.emit(EventNameConstants.EVENT_DROPSERVER_ADDED, dropServer);
 					}
@@ -463,7 +463,7 @@ public class ConfigActor extends Actor {
 					Identities identities = this.settings.getSyncedSettings().getIdentities();
 					for (Object object : data) {
 						Identity identity = (Identity) object;
-						identities.add(identity);
+						identities.put(identity);
 						persistence.updateOrPersistEntity(identity);
 						eventEmitter.emit(EventNameConstants.EVENT_IDENTITY_ADDED, identity);
 					}
@@ -493,7 +493,7 @@ public class ConfigActor extends Actor {
 					StorageServers storageServers = this.settings.getSyncedSettings().getStorageServers();
 					for (Object object : data) {
 						StorageServer storageServer = (StorageServer) object;
-						storageServers.add(storageServer);
+						storageServers.put(storageServer);
 						persistence.updateOrPersistEntity(storageServer);
 						eventEmitter.emit(EventNameConstants.EVENT_STORAGESERVER_ADDED, storageServer);
 					}
@@ -504,7 +504,7 @@ public class ConfigActor extends Actor {
 					StorageVolumes storageVolumes = this.settings.getSyncedSettings().getStorageVolumes();
 					for (Object object : data) {
 						StorageVolume storageVolume = (StorageVolume) object;
-						storageVolumes.add(storageVolume);
+						storageVolumes.put(storageVolume);
 						persistence.updateOrPersistEntity(storageVolume);
 						eventEmitter.emit(EventNameConstants.EVENT_STORAGEVOLUME_ADDED, storageVolume);
 					}

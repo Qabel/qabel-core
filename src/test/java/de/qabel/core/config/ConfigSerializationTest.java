@@ -25,18 +25,18 @@ public class ConfigSerializationTest {
 	public void syncedSettingsTest() throws QblDropInvalidURL, IOException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
-		//generate and add an "accounts" entry
+		//generate and put an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
 		
-		syncedSettings.getAccounts().add(account);
+		syncedSettings.getAccounts().put(account);
 		
-		//generate and add an "drop_servers" entry
+		//generate and put an "drop_servers" entry
 		DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
-		syncedSettings.getDropServers().add(dropServer);
+		syncedSettings.getDropServers().put(dropServer);
 		
 		//generate "identities" array
 		syncedSettings.setIdentities(new Identities());
-		//generate and add an "identities" entry
+		//generate and put an "identities" entry
 		QblECKeyPair key;
 		Collection<DropURL> drops; 
 		Identity identity;
@@ -45,14 +45,14 @@ public class ConfigSerializationTest {
 		drops = new ArrayList<DropURL>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
-		syncedSettings.getIdentities().add(identity);
+		syncedSettings.getIdentities().put(identity);
 		
-		//generate and add a "storage_servers" entry
+		//generate and put a "storage_servers" entry
 		StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
-		syncedSettings.getStorageServers().add(storageServer);
+		syncedSettings.getStorageServers().put(storageServer);
 		
-		//generate and add a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().add(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
+		//generate and put a "storage_volumes" entry
+		syncedSettings.getStorageVolumes().put(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());

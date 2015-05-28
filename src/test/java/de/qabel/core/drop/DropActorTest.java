@@ -51,19 +51,19 @@ public class DropActorTest {
     	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
-    	identities.add(this.sender);
-    	identities.add(this.recipient);
+    	identities.put(this.sender);
+    	identities.put(this.recipient);
 
     	contacts = new Contacts();
-    	contacts.add(senderContact);
-    	contacts.add(recipientContact);
+    	contacts.put(senderContact);
+    	contacts.put(recipientContact);
 
         DropServers servers = new DropServers();
 
         DropServer iDropServer = new DropServer(new URL(iUrl), null, true);
         DropServer cDropServer = new DropServer(new URL(cUrl), null, true);
-        servers.add(iDropServer);
-        servers.add(cDropServer);
+        servers.put(iDropServer);
+        servers.put(cDropServer);
 
         controller = new DropCommunicatorUtil<TestMessage>(emitter);
         controller.start(contacts, identities, servers);

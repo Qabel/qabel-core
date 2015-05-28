@@ -18,11 +18,11 @@ public class Accounts {
 	}
 
 	/**
-	 * Adds or updated an account
-	 * @param account Account to add or update
+	 * Put an account
+	 * @param account Account to put
 	 * @return True if newly added, false if updated
 	 */
-	public boolean add(Account account) {
+	public boolean put(Account account) {
 		if (this.accounts.put(account.getPersistenceID(), account) == null) {
 			return true;
 		}

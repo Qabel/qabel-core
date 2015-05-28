@@ -14,8 +14,8 @@ class IdentitiesTestFactory implements Factory<Identities>{
 		
 		IdentityTestFactory identityFactory = new IdentityTestFactory();
 		
-		ids.add(identityFactory.create());
-		ids.add(identityFactory.create());
+		ids.put(identityFactory.create());
+		ids.put(identityFactory.create());
 		
 		return ids;
 	}

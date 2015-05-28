@@ -17,8 +17,8 @@ class ContactsTestFactory implements Factory<Contacts>{
 	public Contacts create() {
 		Contacts contacts = new Contacts();
 
-		contacts.add(contactFactory.create());
-		contacts.add(contactFactory.create());
+		contacts.put(contactFactory.create());
+		contacts.put(contactFactory.create());
 
 		return contacts;
 	}

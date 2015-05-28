@@ -17,8 +17,8 @@ class StorageVolumesTestFactory implements Factory<StorageVolumes>{
 	public StorageVolumes create() {
 		StorageVolumes storageVolumes = new StorageVolumes();
 
-		storageVolumes.add(volumeFactory.create());
-		storageVolumes.add(volumeFactory.create());
+		storageVolumes.put(volumeFactory.create());
+		storageVolumes.put(volumeFactory.create());
 		
 		return storageVolumes;
 	}

@@ -22,7 +22,7 @@ abstract public class EntityMap<T extends Entity> implements Serializable {
 		return Collections.unmodifiableSet(new HashSet<>(entities.values()));
 	}
 
-	public synchronized boolean add(T entity) {
+	public synchronized boolean put(T entity) {
 		if (this.entities.put(entity.getKeyIdentifier(), entity) == null) {
 			return false;
 		}

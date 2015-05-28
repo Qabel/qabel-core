@@ -73,7 +73,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			public void onResponse(Serializable... data) {
 				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
 				for (Contact c : receivedContacts) {
-					mContacts.add(c);
+					mContacts.put(c);
 				}
 			}
 		});
@@ -84,7 +84,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			public void onResponse(Serializable... data) {
 				ArrayList<Identity> receivedIdentities = new ArrayList<>(Arrays.asList((Identity[]) data));
 				for (Identity i : receivedIdentities) {
-					mIdentities.add(i);
+					mIdentities.put(i);
 				}
 			}
 		});
@@ -94,7 +94,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			public void onResponse(Serializable... data) {
 				ArrayList<DropServer> receivedDropServer = new ArrayList<>(Arrays.asList((DropServer[]) data));
 				for (DropServer s : receivedDropServer) {
-					mDropServers.add(s);
+					mDropServers.put(s);
 				}
 			}
 		});
@@ -347,7 +347,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				break;
 			case EventNameConstants.EVENT_CONTACT_ADDED:
 				if (data[0] instanceof Contact) {
-					mContacts.add((Contact) data[0]);
+					mContacts.put((Contact) data[0]);
 				}
 				break;
 			case EventNameConstants.EVENT_CONTACT_REMOVED:
@@ -357,7 +357,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				break;
 			case EventNameConstants.EVENT_IDENTITY_ADDED:
 				if (data[0] instanceof Identity) {
-					mIdentities.add((Identity) data[0]);
+					mIdentities.put((Identity) data[0]);
 				}
 				break;
 			case EventNameConstants.EVENT_IDENTITY_REMOVED:
@@ -367,7 +367,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 				break;
 			case EventNameConstants.EVENT_DROPSERVER_ADDED:
 				if (data[0] instanceof DropServer) {
-					mDropServers.add((DropServer) data[0]);
+					mDropServers.put((DropServer) data[0]);
 				}
 				break;
 			case EventNameConstants.EVENT_DROPSERVER_REMOVED:

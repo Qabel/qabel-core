@@ -64,9 +64,9 @@ public class ContactsActorTest {
 		Contact testContactRetrieveAll2 = contactFactory.create();
 		Contact testContactRetrieveAll3 = contactFactory.create();
 
-		contacts.add(testContactRetrieveAll1);
-		contacts.add(testContactRetrieveAll2);
-		contacts.add(testContactRetrieveAll3);
+		contacts.put(testContactRetrieveAll1);
+		contacts.put(testContactRetrieveAll2);
+		contacts.put(testContactRetrieveAll3);
 
 		testActor.writeContacts(testContactRetrieveAll1, testContactRetrieveAll2, testContactRetrieveAll3);
 		testActor.retrieveContacts();
@@ -78,7 +78,7 @@ public class ContactsActorTest {
 	public void removeSingleContactTest() throws InterruptedException {
 		Contact testContactRemoveSingle = contactFactory.create();
 		Contacts contacts = new Contacts();
-		contacts.add(testContactRemoveSingle);
+		contacts.put(testContactRemoveSingle);
 
 		testActor.writeContacts(testContactRemoveSingle);
 		testActor.removeContacts(testContactRemoveSingle.getKeyIdentifier());
@@ -92,8 +92,8 @@ public class ContactsActorTest {
 		Contacts contacts = new Contacts();
 		Contact testContactRemoveMultiple1 = contactFactory.create();
 		Contact testContactRemoveMultiple2 = contactFactory.create();
-		contacts.add(testContactRemoveMultiple1);
-		contacts.add(testContactRemoveMultiple2);
+		contacts.put(testContactRemoveMultiple1);
+		contacts.put(testContactRemoveMultiple2);
 
 		testActor.writeContacts(testContactRemoveMultiple1, testContactRemoveMultiple2);
 		testActor.removeContacts(testContactRemoveMultiple1.getKeyIdentifier(),
@@ -110,7 +110,7 @@ public class ContactsActorTest {
 		Contacts contacts = new Contacts();
 		Contact testContactOriginal = contactFactory.create();
 		String testContactIdentifier = testContactOriginal.getKeyIdentifier();
-		contacts.add(testContactOriginal);
+		contacts.put(testContactOriginal);
 
 		testActor.writeContacts(testContactOriginal);
 
@@ -143,8 +143,8 @@ public class ContactsActorTest {
 		Contact testContactOriginal2 = contactFactory.create();
 		String testContactIdentifier1 = testContactOriginal1.getKeyIdentifier();
 		String testContactIdentifier2 = testContactOriginal2.getKeyIdentifier();
-		contacts.add(testContactOriginal1);
-		contacts.add(testContactOriginal2);
+		contacts.put(testContactOriginal1);
+		contacts.put(testContactOriginal2);
 
 		testActor.writeContacts(testContactOriginal1, testContactOriginal2);
 

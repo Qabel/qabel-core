@@ -45,7 +45,7 @@ public class ContactsActor extends Actor {
 		this.eventEmitter = EventEmitter.getDefault();
 
 		for (Object object: persistence.getEntities(Contact.class)) {
-			contacts.add((Contact) object);
+			contacts.put((Contact) object);
 		}
 	}
 
@@ -108,7 +108,7 @@ public class ContactsActor extends Actor {
 				case WRITE_CONTACTS:
 					for (Object object : data) {
 						Contact contact = (Contact) object;
-						this.contacts.add(contact);
+						this.contacts.put(contact);
 						persistence.updateOrPersistEntity(contact);
 						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_ADDED, contact);
 					}

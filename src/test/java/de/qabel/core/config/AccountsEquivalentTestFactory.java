@@ -21,8 +21,8 @@ class AccountsEquivalentTestFactory implements EquivalentFactory<Accounts>{
 	public Accounts create() {
 		Accounts accounts = new Accounts();
 
-		accounts.add(a);
-		accounts.add(b);
+		accounts.put(a);
+		accounts.put(b);
 
 		return accounts;
 	}

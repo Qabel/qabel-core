@@ -23,11 +23,11 @@ public class DropServers {
 	}
 	
 	/**
-	 * Adds or updates a drop server.
-	 * @param dropServer DropServer to add or update.
+	 * Put a drop server.
+	 * @param dropServer DropServer to put.
 	 * @return True if newly added, false if updated
 	 */
-	public boolean add(DropServer dropServer) {
+	public boolean put(DropServer dropServer) {
 		if (this.dropServers.put(dropServer.getPersistenceID(), dropServer) == null) {
 			return true;
 		}

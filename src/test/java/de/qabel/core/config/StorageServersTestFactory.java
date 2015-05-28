@@ -17,8 +17,8 @@ public class StorageServersTestFactory implements Factory<StorageServers>{
 	@Override
 	public StorageServers create() {
 		StorageServers servers = new StorageServers();
-		servers.add(serverFactory.create());
-		servers.add(serverFactory.create());
+		servers.put(serverFactory.create());
+		servers.put(serverFactory.create());
 		return servers;
 	}
 }
