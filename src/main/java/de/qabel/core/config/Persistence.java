@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Persistence defines methods to store encrypted entities into a database.
- * Entities has to be Serializable.
+ * Entities has to be Persistable.
  * Serialized data is encrypted with AES256 GCM, a nonce provided to the serialize/deserialize
  * methods and a key derived from the provides password with PBKDF2 and a salt.
  *
