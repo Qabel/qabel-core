@@ -133,14 +133,14 @@ public abstract class Persistence<T> {
 	 * @param cls Class of the entity to receive
 	 * @return Stored entity or null if entity not found
 	 */
-	abstract public Object getEntity(String id, Class cls);
+	abstract public Persistable getEntity(String id, Class cls);
 
 	/**
 	 * Get all entities of the provides Class
 	 * @param cls Class to get all stored entities for
 	 * @return List of stored entities
 	 */
-	abstract public List<Object> getEntities(Class cls);
+	abstract public List<Persistable> getEntities(Class cls);
 
 	/**
 	 * Drops the table for the provided Class
