@@ -22,6 +22,11 @@ import de.qabel.core.http.HTTPResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * DropActor is registered to Contact, Identity and DropServer added and removed events. On instantiation all Contacts,
+ * Identities and DropServers are loaded from the according actors and stored in member variables. The registered
+ * event listeners allows the DropActor to receive and store changes to these resources.
+ */
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
 	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
 
