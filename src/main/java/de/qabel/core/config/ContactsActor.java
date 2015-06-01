@@ -103,18 +103,20 @@ public class ContactsActor extends Actor {
 
 	@Override
 	protected void react(MessageInfo info, Object... data) {
-		synchronized (contacts) {
-			switch (info.getType()) {
-				case WRITE_CONTACTS:
+		switch (info.getType()) {
+			case WRITE_CONTACTS:
+				synchronized (contacts) {
 					for (Object object : data) {
 						Contact contact = (Contact) object;
 						this.contacts.put(contact);
 						persistence.updateOrPersistEntity(contact);
 						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_ADDED, contact);
 					}
-					break;
-				case RETRIEVE_CONTACTS:
-					Contact[] contactsArray;
+				}
+				break;
+			case RETRIEVE_CONTACTS:
+				Contact[] contactsArray;
+				synchronized (contacts) {
 					if(data.length > 0) {
 						ArrayList<Contact> contactsList = new ArrayList<>();
 						for (Object object : data) {
@@ -125,18 +127,20 @@ public class ContactsActor extends Actor {
 						contactsArray = this.contacts.getContacts().toArray(new Contact[0]);
 					}
 					info.response((Serializable[]) contactsArray);
-					break;
-				case REMOVE_CONTACTS:
-					for (Object object: data) {
+				}
+				break;
+			case REMOVE_CONTACTS:
+				synchronized (contacts) {
+					for (Object object : data) {
 						Contact c = contacts.getByKeyIdentifier(object.toString());
-						if (c != null) {
+						if(c != null) {
 							persistence.removeEntity(c.getPersistenceID(), Contact.class);
 						}
 						this.contacts.remove(object.toString());
 						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_REMOVED, object.toString());
 					}
-					break;
-			}
+				}
+				break;
 		}
 	}
 }
