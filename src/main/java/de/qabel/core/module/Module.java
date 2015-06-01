@@ -2,18 +2,18 @@ package de.qabel.core.module;
 
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.EventActor;
+import de.qabel.ackack.event.EventEmitter;
 import de.qabel.ackack.event.EventListener;
 import de.qabel.core.drop.DropActor;
 import de.qabel.core.drop.DropMessage;
 import de.qabel.core.drop.ModelObject;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 public abstract class Module extends EventActor implements EventListener {
-	HashSet<Class<?>> modelObjects = new HashSet<>();
-	protected Module() {
+	Set<Object> modelObjects = Collections.synchronizedSet(new HashSet<>());
+	protected Module(EventEmitter emitter) {
+		super(emitter);
 		this.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, this);
 	}
 	/**
@@ -69,12 +69,12 @@ public abstract class Module extends EventActor implements EventListener {
 			return;
 		}
 		DropMessage<?> dm = (DropMessage<?>) data[0];
-        if(modelObjects.contains(dm.getClass())) {
+        if(modelObjects.contains(dm.getData().getClass())) {
 			onDropMessage(dm);
 		}
 	}
 
-    void onDropMessage(DropMessage<?> dm) {
+    protected void onDropMessage(DropMessage<?> dm) {
 
     }
 }

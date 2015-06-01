@@ -1,8 +1,10 @@
 package de.qabel.core.module;
 
+import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.storage.StorageConnection;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -14,8 +16,17 @@ import de.qabel.core.config.Settings;
 import de.qabel.core.drop.DropActor;
 
 public class ModuleManager {
+	final private EventEmitter eventEmitter;
 
 	private static ModuleManager defaultModuleManager = null;
+
+	public ModuleManager() {
+		this(new EventEmitter());
+	}
+
+	public ModuleManager(EventEmitter emitter) {
+		eventEmitter = emitter;
+	}
 
 	static public class ClassLoader extends URLClassLoader{
 	    public ClassLoader() {
@@ -87,8 +98,8 @@ public class ModuleManager {
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	public void startModule(Class<?> module) throws InstantiationException, IllegalAccessException {
-		Module m = (Module) module.newInstance();
+	public void startModule(Class<?> module) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		Module m = (Module) module.getConstructor(EventEmitter.class).newInstance(eventEmitter);
 		m.setModuleManager(this);
 		m.init();
         ModuleThread t = new ModuleThread(m);
@@ -101,9 +112,8 @@ public class ModuleManager {
 			ClassLoader cld = LOADER;
 			cld.addURL(jar.toURI().toURL());
 			startModule(Class.forName(className, true, cld));
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			// Should not happen!
 			System.exit(1);
 		}
 	}
