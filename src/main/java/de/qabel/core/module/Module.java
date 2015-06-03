@@ -4,48 +4,35 @@ import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.EventActor;
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.ackack.event.EventListener;
-import de.qabel.core.drop.DropActor;
-import de.qabel.core.drop.DropMessage;
-import de.qabel.core.drop.ModelObject;
 
-import java.util.*;
+import java.io.Serializable;
 
+/**
+ * Abstract class to create modules. Restricts direct access to the
+ * utilized EventEmitter. Inheritors have to implement onEvent from EventListener
+ * to receive registered events.
+ */
 public abstract class Module extends EventActor implements EventListener {
-	Set<Object> modelObjects = Collections.synchronizedSet(new HashSet<>());
-	protected Module(EventEmitter emitter) {
-		super(emitter);
-		this.on(DropActor.EVENT_DROP_MESSAGE_RECEIVED, this);
-	}
-	/**
-	 * <pre>
-	 *           0..*     1..1
-	 * Module ------------------------- ModuleManager
-	 *           module        &lt;       moduleManager
-	 * </pre>
-	 */
-	private ModuleManager moduleManager;
+	private final ModuleManager moduleManager;
+	private final EventEmitter emitter;
 
-
-	/**
-	 * 
-	 * @param value
-	 *            ModuleManager which managers this Module
-	 */
-	public void setModuleManager(ModuleManager value) {
-		this.moduleManager = value;
+	protected Module(ModuleManager moduleManager) {
+		super(moduleManager.getEventEmitter());
+		this.emitter = moduleManager.getEventEmitter();
+		this.moduleManager = moduleManager;
 	}
 
 	/**
 	 * gets the ModuleManager which manages this Module.
-	 * 
+	 *
 	 * @return ModuleManager
 	 */
-	public ModuleManager getModuleManager() {
+	ModuleManager getModuleManager() {
 		return this.moduleManager;
 	}
 
 	/**
-	 * Called by the modulemanager to set up this Module and registers Listener
+	 * Called by the ModuleManager to set up this Module and registers Listener
 	 */
 	abstract public void init();
 
@@ -56,25 +43,48 @@ public abstract class Module extends EventActor implements EventListener {
 	 */
 	public synchronized void stopModule() {
 		this.stop();
-		getModuleManager().getModules().remove(this);
+		moduleManager.removeModule(this);
 	}
 
-	protected void registerModelObject(Class<? extends ModelObject> cls) {
-		modelObjects.add(cls);
-	}
-
+	/**
+	 * Override on as final to disallow inheritors of Module to
+	 * directly register to Events by calling on method on
+	 * ModuleManager.
+	 * @param event Event id
+	 * @param listener Event listener
+	 */
 	@Override
-	public void onEvent(String event, MessageInfo info, Object... data) {
-		if(!event.equals(DropActor.EVENT_DROP_MESSAGE_RECEIVED)) {
-			return;
-		}
-		DropMessage<?> dm = (DropMessage<?>) data[0];
-        if(modelObjects.contains(dm.getData().getClass())) {
-			onDropMessage(dm);
-		}
+	public final void on(String event, EventListener listener) {
+		moduleManager.on(event, this);
 	}
 
-    protected void onDropMessage(DropMessage<?> dm) {
+	/**
+	 * Callback method for ModuleManager to register EventListener
+	 * @param event Event to register for
+	 * @param listener EventListener to register
+	 */
+	final void doOn(String event, EventListener listener) {
+		super.on(event, listener);
+	}
 
-    }
+	/**
+	 * Wrapper to emit event on Modules EventEmitter
+	 * @param event Event id
+	 * @param data Data to emit
+	 * @return Number of actor which want the data
+	 */
+	public final int emit(String event, Serializable... data) {
+		return emitter.emit(event, data);
+	}
+
+	/**
+	 * Wrapper to emit event on Modules EventEmitter
+	 * @param event Event id
+	 * @param info Information of the message
+	 * @param data Data to emit
+	 * @return Number of actor which want the data
+	 */
+	public final int emit(String event, MessageInfo info, Serializable... data) {
+		return emitter.emit(event, info, data);
+	}
 }
