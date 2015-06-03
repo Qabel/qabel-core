@@ -1,12 +1,12 @@
 package de.qabel.core.drop;
 
+import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.config.*;
 import de.qabel.core.module.Module;
 import de.qabel.core.module.ModuleManager;
 
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class DropCommunicatorUtil extends Module {
 	LinkedBlockingQueue<DropMessage<?>> inputqueue = new LinkedBlockingQueue<>();
@@ -17,8 +17,8 @@ public class DropCommunicatorUtil extends Module {
 	private Identities identities;
 	private DropServers dropServers;
 
-	public DropCommunicatorUtil(EventEmitter emitter) {
-		super(emitter);
+	public DropCommunicatorUtil(ModuleManager moduleManager) {
+		super(moduleManager);
 	}
 
 	static public DropCommunicatorUtil newInstance(EventEmitter emitter, Contacts contacts, Identities identities, DropServers dropServers) throws IllegalAccessException, InstantiationException {
@@ -29,27 +29,25 @@ public class DropCommunicatorUtil extends Module {
 		dropActorThread.start();
 		ModuleManager manager = new ModuleManager(emitter);
 		try {
-			manager.startModule(DropCommunicatorUtil.class);
+			DropCommunicatorUtil util = manager.startModule(DropCommunicatorUtil.class);
+			util.contactsActor = ContactsActor.getDefault();
+			util.configActor = ConfigActor.getDefault();
+			util.contactsActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
+			util.configActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
+			util.configActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
+
+			util.identities = identities;
+			util.dropServers = dropServers;
+			util.dropActor = dropActor;
+			util.dropActorThread = dropActorThread;
+			return util;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-		DropCommunicatorUtil util = (DropCommunicatorUtil) manager.getModules().keySet().iterator().next();
-
-		util.contactsActor = ContactsActor.getDefault();
-		util.configActor = ConfigActor.getDefault();
-		util.contactsActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
-		util.configActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
-		util.configActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
-
-		util.identities = identities;
-		util.dropServers = dropServers;
-		util.dropActor = dropActor;
-		util.dropActorThread = dropActorThread;
-		return util;
 	}
 
 	public DropMessage<?> retrieve() throws InterruptedException {
-		return inputqueue.poll(2000, TimeUnit.MILLISECONDS);
+		return inputqueue.take();
 	}
 
 	@Override
@@ -75,16 +73,15 @@ public class DropCommunicatorUtil extends Module {
 	}
 
 	@Override
-	public void onDropMessage(DropMessage<?> dm) {
+	public void onEvent(String event, MessageInfo info, Object... data) {
 		try {
-			this.inputqueue.put(dm);
+			this.inputqueue.put((DropMessage<?>) data[0]);
 		} catch (InterruptedException e) {
 			// TODO
 		}
 	}
 
-	@Override
 	public void registerModelObject(Class<? extends ModelObject> cls) {
-		super.registerModelObject(cls);
+		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + cls.getCanonicalName(), this);
 	}
 }

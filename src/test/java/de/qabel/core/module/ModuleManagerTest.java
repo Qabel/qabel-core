@@ -2,9 +2,8 @@ package de.qabel.core.module;
 
 import static org.junit.Assert.*;
 
-import de.qabel.ackack.event.EventEmitter;
-import de.qabel.core.drop.DropCommunicatorUtil;
-import de.qabel.core.drop.DropMessage;
+import de.qabel.ackack.MessageInfo;
+import de.qabel.core.drop.DropActor;
 import org.junit.Test;
 
 public class ModuleManagerTest {
@@ -12,8 +11,9 @@ public class ModuleManagerTest {
 		public boolean isInit = false;
 		private boolean isRunning = false;
 
-		protected TestModule(EventEmitter emitter) {
-			super(emitter);
+		public TestModule(ModuleManager moduleManager) {
+			super(moduleManager);
+			on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX, this);
 		}
 
 		@Override
@@ -21,10 +21,9 @@ public class ModuleManagerTest {
 			isInit = true;
 		}
 
-        @Override
-        protected void onDropMessage(DropMessage<?> dm) {
-            // Empty
-        }
+		@Override
+		public void onEvent(String event, MessageInfo info, Object... data) {
+		}
 
 		@Override
 		public void run() {
@@ -44,8 +43,7 @@ public class ModuleManagerTest {
 	@Test
 	public void lifeCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager();
-		mm.startModule(TestModule.class);
-		TestModule module = (TestModule) mm.getModules().values().iterator().next().getModule();
+		TestModule module = mm.startModule(TestModule.class);
 		assertTrue(module.isInit);
 		Thread.sleep(2000);
 		assertTrue(module.isStarted());
