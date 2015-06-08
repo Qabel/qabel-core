@@ -72,6 +72,6 @@ public class DropCommunicatorUtil <T extends ModelObject> {
 	}
 
 	public DropMessage<T> retrieve() throws InterruptedException {
-		return inputqueue.poll(2000, TimeUnit.MILLISECONDS);
+		return inputqueue.take();
 	}
 }

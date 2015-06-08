@@ -90,13 +90,6 @@ public class MultiPartCryptoTest {
         this.sendMessage();
 		this.sendUnwantedMessage();
 
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         DropMessage<TestObject> msg = dropController.retrieve();
 
         assertEquals("Test", msg.getData().getStr());
@@ -112,13 +105,6 @@ public class MultiPartCryptoTest {
         this.sendMessage();
 		this.sendUnwantedMessage();
         this.sendMessage();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
 
         DropMessage<TestObject> msg = dropController.retrieve();
         assertEquals("Test", msg.getData().getStr());
