@@ -10,14 +10,13 @@ install:
  - redis-server > /dev/null 2>&1 &
  - sudo apt-get install python-pip npm nodejs
  - sudo pip install virtualenv
+ - cd ..
  - git clone https://github.com/Qabel/qabel.git
  - cd qabel
  - git submodule init
  - git submodule update
- - rm -r qabel-core/*
- - cd ..  
- - mv !(qabel) ./qabel/qabel-core/
- - cd qabel
+ - rm -rf qabel-core
+ - mv ../qabel-core ./
  - virtualenv qabel-drop 
  - source qabel-drop/bin/activate 
  - pip install -r qabel-drop/requirements.txt  
