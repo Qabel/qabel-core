@@ -164,6 +164,7 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 		syncedSettings.setDropServers(dropServers);
 		syncedSettings.setStorageServers(storageServers);
 		syncedSettings.setStorageVolumes(storageVolumes);
+		syncedSettings.getSyncedModuleSettings().addAll(syncedModuleSettings);
 		
 		return syncedSettings;
 	}
