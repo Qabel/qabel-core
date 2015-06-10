@@ -56,8 +56,7 @@ public class ConfigSerializationTest {
 		syncedSettings.getSyncedModuleSettings().add(new FooModuleSettings(1));
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
-		assertEquals(0, 
-				syncedSettings.toJson().compareTo(deserializedSyncedSettings.toJson()));
+		assertEquals(syncedSettings.toJson(), deserializedSyncedSettings.toJson());
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
