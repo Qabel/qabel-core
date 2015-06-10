@@ -22,6 +22,7 @@ public class ModuleSettingsTest {
 }
 
 class FooModuleSettings extends SyncedModuleSettings {
+	private static final long serialVersionUID = 2683127703614519867L;
 	int answer;
 	
 	public FooModuleSettings(int answer) {
