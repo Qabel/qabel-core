@@ -27,7 +27,7 @@ public class DropCommunicatorUtil extends Module {
 		Thread dropActorThread = new Thread(dropActor, "dropActor");
 		dropActor.setInterval(500);
 		dropActorThread.start();
-		ModuleManager manager = new ModuleManager(emitter);
+		ModuleManager manager = new ModuleManager(emitter, ConfigActor.getDefault(), ContactsActor.getDefault());
 		try {
 			DropCommunicatorUtil util = manager.startModule(DropCommunicatorUtil.class);
 			util.contactsActor = ContactsActor.getDefault();
