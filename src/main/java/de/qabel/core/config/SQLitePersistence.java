@@ -245,12 +245,9 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public boolean persistEntity(String id, Serializable object) {
-		if (id == null || object == null) {
+	public boolean persistEntity(Persistable object) {
+		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
-		if (id.length() == 0) {
-			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		String sql = "CREATE TABLE IF NOT EXISTS " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
@@ -268,9 +265,9 @@ public class SQLitePersistence extends Persistence<String> {
 				" VALUES(?, ?, ?)";
 		try (PreparedStatement statement = c.prepareStatement(sql)) {
 			byte[] nonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
-			statement.setString(1, id);
+			statement.setString(1, object.getPersistenceID());
 			statement.setBytes(2, nonce);
-			statement.setBytes(3, serialize(id, object, nonce));
+			statement.setBytes(3, serialize(object.getPersistenceID(), object, nonce));
 			statement.executeUpdate();
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot persist or already persisted entity!", e);
@@ -280,26 +277,34 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public boolean updateEntity(String id, Serializable object) {
-		if (id == null || object == null) {
+	boolean updateEntity(Persistable object) {
+		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
-		if (id.length() == 0) {
-			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		String sql = "UPDATE " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
 				"SET BLOB = ? " +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
-			statement.setBytes(1, serialize(id, object, getNonce(id, object.getClass())));
-			statement.setString(2, id);
+			statement.setBytes(1, serialize(object.getPersistenceID(), object, getNonce(
+					object.getPersistenceID(), object.getClass())));
+			statement.setString(2, object.getPersistenceID());
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			logger.error("Cannot update entity!", e);
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean updateOrPersistEntity(Persistable object) {
+		if (getEntity(object.getPersistenceID(), object.getClass()) == null) {
+			return persistEntity(object);
+		}
+		else {
+			return updateEntity(object);
+		}
 	}
 
 	@Override
@@ -324,21 +329,21 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public Object getEntity(String id, Class cls) {
+	public Persistable getEntity(String id, Class cls) {
 		if (id == null || cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		Object object = null;
+		Persistable object = null;
 		String sql = "SELECT BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"" +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setString(1, id);
 			try (ResultSet rs = statement.executeQuery()) {
-				object = deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
+				object = (Persistable) deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
 			}
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
@@ -347,17 +352,17 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public List<Object> getEntities(Class cls) {
+	public List<Persistable> getEntities(Class cls) {
 		if (cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
-		List<Object> objects = new ArrayList<>();
+		List<Persistable> objects = new ArrayList<>();
 		String sql = "SELECT ID, BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"";
 		try (Statement statement = c.createStatement()){
 			try (ResultSet rs = statement.executeQuery(sql)) {
 				while (rs.next()) {
-					objects.add(deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
+					objects.add((Persistable) deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
 				}
 			}
 		} catch (SQLException | IllegalArgumentException e) {

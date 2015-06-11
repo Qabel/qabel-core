@@ -18,8 +18,8 @@ class DropServersTestFactory implements Factory<DropServers>{
 	public DropServers create() {
 		DropServers dropServers = new DropServers();
 		
-		dropServers.add(dropServerFactory.create());
-		dropServers.add(dropServerFactory.create());
+		dropServers.put(dropServerFactory.create());
+		dropServers.put(dropServerFactory.create());
 		
 		return dropServers;
 	}

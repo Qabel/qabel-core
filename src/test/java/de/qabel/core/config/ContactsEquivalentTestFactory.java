@@ -16,8 +16,8 @@ class ContactsEquivalentTestFactory implements EquivalentFactory<Contacts>{
 	public Contacts create() {
 		Contacts contacts = new Contacts();
 
-		contacts.add(a);
-		contacts.add(b);
+		contacts.put(a);
+		contacts.put(b);
 
 		return contacts;
 	}

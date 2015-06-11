@@ -22,6 +22,9 @@ public class DropActorTest {
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
+	private Thread contactsActorThread;
+    private Thread configActorThread;
+	private final static char[] encryptionPassword = "qabel".toCharArray();
 
     static class TestMessage extends ModelObject {
         public String content;
@@ -33,7 +36,12 @@ public class DropActorTest {
     
     @Before
     public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
-        emitter = new EventEmitter();
+		Persistence.setPassword(encryptionPassword);
+        contactsActorThread = new Thread(ContactsActor.getDefault());
+        contactsActorThread.start();
+		configActorThread = new Thread(ConfigActor.getDefault());
+		configActorThread.start();
+        emitter = EventEmitter.getDefault();
     	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
     	recipient = new Identity("Bob", null, new QblECKeyPair());
@@ -43,19 +51,19 @@ public class DropActorTest {
     	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
-    	identities.add(this.sender);
-    	identities.add(this.recipient);
+    	identities.put(this.sender);
+    	identities.put(this.recipient);
 
     	contacts = new Contacts();
-    	contacts.add(senderContact);
-    	contacts.add(recipientContact);
+    	contacts.put(senderContact);
+    	contacts.put(recipientContact);
 
         DropServers servers = new DropServers();
 
         DropServer iDropServer = new DropServer(new URL(iUrl), null, true);
         DropServer cDropServer = new DropServer(new URL(cUrl), null, true);
-        servers.add(iDropServer);
-        servers.add(cDropServer);
+        servers.put(iDropServer);
+        servers.put(cDropServer);
 
         controller = new DropCommunicatorUtil<TestMessage>(emitter);
         controller.start(contacts, identities, servers);
@@ -64,6 +72,8 @@ public class DropActorTest {
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
+		ContactsActor.getDefault().stop();
+		ConfigActor.getDefault().stop();
     }
 
     @Test

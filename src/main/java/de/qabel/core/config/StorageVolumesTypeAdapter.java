@@ -36,7 +36,7 @@ public class StorageVolumesTypeAdapter extends TypeAdapter<StorageVolumes> {
 		in.beginArray();
 		while(in.hasNext()) {
 			storageVolume = adapter.read(in);
-			storageVolumes.add(storageVolume);
+			storageVolumes.put(storageVolume);
 		}
 		in.endArray();
 		

@@ -21,8 +21,8 @@ class IdentitiesEquivalentTestFactory implements EquivalentFactory<Identities>{
 	public Identities create() {
 		Identities identities = new Identities();
 
-		identities.add(a);
-		identities.add(b);
+		identities.put(a);
+		identities.put(b);
 
 		return identities;
 	}

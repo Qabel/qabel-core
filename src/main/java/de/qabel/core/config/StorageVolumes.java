@@ -1,31 +1,32 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-volumes
  */
 public class StorageVolumes {
 
-	private final Set<StorageVolume> storageVolumes = new HashSet<StorageVolume>();
+	private final Map<String, StorageVolume> storageVolumes = new HashMap<>();
 
 	/**
 	 * Returns an unmodifiable set of contained storage volumes
 	 * @return Set<StorageVolume>
 	 */
 	public Set<StorageVolume> getStorageVolumes() {
-		return Collections.unmodifiableSet(this.storageVolumes);
+		return Collections.unmodifiableSet(new HashSet<>(this.storageVolumes.values()));
 	}
 	
 	/**
-	 * Adds a storage volume
-	 * @param storageVolume StorageVolume to add.
-	 * @return true if successfully added, false if already contained
+	 * Put a storage volume
+	 * @param storageVolume StorageVolume to put.
+	 * @return true if newly added, false if updated
 	 */
-	public boolean add(StorageVolume storageVolume) {
-		return this.storageVolumes.add(storageVolume);
+	public boolean put(StorageVolume storageVolume) {
+		if (this.storageVolumes.put(storageVolume.getPersistenceID(), storageVolume) == null) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -34,12 +35,10 @@ public class StorageVolumes {
 	 * @return true if storageVolume was contained in list, false if not
 	 */
 	public boolean remove(StorageVolume storageVolume) {
-		return this.storageVolumes.remove(storageVolume);
-	}
-
-	public boolean update(StorageVolume storageVolume) {
-		this.remove(storageVolume);
-		return this.add(storageVolume);
+		if(this.storageVolumes.remove(storageVolume.getPersistenceID()) == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override

@@ -14,7 +14,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
  */
-public class LocalSettings implements Serializable {
+public class LocalSettings extends Persistable {
 	private static final long serialVersionUID = 2524933619654534515L;
 	private Set<LocaleModuleSettings> localeModuleSettings;
 	/**

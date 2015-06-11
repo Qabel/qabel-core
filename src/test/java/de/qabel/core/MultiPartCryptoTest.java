@@ -23,10 +23,15 @@ import java.util.HashSet;
 
 public class MultiPartCryptoTest {
 
-    private EventEmitter emitter;
+	private final static char[] encryptionPassword = "qabel".toCharArray();
+
+	private EventEmitter emitter;
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
+    private Thread contactsActorThread;
+    private Thread configActorThread;
+
 
     static class TestObject extends ModelObject {
         public TestObject() { }
@@ -59,7 +64,12 @@ public class MultiPartCryptoTest {
 
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
-        emitter = new EventEmitter();
+        Persistence.setPassword(encryptionPassword);
+        contactsActorThread = new Thread(ContactsActor.getDefault());
+        contactsActorThread.start();
+		configActorThread = new Thread(ConfigActor.getDefault());
+		configActorThread.start();
+        emitter = EventEmitter.getDefault();
         dropController = new DropCommunicatorUtil(emitter);
 
         loadContactsAndIdentities();
@@ -80,13 +90,6 @@ public class MultiPartCryptoTest {
         this.sendMessage();
 		this.sendUnwantedMessage();
 
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         DropMessage<TestObject> msg = dropController.retrieve();
 
         assertEquals("Test", msg.getData().getStr());
@@ -102,13 +105,6 @@ public class MultiPartCryptoTest {
         this.sendMessage();
 		this.sendUnwantedMessage();
         this.sendMessage();
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
 
         DropMessage<TestObject> msg = dropController.retrieve();
         assertEquals("Test", msg.getData().getStr());
@@ -140,12 +136,12 @@ public class MultiPartCryptoTest {
         alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         contacts = new Contacts();
-        contacts.add(alicesContact);
-        contacts.add(bobsContact);
+        contacts.put(alicesContact);
+        contacts.put(bobsContact);
 
         identities = new Identities();
-		identities.add(alice);
-		identities.add(bob);
+		identities.put(alice);
+		identities.put(bob);
     }
 
     private void loadDropServers() throws MalformedURLException {
@@ -157,8 +153,8 @@ public class MultiPartCryptoTest {
         DropServer bobsServer = new DropServer();
         bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        servers.add(alicesServer);
-        servers.add(bobsServer);
+        servers.put(alicesServer);
+        servers.put(bobsServer);
 
     }
 

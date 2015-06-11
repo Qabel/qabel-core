@@ -1,26 +1,32 @@
 package de.qabel.core.config;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts
  */
 public class Accounts {
 
-	private final Set<Account> accounts = new HashSet<Account>();
+	private final Map<String, Account> accounts = new HashMap<>();
 
 	/**
 	 * Returns unmodifiable set of contained accounts
 	 * @return Set<Account>
 	 */
 	public Set<Account> getAccounts() {
-		return Collections.unmodifiableSet(this.accounts);
+		return Collections.unmodifiableSet(new HashSet<>(this.accounts.values()));
 	}
-	
-	public boolean add(Account account) {
-		return this.accounts.add(account);
+
+	/**
+	 * Put an account
+	 * @param account Account to put
+	 * @return True if newly added, false if updated
+	 */
+	public boolean put(Account account) {
+		if (this.accounts.put(account.getPersistenceID(), account) == null) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -29,12 +35,10 @@ public class Accounts {
 	 * @return true if account was contained in list, false if not
 	 */
 	public boolean remove(Account account) {
-		return this.accounts.remove(account);
-	}
-
-	public boolean update(Account account) {
-		this.remove(account);
-		return this.add(account);
+		if (this.accounts.remove(account.getPersistenceID()) == null) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -61,7 +65,4 @@ public class Accounts {
 			return false;
 		return true;
 	}
-	
-	
-
 }
