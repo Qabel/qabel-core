@@ -27,7 +27,7 @@ public abstract class Module extends EventActor implements EventListener {
 	 *
 	 * @return ModuleManager
 	 */
-	ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager() {
 		return this.moduleManager;
 	}
 
