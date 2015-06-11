@@ -1,8 +1,8 @@
 package de.qabel.core.drop;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,17 +20,17 @@ public class DropURL implements Serializable {
 
 	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());
 	
-	private URL url;
+	private URI uri;
 
 	/**
 	 * Constructs a drop url by the given url.
 	 * 
-	 * @param url URL fully qualifying a drop
-	 * @throws MalformedURLException if the url is violates the general URL syntax
+	 * @param url DropURL fully qualifying a drop
+	 * @throws URISyntaxException if the string could not be parsed as URI reference
 	 * @throws QblDropInvalidURL if the url is generally well-formed but violates the drop url syntax
 	 */
-	public DropURL(String url) throws MalformedURLException, QblDropInvalidURL {
-		this.url = new URL(url);
+	public DropURL(String url) throws URISyntaxException, QblDropInvalidURL {
+		this.uri = new URI(url);
 		this.checkDropIdFromUrl();
 	}
 	
@@ -55,8 +55,8 @@ public class DropURL implements Serializable {
 		String dropId = generator.generateDropId();
 		
 		try {
-			this.url = new URL(server.getUrl().toString() + "/" + dropId);
-		} catch (MalformedURLException e) {
+			this.uri = new URI(server.getUri().toString() + "/" + dropId);
+		} catch (URISyntaxException e) {
 			logger.error("Failed to create drop url.", e);
 			// should not happen - cannot recover from this
 			throw new RuntimeException("Failed to create drop url.", e);
@@ -68,7 +68,7 @@ public class DropURL implements Serializable {
 	 * @return the drop id
 	 */
 	private String getDropId() {
-		String path = this.url.getPath();
+		String path = this.uri.getPath();
 		return path.substring(path.lastIndexOf("/") + 1);
 	}
 
@@ -92,23 +92,23 @@ public class DropURL implements Serializable {
 	}
 
 	/**
-	 * Gets the URL of this drop.
-	 * @return the URL
+	 * Gets the URI of this drop.
+	 * @return the URI
 	 */
-	public URL getUrl() {
-		return this.url;
+	public URI getUri() {
+		return this.uri;
 	}
 
 	@Override
 	public String toString() {
-		return this.url.toString();
+		return this.uri.toString();
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
 		return result;
 	}
 
@@ -121,10 +121,10 @@ public class DropURL implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		DropURL other = (DropURL) obj;
-		if (url == null) {
-			if (other.url != null)
+		if (uri == null) {
+			if (other.uri != null)
 				return false;
-		} else if (!url.equals(other.url))
+		} else if (!uri.equals(other.uri))
 			return false;
 		return true;
 	}

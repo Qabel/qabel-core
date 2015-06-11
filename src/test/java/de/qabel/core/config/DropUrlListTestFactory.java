@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,10 +31,7 @@ class DropUrlListTestFactory implements Factory<Collection<DropURL>> {
 		try {
 			dropURL1 = new DropURL(strUrl1);
 			dropURL2 = new DropURL(strUrl2);
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (QblDropInvalidURL e) {
+		} catch (QblDropInvalidURL | URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

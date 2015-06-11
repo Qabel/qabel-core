@@ -14,8 +14,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,7 +63,7 @@ public class MultiPartCryptoTest {
     private Identity alice;
 
     @Before
-    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
+    public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException {
         Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
@@ -116,7 +116,7 @@ public class MultiPartCryptoTest {
         assertEquals("Test", msg.getData().getStr());
     }
 
-    private void loadContactsAndIdentities() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
+    private void loadContactsAndIdentities() throws URISyntaxException, InvalidKeyException, QblDropInvalidURL {
         QblECKeyPair alicesKey = new QblECKeyPair();
         Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
         alicesDrops.add(
@@ -144,14 +144,14 @@ public class MultiPartCryptoTest {
 		identities.put(bob);
     }
 
-    private void loadDropServers() throws MalformedURLException {
+    private void loadDropServers() throws URISyntaxException {
         servers = new DropServers();
 
         DropServer alicesServer = new DropServer();
-        alicesServer.setUrl(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesServer.setUri(new URI("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         DropServer bobsServer = new DropServer();
-        bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        bobsServer.setUri(new URI("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
         servers.put(alicesServer);
         servers.put(bobsServer);

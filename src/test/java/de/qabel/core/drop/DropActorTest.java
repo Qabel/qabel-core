@@ -8,8 +8,8 @@ import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.*;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.HashSet;
 
@@ -33,9 +33,9 @@ public class DropActorTest {
         	this.content = content;
         }
     }
-    
+
     @Before
-    public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
+    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
 		Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
@@ -60,8 +60,8 @@ public class DropActorTest {
 
         DropServers servers = new DropServers();
 
-        DropServer iDropServer = new DropServer(new URL(iUrl), null, true);
-        DropServer cDropServer = new DropServer(new URL(cUrl), null, true);
+        DropServer iDropServer = new DropServer(new URI(iUrl), null, true);
+        DropServer cDropServer = new DropServer(new URI(cUrl), null, true);
         servers.put(iDropServer);
         servers.put(cDropServer);
 
@@ -77,7 +77,7 @@ public class DropActorTest {
     }
 
     @Test
-    public void sendAndForgetTest() throws MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
+    public void sendAndForgetTest() throws QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
@@ -91,7 +91,7 @@ public class DropActorTest {
     }
 
     @Test
-    public void sendAndForgetAutoTest() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
+    public void sendAndForgetAutoTest() throws InvalidKeyException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
 
         DropActor.send(emitter, m, recipientContact);
@@ -100,7 +100,7 @@ public class DropActorTest {
     }
 
     @Test
-    public void sendTestSingle() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
+    public void sendTestSingle() throws InvalidKeyException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
         TestMessage m = new TestMessage("baz");
 
         DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
@@ -109,7 +109,7 @@ public class DropActorTest {
         retrieveTest();
     }
 
-    public void retrieveTest() throws MalformedURLException, QblDropInvalidURL, InterruptedException {
+    public void retrieveTest() throws QblDropInvalidURL, InterruptedException {
 		DropMessage<?> dm = controller.retrieve();
 		Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
     }

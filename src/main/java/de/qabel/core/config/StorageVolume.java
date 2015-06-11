@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-import java.net.URL;
+import java.net.URI;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -64,7 +64,7 @@ public class StorageVolume extends SyncSettingItem {
 
 	public void setStorageServer(StorageServer storageServer) {
 		this.storageServer = storageServer;
-		this.storageServerUrl = storageServer.getUrl().toString();
+		this.storageServerUrl = storageServer.getUri().toString();
 	}
 
 	public String getPublicIdentifier() {
@@ -91,8 +91,8 @@ public class StorageVolume extends SyncSettingItem {
 		this.revokeToken = revokeToken;
 	}
 
-	public URL getServerUrl() {
-		return this.storageServer.getUrl();
+	public URI getServerUrl() {
+		return this.storageServer.getUri();
 	}
 	
 	// used during deserialization

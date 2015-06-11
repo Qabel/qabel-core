@@ -9,7 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,9 +19,9 @@ public class DropHTTP {
 
 	String dateFormat;
 
-	public HTTPResult<?> send(URL url, byte[] message) {
+	public HTTPResult<?> send(URI uri, byte[] message) {
 		HTTPResult<?> result = new HTTPResult<>();
-		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
+		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
 		conn.setDoOutput(true); // indicates POST method
 		conn.setDoInput(true);
 		conn.setRequestProperty("Content-Type", "application/octet-stream");
@@ -45,13 +45,13 @@ public class DropHTTP {
 		return result;
 	}
 
-	public HTTPResult<Collection<byte[]>> receiveMessages(URL url) {
-		return this.receiveMessages(url, 0);
+	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri) {
+		return this.receiveMessages(uri, 0);
 	}
 
-	public HTTPResult<Collection<byte[]>> receiveMessages(URL url, long sinceDate) {
+	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri, long sinceDate) {
 		HTTPResult<Collection<byte[]>> result = new HTTPResult<>();
-		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
+		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
 		conn.setIfModifiedSince(sinceDate);
 		Collection<byte[]> messages = new ArrayList<byte[]>();
 		try {
@@ -82,13 +82,13 @@ public class DropHTTP {
 		return result;
 	}
 
-	public HTTPResult<?> head(URL url) {
-		return this.head(url, 0);
+	public HTTPResult<?> head(URI uri) {
+		return this.head(uri, 0);
 	}
 
-	public HTTPResult<?> head(URL url, long sinceDate) {
+	public HTTPResult<?> head(URI uri, long sinceDate) {
 		HTTPResult<?> result = new HTTPResult<>();
-		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(url);
+		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
 		conn.setIfModifiedSince(sinceDate);
 		try {
 			conn.setRequestMethod("GET");
@@ -103,10 +103,10 @@ public class DropHTTP {
 		return result;
 	}
 
-	private URLConnection setupConnection(URL url) {
+	private URLConnection setupConnection(URI uri) {
 		URLConnection conn = null;
 		try {
-			conn = url.openConnection();
+			conn = uri.toURL().openConnection();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

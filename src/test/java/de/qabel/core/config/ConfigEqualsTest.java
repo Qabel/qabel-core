@@ -227,7 +227,7 @@ public class ConfigEqualsTest {
 	public void dropServerEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testEqualsMethod(new DropServerEquivalentTestFactory(), config);
 	}
@@ -247,7 +247,7 @@ public class ConfigEqualsTest {
 	public void storageServerEqualsTest () {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testEqualsMethod(new StorageServerEquivalentTestFactory(), config);
 	}

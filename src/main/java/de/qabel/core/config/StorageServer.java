@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-import java.net.URL;
+import java.net.URI;
 
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#storage-server
@@ -8,10 +8,10 @@ import java.net.URL;
 public class StorageServer extends SyncSettingItem {
 	private static final long serialVersionUID = -8866784788767622338L;
 	/**
-	 * Url of the StorageServer.
-	 * Field name in serialized json: "url"
+	 * Uri of the StorageServer.
+	 * Field name in serialized json: "uri"
 	 */
-	private URL url;
+	private URI uri;
 	/**
 	 * Credential for optional, additional access regulation.
 	 * Field name in serialized json: "auth"
@@ -19,28 +19,28 @@ public class StorageServer extends SyncSettingItem {
 	private String auth;
 	/**
 	 * Creates an instance of StorageServer.
-	 * @param url Url of the StorageServer.
+	 * @param uri Uri of the StorageServer.
 	 * @param auth Credential for optional, additional access regulation.
 	 */
-	public StorageServer(URL url, String auth) {
-		this.setUrl(url);
+	public StorageServer(URI uri, String auth) {
+		this.setUri(uri);
 		this.setAuth(auth);
 	}
 	
 	/**
-	 * Returns the url of the StorageServer.
+	 * Returns the uri of the StorageServer.
 	 * @return URL
 	 */
-	public URL getUrl() {
-		return url;
+	public URI getUri() {
+		return uri;
 	}
 
 	/**
-	 * Sets the url of the StorageServer.
-	 * @param url Url to set the StorageServer url to.
+	 * Sets the uri of the StorageServer.
+	 * @param uri Uri to set the StorageServer uri to.
 	 */
-	public void setUrl(URL url) {
-		this.url = url;
+	public void setUri(URI uri) {
+		this.uri = uri;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class StorageServer extends SyncSettingItem {
 		result = super.hashCode();
 		
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
 		return result;
 	}
 
@@ -89,10 +89,10 @@ public class StorageServer extends SyncSettingItem {
 				return false;
 		} else if (!auth.equals(other.auth))
 			return false;
-		if (url == null) {
-			if (other.url != null)
+		if (uri == null) {
+			if (other.uri != null)
 				return false;
-		} else if (!url.equals(other.url))
+		} else if (!uri.equals(other.uri))
 			return false;
 		return true;
 	}

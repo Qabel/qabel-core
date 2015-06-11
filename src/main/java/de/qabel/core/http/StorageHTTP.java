@@ -142,7 +142,7 @@ public class StorageHTTP {
 			resourcePath.append("/");
 			resourcePath.append(blobName);
 		}
-		connection = (HttpURLConnection)addPathToURL(server.getUrl(), resourcePath.toString()).openConnection();
+		connection = (HttpURLConnection)addPathToURL(server.getUri(), resourcePath.toString()).openConnection();
 	}
 	
 	private void setupConnection(String publicIdentifier) throws IOException {
@@ -191,13 +191,13 @@ public class StorageHTTP {
 	}
 
 	/**
-	 * Adds the newPath to the url.
-	 * @param url The url, which should get the new path appended.
+	 * Adds the newPath to the uri.
+	 * @param uri The uri, which should get the new path appended.
 	 * @param newPath The path, which should be added, a pre-slash is not required.
 	 * @return The new url.
 	 * @throws MalformedURLException If the creation of the new URL failed.
 	 */
-	private static URL addPathToURL(URL url, String newPath) throws MalformedURLException{
-		return new URL(url.toString() + "/" + newPath);
+	private static URL addPathToURL(URI uri, String newPath) throws MalformedURLException{
+		return new URL(uri.toString() + "/" + newPath);
 	}
 }
