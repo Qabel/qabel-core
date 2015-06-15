@@ -11,15 +11,23 @@ import java.io.Serializable;
  * Abstract class to create modules. Restricts direct access to the
  * utilized EventEmitter. Inheritors have to implement onEvent from EventListener
  * to receive registered events.
+ *
+ * A module has typically at least two threads. moduleMain() is started in the ModuleThread
+ * while the Actor which receives event and hands them to the onEvent() method is started in
+ * an other thread.
+ *
+ * Attention: moduleMain() and onEvent() are usually running in two different threads!
  */
 public abstract class Module extends EventActor implements EventListener {
 	private final ModuleManager moduleManager;
 	private final EventEmitter emitter;
+	protected boolean shouldStop;
 
 	protected Module(ModuleManager moduleManager) {
 		super(moduleManager.getEventEmitter());
 		this.emitter = moduleManager.getEventEmitter();
 		this.moduleManager = moduleManager;
+		this.shouldStop = false;
 	}
 
 	/**
@@ -37,11 +45,18 @@ public abstract class Module extends EventActor implements EventListener {
 	abstract public void init();
 
 	/**
+	 * Called by the ModuleThread in a new thread. This method should be used to
+	 * implement the activity of a Module
+	 */
+	abstract public void moduleMain();
+
+	/**
 	 * stops the background thread. Overwrite this if you want to do cleanup work.
 	 * Don't forget to call super.
 	 * This should NOT be called from the background thread itself!
 	 */
 	public synchronized void stopModule() {
+		this.shouldStop = true;
 		this.stop();
 		moduleManager.removeModule(this);
 	}
