@@ -21,8 +21,8 @@ public class StorageServers {
 		return Collections.unmodifiableSet(new HashSet<>(this.storageServers.values()));
 	}
 	
-	protected StorageServer getStorageServerByUrl(String serverUrl) {
-		return this.storageServers.get(serverUrl);
+	protected StorageServer getStorageServerByUri(String serverUri) {
+		return this.storageServers.get(serverUri);
 	}
 	
 	/**
