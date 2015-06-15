@@ -19,8 +19,7 @@ class UriTestFactory implements Factory<URI>{
 		try {
 			uri = new URI("http://just.a.url.com/" + i++);
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Cannot parse String as a URI reference.", e);
 		}
 		return uri;
 	}
