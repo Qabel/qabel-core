@@ -7,7 +7,7 @@ import org.meanbean.lang.Factory;
 
 /**
  * UriTestFactory
- * Creates distinct instances of class URL
+ * Creates distinct instances of class URI
  * Attention: For testing purposes only
  */
 class UriTestFactory implements Factory<URI>{
