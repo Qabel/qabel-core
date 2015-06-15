@@ -23,6 +23,11 @@ public class ModuleManagerTest {
 		}
 
 		@Override
+		public void moduleMain() {
+			
+		}
+
+		@Override
 		public void onEvent(String event, MessageInfo info, Object... data) {
 		}
 
