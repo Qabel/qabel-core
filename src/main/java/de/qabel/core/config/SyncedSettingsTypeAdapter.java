@@ -141,7 +141,7 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 			// remove and re-insert updated volume to update hash
 			storageVolumes.remove(volume);
 			volume.setStorageServer(
-					storageServers.getStorageServerByUrl(volume.getServerUrlString()));
+					storageServers.getStorageServerByUrl(volume.getServerUriString()));
 			storageVolumes.put(volume);
 		}
 		

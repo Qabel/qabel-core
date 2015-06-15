@@ -91,13 +91,13 @@ public class StorageVolume extends SyncSettingItem {
 		this.revokeToken = revokeToken;
 	}
 
-	public URI getServerUrl() {
+	public URI getServerUri() {
 		return this.storageServer.getUri();
 	}
 	
 	// used during deserialization
-	protected String getServerUrlString() {
-		return storageServerUrl;
+	protected String getServerUriString() {
+		return storageServerUri;
 	}
 
 	@Override
