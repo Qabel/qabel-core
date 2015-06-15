@@ -29,7 +29,7 @@ public class StorageServer extends SyncSettingItem {
 	
 	/**
 	 * Returns the uri of the StorageServer.
-	 * @return URL
+	 * @return URI
 	 */
 	public URI getUri() {
 		return uri;
