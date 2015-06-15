@@ -73,6 +73,11 @@ public class DropCommunicatorUtil extends Module {
 	}
 
 	@Override
+	public void moduleMain() {
+
+	}
+
+	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
 		try {
 			this.inputqueue.put((DropMessage<?>) data[0]);
