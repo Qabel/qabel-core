@@ -1,8 +1,7 @@
 package de.qabel.core.module;
 
 import de.qabel.ackack.event.EventEmitter;
-import de.qabel.core.config.ConfigActor;
-import de.qabel.core.config.ContactsActor;
+import de.qabel.core.config.ResourceActor;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -19,8 +18,7 @@ public class ModuleManager {
 	public final static ClassLoader LOADER = new ClassLoader();
 
 	private final EventEmitter eventEmitter;
-	private final ConfigActor configActor;
-	private final ContactsActor contactsActor;
+	private final ResourceActor resourceActor;
 
 	private HashMap<Module, ModuleThread> modules;
 
@@ -47,26 +45,21 @@ public class ModuleManager {
 	}
 
 	public ModuleManager() {
-		this(EventEmitter.getDefault(), ConfigActor.getDefault(), ContactsActor.getDefault());
+		this(EventEmitter.getDefault(), ResourceActor.getDefault());
 	}
 
-	public ModuleManager(EventEmitter emitter, ConfigActor configActor, ContactsActor contactsActor) {
+	public ModuleManager(EventEmitter emitter, ResourceActor resourceActor) {
 		eventEmitter = emitter;
 		modules = new HashMap<>();
-		this.configActor = configActor;
-		this.contactsActor = contactsActor;
+		this.resourceActor = resourceActor;
 	}
 
 	EventEmitter getEventEmitter() {
 		return eventEmitter;
 	}
 
-	public ConfigActor getConfigActor() {
-		return configActor;
-	}
-
-	public ContactsActor getContactsActor() {
-		return contactsActor;
+	public ResourceActor getResourceActor() {
+		return resourceActor;
 	}
 
 	/**

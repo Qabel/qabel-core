@@ -22,8 +22,7 @@ public class DropActorTest {
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
-	private Thread contactsActorThread;
-    private Thread configActorThread;
+    private Thread resourceActorThread;
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
     static class TestMessage extends ModelObject {
@@ -37,10 +36,8 @@ public class DropActorTest {
     @Before
     public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
 		Persistence.setPassword(encryptionPassword);
-        contactsActorThread = new Thread(ContactsActor.getDefault());
-        contactsActorThread.start();
-		configActorThread = new Thread(ConfigActor.getDefault());
-		configActorThread.start();
+        resourceActorThread = new Thread(ResourceActor.getDefault());
+        resourceActorThread.start();
         emitter = EventEmitter.getDefault();
     	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
@@ -72,8 +69,7 @@ public class DropActorTest {
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
-		ContactsActor.getDefault().stop();
-		ConfigActor.getDefault().stop();
+		ResourceActor.getDefault().stop();
     }
 
     @Test

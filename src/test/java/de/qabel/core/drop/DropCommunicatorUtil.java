@@ -10,8 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class DropCommunicatorUtil extends Module {
 	LinkedBlockingQueue<DropMessage<?>> inputqueue = new LinkedBlockingQueue<>();
-	private ContactsActor contactsActor;
-	private ConfigActor configActor;
+	private ResourceActor resourceActor;
 	private DropActor dropActor;
 	private Thread dropActorThread;
 	private Identities identities;
@@ -27,14 +26,13 @@ public class DropCommunicatorUtil extends Module {
 		Thread dropActorThread = new Thread(dropActor, "dropActor");
 		dropActor.setInterval(500);
 		dropActorThread.start();
-		ModuleManager manager = new ModuleManager(emitter, ConfigActor.getDefault(), ContactsActor.getDefault());
+		ModuleManager manager = new ModuleManager(emitter, ResourceActor.getDefault());
 		try {
 			DropCommunicatorUtil util = manager.startModule(DropCommunicatorUtil.class);
-			util.contactsActor = ContactsActor.getDefault();
-			util.configActor = ConfigActor.getDefault();
-			util.contactsActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
-			util.configActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
-			util.configActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
+			util.resourceActor = ResourceActor.getDefault();
+			util.resourceActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
+			util.resourceActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
+			util.resourceActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
 
 			util.identities = identities;
 			util.dropServers = dropServers;
@@ -59,8 +57,8 @@ public class DropCommunicatorUtil extends Module {
 	public void stop() {
 		this.dropActor.stop();
 		this.dropActor.unregister();
-		this.configActor.removeIdentities(identities.getIdentities().toArray(new Identity[0]));
-		this.configActor.removeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
+		this.resourceActor.removeIdentities(identities.getIdentities().toArray(new Identity[0]));
+		this.resourceActor.removeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
 		try {
 			this.dropActorThread.join();
 		} catch (InterruptedException e) {

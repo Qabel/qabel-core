@@ -72,8 +72,8 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		on(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
 		on(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
 
-		ContactsActor contactsActor = ContactsActor.getDefault();
-		contactsActor.retrieveContacts(this, new Responsible() {
+		ResourceActor resourceActor = ResourceActor.getDefault();
+		resourceActor.retrieveContacts(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
@@ -83,8 +83,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			}
 		});
 
-		ConfigActor configActor = ConfigActor.getDefault();
-		configActor.retrieveIdentities(this, new Responsible() {
+		resourceActor.retrieveIdentities(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<Identity> receivedIdentities = new ArrayList<>(Arrays.asList((Identity[]) data));
@@ -94,7 +93,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			}
 		});
 
-		configActor.retrieveDropServers(this, new Responsible() {
+		resourceActor.retrieveDropServers(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<DropServer> receivedDropServer = new ArrayList<>(Arrays.asList((DropServer[]) data));

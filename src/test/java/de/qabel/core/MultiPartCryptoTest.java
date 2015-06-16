@@ -29,8 +29,7 @@ public class MultiPartCryptoTest {
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
-    private Thread contactsActorThread;
-    private Thread configActorThread;
+    private Thread resourceActorThread;
 
 
     static class TestObject extends ModelObject {
@@ -65,10 +64,8 @@ public class MultiPartCryptoTest {
     @Before
     public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
         Persistence.setPassword(encryptionPassword);
-        contactsActorThread = new Thread(ContactsActor.getDefault());
-        contactsActorThread.start();
-		configActorThread = new Thread(ConfigActor.getDefault());
-		configActorThread.start();
+		resourceActorThread = new Thread(ResourceActor.getDefault());
+        resourceActorThread.start();
         emitter = EventEmitter.getDefault();
 
         loadContactsAndIdentities();
