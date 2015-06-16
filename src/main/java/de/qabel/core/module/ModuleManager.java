@@ -14,7 +14,6 @@ import java.util.HashMap;
  * stopping and removing them.
  */
 public class ModuleManager {
-	private static ModuleManager defaultModuleManager = null;
 	public final static ClassLoader LOADER = new ClassLoader();
 
 	private final EventEmitter eventEmitter;
@@ -22,16 +21,6 @@ public class ModuleManager {
 
 	private HashMap<Module, ModuleThread> modules;
 
-	/**
-	 * Get default ModuleManager. Creates a new one if none exists.
-	 * @return Default ModuleManager
-	 */
-	public static ModuleManager getDefault() {
-		if (defaultModuleManager == null) {
-			defaultModuleManager = new ModuleManager();
-		}
-		return defaultModuleManager;
-	}
 
 	static public class ClassLoader extends URLClassLoader{
 		public ClassLoader() {

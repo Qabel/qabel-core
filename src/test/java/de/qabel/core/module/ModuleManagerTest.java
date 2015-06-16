@@ -3,6 +3,7 @@ package de.qabel.core.module;
 import static org.junit.Assert.*;
 
 import de.qabel.ackack.MessageInfo;
+import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.drop.DropActor;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class ModuleManagerTest {
 	@Test
 	@Ignore
 	public void lifeCycleTest() throws Exception {
-		ModuleManager mm = new ModuleManager();
+		ModuleManager mm = new ModuleManager(EventEmitter.getDefault(), null);
 		TestModule module = mm.startModule(TestModule.class);
 		assertTrue(module.isInit);
 		Thread.sleep(2000);

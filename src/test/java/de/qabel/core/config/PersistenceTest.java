@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PersistenceTest {
 	private final static char[] encryptionPassword = "qabel".toCharArray();
-	private final static String DB_NAME = "persistenceTest.sqlite";
+	private final static String DB_NAME = "PersistenceTest.sqlite";
 	Persistence<String> persistence;
 
 	@Before

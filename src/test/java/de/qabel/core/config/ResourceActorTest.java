@@ -19,7 +19,7 @@ import org.junit.Test;
 import de.qabel.ackack.Responsible;
 
 public class ResourceActorTest {
-	private final static String DB_NAME = "resourceActorTest.sqlite";
+	private final static String DB_NAME = "ResourceActorTest.sqlite";
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
 	ArrayList<Account> accountsList;
