@@ -30,12 +30,11 @@ public abstract class Persistence<T> {
 	static final int NONCE_SIZE_BYTE = 32;
 	static final int SALT_SIZE_BYTE = 32;
 
-	private static char[] PASSWORD;
 	private KeyParameter keyParameter;
 	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
-	public Persistence(T database) {
+	public Persistence(T database, char[] password) {
 		this.cryptoutils = new CryptoUtils();
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
@@ -47,15 +46,7 @@ public abstract class Persistence<T> {
 			logger.fatal("Cannot connect to database!");
 			throw new RuntimeException("Cannot connect to database!");
 		}
-		this.keyParameter = getMasterKey(deriveKey(PASSWORD, getSalt(false)));
-	}
-
-	/**
-	 * Workaroud method to get the encryption password into the persistence class
-	 * @param password password for database encryption.
-	 */
-	public static void setPassword(char[] password) {
-		PASSWORD = password;
+		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
 	}
 
 	/**

@@ -21,23 +21,15 @@ public class SQLitePersistence extends Persistence<String> {
 	private final static String STR_DATA = "DATA";
 	private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
 	private final static String JDBC_PREFIX = "jdbc:sqlite:";
-	private final static String DEFAULT_DATABASE = "qabel-core.sqlite";
 
 	private Connection c;
 
 	/**
 	 * Stores entities in a local SQLite database
-	 */
-	public SQLitePersistence() {
-		super(DEFAULT_DATABASE);
-	}
-
-	/**
-	 * Stores entities in a local SQLite database
 	 * @param dbName Database file name.
 	 */
-	public SQLitePersistence(String dbName) {
-		super(dbName);
+	public SQLitePersistence(String dbName, char[] password) {
+		super(dbName, password);
 	}
 
 	@Override
