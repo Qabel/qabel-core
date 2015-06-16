@@ -18,7 +18,7 @@ public class DropActorTest {
     private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
     private Identity sender, recipient;
     private Contact senderContact, recipientContact;
-    private DropCommunicatorUtil<TestMessage> controller;
+    private DropCommunicatorUtil controller;
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
@@ -35,7 +35,7 @@ public class DropActorTest {
     }
     
     @Before
-    public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
+    public void setup() throws MalformedURLException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
 		Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
@@ -65,8 +65,8 @@ public class DropActorTest {
         servers.put(iDropServer);
         servers.put(cDropServer);
 
-        controller = new DropCommunicatorUtil<TestMessage>(emitter);
-        controller.start(contacts, identities, servers);
+        controller = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
+        controller.registerModelObject(TestMessage.class);
     }
 
     @After

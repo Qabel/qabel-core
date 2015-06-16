@@ -59,45 +59,44 @@ public class MultiPartCryptoTest {
 		}
 	}
 
-    private DropCommunicatorUtil dropController;
+    private DropCommunicatorUtil communicatorUtil;
     private Identity alice;
 
     @Before
-    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
+    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
         Persistence.setPassword(encryptionPassword);
         contactsActorThread = new Thread(ContactsActor.getDefault());
         contactsActorThread.start();
 		configActorThread = new Thread(ConfigActor.getDefault());
 		configActorThread.start();
         emitter = EventEmitter.getDefault();
-        dropController = new DropCommunicatorUtil(emitter);
 
         loadContactsAndIdentities();
         loadDropServers();
-        dropController.start(contacts, identities, servers);
+		communicatorUtil = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
     }
 
     @After
     public void tearDown() throws InterruptedException {
-        dropController.stop();
+        communicatorUtil.stopModule();
     }
 
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
         this.sendMessage();
 		this.sendUnwantedMessage();
 
-        DropMessage<TestObject> msg = dropController.retrieve();
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
 
         assertEquals("Test", msg.getData().getStr());
     }
 
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -106,13 +105,14 @@ public class MultiPartCryptoTest {
 		this.sendUnwantedMessage();
         this.sendMessage();
 
-        DropMessage<TestObject> msg = dropController.retrieve();
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
+
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
     }
 
