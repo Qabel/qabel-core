@@ -44,9 +44,6 @@ public class ModuleManager {
 		}
 	}
 
-	public ModuleManager() {
-		this(EventEmitter.getDefault(), ResourceActor.getDefault());
-	}
 
 	public ModuleManager(EventEmitter emitter, ResourceActor resourceActor) {
 		eventEmitter = emitter;

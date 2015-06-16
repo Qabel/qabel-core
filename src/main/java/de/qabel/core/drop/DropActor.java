@@ -52,7 +52,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		return interval;
 	}
 
-	public DropActor(EventEmitter emitter) {
+	public DropActor(ResourceActor resourceActor, EventEmitter emitter) {
 		super(emitter);
 		this.emitter = emitter;
 		this.mContacts = new Contacts();
@@ -72,7 +72,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		on(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
 		on(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
 
-		ResourceActor resourceActor = ResourceActor.getDefault();
 		resourceActor.retrieveContacts(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {

@@ -19,9 +19,9 @@ import org.junit.Test;
 import de.qabel.ackack.Responsible;
 
 public class ResourceActorTest {
+	private final static String DB_NAME = "resourceActorTest.sqlite";
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
-	Settings settings;
 	ArrayList<Account> accountsList;
 	ArrayList<DropServer> dropServersList;
 	ArrayList<Identity> identitiesList;
@@ -45,11 +45,8 @@ public class ResourceActorTest {
 
 	@Before
 	public void setUp() {
-		Persistence.setPassword(encryptionPassword);
-		settings = new Settings();
-		settings.setLocalSettings(new LocalSettingsEquivalentTestFactory().create());
-		settings.setSyncedSettings(new SyncedSettingsEquivalentTestFactory().create());
-		resourceActor = new ResourceActor(settings, new Contacts(), EventEmitter.getDefault());
+		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		accountFactory = new AccountTestFactory();
 		dropServerFactory = new DropServerTestFactory();
 		identityFactory = new IdentityTestFactory();

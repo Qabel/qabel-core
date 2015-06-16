@@ -13,8 +13,7 @@ public class PersistenceTest {
 
 	@Before
 	public void setUp() {
-		Persistence.setPassword(encryptionPassword);
-		persistence = new SQLitePersistence(DB_NAME);
+		persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 	}
 
 	@After

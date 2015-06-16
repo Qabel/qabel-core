@@ -19,7 +19,6 @@ import de.qabel.ackack.Responsible;
  *
  */
 public class ResourceActor extends Actor {
-	private static ResourceActor defaultResourceActor = null;
 	private final Contacts contacts;
 	private Settings settings;
 	private EventEmitter eventEmitter;
@@ -56,16 +55,6 @@ public class ResourceActor extends Actor {
 
 	private final static Logger logger = LogManager.getLogger(ResourceActor.class.getName());
 
-	public static ResourceActor getDefault() {
-		if(defaultResourceActor == null) {
-			defaultResourceActor = new ResourceActor(new SQLitePersistence(), new Settings(), new Contacts(), EventEmitter.getDefault());
-		}
-		return defaultResourceActor;
-	}
-
-	public ResourceActor(Settings settings, Contacts contacts, EventEmitter eventEmitter) {
-		this(new SQLitePersistence(), settings, contacts, eventEmitter);
-	}
 
 	public ResourceActor(Persistence<String> persistence, Settings settings, Contacts contacts, EventEmitter eventEmitter) {
 		this.persistence = persistence;
