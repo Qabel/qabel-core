@@ -8,6 +8,7 @@ import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.*;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -72,6 +73,11 @@ public class DropActorTest {
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
+		resourceActor.stop();
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
     }
 
     @Test

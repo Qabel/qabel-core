@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import de.qabel.ackack.event.EventListener;
 import de.qabel.core.EventNameConstants;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,6 +56,14 @@ public class ResourceActorTest {
 		storageVolumeFactory = new StorageVolumeTestFactory();
 		configActorThread = new Thread(resourceActor);
 		configActorThread.start();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
 	}
 
 	@Test

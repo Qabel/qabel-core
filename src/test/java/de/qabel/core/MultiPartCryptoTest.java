@@ -14,6 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.InvalidKeyException;
@@ -23,7 +24,6 @@ import java.util.HashSet;
 
 public class MultiPartCryptoTest {
 	private final static String DB_NAME = "MultiPartCryptoTest.sqlite";
-
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
 	private EventEmitter emitter;
@@ -79,8 +79,11 @@ public class MultiPartCryptoTest {
     @After
     public void tearDown() throws InterruptedException {
         communicatorUtil.stopModule();
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
     }
-
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
