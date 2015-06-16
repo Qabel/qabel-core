@@ -20,7 +20,7 @@ import de.qabel.ackack.Responsible;
  */
 public class ResourceActor extends Actor {
 	private final Contacts contacts;
-	private Settings settings;
+	private final Settings settings;
 	private EventEmitter eventEmitter;
 	private Persistence persistence;
 
@@ -55,11 +55,10 @@ public class ResourceActor extends Actor {
 
 	private final static Logger logger = LogManager.getLogger(ResourceActor.class.getName());
 
-
-	public ResourceActor(Persistence<String> persistence, Settings settings, Contacts contacts, EventEmitter eventEmitter) {
+	public ResourceActor(Persistence<String> persistence, EventEmitter eventEmitter) {
 		this.persistence = persistence;
-		this.settings = settings;
-		this.contacts = contacts;
+		this.settings = new Settings();
+		this.contacts = new Contacts();
 		//TODO: DEFAULT SETTINGS?!?
 		settings.setLocalSettings(new LocalSettings(1000L, new Date()));
 		settings.setSyncedSettings(new SyncedSettings());
