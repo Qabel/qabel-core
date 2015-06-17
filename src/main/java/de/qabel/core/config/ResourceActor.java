@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -17,12 +18,14 @@ import de.qabel.ackack.Responsible;
  * Actor which handles the access to the configuration of Qabel.
  *
  */
-public class ConfigActor extends Actor {
-	private static ConfigActor defaultConfigActor = null;
+public class ResourceActor extends Actor {
+	private static ResourceActor defaultResourceActor = null;
+	private final Contacts contacts;
 	private Settings settings;
 	private EventEmitter eventEmitter;
 	private Persistence persistence;
 
+	private static final String RETRIEVE_CONTACTS = "retrieveContacts";
 	private static final String RETRIEVE_ACCOUNTS = "retrieveAccounts";
 	private static final String RETRIEVE_DROPSERVERS = "retrieveDropServers";
 	private static final String RETRIEVE_IDENTITIES = "retrieveIdentities";
@@ -32,6 +35,7 @@ public class ConfigActor extends Actor {
 	private static final String RETRIEVE_STORAGEVOLUMES = "retrieveStorageVolumes";
 	private static final String RETRIEVE_SYNCEDMODULESETTINGS = "retrieveSyncedModuleSettings";
 
+	private static final String WRITE_CONTACTS = "writeContacts";
 	private static final String WRITE_ACCOUNTS = "writeAccounts";
 	private static final String WRITE_DROPSERVERS = "writeDropServers";
 	private static final String WRITE_IDENTITIES = "writeIdentities";
@@ -41,6 +45,7 @@ public class ConfigActor extends Actor {
 	private static final String WRITE_STORAGEVOLUMES = "writeStorageVolumes";
 	private static final String WRITE_SYNCEDMODULESETTINGS = "writeSyncedModuleSettings";
 
+	private static final String REMOVE_CONTACTS = "removeContacts";
 	private static final String REMOVE_ACCOUNTS = "removeAccounts";
 	private static final String REMOVE_DROPSERVERS = "removeDropServers";
 	private static final String REMOVE_IDENTITIES = "removeIdentities";
@@ -49,18 +54,19 @@ public class ConfigActor extends Actor {
 	private static final String REMOVE_STORAGEVOLUMES = "removeStorageVolumes";
 	private static final String REMOVE_SYNCEDMODULESETTINGS = "removeSyncedModuleSettings";
 
-	private final static Logger logger = LogManager.getLogger(ConfigActor.class.getName());
+	private final static Logger logger = LogManager.getLogger(ResourceActor.class.getName());
 
-	public static ConfigActor getDefault() {
-		if(defaultConfigActor == null) {
-			defaultConfigActor = new ConfigActor(new Settings(), EventEmitter.getDefault());
+	public static ResourceActor getDefault() {
+		if(defaultResourceActor == null) {
+			defaultResourceActor = new ResourceActor(new Settings(), new Contacts(), EventEmitter.getDefault());
 		}
-		return defaultConfigActor;
+		return defaultResourceActor;
 	}
 
-	public ConfigActor(Settings settings, EventEmitter eventEmitter) {
+	public ResourceActor(Settings settings, Contacts contacts, EventEmitter eventEmitter) {
 		this.persistence = new SQLitePersistence();
 		this.settings = settings;
+		this.contacts = contacts;
 		//TODO: DEFAULT SETTINGS?!?
 		settings.setLocalSettings(new LocalSettings(1000L, new Date()));
 		settings.setSyncedSettings(new SyncedSettings());
@@ -69,6 +75,9 @@ public class ConfigActor extends Actor {
 	}
 
 	private void loadFromPersistence() {
+		for (Object object: persistence.getEntities(Contact.class)) {
+			contacts.put((Contact) object);
+		}
 		for (Object object: persistence.getEntities(Account.class)) {
 			settings.getSyncedSettings().getAccounts().put((Account) object);
 		}
@@ -100,6 +109,44 @@ public class ConfigActor extends Actor {
 		for (Object object: persistence.getEntities(SyncedModuleSettings.class)) {
 			settings.getSyncedSettings().getSyncedModuleSettings().add((SyncedModuleSettings) object);
 		}
+	}
+
+	/**
+	 * Add new and write changed contacts
+	 * @param contacts Contacts to be written
+	 * @return True if contacts have been sent to actor
+	 */
+	public boolean writeContacts(final Contact... contacts) {
+		MessageInfo info = new MessageInfo();
+		info.setType(WRITE_CONTACTS);
+		return post(info, (Serializable[]) contacts);
+	}
+
+	/**
+	 * Retrieve contacts by key identifier. If no key identifier is passed all
+	 * contacts will be retrieved.
+	 * @param sender Sending actor
+	 * @param responsible Class to handle the call back
+	 * @param keyIdentifiers Key identifiers of requested contacts (all if empty)
+	 * @return True if request has been sent to actor
+	 */
+	public boolean retrieveContacts(Actor sender, Responsible responsible, final String... keyIdentifiers) {
+		MessageInfo info = new MessageInfo();
+		info.setSender(sender);
+		info.setResponsible(responsible);
+		info.setType(RETRIEVE_CONTACTS);
+		return post(info, (Serializable[]) keyIdentifiers);
+	}
+
+	/**
+	 * Remove one or more contacts.
+	 * @param keyIdentifiers Key identifiers of contacts to be removed
+	 * @return True if request has been sent to actor
+	 */
+	public boolean removeContacts(final String... keyIdentifiers) {
+		MessageInfo info = new MessageInfo();
+		info.setType(REMOVE_CONTACTS);
+		return post(info, (Serializable[]) keyIdentifiers);
 	}
 
 	/**
@@ -382,6 +429,21 @@ public class ConfigActor extends Actor {
 	@Override
 	protected void react(MessageInfo info, Object... data) {
 		switch (info.getType()) {
+			case RETRIEVE_CONTACTS:
+				Contact[] contactsArray;
+				synchronized (contacts) {
+					if(data.length > 0) {
+						ArrayList<Contact> contactsList = new ArrayList<>();
+						for (Object object : data) {
+							contactsList.add(this.contacts.getByKeyIdentifier((String) object));
+						}
+						contactsArray = contactsList.toArray(new Contact[0]);
+					} else {
+						contactsArray = this.contacts.getContacts().toArray(new Contact[0]);
+					}
+					info.response((Serializable[]) contactsArray);
+				}
+				break;
 			case RETRIEVE_ACCOUNTS:
 				synchronized (settings.getSyncedSettings().getAccounts()) {
 					info.response((Serializable[]) this.settings
@@ -434,6 +496,16 @@ public class ConfigActor extends Actor {
 					info.response((Serializable[]) this.settings
 							.getSyncedSettings().getSyncedModuleSettings()
 							.toArray(new SyncedModuleSettings[0]));
+				}
+				break;
+			case WRITE_CONTACTS:
+				synchronized (contacts) {
+					for (Object object : data) {
+						Contact contact = (Contact) object;
+						this.contacts.put(contact);
+						persistence.updateOrPersistEntity(contact);
+						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_ADDED, contact);
+					}
 				}
 				break;
 			case WRITE_ACCOUNTS:
@@ -520,6 +592,18 @@ public class ConfigActor extends Actor {
 						syncedModuleSettingsList.add(syncedModuleSettings);
 						persistence.updateOrPersistEntity(syncedModuleSettings);
 						//TODO: EMIT THIS EVENT?
+					}
+				}
+				break;
+			case REMOVE_CONTACTS:
+				synchronized (contacts) {
+					for (Object object : data) {
+						Contact c = contacts.getByKeyIdentifier(object.toString());
+						if(c != null) {
+							persistence.removeEntity(c.getPersistenceID(), Contact.class);
+						}
+						this.contacts.remove(object.toString());
+						eventEmitter.emit(EventNameConstants.EVENT_CONTACT_REMOVED, object.toString());
 					}
 				}
 				break;
