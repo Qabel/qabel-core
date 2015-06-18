@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
 	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
 
-	public static final String EVENT_DROP_MESSAGE_RECEIVED = "dropMessageReceived";
+	public static final String EVENT_DROP_MESSAGE_RECEIVED_PREFIX = "dropMessageReceived";
 	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";
 	private static final String PRIVATE_TYPE_MESSAGE_INPUT = "MessageInput";
 	private final EventEmitter emitter;
@@ -72,8 +72,8 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		on(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
 		on(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
 
-		ContactsActor contactsActor = ContactsActor.getDefault();
-		contactsActor.retrieveContacts(this, new Responsible() {
+		ResourceActor resourceActor = ResourceActor.getDefault();
+		resourceActor.retrieveContacts(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<Contact> receivedContacts = new ArrayList<>(Arrays.asList((Contact[]) data));
@@ -83,8 +83,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			}
 		});
 
-		ConfigActor configActor = ConfigActor.getDefault();
-		configActor.retrieveIdentities(this, new Responsible() {
+		resourceActor.retrieveIdentities(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<Identity> receivedIdentities = new ArrayList<>(Arrays.asList((Identity[]) data));
@@ -94,7 +93,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			}
 		});
 
-		configActor.retrieveDropServers(this, new Responsible() {
+		resourceActor.retrieveDropServers(this, new Responsible() {
 			@Override
 			public void onResponse(Serializable... data) {
 				ArrayList<DropServer> receivedDropServer = new ArrayList<>(Arrays.asList((DropServer[]) data));
@@ -204,7 +203,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
-				emitter.emit(EVENT_DROP_MESSAGE_RECEIVED, dm);
+				emitter.emit(EVENT_DROP_MESSAGE_RECEIVED_PREFIX + dm.getData().getClass().getCanonicalName(), dm);
 			}
 		}
 	}

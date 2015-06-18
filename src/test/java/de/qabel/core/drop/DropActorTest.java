@@ -18,12 +18,11 @@ public class DropActorTest {
     private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
     private Identity sender, recipient;
     private Contact senderContact, recipientContact;
-    private DropCommunicatorUtil<TestMessage> controller;
+    private DropCommunicatorUtil controller;
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
-	private Thread contactsActorThread;
-    private Thread configActorThread;
+    private Thread resourceActorThread;
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
     static class TestMessage extends ModelObject {
@@ -35,12 +34,10 @@ public class DropActorTest {
     }
 
     @Before
-    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException {
+    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
 		Persistence.setPassword(encryptionPassword);
-        contactsActorThread = new Thread(ContactsActor.getDefault());
-        contactsActorThread.start();
-		configActorThread = new Thread(ConfigActor.getDefault());
-		configActorThread.start();
+        resourceActorThread = new Thread(ResourceActor.getDefault());
+        resourceActorThread.start();
         emitter = EventEmitter.getDefault();
     	sender = new Identity("Alice", null, new QblECKeyPair());
     	sender.addDrop(new DropURL(iUrl));
@@ -65,15 +62,14 @@ public class DropActorTest {
         servers.put(iDropServer);
         servers.put(cDropServer);
 
-        controller = new DropCommunicatorUtil<TestMessage>(emitter);
-        controller.start(contacts, identities, servers);
+        controller = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
+        controller.registerModelObject(TestMessage.class);
     }
 
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
-		ContactsActor.getDefault().stop();
-		ConfigActor.getDefault().stop();
+		ResourceActor.getDefault().stop();
     }
 
     @Test
