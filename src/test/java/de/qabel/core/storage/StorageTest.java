@@ -2,7 +2,8 @@ package de.qabel.core.storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.util.Arrays;
@@ -24,13 +25,13 @@ import de.qabel.core.exceptions.QblStorageInvalidBlobName;
 import de.qabel.core.exceptions.QblStorageInvalidToken;
 
 public class StorageTest {
-	private static final String SERVER_URL = "http://localhost:8000/data";
+	private static final String SERVER_URI = "http://localhost:8000/data";
 	private static final String KEY_HEX = "feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308";
 	private StorageVolume volume;
 
 	@Before
-	public void createVolume() throws QblNetworkInvalidResponseException, IOException {
-		StorageServer server = new StorageServer(new URL(SERVER_URL), "");
+	public void createVolume() throws QblNetworkInvalidResponseException, IOException, URISyntaxException {
+		StorageServer server = new StorageServer(new URI(SERVER_URI), "");
 		this.volume = StorageAction.createStorageVolume(server);
 	}
 
@@ -49,9 +50,9 @@ public class StorageTest {
 	}
 
 	@Test
-	public void probeInvalidVolume() throws QblNetworkInvalidResponseException, IOException {
+	public void probeInvalidVolume() throws QblNetworkInvalidResponseException, IOException, URISyntaxException {
 		// use a random UUID which is hopefully and most likely unused and thus invalid
-		StorageVolume unknownVolume = new StorageVolume(new StorageServer(new URL(SERVER_URL), ""),
+		StorageVolume unknownVolume = new StorageVolume(new StorageServer(new URI(SERVER_URI), ""),
 				UUID.randomUUID().toString(), "invalid1", "invalid2");
 		boolean exists = StorageAction.existsStorageVolume(unknownVolume);
 		Assert.assertFalse(exists);

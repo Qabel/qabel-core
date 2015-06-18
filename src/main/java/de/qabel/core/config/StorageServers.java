@@ -21,8 +21,8 @@ public class StorageServers {
 		return Collections.unmodifiableSet(new HashSet<>(this.storageServers.values()));
 	}
 	
-	protected StorageServer getStorageServerByUrl(String serverUrl) {
-		return this.storageServers.get(serverUrl);
+	protected StorageServer getStorageServerByUri(String serverUri) {
+		return this.storageServers.get(serverUri);
 	}
 	
 	/**
@@ -31,10 +31,7 @@ public class StorageServers {
 	 * @return true if newly added, false if updated
 	 */
 	public boolean put(StorageServer storageServer) {
-		if (this.storageServers.put(storageServer.getUrl().toString(), storageServer) == null) {
-			return true;
-		}
-		return false;
+		return this.storageServers.put(storageServer.getUri().toString(), storageServer) == null;
 	}
 
 	/**
@@ -44,7 +41,7 @@ public class StorageServers {
 	 */
 	public boolean remove(StorageServer storageServer) {
 		return storageServer != null
-				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
+				&& this.storageServers.remove(storageServer.getUri().toString()) != null;
 	}
 
 	@Override

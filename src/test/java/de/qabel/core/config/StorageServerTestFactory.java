@@ -9,13 +9,13 @@ import org.meanbean.lang.Factory;
  */
 class StorageServerTestFactory implements Factory<StorageServer>{
 	int i = 0;
-	UrlTestFactory urlFactory;
+	UriTestFactory uriFactory;
 	
 	StorageServerTestFactory() {
-		urlFactory = new UrlTestFactory();
+		uriFactory = new UriTestFactory();
 	}
 	@Override
 	public StorageServer create() {
-		return new StorageServer(urlFactory.create(), "auth" + i++);
+		return new StorageServer(uriFactory.create(), "auth" + i++);
 	}
 }

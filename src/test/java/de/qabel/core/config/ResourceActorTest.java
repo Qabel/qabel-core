@@ -2,6 +2,7 @@ package de.qabel.core.config;
 
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -131,7 +132,7 @@ public class ResourceActorTest {
 	}
 
 	@Test
-	public void changeSingleContactTest() throws InterruptedException, MalformedURLException, QblDropInvalidURL {
+	public void changeSingleContactTest() throws InterruptedException, MalformedURLException, QblDropInvalidURL, URISyntaxException {
 		//Add new test Contact which has to be changed
 		Contacts contacts = new Contacts();
 		Contact testContactOriginal = contactFactory.create();
@@ -162,7 +163,7 @@ public class ResourceActorTest {
 	}
 
 	@Test
-	public void changeMultipleContactsTest() throws InterruptedException, MalformedURLException, QblDropInvalidURL {
+	public void changeMultipleContactsTest() throws InterruptedException, MalformedURLException, QblDropInvalidURL, URISyntaxException {
 		//Add new test Contact which has to be changed
 		Contacts contacts = new Contacts();
 		Contact testContactOriginal1 = contactFactory.create();

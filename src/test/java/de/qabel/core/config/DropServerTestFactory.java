@@ -8,11 +8,11 @@ import org.meanbean.lang.Factory;
  * Attention: For testing purposes only
  */
 public class DropServerTestFactory implements Factory<DropServer>{
-	UrlTestFactory urlFactory;
+	UriTestFactory urlFactory;
 	int i = 0;
 
 	DropServerTestFactory() {
-		urlFactory = new UrlTestFactory();
+		urlFactory = new UriTestFactory();
 	}
 
 	@Override
