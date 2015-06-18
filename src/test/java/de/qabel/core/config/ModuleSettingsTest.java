@@ -16,7 +16,6 @@ public class ModuleSettingsTest {
 			.registerTypeAdapter(SyncedModuleSettings.class, new SyncedModuleSettingsTypeAdapter())
 			.create().getAdapter(SyncedModuleSettings.class);
 		String json = adapter.toJson(fooSettings);
-		System.out.println(json);
 		Assert.assertEquals(fooSettings, adapter.fromJson(json));
 	}
 }
