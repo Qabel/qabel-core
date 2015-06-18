@@ -17,8 +17,8 @@ class AccountsTestFactory implements Factory<Accounts>{
 		Account a = new Account("provider" + i, "user" + i, "auth" + i++);
 		Account b = new Account("provider" + i, "user" + i, "auth" + i++);
 
-		accounts.add(a);
-		accounts.add(b);
+		accounts.put(a);
+		accounts.put(b);
 		
 		return accounts;
 	}

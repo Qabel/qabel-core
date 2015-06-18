@@ -21,8 +21,8 @@ public class StorageVolumesEquivalentTestFactory implements EquivalentFactory<St
 	public StorageVolumes create() {
 		StorageVolumes storageVolumes = new StorageVolumes();
 
-		storageVolumes.add(a);
-		storageVolumes.add(b);
+		storageVolumes.put(a);
+		storageVolumes.put(b);
 
 		return storageVolumes;
 	}

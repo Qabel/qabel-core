@@ -11,31 +11,27 @@ import java.util.HashSet;
  */
 public class StorageServers {
 
-	private final Map<String,StorageServer> storageServers = new HashMap<String,StorageServer>();
+	private final Map<String, StorageServer> storageServers = new HashMap<>();
 
 	/**
 	 * Returns an unmodifiable set of contained storage servers
 	 * @return Set<StorageServer>
 	 */
 	public Set<StorageServer> getStorageServers() {
-		return Collections.unmodifiableSet(new HashSet<StorageServer>(this.storageServers.values()));
+		return Collections.unmodifiableSet(new HashSet<>(this.storageServers.values()));
 	}
 	
-	protected StorageServer getStorageServerByUrl(String serverUrl) {
-		return this.storageServers.get(serverUrl);
+	protected StorageServer getStorageServerByUri(String serverUri) {
+		return this.storageServers.get(serverUri);
 	}
 	
 	/**
-	 * Adds a storage server
-	 * @param storageServer StorageServer to add.
-	 * @return true if successfully added, false if already contained
+	 * Put a storage server
+	 * @param storageServer StorageServer to put.
+	 * @return true if newly added, false if updated
 	 */
-	public boolean add(StorageServer storageServer) {
-		if (this.storageServers.containsValue(storageServer)) {
-			return false;
-		}
-		this.storageServers.put(storageServer.getUrl().toString(), storageServer);
-		return true;
+	public boolean put(StorageServer storageServer) {
+		return this.storageServers.put(storageServer.getUri().toString(), storageServer) == null;
 	}
 
 	/**
@@ -45,12 +41,7 @@ public class StorageServers {
 	 */
 	public boolean remove(StorageServer storageServer) {
 		return storageServer != null
-				&& this.storageServers.remove(storageServer.getUrl().toString()) != null;
-	}
-
-	public boolean update(StorageServer storageServer) {
-		this.remove(storageServer);
-		return this.add(storageServer);
+				&& this.storageServers.remove(storageServer.getUri().toString()) != null;
 	}
 
 	@Override

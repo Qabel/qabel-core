@@ -1,51 +1,39 @@
 package de.qabel.core.config;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
- * EntityMaps provide funcionality to lookup an Enity based
+ * EntityMaps provide functionality to lookup an Entity based
  * on its key identifier.
  * 
  * @see Entity
  */
 abstract public class EntityMap<T extends Entity> implements Serializable {
 	private static final long serialVersionUID = -8004819460313825206L;
-	private final Map<String, T> entities = new HashMap<>();
+	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
 
 	/**
 	 * Returns unmodifiable set of contained contacts
 	 * 
 	 * @return Set<Contact>
 	 */
-	public Set<T> getEntities() {
+	public synchronized Set<T> getEntities() {
 		return Collections.unmodifiableSet(new HashSet<>(entities.values()));
 	}
 
-	public boolean add(T entity) {
-		if (this.entities.containsKey(entity.getKeyIdentifier())) {
+	public synchronized boolean put(T entity) {
+		if (this.entities.put(entity.getKeyIdentifier(), entity) == null) {
 			return false;
 		}
-		else {
-			this.entities.put(entity.getKeyIdentifier(), entity);
-			return true;
-		}
+		return true;
 	}
 
-	public boolean replace(T entity) {
-		this.remove(entity);
-		return this.add(entity);
-	}
-
-	public boolean remove(T entity) {
+	public synchronized boolean remove(T entity) {
 		return (entity != null && this.entities.remove(entity.getKeyIdentifier()) != null);
 	}
 
-	public boolean remove(String keyIdentifier) {
+	public synchronized boolean remove(String keyIdentifier) {
 		return (keyIdentifier != null && this.entities.remove(keyIdentifier) != null);
 	}
 
@@ -54,7 +42,7 @@ abstract public class EntityMap<T extends Entity> implements Serializable {
 	 * @param keyIdentifier
 	 * @return entity to which the key identifier is mapped or null if there is no mapping for this key identifier
 	 */
-	public T getByKeyIdentifier(String keyIdentifier) {
+	public synchronized T getByKeyIdentifier(String keyIdentifier) {
 		return this.entities.get(keyIdentifier);
 	}
 

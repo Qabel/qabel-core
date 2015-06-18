@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Class SyncSettingItem: Class to store common setting for synced item
  */
-public class SyncSettingItem implements Serializable {
+public class SyncSettingItem extends Persistable {
 	private static final long serialVersionUID = 1798935486715989955L;
 	private int id = 0;
     private long created = new Date().getTime();

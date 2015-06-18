@@ -2,8 +2,8 @@ package de.qabel.core.config;
 
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -22,21 +22,21 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 public class ConfigSerializationTest {	
 	
 	@Test
-	public void syncedSettingsTest() throws QblDropInvalidURL, IOException {
+	public void syncedSettingsTest() throws QblDropInvalidURL, IOException, URISyntaxException {
 		SyncedSettings syncedSettings = new SyncedSettings();
 		
-		//generate and add an "accounts" entry
+		//generate and put an "accounts" entry
 		Account account = new Account("provider", "user", "auth");
 		
-		syncedSettings.getAccounts().add(account);
+		syncedSettings.getAccounts().put(account);
 		
-		//generate and add an "drop_servers" entry
-		DropServer dropServer = new DropServer(new URL("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
-		syncedSettings.getDropServers().add(dropServer);
+		//generate and put an "drop_servers" entry
+		DropServer dropServer = new DropServer(new URI("https://drop.qabel.de/0123456789012345678901234567890123456789123"),"auth", true);
+		syncedSettings.getDropServers().put(dropServer);
 		
 		//generate "identities" array
 		syncedSettings.setIdentities(new Identities());
-		//generate and add an "identities" entry
+		//generate and put an "identities" entry
 		QblECKeyPair key;
 		Collection<DropURL> drops; 
 		Identity identity;
@@ -45,14 +45,14 @@ public class ConfigSerializationTest {
 		drops = new ArrayList<DropURL>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
-		syncedSettings.getIdentities().add(identity);
+		syncedSettings.getIdentities().put(identity);
 		
-		//generate and add a "storage_servers" entry
-		StorageServer storageServer = new StorageServer(new URL("https://storage.qabel.de"), "auth");
-		syncedSettings.getStorageServers().add(storageServer);
+		//generate and put a "storage_servers" entry
+		StorageServer storageServer = new StorageServer(new URI("https://storage.qabel.de"), "auth");
+		syncedSettings.getStorageServers().put(storageServer);
 		
-		//generate and add a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().add(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
+		//generate and put a "storage_volumes" entry
+		syncedSettings.getStorageVolumes().put(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new FooModuleSettings(1));
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
@@ -92,10 +92,7 @@ public class ConfigSerializationTest {
 			
 			assertEquals(contact, deserializedContact);
 			
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (QblDropInvalidURL e) {
+		} catch (QblDropInvalidURL | URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

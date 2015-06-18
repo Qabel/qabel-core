@@ -33,14 +33,14 @@ public class ConfigEqualsTest {
 		Accounts b = new Accounts();
 		Accounts c = new Accounts();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -62,14 +62,14 @@ public class ConfigEqualsTest {
 		Contacts b = new Contacts();
 		Contacts c = new Contacts();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -91,14 +91,14 @@ public class ConfigEqualsTest {
 		DropServers b = new DropServers();
 		DropServers c = new DropServers();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -120,14 +120,14 @@ public class ConfigEqualsTest {
 		Identities b = new Identities();
 		Identities c = new Identities();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -149,14 +149,14 @@ public class ConfigEqualsTest {
 		StorageServers b = new StorageServers();
 		StorageServers c = new StorageServers();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -177,14 +177,14 @@ public class ConfigEqualsTest {
 		StorageVolumes b = new StorageVolumes();
 		StorageVolumes c = new StorageVolumes();
 
-		a.add(a1);
-		a.add(a2);
+		a.put(a1);
+		a.put(a2);
 
-		b.add(a1);
-		b.add(a2);
+		b.put(a1);
+		b.put(a2);
 
-		c.add(a1);
-		c.add(c1);
+		c.put(a1);
+		c.put(c1);
 
 		assertEquals(a, b);
 		assertNotEquals(a, c);
@@ -227,7 +227,7 @@ public class ConfigEqualsTest {
 	public void dropServerEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testEqualsMethod(new DropServerEquivalentTestFactory(), config);
 	}
@@ -247,7 +247,7 @@ public class ConfigEqualsTest {
 	public void storageServerEqualsTest () {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testEqualsMethod(new StorageServerEquivalentTestFactory(), config);
 	}

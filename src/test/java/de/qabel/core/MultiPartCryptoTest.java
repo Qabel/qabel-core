@@ -14,8 +14,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,10 +23,14 @@ import java.util.HashSet;
 
 public class MultiPartCryptoTest {
 
-    private EventEmitter emitter;
+	private final static char[] encryptionPassword = "qabel".toCharArray();
+
+	private EventEmitter emitter;
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
+    private Thread resourceActorThread;
+
 
     static class TestObject extends ModelObject {
         public TestObject() { }
@@ -54,47 +58,42 @@ public class MultiPartCryptoTest {
 		}
 	}
 
-    private DropCommunicatorUtil dropController;
+    private DropCommunicatorUtil communicatorUtil;
     private Identity alice;
 
     @Before
-    public void setUp() throws InvalidKeyException, MalformedURLException, QblDropInvalidURL, InterruptedException {
-        emitter = new EventEmitter();
-        dropController = new DropCommunicatorUtil(emitter);
+    public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
+        Persistence.setPassword(encryptionPassword);
+		resourceActorThread = new Thread(ResourceActor.getDefault());
+        resourceActorThread.start();
+        emitter = EventEmitter.getDefault();
 
         loadContactsAndIdentities();
         loadDropServers();
-        dropController.start(contacts, identities, servers);
+		communicatorUtil = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
     }
 
     @After
     public void tearDown() throws InterruptedException {
-        dropController.stop();
+        communicatorUtil.stopModule();
     }
 
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
         this.sendMessage();
 		this.sendUnwantedMessage();
 
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        DropMessage<TestObject> msg = dropController.retrieve();
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
 
         assertEquals("Test", msg.getData().getStr());
     }
 
     @Test
     public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
-        dropController.setCls(TestObject.class);
+        communicatorUtil.registerModelObject(TestObject.class);
 
 		this.sendUnwantedMessage();
         this.sendMessage();
@@ -103,24 +102,18 @@ public class MultiPartCryptoTest {
 		this.sendUnwantedMessage();
         this.sendMessage();
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        DropMessage<TestObject> msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
 
-
-        DropMessage<TestObject> msg = dropController.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
-        msg = dropController.retrieve();
+        msg = (DropMessage<TestObject>) communicatorUtil.retrieve();
         assertEquals("Test", msg.getData().getStr());
     }
 
-    private void loadContactsAndIdentities() throws MalformedURLException, InvalidKeyException, QblDropInvalidURL {
+    private void loadContactsAndIdentities() throws URISyntaxException, InvalidKeyException, QblDropInvalidURL {
         QblECKeyPair alicesKey = new QblECKeyPair();
         Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
         alicesDrops.add(
@@ -140,25 +133,25 @@ public class MultiPartCryptoTest {
         alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         contacts = new Contacts();
-        contacts.add(alicesContact);
-        contacts.add(bobsContact);
+        contacts.put(alicesContact);
+        contacts.put(bobsContact);
 
         identities = new Identities();
-		identities.add(alice);
-		identities.add(bob);
+		identities.put(alice);
+		identities.put(bob);
     }
 
-    private void loadDropServers() throws MalformedURLException {
+    private void loadDropServers() throws URISyntaxException {
         servers = new DropServers();
 
         DropServer alicesServer = new DropServer();
-        alicesServer.setUrl(new URL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesServer.setUri(new URI("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         DropServer bobsServer = new DropServer();
-        bobsServer.setUrl(new URL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        bobsServer.setUri(new URI("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        servers.add(alicesServer);
-        servers.add(bobsServer);
+        servers.put(alicesServer);
+        servers.put(bobsServer);
 
     }
 

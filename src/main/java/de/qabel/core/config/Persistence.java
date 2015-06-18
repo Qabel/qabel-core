@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Persistence defines methods to store encrypted entities into a database.
- * Entities has to be Serializable.
+ * Entities has to be Persistable.
  * Serialized data is encrypted with AES256 GCM, a nonce provided to the serialize/deserialize
  * methods and a key derived from the provides password with PBKDF2 and a salt.
  *
@@ -100,19 +100,24 @@ public abstract class Persistence<T> {
 
 	/**
 	 * Persists an entity
-	 * @param id ID for entity storage
 	 * @param object Entity to persist
 	 * @return Result of the operation
 	 */
-	abstract public boolean persistEntity(String id, Serializable object);
+	abstract public boolean persistEntity(Persistable object);
 
 	/**
 	 * Updates a previously stored entity
-	 * @param id ID of the stored entity
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	abstract public boolean updateEntity(String id, Serializable object);
+	abstract boolean updateEntity(Persistable object);
+
+	/**
+	 * Updates a previously stored entity or persist a new entity
+	 * @param object Entity to replace stored entity with
+	 * @return Result of the operation
+	 */
+	abstract public boolean updateOrPersistEntity(Persistable object);
 
 	/**
 	 * Removes a persisted entity
@@ -128,14 +133,14 @@ public abstract class Persistence<T> {
 	 * @param cls Class of the entity to receive
 	 * @return Stored entity or null if entity not found
 	 */
-	abstract public Object getEntity(String id, Class cls);
+	abstract public Persistable getEntity(String id, Class cls);
 
 	/**
 	 * Get all entities of the provides Class
 	 * @param cls Class to get all stored entities for
 	 * @return List of stored entities
 	 */
-	abstract public List<Object> getEntities(Class cls);
+	abstract public List<Persistable> getEntities(Class cls);
 
 	/**
 	 * Drops the table for the provided Class

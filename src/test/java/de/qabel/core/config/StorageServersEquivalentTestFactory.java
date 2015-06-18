@@ -21,8 +21,8 @@ class StorageServersEquivalentTestFactory implements EquivalentFactory<StorageSe
 	public StorageServers create() {
 		StorageServers storageServers = new StorageServers();
 
-		storageServers.add(a);
-		storageServers.add(b);
+		storageServers.put(a);
+		storageServers.put(b);
 
 		return storageServers;
 	}

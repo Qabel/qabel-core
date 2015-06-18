@@ -21,8 +21,8 @@ class DropServersEquivalentTestFactory implements EquivalentFactory<DropServers>
 	public DropServers create() {
 		DropServers dropServers = new DropServers();
 
-		dropServers.add(a);
-		dropServers.add(b);
+		dropServers.put(a);
+		dropServers.put(b);
 
 		return dropServers;
 	}
