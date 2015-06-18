@@ -35,7 +35,7 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.ignoreProperty("serialVersionUID")
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testHashCodeMethod(new DropServerEquivalentTestFactory(), config);
 	}
@@ -56,7 +56,7 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.ignoreProperty("serialVersionUID")
-			.overrideFactory("url", new UrlTestFactory())
+			.overrideFactory("uri", new UriTestFactory())
 			.build();
 		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
 	}

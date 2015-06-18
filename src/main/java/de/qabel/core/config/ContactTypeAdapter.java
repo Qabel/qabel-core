@@ -1,7 +1,8 @@
 package de.qabel.core.config;
 
 import java.io.IOException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -35,9 +36,9 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		out.name("drop_urls");
 		out.beginArray();
 		Collection<DropURL> dropUrls = value.getDropUrls();
-		TypeAdapter<URL> urlAdapter = gson.getAdapter(URL.class);
-		for(DropURL url : dropUrls) {
-			urlAdapter.write(out, url.getUrl());
+		TypeAdapter<URI> urlAdapter = gson.getAdapter(URI.class);
+		for(DropURL dropUrl : dropUrls) {
+			urlAdapter.write(out, dropUrl.getUri());
 		}
 		out.endArray();
 		
@@ -84,7 +85,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				while(in.hasNext()) {
 					try {
 						dropURLs.add(new DropURL(in.nextString()));
-					} catch (QblDropInvalidURL e) {
+					} catch (QblDropInvalidURL | URISyntaxException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}

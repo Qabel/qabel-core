@@ -13,7 +13,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -31,8 +32,8 @@ public class StorageHTTPTest {
 	private byte[] blob;
 
 	@Before
-	public void setUp() throws IOException {
-		this.server = new StorageServer(new URL("http://localhost:8000/data"), "");
+	public void setUp() throws IOException, URISyntaxException {
+		this.server = new StorageServer(new URI("http://localhost:8000/data"), "");
 		StorageHTTP storageHTTP = new StorageHTTP(this.server);
 		HTTPResult<StorageVolume> result = storageHTTP.createNewStorageVolume();
 		Assume.assumeTrue(result.isOk());

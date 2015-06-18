@@ -1,7 +1,7 @@
 package de.qabel.core.drop;
 
 import java.io.Serializable;
-import java.net.URL;
+import java.net.URI;
 import java.security.SecureRandom;
 import java.util.*;
 
@@ -198,7 +198,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 */
 	private void retrieve() {
 		for (DropServer server : mDropServers.getDropServers()) {
-			Collection<DropMessage<?>> results = this.retrieve(server.getUrl());
+			Collection<DropMessage<?>> results = this.retrieve(server.getUri());
 			MessageInfo mi = new MessageInfo();
 			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
 			for (DropMessage<? extends ModelObject> dm : results) {
@@ -270,7 +270,7 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 
 		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(message);
 		for (DropURL u : contact.getDropUrls()) {
-			HTTPResult<?> dropResult = http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact));
+			HTTPResult<?> dropResult = http.send(u.getUri(), binaryMessage.assembleMessageFor(contact));
 			result.addErrorCode(dropResult.getResponseCode());
 		}
 
@@ -278,14 +278,14 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	}
 
 	/**
-	 * Retrieves a drop message from given URL
+	 * Retrieves a drop message from given URI
 	 *
-	 * @param url      URL where to retrieve the drop from
+	 * @param uri      URI where to retrieve the drop from
 	 * @return Retrieved, encrypted Dropmessages.
 	 */
-	public Collection<DropMessage<?>> retrieve(URL url) {
+	public Collection<DropMessage<?>> retrieve(URI uri) {
 		DropHTTP http = new DropHTTP();
-		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(url);
+		HTTPResult<Collection<byte[]>> cipherMessages = http.receiveMessages(uri);
 		Collection<DropMessage<?>> plainMessages = new ArrayList<>();
 
 		List<Contact> ccc = new ArrayList<Contact>(mContacts.getContacts());

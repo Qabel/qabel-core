@@ -1,7 +1,7 @@
 package de.qabel.core.config;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.meanbean.lang.Factory;
 
@@ -17,10 +17,10 @@ class StorageVolumeTestFactory implements Factory<StorageVolume>{
 		StorageVolume volume;
 		try {
 			volume = new StorageVolume(
-					new StorageServer(new URL("https://qabel.de/" + i), ""),
+					new StorageServer(new URI("https://qabel.de/" + i), ""),
 					"publicIdentifier" + i,
 					"token" + i, "revokeToken" + i);
-		} catch (MalformedURLException e) {
+		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 		i++;

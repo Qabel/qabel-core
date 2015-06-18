@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-import java.net.URL;
+import java.net.URI;
 
 /** 
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#drop-server
@@ -8,10 +8,10 @@ import java.net.URL;
 public class DropServer extends SyncSettingItem {
 	private static final long serialVersionUID = 6784516352213179983L;
 	/**
-	 * URL to the DropServer without the drop id.
-	 * Field name in serialized json: "url"
+	 * URI to the DropServer without the drop id.
+	 * Field name in serialized json: "uri"
 	 */
-	private URL url;
+	private URI uri;
 	/**
 	 * Authentication for the DropServer (Credential for optional, additional access regulation).
 	 * Field name in serialized json: "auth"
@@ -24,12 +24,12 @@ public class DropServer extends SyncSettingItem {
 	private boolean active;
 	/**
 	 * Creates an instance of DropServer.
-	 * @param url URL of the DropServer.
+	 * @param uri URI of the DropServer.
 	 * @param auth Authentication for the DropServer.
 	 * @param active Status flag of the DropServer.
 	 */
-	public DropServer(URL url, String auth, boolean active) {
-		this.setUrl(url);
+	public DropServer(URI uri, String auth, boolean active) {
+		this.setUri(uri);
 		this.setAuth(auth);
 		this.setActive(active);
 	}
@@ -41,19 +41,19 @@ public class DropServer extends SyncSettingItem {
 	}
 
 	/**
-	 * Sets the url of the DropServer.
-	 * @param url URL of the DropServer.
+	 * Sets the uri of the DropServer.
+	 * @param uri URI of the DropServer.
 	 */
-	public void setUrl(URL url) {
-		this.url = url;
+	public void setUri(URI uri) {
+		this.uri = uri;
 	}
 
 	/**
-	 * Returns the url of the DropServer.
-	 * @return URL
+	 * Returns the uri of the DropServer.
+	 * @return URI
 	 */
-	public URL getUrl() {
-		return this.url;
+	public URI getUri() {
+		return this.uri;
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class DropServer extends SyncSettingItem {
 		
 		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
+		result = prime * result + ((uri == null) ? 0 : uri.hashCode());
 		return result;
 	}
 
@@ -122,10 +122,10 @@ public class DropServer extends SyncSettingItem {
 				return false;
 		} else if (!auth.equals(other.auth))
 			return false;
-		if (url == null) {
-			if (other.url != null)
+		if (uri == null) {
+			if (other.uri != null)
 				return false;
-		} else if (!url.equals(other.url))
+		} else if (!uri.equals(other.uri))
 			return false;
 		return true;
 	}

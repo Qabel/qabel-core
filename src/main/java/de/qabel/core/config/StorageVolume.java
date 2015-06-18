@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-import java.net.URL;
+import java.net.URI;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
 public class StorageVolume extends SyncSettingItem {
 	private static final long serialVersionUID = 2647120543754600171L;
 	private StorageServer storageServer;
-	private String storageServerUrl;
+	private String storageServerUri;
 	/**
 	 * identifier of the storage volume on the server.
 	 * Field name in serialized json: "public_identifier"
@@ -52,7 +52,7 @@ public class StorageVolume extends SyncSettingItem {
 	 */
 
 	protected StorageVolume(String serverUrl, String publicIdentifier, String token, String revokeToken) {
-		this.storageServerUrl = serverUrl;
+		this.storageServerUri = serverUrl;
 		this.setPublicIdentifier(publicIdentifier);
 		this.setToken(token);
 		this.setRevokeToken(revokeToken);
@@ -64,7 +64,7 @@ public class StorageVolume extends SyncSettingItem {
 
 	public void setStorageServer(StorageServer storageServer) {
 		this.storageServer = storageServer;
-		this.storageServerUrl = storageServer.getUrl().toString();
+		this.storageServerUri = storageServer.getUri().toString();
 	}
 
 	public String getPublicIdentifier() {
@@ -91,13 +91,13 @@ public class StorageVolume extends SyncSettingItem {
 		this.revokeToken = revokeToken;
 	}
 
-	public URL getServerUrl() {
-		return this.storageServer.getUrl();
+	public URI getServerUri() {
+		return this.storageServer.getUri();
 	}
 	
 	// used during deserialization
-	protected String getServerUrlString() {
-		return storageServerUrl;
+	protected String getServerUriString() {
+		return storageServerUri;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class StorageVolume extends SyncSettingItem {
 		result = prime * result + ((publicIdentifier == null) ? 0 : publicIdentifier.hashCode());
 		result = prime * result + ((revokeToken == null) ? 0 : revokeToken.hashCode());
 		result = prime * result + ((storageServer == null) ? 0 : storageServer.hashCode());
-		result = prime * result + ((storageServerUrl == null) ? 0 : storageServerUrl.hashCode());
+		result = prime * result + ((storageServerUri == null) ? 0 : storageServerUri.hashCode());
 		result = prime * result + ((token == null) ? 0 : token.hashCode());
 		return result;
 	}
@@ -136,10 +136,10 @@ public class StorageVolume extends SyncSettingItem {
 				return false;
 		} else if (!storageServer.equals(other.storageServer))
 			return false;
-		if (storageServerUrl == null) {
-			if (other.storageServerUrl != null)
+		if (storageServerUri == null) {
+			if (other.storageServerUri != null)
 				return false;
-		} else if (!storageServerUrl.equals(other.storageServerUrl))
+		} else if (!storageServerUri.equals(other.storageServerUri))
 			return false;
 		if (token == null) {
 			if (other.token != null)
