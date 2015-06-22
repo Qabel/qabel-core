@@ -53,11 +53,10 @@ public class ConfigSerializationTest {
 		
 		//generate and put a "storage_volumes" entry
 		syncedSettings.getStorageVolumes().put(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
-		syncedSettings.getSyncedModuleSettings().add(new SyncedModuleSettings());
+		syncedSettings.getSyncedModuleSettings().add(new FooModuleSettings(1));
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
-		assertEquals(0, 
-				syncedSettings.toJson().compareTo(deserializedSyncedSettings.toJson()));
+		assertEquals(syncedSettings.toJson(), deserializedSyncedSettings.toJson());
 		
 		assertEquals(deserializedSyncedSettings, syncedSettings);
 	}
