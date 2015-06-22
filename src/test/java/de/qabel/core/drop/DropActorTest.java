@@ -8,6 +8,7 @@ import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
 import org.junit.*;
 
+import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -16,13 +17,15 @@ import java.util.HashSet;
 public class DropActorTest {
     private static final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
     private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
-    private Identity sender, recipient;
+	private static final String DB_NAME = "DropActorTest.sqlite";
+	private Identity sender, recipient;
     private Contact senderContact, recipientContact;
     private DropCommunicatorUtil controller;
     private Identities identities;
     private Contacts contacts;
     private EventEmitter emitter;
     private Thread resourceActorThread;
+	private ResourceActor resourceActor;
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
     static class TestMessage extends ModelObject {
@@ -35,8 +38,9 @@ public class DropActorTest {
 
     @Before
     public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
-		Persistence.setPassword(encryptionPassword);
-        resourceActorThread = new Thread(ResourceActor.getDefault());
+		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
+		resourceActorThread = new Thread(resourceActor);
         resourceActorThread.start();
         emitter = EventEmitter.getDefault();
     	sender = new Identity("Alice", null, new QblECKeyPair());
@@ -62,14 +66,18 @@ public class DropActorTest {
         servers.put(iDropServer);
         servers.put(cDropServer);
 
-        controller = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
+        controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities, servers);
         controller.registerModelObject(TestMessage.class);
     }
 
     @After
     public void tearDown() throws InterruptedException {
         controller.stop();
-		ResourceActor.getDefault().stop();
+		resourceActor.stop();
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
     }
 
     @Test

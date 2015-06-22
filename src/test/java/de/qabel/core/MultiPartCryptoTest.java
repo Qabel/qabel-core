@@ -14,6 +14,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
@@ -22,14 +24,15 @@ import java.util.Collection;
 import java.util.HashSet;
 
 public class MultiPartCryptoTest {
-
+	private final static String DB_NAME = "MultiPartCryptoTest.sqlite";
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
 	private EventEmitter emitter;
     private Contacts contacts;
     private Identities identities;
     private DropServers servers;
-    private Thread resourceActorThread;
+	private ResourceActor resourceActor;
+	private Thread resourceActorThread;
 
 
     static class TestObject extends ModelObject {
@@ -63,21 +66,25 @@ public class MultiPartCryptoTest {
 
     @Before
     public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
-        Persistence.setPassword(encryptionPassword);
-		resourceActorThread = new Thread(ResourceActor.getDefault());
+        Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
+		resourceActorThread = new Thread(resourceActor);
         resourceActorThread.start();
         emitter = EventEmitter.getDefault();
 
         loadContactsAndIdentities();
         loadDropServers();
-		communicatorUtil = DropCommunicatorUtil.newInstance(emitter, contacts, identities, servers);
+		communicatorUtil = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities, servers);
     }
 
     @After
     public void tearDown() throws InterruptedException {
         communicatorUtil.stopModule();
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
     }
-
 
     @Test
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {

@@ -20,16 +20,16 @@ public class DropCommunicatorUtil extends Module {
 		super(moduleManager);
 	}
 
-	static public DropCommunicatorUtil newInstance(EventEmitter emitter, Contacts contacts, Identities identities, DropServers dropServers) throws IllegalAccessException, InstantiationException {
-		DropActor dropActor = new DropActor(emitter);
+	static public DropCommunicatorUtil newInstance(ResourceActor resourceActor, EventEmitter emitter, Contacts contacts, Identities identities, DropServers dropServers) throws IllegalAccessException, InstantiationException {
+		DropActor dropActor = new DropActor(resourceActor, emitter);
 
 		Thread dropActorThread = new Thread(dropActor, "dropActor");
 		dropActor.setInterval(500);
 		dropActorThread.start();
-		ModuleManager manager = new ModuleManager(emitter, ResourceActor.getDefault());
+		ModuleManager manager = new ModuleManager(emitter, resourceActor);
 		try {
 			DropCommunicatorUtil util = manager.startModule(DropCommunicatorUtil.class);
-			util.resourceActor = ResourceActor.getDefault();
+			util.resourceActor = resourceActor;
 			util.resourceActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
 			util.resourceActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
 			util.resourceActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));

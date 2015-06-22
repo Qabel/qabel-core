@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
@@ -13,6 +14,7 @@ import de.qabel.ackack.event.EventListener;
 import de.qabel.core.EventNameConstants;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,9 +22,9 @@ import org.junit.Test;
 import de.qabel.ackack.Responsible;
 
 public class ResourceActorTest {
+	private final static String DB_NAME = "ResourceActorTest.sqlite";
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 
-	Settings settings;
 	ArrayList<Account> accountsList;
 	ArrayList<DropServer> dropServersList;
 	ArrayList<Identity> identitiesList;
@@ -46,11 +48,8 @@ public class ResourceActorTest {
 
 	@Before
 	public void setUp() {
-		Persistence.setPassword(encryptionPassword);
-		settings = new Settings();
-		settings.setLocalSettings(new LocalSettingsEquivalentTestFactory().create());
-		settings.setSyncedSettings(new SyncedSettingsEquivalentTestFactory().create());
-		resourceActor = new ResourceActor(settings, new Contacts(), EventEmitter.getDefault());
+		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		accountFactory = new AccountTestFactory();
 		dropServerFactory = new DropServerTestFactory();
 		identityFactory = new IdentityTestFactory();
@@ -58,6 +57,14 @@ public class ResourceActorTest {
 		storageVolumeFactory = new StorageVolumeTestFactory();
 		configActorThread = new Thread(resourceActor);
 		configActorThread.start();
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		File persistenceTestDB = new File(DB_NAME);
+		if(persistenceTestDB.exists()) {
+			persistenceTestDB.delete();
+		}
 	}
 
 	@Test
