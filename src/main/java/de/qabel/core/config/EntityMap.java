@@ -22,19 +22,34 @@ abstract class EntityMap<T extends Entity> implements Serializable {
 		return Collections.unmodifiableSet(new HashSet<>(entities.values()));
 	}
 
-	public synchronized boolean put(T entity) {
-		if (this.entities.put(entity.getKeyIdentifier(), entity) == null) {
-			return false;
-		}
-		return true;
+	/**
+	 * Inserts new Entity into the map associated to its key identifier.
+	 * 
+	 * @param entity Entity to insert
+	 * @return old Entity associated to the same key identifier or null if no such old Entity was present.
+	 */
+	public synchronized T put(T entity) {
+		return this.entities.put(entity.getKeyIdentifier(), entity);
 	}
 
-	public synchronized boolean remove(T entity) {
-		return (entity != null && this.entities.remove(entity.getKeyIdentifier()) != null);
+	/**
+	 * Removes given Entity from the map.
+	 * 
+	 * @param entity Entity to remove
+	 * @return old Entity associated to the key identifier of the given Entity, or null if there was no such Entity
+	 */
+	public synchronized T remove(T entity) {
+		return this.remove(entity.getKeyIdentifier());
 	}
 
-	public synchronized boolean remove(String keyIdentifier) {
-		return (keyIdentifier != null && this.entities.remove(keyIdentifier) != null);
+	/**
+	 * Removes Entity with the given key identifier from the map.
+	 * 
+	 * @param keyIdentifier key identifier of the Entity that is to be removed
+	 * @return old Entity associated to the given key identifier, or null if there was no such Entity
+	 */
+	public synchronized T remove(String keyIdentifier) {
+		return this.entities.remove(keyIdentifier);
 	}
 
 	/**
