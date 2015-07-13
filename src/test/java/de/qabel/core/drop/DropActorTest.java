@@ -59,14 +59,7 @@ public class DropActorTest {
     	contacts.put(senderContact);
     	contacts.put(recipientContact);
 
-        DropServers servers = new DropServers();
-
-        DropServer iDropServer = new DropServer(new URI(iUrl), null, true);
-        DropServer cDropServer = new DropServer(new URI(cUrl), null, true);
-        servers.put(iDropServer);
-        servers.put(cDropServer);
-
-        controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities, servers);
+        controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities);
         controller.registerModelObject(TestMessage.class);
     }
 
