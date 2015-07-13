@@ -14,13 +14,12 @@ public class DropCommunicatorUtil extends Module {
 	private DropActor dropActor;
 	private Thread dropActorThread;
 	private Identities identities;
-	private DropServers dropServers;
 
 	public DropCommunicatorUtil(ModuleManager moduleManager) {
 		super(moduleManager);
 	}
 
-	static public DropCommunicatorUtil newInstance(ResourceActor resourceActor, EventEmitter emitter, Contacts contacts, Identities identities, DropServers dropServers) throws IllegalAccessException, InstantiationException {
+	static public DropCommunicatorUtil newInstance(ResourceActor resourceActor, EventEmitter emitter, Contacts contacts, Identities identities) throws IllegalAccessException, InstantiationException {
 		DropActor dropActor = new DropActor(resourceActor, emitter);
 
 		Thread dropActorThread = new Thread(dropActor, "dropActor");
@@ -32,10 +31,8 @@ public class DropCommunicatorUtil extends Module {
 			util.resourceActor = resourceActor;
 			util.resourceActor.writeContacts(contacts.getContacts().toArray(new Contact[0]));
 			util.resourceActor.writeIdentities(identities.getIdentities().toArray(new Identity[0]));
-			util.resourceActor.writeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
 
 			util.identities = identities;
-			util.dropServers = dropServers;
 			util.dropActor = dropActor;
 			util.dropActorThread = dropActorThread;
 			return util;
@@ -58,7 +55,6 @@ public class DropCommunicatorUtil extends Module {
 		this.dropActor.stop();
 		this.dropActor.unregister();
 		this.resourceActor.removeIdentities(identities.getIdentities().toArray(new Identity[0]));
-		this.resourceActor.removeDropServers(dropServers.getDropServers().toArray(new DropServer[0]));
 		try {
 			this.dropActorThread.join();
 		} catch (InterruptedException e) {

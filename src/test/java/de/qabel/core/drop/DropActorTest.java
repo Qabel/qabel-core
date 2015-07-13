@@ -15,7 +15,6 @@ import java.security.InvalidKeyException;
 import java.util.HashSet;
 
 public class DropActorTest {
-    private static final String dropServer = "http://localhost:6000/";
     private static final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
     private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
 	private static final String DB_NAME = "DropActorTest.sqlite";
@@ -60,10 +59,7 @@ public class DropActorTest {
     	contacts.put(senderContact);
     	contacts.put(recipientContact);
 
-        DropServers servers = new DropServers();
-        servers.put(new DropServer(new URI(dropServer), null, true));
-
-        controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities, servers);
+        controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities);
         controller.registerModelObject(TestMessage.class);
     }
 

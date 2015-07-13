@@ -30,7 +30,6 @@ public class MultiPartCryptoTest {
 	private EventEmitter emitter;
     private Contacts contacts;
     private Identities identities;
-    private DropServers servers;
 	private ResourceActor resourceActor;
 	private Thread resourceActorThread;
 
@@ -73,8 +72,7 @@ public class MultiPartCryptoTest {
         emitter = EventEmitter.getDefault();
 
         loadContactsAndIdentities();
-        loadDropServers();
-		communicatorUtil = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities, servers);
+		communicatorUtil = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities);
     }
 
     @After
@@ -146,20 +144,6 @@ public class MultiPartCryptoTest {
         identities = new Identities();
 		identities.put(alice);
 		identities.put(bob);
-    }
-
-    private void loadDropServers() throws URISyntaxException {
-        servers = new DropServers();
-
-        DropServer alicesServer = new DropServer();
-        alicesServer.setUri(new URI("http://localhost:6000/12345678901234567890123456789012345678alice"));
-
-        DropServer bobsServer = new DropServer();
-        bobsServer.setUri(new URI("http://localhost:6000/1234567890123456789012345678901234567890bob"));
-
-        servers.put(alicesServer);
-        servers.put(bobsServer);
-
     }
 
     private void sendMessage() throws QblDropPayloadSizeException {
