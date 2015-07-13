@@ -197,12 +197,14 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	 * retrieves new DropMessages from server and emits EVENT_DROP_MESSAGE_RECEIVED event.
 	 */
 	private void retrieve() {
-		for (DropServer server : mDropServers.getDropServers()) {
-			Collection<DropMessage<?>> results = this.retrieve(server.getUri());
-			MessageInfo mi = new MessageInfo();
-			mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
-			for (DropMessage<? extends ModelObject> dm : results) {
-				emitter.emit(EVENT_DROP_MESSAGE_RECEIVED_PREFIX + dm.getData().getClass().getCanonicalName(), dm);
+		for(Identity identity : mIdentities.getIdentities()) {
+			for(DropURL dropUrl: identity.getDropUrls()) {
+				Collection<DropMessage<?>> results = this.retrieve(dropUrl.getUri());
+				MessageInfo mi = new MessageInfo();
+				mi.setType(PRIVATE_TYPE_MESSAGE_INPUT);
+				for (DropMessage<? extends ModelObject> dm : results) {
+					emitter.emit(EVENT_DROP_MESSAGE_RECEIVED_PREFIX + dm.getData().getClass().getCanonicalName(), dm);
+				}
 			}
 		}
 	}
