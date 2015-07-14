@@ -8,8 +8,6 @@ notifications:
 
 install:
  - redis-server > /dev/null 2>&1 &
- - sudo apt-get install python-pip npm nodejs
- - sudo pip install virtualenv
  - cd ..
  - git clone https://github.com/Qabel/qabel.git
  - cd qabel
@@ -17,9 +15,26 @@ install:
  - git submodule update
  - rm -rf qabel-core
  - mv ../qabel-core ./
- - virtualenv qabel-drop 
+ - virtualenv --system-site-packages qabel-drop
  - source qabel-drop/bin/activate 
- - pip install -r qabel-drop/requirements.txt  
+ - pip install --upgrade pip
+ - pip install --user -r qabel-drop/requirements.txt
+
+cache:
+ apt: true
+ directories:
+  - $HOME/.cache/pip
+  - $HOME/.gradle/caches
+  - $HOME/build/qabel/qabel-drop/lib
+
+sudo: false
+
+addons:
+ apt:
+  packages:
+   - python-pip
+   - nodejs
+   - python-virtualenv
 
 script:
  - travis_wait ./gradlew check
