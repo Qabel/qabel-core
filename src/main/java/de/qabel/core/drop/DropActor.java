@@ -19,8 +19,8 @@ import de.qabel.core.exceptions.QblSpoofedSenderException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
 import de.qabel.core.http.HTTPResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * DropActor is registered to Contact, Identity and DropServer added and removed events. On instantiation all Contacts,
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
  * event listeners allows the DropActor to receive and store changes to these resources.
  */
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
-	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(DropActor.class.getName());
 
 	public static final String EVENT_DROP_MESSAGE_RECEIVED_PREFIX = "dropMessageReceived";
 	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";

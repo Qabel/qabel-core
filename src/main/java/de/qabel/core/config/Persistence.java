@@ -1,10 +1,10 @@
 package de.qabel.core.config;
 
 import de.qabel.core.crypto.CryptoUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -22,7 +22,7 @@ import java.util.List;
  *
  */
 public abstract class Persistence<T> {
-	private final static Logger logger = LogManager.getLogger(Persistence.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(Persistence.class.getName());
 	private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
 	private static final int PBKDF2_ROUNDS = 65536;
 	private static final int AES_KEY_SIZE_BIT = 256;
@@ -39,11 +39,11 @@ public abstract class Persistence<T> {
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
-			logger.fatal("Cannot find selected algorithm!", e);
+			logger.error("Cannot find selected algorithm!", e);
 			throw new RuntimeException("Cannot find selected algorithm!", e);
 		}
 		if (!connect(database)) {
-			logger.fatal("Cannot connect to database!");
+			logger.error("Cannot connect to database!");
 			throw new RuntimeException("Cannot connect to database!");
 		}
 		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));

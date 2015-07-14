@@ -8,8 +8,8 @@ import java.security.InvalidKeyException;
 
 import javax.crypto.SecretKey;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import de.qabel.core.config.StorageServer;
 import de.qabel.core.config.StorageVolume;
@@ -20,7 +20,7 @@ import de.qabel.core.http.HTTPResult;
 import de.qabel.core.http.StorageHTTP;
 
 public class StorageAction {
-	private final static Logger logger = LogManager.getLogger(StorageAction.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(StorageAction.class.getName());
 
 	/**
 	 * Creates a new storage volume on the given storage server.

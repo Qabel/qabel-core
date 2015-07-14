@@ -7,8 +7,8 @@ import java.util.Set;
 
 import de.qabel.ackack.event.EventEmitter;
 import de.qabel.core.EventNameConstants;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import de.qabel.ackack.Actor;
 import de.qabel.ackack.MessageInfo;
@@ -53,7 +53,7 @@ public class ResourceActor extends Actor {
 	private static final String REMOVE_STORAGEVOLUMES = "removeStorageVolumes";
 	private static final String REMOVE_SYNCEDMODULESETTINGS = "removeSyncedModuleSettings";
 
-	private final static Logger logger = LogManager.getLogger(ResourceActor.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(ResourceActor.class.getName());
 
 	public ResourceActor(Persistence<String> persistence, EventEmitter eventEmitter) {
 		this.persistence = persistence;
