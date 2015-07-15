@@ -48,8 +48,8 @@ public class DropActorTest {
     	recipient = new Identity("Bob", null, new QblECKeyPair());
     	recipient.addDrop(new DropURL(cUrl));
 
-    	recipientContact = new Contact(this.sender, this.recipient.getDropUrls(), recipient.getEcPublicKey());
-    	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
+    	recipientContact = new Contact(this.sender, "Bob",  this.recipient.getDropUrls(), recipient.getEcPublicKey());
+    	senderContact = new Contact(this.recipient, "Alice",  this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
     	identities.put(this.sender);

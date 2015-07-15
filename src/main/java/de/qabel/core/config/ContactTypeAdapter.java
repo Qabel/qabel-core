@@ -29,7 +29,10 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		Gson gson = builder.create();
 		TypeAdapter<QblECPublicKey> primaryKeyAdapter = gson.getAdapter(QblECPublicKey.class);
 		primaryKeyAdapter.write(out, value.getEcPublicKey());
-		
+
+		out.name("alias");
+		out.value(value.getAlias());
+
 		out.name("my_identity");
 		out.value(value.getContactOwnerKeyId());
 		
@@ -66,6 +69,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		}
 		Contact contact;
 		String contactOwnerKeyId = null;
+		String alias = null;
 		QblECPublicKey ecPublicKey = null;
 		Collection<DropURL> dropURLs = null;
 		SyncSettingItem syncItem = new SyncSettingItem();
@@ -78,6 +82,9 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				break;
 			case "my_identity":
 				contactOwnerKeyId = in.nextString();
+				break;
+			case "alias":
+				alias = in.nextString();
 				break;
 			case "drop_urls":
 				in.beginArray();
@@ -118,7 +125,7 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId, dropURLs, ecPublicKey);
+		contact = new Contact(contactOwnerKeyId, alias, dropURLs, ecPublicKey);
 
 		// copy all sync item properties
 		contact.setId(syncItem.getId());

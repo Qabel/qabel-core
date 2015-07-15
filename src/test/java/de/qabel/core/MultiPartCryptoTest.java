@@ -131,10 +131,10 @@ public class MultiPartCryptoTest {
         bob.addDrop(new DropURL(
         		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-		Contact alicesContact = new Contact(alice, null, bobsKey.getPub());
+		Contact alicesContact = new Contact(alice, "Bob", null, bobsKey.getPub());
         alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
 
-        Contact bobsContact = new Contact(bob, null, alicesKey.getPub());
+        Contact bobsContact = new Contact(bob, "Alice", null, alicesKey.getPub());
         alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
 
         contacts = new Contacts();

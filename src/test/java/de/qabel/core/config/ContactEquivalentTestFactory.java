@@ -23,7 +23,7 @@ class ContactEquivalentTestFactory implements EquivalentFactory<Contact> {
 
 	@Override
 	public Contact create() {
-		Contact c = new Contact(identity, null, ecPublicKey);
+		Contact c = new Contact(identity, "", null, ecPublicKey);
 		c.setCreated(created);
 		return c;
 	}
