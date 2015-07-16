@@ -7,6 +7,7 @@ import de.qabel.core.drop.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +65,7 @@ public class MultiPartCryptoTest {
     private Identity alice;
 
     @Before
-    public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException {
+    public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
         Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
