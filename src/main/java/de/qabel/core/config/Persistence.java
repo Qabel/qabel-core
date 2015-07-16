@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import de.qabel.core.crypto.CryptoUtils;
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.InvalidCipherTextException;
@@ -34,7 +35,7 @@ public abstract class Persistence<T> {
 	private SecretKeyFactory secretKeyFactory;
 	CryptoUtils cryptoutils;
 
-	public Persistence(T database, char[] password) {
+	public Persistence(T database, char[] password) throws QblInvalidEncryptionKeyException {
 		this.cryptoutils = new CryptoUtils();
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
@@ -47,6 +48,9 @@ public abstract class Persistence<T> {
 			throw new RuntimeException("Cannot connect to database!");
 		}
 		this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
+		if (this.keyParameter == null) {
+			throw new QblInvalidEncryptionKeyException();
+		}
 	}
 
 	/**

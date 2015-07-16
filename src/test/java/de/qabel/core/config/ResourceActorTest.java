@@ -14,6 +14,7 @@ import de.qabel.ackack.event.EventListener;
 import de.qabel.core.EventNameConstants;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class ResourceActorTest {
 	final TestActor testActor = new TestActor();
 
 	@Before
-	public void setUp() {
+	public void setUp() throws QblInvalidEncryptionKeyException {
 		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		accountFactory = new AccountTestFactory();

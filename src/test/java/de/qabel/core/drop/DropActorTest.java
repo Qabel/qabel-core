@@ -6,6 +6,7 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.*;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class DropActorTest {
     }
 
     @Before
-    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
+    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
 		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
