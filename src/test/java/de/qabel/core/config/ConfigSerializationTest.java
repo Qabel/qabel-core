@@ -79,7 +79,7 @@ public class ConfigSerializationTest {
 			Identity i = new Identity("alias", new ArrayList<DropURL>(), new QblECKeyPair());
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 			QblECKeyPair ecKeyPair = new QblECKeyPair();
-			contact = new Contact(i, null, ecKeyPair.getPub());
+			contact = new Contact(i, "", null, ecKeyPair.getPub());
 			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			
 			GsonBuilder builder = new GsonBuilder();
