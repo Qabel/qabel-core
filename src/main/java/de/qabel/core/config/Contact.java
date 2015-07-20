@@ -11,6 +11,11 @@ import java.util.*;
 public class Contact extends Entity {
 	private static final long serialVersionUID = 3971315594579958553L;
 	/**
+	 * Alias name of the contact
+	 * Field name in serialized json: "alias"
+	 */
+	private String alias;
+	/**
 	 * Primary public key of the contact
 	 * Field name in serialized json: "keys"
 	 */
@@ -45,6 +50,14 @@ public class Contact extends Entity {
 		ecPublicKey = key;
 	}
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+
 	/**
 	 * Returns the identity which owns the contact
 	 * @return contactOwner
@@ -75,21 +88,23 @@ public class Contact extends Entity {
 	/**
 	 * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
 	 */
-	public Contact(Identity owner, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
+	public Contact(Identity owner, String alias, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
 		super(dropUrls);
 		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
 		this.setEcPublicKey(pubKey);
+		this.alias = alias;
 	}
 
 	/**
 	 * Creates an instance of Contact and sets the contactOwnerId.
 	 * Attention: This constructor is intended for deserialization purposes. The contactOwner needs to be set afterwards
 	 */
-	protected Contact(String ownerKeyId, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
+	protected Contact(String ownerKeyId, String alias, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
 		super(dropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
 		this.setEcPublicKey(pubKey);
+		this.alias = alias;
 	}
 
 	/**
@@ -110,6 +125,8 @@ public class Contact extends Entity {
 				+ ((contactOwnerKeyId == null) ? 0 : contactOwnerKeyId.hashCode());
 		result = prime * result
 				+ ((ecPublicKey == null) ? 0 : ecPublicKey.hashCode());
+		result = prime * result
+				+ ((alias == null) ? 0 : alias.hashCode());
 		return result;
 	}
 
@@ -136,6 +153,11 @@ public class Contact extends Entity {
 			if (other.ecPublicKey != null)
 				return false;
 		} else if (!ecPublicKey.equals(other.ecPublicKey))
+			return false;
+		if (alias == null) {
+			if (other.alias != null)
+				return false;
+		} else if (!alias.equals(other.alias))
 			return false;
 		return true;
 	}

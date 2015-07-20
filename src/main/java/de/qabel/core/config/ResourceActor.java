@@ -55,7 +55,7 @@ public class ResourceActor extends Actor {
 
 	private final static Logger logger = LoggerFactory.getLogger(ResourceActor.class.getName());
 
-	public ResourceActor(Persistence<String> persistence, EventEmitter eventEmitter) {
+	public ResourceActor(Persistence persistence, EventEmitter eventEmitter) {
 		this.persistence = persistence;
 		this.settings = new Settings();
 		this.contacts = new Contacts();

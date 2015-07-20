@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class SQLitePersistence extends Persistence<String> {
 	 * Stores entities in a local SQLite database
 	 * @param dbName Database file name.
 	 */
-	public SQLitePersistence(String dbName, char[] password) {
+	public SQLitePersistence(String dbName, char[] password) throws QblInvalidEncryptionKeyException {
 		super(dbName, password);
 	}
 
@@ -78,6 +79,7 @@ public class SQLitePersistence extends Persistence<String> {
 				masterKey = cryptoutils.decrypt(encryptionKey, masterKeyNonce, getConfigValue(STR_MASTER_KEY), null);
 			} catch (InvalidCipherTextException e) {
 				logger.error("Cannot decrypt master key!", e);
+				return null;
 			}
 		}
 

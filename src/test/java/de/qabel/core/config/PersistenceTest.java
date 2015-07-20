@@ -1,5 +1,6 @@
 package de.qabel.core.config;
 
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.*;
 
 import java.io.File;
@@ -12,7 +13,7 @@ public class PersistenceTest {
 	Persistence<String> persistence;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws QblInvalidEncryptionKeyException {
 		persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 	}
 
@@ -22,6 +23,11 @@ public class PersistenceTest {
 		if(persistenceTestDB.exists()) {
 			persistenceTestDB.delete();
 		}
+	}
+
+	@Test(expected=QblInvalidEncryptionKeyException.class)
+	public void openWithWrongPasswordTest() throws QblInvalidEncryptionKeyException {
+		persistence = new SQLitePersistence(DB_NAME, "wrongPassword".toCharArray());
 	}
 
 	@Test

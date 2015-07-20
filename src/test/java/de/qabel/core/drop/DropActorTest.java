@@ -6,6 +6,7 @@ import de.qabel.core.crypto.*;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.*;
 
 import java.io.File;
@@ -37,7 +38,7 @@ public class DropActorTest {
     }
 
     @Before
-    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException {
+    public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
 		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
@@ -48,8 +49,8 @@ public class DropActorTest {
     	recipient = new Identity("Bob", null, new QblECKeyPair());
     	recipient.addDrop(new DropURL(cUrl));
 
-    	recipientContact = new Contact(this.sender, this.recipient.getDropUrls(), recipient.getEcPublicKey());
-    	senderContact = new Contact(this.recipient, this.sender.getDropUrls(), sender.getEcPublicKey());
+    	recipientContact = new Contact(this.sender, "Bob",  this.recipient.getDropUrls(), recipient.getEcPublicKey());
+    	senderContact = new Contact(this.recipient, "Alice",  this.sender.getDropUrls(), sender.getEcPublicKey());
 
     	identities = new Identities();
     	identities.put(this.sender);
