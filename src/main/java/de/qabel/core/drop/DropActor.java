@@ -5,8 +5,6 @@ import java.net.URI;
 import java.security.SecureRandom;
 import java.util.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.Responsible;
 import de.qabel.ackack.event.*;
@@ -37,8 +35,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	private DropServers mDropServers;
 	private Identities mIdentities;
 	private Contacts mContacts;
-	GsonBuilder gb;
-	Gson gson;
 	ReceiverThread receiver;
 	private long interval = 1000L;
 
@@ -58,10 +54,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		this.mContacts = new Contacts();
 		this.mIdentities = new Identities();
 		this.mDropServers = new DropServers();
-		gb = new GsonBuilder();
-		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
-		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
-		gson = gb.create();
 		on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
 		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
 		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
