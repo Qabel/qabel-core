@@ -34,7 +34,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean connect(String database) {
+	protected boolean connect(String database) {
 		try {
 			Class.forName(JDBC_CLASS_NAME);
 			c = DriverManager.getConnection(JDBC_PREFIX + database);
@@ -50,7 +50,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	byte[] getSalt(boolean forceNewSalt) {
+	protected byte[] getSalt(boolean forceNewSalt) {
 		byte[] salt = null;
 
 		if (forceNewSalt) {
@@ -67,7 +67,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	KeyParameter getMasterKey(KeyParameter encryptionKey) {
+	protected KeyParameter getMasterKey(KeyParameter encryptionKey) {
 		if (encryptionKey == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -106,7 +106,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
+	protected boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
 		if (oldKey == null || newKey == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -271,7 +271,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean updateEntity(Persistable object) {
+	protected boolean updateEntity(Persistable object) {
 		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
