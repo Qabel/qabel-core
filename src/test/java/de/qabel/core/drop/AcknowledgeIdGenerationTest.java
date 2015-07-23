@@ -28,9 +28,9 @@ public class AcknowledgeIdGenerationTest {
 	@Test
 	public void testSwitchAck() {
 		DropMessage<DummyMessage> dm = new DropMessage<>(sender, new DummyMessage());
-		dm.enableAcknowledgeing(true);
+		dm.enableAcknowledging(true);
 		Assert.assertNotEquals(DropMessage.NOACK, dm.getAcknowledgeID());
-		dm.enableAcknowledgeing(false);
+		dm.enableAcknowledging(false);
 		Assert.assertEquals(DropMessage.NOACK, dm.getAcknowledgeID());
 	}
 }
