@@ -3,18 +3,14 @@ package de.qabel.core.drop;
 import java.lang.reflect.Type;
 import java.util.Date;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
-import de.qabel.core.module.ModuleManager;
-
-
-public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObject>> {
+public class DropDeserializer implements JsonDeserializer<DropMessage> {
     @Override
-    public DropMessage<ModelObject> deserialize(JsonElement json, Type type,
+    public DropMessage deserialize(JsonElement json, Type type,
                                                 JsonDeserializationContext context) throws JsonParseException {
 
         int version          = json.getAsJsonObject().get("version")       .getAsInt();
@@ -23,25 +19,10 @@ public class DropDeserializer implements JsonDeserializer<DropMessage<ModelObjec
         }
         long time             = json.getAsJsonObject().get("time_stamp")    .getAsLong();
         String sender        = json.getAsJsonObject().get("sender")        .getAsString();
-        String model         = json.getAsJsonObject().get("model_object")  .getAsString();
         String acknowledgeID = json.getAsJsonObject().get("acknowledge_id").getAsString();
+        String dropPayload   = json.getAsJsonObject().get("drop_payload")  .getAsString();
+        String dropPayloadType = json.getAsJsonObject().get("drop_payload_type").getAsString();
 
-        ModelObject m;
-        try {
-            ClassLoader loader = ModuleManager.LOADER;
-
-            @SuppressWarnings("unchecked")
-            Class<? extends ModelObject> cls = (Class<? extends ModelObject>) loader
-                    .loadClass(model);
-            m = new Gson().fromJson(json.getAsJsonObject().get("data").getAsJsonObject(), cls);
-        } catch (ClassNotFoundException e1) {
-            throw new JsonParseException("Couldn't deserialize 'data' entry", e1);
-        }
-
-        return new DropMessage<>(
-        		sender,
-        		m,
-        		new Date(time),
-        		acknowledgeID);
+        return new DropMessage(sender, dropPayload, dropPayloadType, new Date(time), acknowledgeID);
     }
 }

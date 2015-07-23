@@ -15,12 +15,9 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 
 public class DropMessageGsonTest {
+    public static final String TEST_MESSAGE = "baz";
+    public static final String TEST_MESSAGE_TYPE = "test_message";
     String json = null;
-
-    static class TestMessage extends ModelObject{
-        public String content;
-
-    }
 
     @Test(expected = NullPointerException.class)
     public void invalidJsonDeserializeTest()
@@ -29,7 +26,7 @@ public class DropMessageGsonTest {
 	String json = "{\"version\":1,\"time\":\"asdf\",\"sender\":\"foo\",\"acknowledgeID\":\"1234\",\"model\":\"de.qabel.core.drop.DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
 	
 	GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<>());
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter());
         builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 	
@@ -45,7 +42,7 @@ public class DropMessageGsonTest {
 	String json = "{\"version\":1,\"time\":,\"sender\":\"foo\",\"acknowledgeID\":\"1234\",\"model\":\"de.qabel.core.drop.DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
 	
 	GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<>());
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter());
         builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 	
@@ -56,16 +53,13 @@ public class DropMessageGsonTest {
     
     @Test
     public void serializeTest() {
-        TestMessage m = new TestMessage();
-
-        m.content = "baz";
         Identity sender = new Identity("Bernd", new ArrayList<DropURL>(), new QblECKeyPair());
         Identities identities = new Identities();
         identities.put(sender);
-        DropMessage<TestMessage> a = new DropMessage<TestMessage>(sender, m);
+        DropMessage a = new DropMessage(sender, TEST_MESSAGE, TEST_MESSAGE_TYPE);
 
         GsonBuilder builder = new GsonBuilder();
-        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter<TestMessage>());
+        builder.registerTypeAdapter(DropMessage.class, new DropTypeAdapter());
         builder.registerTypeAdapter(DropMessage.class, new DropSerializer());
         builder.registerTypeAdapter(DropMessage.class, new DropDeserializer());
 
@@ -75,10 +69,10 @@ public class DropMessageGsonTest {
         assertNotNull(json);
 
         System.out.println("Serialized message: " + gson.toJson(a));
-        DropMessage<TestMessage> deserializedJson = gson.fromJson(json, DropMessage.class);
+        DropMessage deserializedJson = gson.fromJson(json, DropMessage.class);
         assertTrue(deserializedJson.registerSender(sender));
         System.out.println("Deserialized message: " + gson.toJson(deserializedJson));
-        assertEquals(m.content, deserializedJson.getData().content);
+        assertEquals(TEST_MESSAGE, deserializedJson.getDropPayload());
         assertEquals(sender, deserializedJson.getSender());
         assertEquals(a.getAcknowledgeID(), deserializedJson.getAcknowledgeID());
     }

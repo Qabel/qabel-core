@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import de.qabel.core.config.Entity;
 
-public class DropMessage<T extends ModelObject> implements Serializable {
+public class DropMessage implements Serializable {
 	/**
 	 * Acknowledge ID indicating that the sender does not
 	 * wish to receive an acknowledgement.
@@ -24,11 +24,13 @@ public class DropMessage<T extends ModelObject> implements Serializable {
     private String acknowledgeId;
     private Entity sender;
     private String senderKeyId;
-    private T data;
+	private String dropPayload;
+	private String dropPayloadType;
 
-    public DropMessage(Entity sender, T data) {
+	public DropMessage(Entity sender, String dropPayload, String dropPayloadType) {
     	this.sender = sender;
-    	this.data = data;
+		this.dropPayload = dropPayload;
+		this.dropPayloadType = dropPayloadType;
     	this.created = new Date();
     	this.acknowledgeId = NOACK;
     }
@@ -37,9 +39,10 @@ public class DropMessage<T extends ModelObject> implements Serializable {
      * Constructor used for deserialization.
      * registerSender has to be called to complete creation.
      */
-    DropMessage(String senderKeyId, T data, Date created, String acknowledgeId) {
+	DropMessage(String senderKeyId, String dropPayload, String dropPayloadType, Date created, String acknowledgeId) {
 		this.senderKeyId = senderKeyId;
-		this.data = data;
+		this.dropPayload = dropPayload;
+		this.dropPayloadType = dropPayloadType;
 		this.created = created;
 		this.acknowledgeId = acknowledgeId;
 	}
@@ -80,12 +83,12 @@ public class DropMessage<T extends ModelObject> implements Serializable {
     	return true;
     }
 
-    public Class<T> getModelObject() {
-        return (Class<T>)data.getClass();
-    }
+	public String getDropPayload() {
+		return dropPayload;
+	}
 
-    public T getData() {
-        return data;
+    public String getDropPayloadType() {
+        return dropPayloadType;
     }
 
     /**

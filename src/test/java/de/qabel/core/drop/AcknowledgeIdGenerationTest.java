@@ -8,10 +8,6 @@ import org.junit.Test;
 import de.qabel.core.config.Identity;
 
 public class AcknowledgeIdGenerationTest {
-	private class DummyMessage extends ModelObject {
-		// nothing just a dummy
-	}
-
 	private Identity sender;
 
 	@Before
@@ -21,13 +17,13 @@ public class AcknowledgeIdGenerationTest {
 
 	@Test
 	public void testDefaultDisabledAck() {
-		DropMessage<DummyMessage> dm = new DropMessage<>(sender, new DummyMessage());
+		DropMessage dm = new DropMessage(sender, "", "");
 		Assert.assertEquals(DropMessage.NOACK, dm.getAcknowledgeID());
 	}
 
 	@Test
 	public void testSwitchAck() {
-		DropMessage<DummyMessage> dm = new DropMessage<>(sender, new DummyMessage());
+		DropMessage dm = new DropMessage(sender, "", "");
 		dm.enableAcknowledgeing(true);
 		Assert.assertNotEquals(DropMessage.NOACK, dm.getAcknowledgeID());
 		dm.enableAcknowledgeing(false);

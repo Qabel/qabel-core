@@ -10,7 +10,6 @@ import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
 import org.junit.*;
 
 import java.io.File;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.util.HashSet;
@@ -28,14 +27,8 @@ public class DropActorTest {
     private Thread resourceActorThread;
 	private ResourceActor resourceActor;
 	private final static char[] encryptionPassword = "qabel".toCharArray();
-
-    static class TestMessage extends ModelObject {
-        public String content;
-
-        public TestMessage(String content) {
-        	this.content = content;
-        }
-    }
+	public static final String TEST_MESSAGE = "baz";
+	public static final String TEST_MESSAGE_TYPE = "test_message";
 
     @Before
     public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
@@ -61,7 +54,7 @@ public class DropActorTest {
     	contacts.put(recipientContact);
 
         controller = DropCommunicatorUtil.newInstance(resourceActor, emitter, contacts, identities);
-        controller.registerModelObject(TestMessage.class);
+		controller.registerModelObject(TEST_MESSAGE_TYPE);
     }
 
     @After
@@ -76,9 +69,7 @@ public class DropActorTest {
 
     @Test
     public void sendAndForgetTest() throws QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
-        TestMessage m = new TestMessage("baz");
-
-        DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
+		DropMessage dm = new DropMessage(sender, TEST_MESSAGE, TEST_MESSAGE_TYPE);
 
         HashSet<Contact> recipients = new HashSet<Contact>();
         recipients.add(recipientContact);
@@ -90,25 +81,21 @@ public class DropActorTest {
 
     @Test
     public void sendAndForgetAutoTest() throws InvalidKeyException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
-        TestMessage m = new TestMessage("baz");
 
-        DropActor.send(emitter, m, recipientContact);
-
+		DropActor.send(emitter, TEST_MESSAGE, TEST_MESSAGE_TYPE, recipientContact);
         retrieveTest();
     }
 
     @Test
     public void sendTestSingle() throws InvalidKeyException, QblDropInvalidURL, QblDropPayloadSizeException, InterruptedException {
-        TestMessage m = new TestMessage("baz");
-
-        DropMessage<TestMessage> dm = new DropMessage<TestMessage>(sender, m);
+		DropMessage dm = new DropMessage(sender, TEST_MESSAGE, TEST_MESSAGE_TYPE);
 
         DropActor.send(emitter, dm, recipientContact);
         retrieveTest();
     }
 
     public void retrieveTest() throws QblDropInvalidURL, InterruptedException {
-		DropMessage<?> dm = controller.retrieve();
+		DropMessage dm = controller.retrieve();
 		Assert.assertEquals(sender.getKeyIdentifier(), dm.getSender().getKeyIdentifier());
     }
 }
