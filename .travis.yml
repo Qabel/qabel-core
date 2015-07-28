@@ -16,10 +16,10 @@ notifications:
 install:
  - redis-server > /dev/null 2>&1 &
  - cd ..
- - git clone https://github.com/Qabel/qabel.git
+ - git clone --depth 1 https://github.com/Qabel/qabel.git
  - cd qabel
  - git submodule init
- - git submodule update
+ - git submodule update --depth 1
  - rm -rf qabel-core
  - mv ../qabel-core ./
  - virtualenv --system-site-packages qabel-drop
