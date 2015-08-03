@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 import de.qabel.core.config.Identity;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import de.qabel.core.config.Contact;
 import de.qabel.core.drop.DropMessage;
@@ -26,7 +26,7 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 	private static final int PAYLOAD_SIZE = 2048;
 	private byte[] binaryMessage;
 
-	private static final Logger logger = LogManager
+	private static final Logger logger = LoggerFactory
 			.getLogger(BinaryDropMessageV0.class.getName());
 
 	public BinaryDropMessageV0(DropMessage<?> dropMessage)

@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.util.encoders.DecoderException;
 import org.bouncycastle.util.encoders.UrlBase64;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import de.qabel.core.config.DropServer;
 import de.qabel.core.exceptions.QblDropInvalidURL;
@@ -18,7 +18,7 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 public class DropURL implements Serializable {
 	private static final long serialVersionUID = 8103657475203731210L;
 
-	private final static Logger logger = LogManager.getLogger(DropURL.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(DropURL.class.getName());
 	
 	private URI uri;
 
