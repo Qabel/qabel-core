@@ -3,8 +3,8 @@ package de.qabel.core.crypto;
 import java.io.IOException;
 
 import com.google.gson.Gson;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
@@ -14,7 +14,7 @@ import org.bouncycastle.util.encoders.Hex;
 
 public class QblEcPublicKeyTypeAdapter extends TypeAdapter<QblECPublicKey> {
 
-	private final static Logger logger = LogManager.getLogger(QblEcPublicKeyTypeAdapter.class
+	private final static Logger logger = LoggerFactory.getLogger(QblEcPublicKeyTypeAdapter.class
 			.getName());
 
 	@Override

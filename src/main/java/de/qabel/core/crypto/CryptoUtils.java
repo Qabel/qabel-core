@@ -30,13 +30,13 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.logging.log4j.*;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.engines.AESEngine;
 import org.bouncycastle.crypto.modes.GCMBlockCipher;
 import org.bouncycastle.crypto.params.AEADParameters;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.slf4j.*;
 
 public class CryptoUtils {
 
@@ -60,7 +60,7 @@ public class CryptoUtils {
 	private static final int PADDING_LEN_BYTES = 4;
 	public static final int ASYM_KEY_SIZE_BYTE = 32;
 
-	private final static Logger logger = LogManager.getLogger(CryptoUtils.class
+	private final static Logger logger = LoggerFactory.getLogger(CryptoUtils.class
 			.getName());
 
 	private SecureRandom secRandom;
@@ -198,7 +198,7 @@ public class CryptoUtils {
 			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
 		} catch (BadPaddingException e) {
 			// We do not use padding, so this should not be thrown
-			logger.error(e);
+			logger.error("Encryption: Bad padding", e);
 		} catch (IOException e) {
 			logger.debug("Encryption: Input/output Stream cannot be written/read to/from.", e);
 			return false;

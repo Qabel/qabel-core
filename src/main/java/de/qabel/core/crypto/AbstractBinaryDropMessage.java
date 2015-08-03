@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import de.qabel.core.config.Identity;
 import de.qabel.core.exceptions.QblSpoofedSenderException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,7 +23,7 @@ import de.qabel.core.exceptions.QblVersionMismatchException;
  * Abstract drop message in a binary transport format.
  */
 public abstract class AbstractBinaryDropMessage {
-	private static final Logger logger = LogManager
+	private static final Logger logger = LoggerFactory
 			.getLogger(AbstractBinaryDropMessage.class.getName());
 
 	private byte[] plainPayload;

@@ -97,8 +97,8 @@ public class DropMessage implements Serializable {
      *
      * @param enabled true enables acknowledging
      */
-    public void enableAcknowledgeing(boolean enabled) {
-    	if (enabled && this.acknowledgeId == NOACK) {
+    public void enableAcknowledging(boolean enabled) {
+    	if (enabled && this.acknowledgeId.equals(NOACK)) {
     		this.acknowledgeId = generateAcknowledgeId();
     	} else if (!enabled) {
     		this.acknowledgeId = NOACK;

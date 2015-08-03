@@ -1,10 +1,10 @@
 package de.qabel.core.config;
 
 import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.bouncycastle.crypto.InvalidCipherTextException;
 import org.bouncycastle.crypto.params.KeyParameter;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.sql.*;
@@ -15,7 +15,7 @@ import java.util.List;
  * Stores entities in a local SQLite database
  */
 public class SQLitePersistence extends Persistence<String> {
-	private final static Logger logger = LogManager.getLogger(SQLitePersistence.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(SQLitePersistence.class.getName());
 	private final static String STR_MASTER_KEY = "MASTERKEY";
 	private final static String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";
 	private final static String STR_SALT = "SALT";
@@ -34,23 +34,23 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean connect(String database) {
+	protected boolean connect(String database) {
 		try {
 			Class.forName(JDBC_CLASS_NAME);
 			c = DriverManager.getConnection(JDBC_PREFIX + database);
 			createTables();
 		} catch (SQLException e) {
-			logger.fatal("Cannot connect to SQLite DB!", e);
+			logger.error("Cannot connect to SQLite DB!", e);
 			return false;
 		} catch (ClassNotFoundException e) {
-			logger.fatal("Cannot load JDBC class!", e);
+			logger.error("Cannot load JDBC class!", e);
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	byte[] getSalt(boolean forceNewSalt) {
+	protected byte[] getSalt(boolean forceNewSalt) {
 		byte[] salt = null;
 
 		if (forceNewSalt) {
@@ -67,7 +67,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	KeyParameter getMasterKey(KeyParameter encryptionKey) {
+	protected KeyParameter getMasterKey(KeyParameter encryptionKey) {
 		if (encryptionKey == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -106,7 +106,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
+	protected boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
 		if (oldKey == null || newKey == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -271,7 +271,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	boolean updateEntity(Persistable object) {
+	protected boolean updateEntity(Persistable object) {
 		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}

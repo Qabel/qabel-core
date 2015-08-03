@@ -5,8 +5,6 @@ import java.net.URI;
 import java.security.SecureRandom;
 import java.util.*;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import de.qabel.ackack.MessageInfo;
 import de.qabel.ackack.Responsible;
 import de.qabel.ackack.event.*;
@@ -19,8 +17,8 @@ import de.qabel.core.exceptions.QblSpoofedSenderException;
 import de.qabel.core.exceptions.QblVersionMismatchException;
 import de.qabel.core.http.DropHTTP;
 import de.qabel.core.http.HTTPResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 /**
  * DropActor is registered to Contact, Identity and DropServer added and removed events. On instantiation all Contacts,
@@ -28,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  * event listeners allows the DropActor to receive and store changes to these resources.
  */
 public class DropActor extends EventActor implements de.qabel.ackack.event.EventListener {
-	private final static Logger logger = LogManager.getLogger(DropActor.class.getName());
+	private final static Logger logger = LoggerFactory.getLogger(DropActor.class.getName());
 
 	public static final String EVENT_DROP_MESSAGE_RECEIVED_PREFIX = "dropMessageReceived";
 	private static final String EVENT_ACTION_DROP_MESSAGE_SEND = "sendDropMessage";
@@ -37,8 +35,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 	private DropServers mDropServers;
 	private Identities mIdentities;
 	private Contacts mContacts;
-	GsonBuilder gb;
-	Gson gson;
 	ReceiverThread receiver;
 	private long interval = 1000L;
 
@@ -58,10 +54,6 @@ public class DropActor extends EventActor implements de.qabel.ackack.event.Event
 		this.mContacts = new Contacts();
 		this.mIdentities = new Identities();
 		this.mDropServers = new DropServers();
-		gb = new GsonBuilder();
-		gb.registerTypeAdapter(DropMessage.class, new DropSerializer());
-		gb.registerTypeAdapter(DropMessage.class, new DropDeserializer());
-		gson = gb.create();
 		on(EVENT_ACTION_DROP_MESSAGE_SEND, this);
 		on(EventNameConstants.EVENT_CONTACT_ADDED, this);
 		on(EventNameConstants.EVENT_CONTACT_REMOVED, this);
