@@ -9,7 +9,7 @@ import de.qabel.core.module.ModuleManager;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class DropCommunicatorUtil extends Module {
-	LinkedBlockingQueue<DropMessage<?>> inputqueue = new LinkedBlockingQueue<>();
+	LinkedBlockingQueue<DropMessage> inputqueue = new LinkedBlockingQueue<>();
 	private ResourceActor resourceActor;
 	private DropActor dropActor;
 	private Thread dropActorThread;
@@ -41,7 +41,7 @@ public class DropCommunicatorUtil extends Module {
 		}
 	}
 
-	public DropMessage<?> retrieve() throws InterruptedException {
+	public DropMessage retrieve() throws InterruptedException {
 		return inputqueue.take();
 	}
 
@@ -74,13 +74,17 @@ public class DropCommunicatorUtil extends Module {
 	@Override
 	public void onEvent(String event, MessageInfo info, Object... data) {
 		try {
-			this.inputqueue.put((DropMessage<?>) data[0]);
+			this.inputqueue.put((DropMessage) data[0]);
 		} catch (InterruptedException e) {
 			// TODO
 		}
 	}
 
-	public void registerModelObject(Class<? extends ModelObject> cls) {
-		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + cls.getCanonicalName(), this);
+	public void registerModelObject(Class cls) {
+		registerModelObject(cls.getName());
+	}
+
+	public void registerModelObject(String type) {
+		on(DropActor.EVENT_DROP_MESSAGE_RECEIVED_PREFIX + type, this);
 	}
 }

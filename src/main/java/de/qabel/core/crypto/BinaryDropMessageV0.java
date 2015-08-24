@@ -29,7 +29,7 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 	private static final Logger logger = LoggerFactory
 			.getLogger(BinaryDropMessageV0.class.getName());
 
-	public BinaryDropMessageV0(DropMessage<?> dropMessage)
+	public BinaryDropMessageV0(DropMessage dropMessage)
 			throws QblDropPayloadSizeException {
 		super(dropMessage);
 	}
