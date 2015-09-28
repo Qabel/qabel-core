@@ -25,7 +25,6 @@ public class ModuleManagerTest {
 
 		@Override
 		public void moduleMain() {
-			
 		}
 
 		@Override
@@ -48,7 +47,6 @@ public class ModuleManagerTest {
 	}
 
 	@Test
-	@Ignore
 	public void lifeCycleTest() throws Exception {
 		ModuleManager mm = new ModuleManager(EventEmitter.getDefault(), null);
 		TestModule module = mm.startModule(TestModule.class);
