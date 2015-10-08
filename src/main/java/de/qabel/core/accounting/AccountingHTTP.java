@@ -5,6 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import de.qabel.core.config.AccountingServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
@@ -68,6 +69,34 @@ public class AccountingHTTP {
 				logger.error("Illegal response: {}", responseString);
 				throw e;
 			}
+		}
+	}
+
+	public int getQuota() throws IOException {
+		if (server.getAuthToken() == null) {
+			throw new IllegalStateException("No auth token configured");
+		}
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/profile").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+		HttpGet httpGet = new HttpGet(uri);
+		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer from login");
+			}
+			String responseString = EntityUtils.toString(entity);
+			try {
+				Map<String, Double> answer = gson.fromJson(responseString, HashMap.class);
+				return answer.get("quota").intValue();
+			} catch (JsonSyntaxException|NumberFormatException e) {
+				logger.error("Illegal response: {}", responseString);
+				throw e;
+			}
+
 		}
 	}
 

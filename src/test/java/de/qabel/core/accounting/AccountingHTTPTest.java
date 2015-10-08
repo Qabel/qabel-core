@@ -42,4 +42,17 @@ public class AccountingHTTPTest {
 	public void testLogin() {
 		assertNotNull("Auth token not set after login", server.getAuthToken());
 	}
+
+	@Test
+	public void testGetQuota() throws IOException {
+		assertEquals(100, accountingHTTP.getQuota());
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testIllegalState() throws IOException {
+		server.setAuthToken(null);
+		accountingHTTP.getQuota();
+	}
+
+
 }
