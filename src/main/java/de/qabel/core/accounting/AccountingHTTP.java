@@ -31,7 +31,7 @@ public class AccountingHTTP {
 
 	public AccountingHTTP(AccountingServer server) {
 		this.server = server;
-		httpclient = HttpClients.createDefault();
+		httpclient = HttpClients.createMinimal();
 		gson = new Gson();
 	}
 
@@ -83,6 +83,7 @@ public class AccountingHTTP {
 			throw new RuntimeException("Url building failed", e);
 		}
 		HttpGet httpGet = new HttpGet(uri);
+		httpGet.addHeader("Authorization", "Token " + server.getAuthToken());
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			HttpEntity entity = response.getEntity();
 			if (entity == null) {
