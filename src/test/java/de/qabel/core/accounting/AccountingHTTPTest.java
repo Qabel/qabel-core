@@ -10,9 +10,7 @@ import java.net.URISyntaxException;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AccountingHTTPTest {
 
@@ -20,10 +18,11 @@ public class AccountingHTTPTest {
 	private AccountingHTTP accountingHTTP;
 
 	@Before
-	public void setServer() throws URISyntaxException {
+	public void setServer() throws URISyntaxException, IOException {
 		server = new AccountingServer(new URI("http://localhost:9696"),
 				"testuser", "testuser");
 		accountingHTTP = new AccountingHTTP(server);
+		assertTrue("Login to accounting server failed", accountingHTTP.login());
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -40,8 +39,7 @@ public class AccountingHTTPTest {
 	}
 
 	@Test
-	public void testLogin() throws IOException {
-		assertTrue("Login to accounting server failed", accountingHTTP.login());
+	public void testLogin() {
 		assertNotNull("Auth token not set after login", server.getAuthToken());
 	}
 }
