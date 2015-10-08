@@ -1,5 +1,6 @@
 package de.qabel.core.accounting;
 
+import com.amazonaws.auth.BasicSessionCredentials;
 import de.qabel.core.config.AccountingServer;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +53,15 @@ public class AccountingHTTPTest {
 	public void testIllegalState() throws IOException {
 		server.setAuthToken(null);
 		accountingHTTP.getQuota();
+	}
+
+	@Test
+	public void testGetCredentials() throws IOException {
+		BasicSessionCredentials credentials = accountingHTTP.getCredentials();
+		assertNotNull(credentials);
+		assertNotNull("No AWS key", credentials.getAWSAccessKeyId());
+		assertNotNull("No AWS secret key", credentials.getAWSSecretKey());
+		assertNotNull("No AWS token", credentials.getSessionToken());
 	}
 
 

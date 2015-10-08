@@ -1,7 +1,9 @@
 package de.qabel.core.accounting;
 
+import com.amazonaws.auth.BasicSessionCredentials;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.internal.LinkedTreeMap;
 import de.qabel.core.config.AccountingServer;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -93,12 +95,48 @@ public class AccountingHTTP {
 			try {
 				Map<String, Double> answer = gson.fromJson(responseString, HashMap.class);
 				return answer.get("quota").intValue();
-			} catch (JsonSyntaxException|NumberFormatException e) {
+			} catch (JsonSyntaxException|NumberFormatException|NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
 				throw e;
 			}
 
 		}
+	}
+
+	public BasicSessionCredentials getCredentials() throws IOException {
+		if (server.getAuthToken() == null) {
+			throw new IllegalStateException("No auth token configured");
+		}
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/token").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Token url building failed", e);
+		}
+		HttpPost httpPost = new HttpPost(uri);
+		httpPost.addHeader("Authorization", "Token " + server.getAuthToken());
+		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer from login");
+			}
+			String responseString = EntityUtils.toString(entity);
+			try {
+				LinkedTreeMap<String, Object> answer = gson.fromJson(responseString, LinkedTreeMap.class);
+				LinkedTreeMap<String, String> credentials =
+						(LinkedTreeMap<String, String>) answer.get("Credentials");
+				return new BasicSessionCredentials(
+						credentials.get("AccessKeyId"),
+						credentials.get("SecretAccessKey"),
+						credentials.get("SessionToken"));
+			} catch (JsonSyntaxException|NullPointerException e) {
+				// NullPointerException also means that our response was not ok because on of the
+				// .get() failed
+				logger.error("Illegal response: {}", responseString);
+				throw e;
+			}
+		}
+
 	}
 
 	public URIBuilder buildUri(String resource) {
