@@ -76,7 +76,7 @@ public class AccountingHTTP {
 
 	public int getQuota() throws IOException {
 		if (server.getAuthToken() == null) {
-			throw new IllegalStateException("No auth token configured");
+			login();
 		}
 		URI uri;
 		try {
@@ -105,7 +105,7 @@ public class AccountingHTTP {
 
 	public BasicSessionCredentials getCredentials() throws IOException {
 		if (server.getAuthToken() == null) {
-			throw new IllegalStateException("No auth token configured");
+			login();
 		}
 		URI uri;
 		try {

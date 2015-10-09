@@ -49,10 +49,11 @@ public class AccountingHTTPTest {
 		assertEquals(100, accountingHTTP.getQuota());
 	}
 
-	@Test(expected = IllegalStateException.class)
-	public void testIllegalState() throws IOException {
+	@Test
+	public void testAutologin() throws IOException {
 		server.setAuthToken(null);
 		accountingHTTP.getQuota();
+		assertNotNull(server.getAuthToken());
 	}
 
 	@Test
