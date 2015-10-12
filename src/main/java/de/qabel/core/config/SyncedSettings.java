@@ -12,9 +12,7 @@ public class SyncedSettings {
 	private Accounts accounts;
 	private Contacts contacts;
 	private DropServers dropServers;
-	private StorageServers storageServers;
-	private StorageVolumes storageVolumes;
-	
+
 	/**
 	 * Creates an instance of SyncedSettings
 	 */
@@ -23,8 +21,6 @@ public class SyncedSettings {
 		this.contacts = new Contacts();
 		this.dropServers = new DropServers();
 		this.identities = new Identities();
-		this.storageServers = new StorageServers();
-		this.storageVolumes = new StorageVolumes();
 	}
 
 	/**
@@ -69,21 +65,6 @@ public class SyncedSettings {
 		return this.dropServers;
 	}
 
-	public void setStorageServers(StorageServers value) {
-		this.storageServers = value;
-	}
-
-	public StorageServers getStorageServers() {
-		return this.storageServers;
-	}
-
-	public void setStorageVolumes(StorageVolumes value) {
-		this.storageVolumes = value;
-	}
-
-	public StorageVolumes getStorageVolumes() {
-		return this.storageVolumes;
-	}
 
 	/**
 	 * Serializes this class to a Json String
@@ -119,10 +100,6 @@ public class SyncedSettings {
 				+ ((dropServers == null) ? 0 : dropServers.hashCode());
 		result = prime * result
 				+ ((identities == null) ? 0 : identities.hashCode());
-		result = prime * result
-				+ ((storageServers == null) ? 0 : storageServers.hashCode());
-		result = prime * result
-				+ ((storageVolumes == null) ? 0 : storageVolumes.hashCode());
 		result = prime
 				* result
 				+ ((syncedModuleSettings == null) ? 0 : syncedModuleSettings
@@ -158,16 +135,6 @@ public class SyncedSettings {
 			if (other.identities != null)
 				return false;
 		} else if (!identities.equals(other.identities))
-			return false;
-		if (storageServers == null) {
-			if (other.storageServers != null)
-				return false;
-		} else if (!storageServers.equals(other.storageServers))
-			return false;
-		if (storageVolumes == null) {
-			if (other.storageVolumes != null)
-				return false;
-		} else if (!storageVolumes.equals(other.storageVolumes))
 			return false;
 		return true;
 	}

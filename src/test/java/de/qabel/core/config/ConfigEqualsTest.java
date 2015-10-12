@@ -135,63 +135,6 @@ public class ConfigEqualsTest {
 	}
 
 	@Test
-	public void storageServersEqualsTest() {
-		EqualsMethodTester tester = new EqualsMethodTester();
-		tester.testEqualsMethod(StorageServers.class);
-
-		StorageServerTestFactory serverFactory = new StorageServerTestFactory();
-
-		StorageServer a1 = serverFactory.create();
-		StorageServer a2 = serverFactory.create();
-		StorageServer c1 = serverFactory.create();
-
-		StorageServers a = new StorageServers();
-		StorageServers b = new StorageServers();
-		StorageServers c = new StorageServers();
-
-		a.put(a1);
-		a.put(a2);
-
-		b.put(a1);
-		b.put(a2);
-
-		c.put(a1);
-		c.put(c1);
-
-		assertEquals(a, b);
-		assertNotEquals(a, c);
-		assertNotEquals(b, c);
-	}
-
-	@Test
-	public void storageVolumesEqualsTest() {
-		EqualsMethodTester tester = new EqualsMethodTester();
-		tester.testEqualsMethod(StorageVolumes.class);
-
-		StorageVolumeTestFactory volumeFactory = new StorageVolumeTestFactory();
-		StorageVolume a1 = volumeFactory.create();
-		StorageVolume a2 = volumeFactory.create();
-		StorageVolume c1 = volumeFactory.create();
-
-		StorageVolumes a = new StorageVolumes();
-		StorageVolumes b = new StorageVolumes();
-		StorageVolumes c = new StorageVolumes();
-
-		a.put(a1);
-		a.put(a2);
-
-		b.put(a1);
-		b.put(a2);
-
-		c.put(a1);
-		c.put(c1);
-
-		assertEquals(a, b);
-		assertNotEquals(a, c);
-		assertNotEquals(b, c);
-	}
-
-	@Test
 	public void syncedSettingsEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
 		Configuration config = new ConfigurationBuilder()
@@ -199,8 +142,6 @@ public class ConfigEqualsTest {
 			.overrideFactory("contacts", new ContactsTestFactory())
 			.overrideFactory("dropServers", new DropServersTestFactory())
 			.overrideFactory("identities", new IdentitiesTestFactory())
-			.overrideFactory("storageServers", new StorageServersTestFactory())
-			.overrideFactory("storageVolumes", new StorageVolumesTestFactory())
 			.iterations(5)
 			.build();
 		tester.testEqualsMethod(new SyncedSettingsEquivalentTestFactory(), config);
@@ -243,21 +184,4 @@ public class ConfigEqualsTest {
 		tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
 	}
 
-	@Test
-	public void storageServerEqualsTest () {
-		EqualsMethodTester tester = new EqualsMethodTester();
-		Configuration config = new ConfigurationBuilder()
-			.overrideFactory("uri", new UriTestFactory())
-			.build();
-		tester.testEqualsMethod(new StorageServerEquivalentTestFactory(), config);
-	}
-
-	@Test
-	public void storageVolumeEqualsTest() {
-		EqualsMethodTester tester = new EqualsMethodTester();
-		Configuration config = new ConfigurationBuilder()
-		.overrideFactory("storageServer", new StorageServerTestFactory())
-		.build();
-		tester.testEqualsMethod(new StorageVolumeEquivalentTestFactory(), config);
-	}
 }

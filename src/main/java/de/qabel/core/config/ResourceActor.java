@@ -30,8 +30,6 @@ public class ResourceActor extends Actor {
 	private static final String RETRIEVE_IDENTITIES = "retrieveIdentities";
 	private static final String RETRIEVE_LOCALMODULESETTINGS = "retrieveLocalModuleSettings";
 	private static final String RETRIEVE_LOCALSETTINGS = "retrieveLocalSettings";
-	private static final String RETRIEVE_STORAGESERVERS = "retrieveStorageServers";
-	private static final String RETRIEVE_STORAGEVOLUMES = "retrieveStorageVolumes";
 	private static final String RETRIEVE_SYNCEDMODULESETTINGS = "retrieveSyncedModuleSettings";
 
 	private static final String WRITE_CONTACTS = "writeContacts";
@@ -40,8 +38,6 @@ public class ResourceActor extends Actor {
 	private static final String WRITE_IDENTITIES = "writeIdentities";
 	private static final String WRITE_LOCALMODULESETTINGS = "writeLocalModuleSettings";
 	private static final String WRITE_LOCALSETTINGS = "writeLocalSettings";
-	private static final String WRITE_STORAGESERVERS = "writeStorageServers";
-	private static final String WRITE_STORAGEVOLUMES = "writeStorageVolumes";
 	private static final String WRITE_SYNCEDMODULESETTINGS = "writeSyncedModuleSettings";
 
 	private static final String REMOVE_CONTACTS = "removeContacts";
@@ -49,8 +45,6 @@ public class ResourceActor extends Actor {
 	private static final String REMOVE_DROPSERVERS = "removeDropServers";
 	private static final String REMOVE_IDENTITIES = "removeIdentities";
 	private static final String REMOVE_LOCALMODULESETTINGS = "removeLocalModuleSettings";
-	private static final String REMOVE_STORAGESERVERS = "removeStorageServers";
-	private static final String REMOVE_STORAGEVOLUMES = "removeStorageVolumes";
 	private static final String REMOVE_SYNCEDMODULESETTINGS = "removeSyncedModuleSettings";
 
 	private final static Logger logger = LoggerFactory.getLogger(ResourceActor.class.getName());
@@ -90,13 +84,6 @@ public class ResourceActor extends Actor {
 			settings.setLocalSettings((LocalSettings) object);
 		}
 
-		for (Object object: persistence.getEntities(StorageServer.class)) {
-			settings.getSyncedSettings().getStorageServers().put((StorageServer) object);
-		}
-
-		for (Object object: persistence.getEntities(StorageVolume.class)) {
-			settings.getSyncedSettings().getStorageVolumes().put((StorageVolume) object);
-		}
 
 		for (Object object: persistence.getEntities(SyncedModuleSettings.class)) {
 			settings.getSyncedSettings().getSyncedModuleSettings().add((SyncedModuleSettings) object);
@@ -311,78 +298,6 @@ public class ResourceActor extends Actor {
 	}
 
 	/**
-	 * Retrieve all storage servers.
-	 * @param sender Sending actor
-	 * @param responsible Class to handle call back
-	 * @return True if request has been sent to actor
-	 */
-	public boolean retrieveStorageServers(Actor sender, Responsible responsible) {
-		MessageInfo info = new MessageInfo();
-		info.setSender(sender);
-		info.setResponsible(responsible);
-		info.setType(RETRIEVE_STORAGESERVERS);
-		return post(info);
-	}
-
-	/**
-	 * Add new and write changed storage servers.
-	 * @param storageServers Storage servers to be written
-	 * @return True if storage servers have been sent to actor
-	 */
-	public boolean writeStorageServers(final StorageServer...storageServers) {
-		MessageInfo info = new MessageInfo();
-		info.setType(WRITE_STORAGESERVERS);
-		return post(info, (Serializable[]) storageServers);
-	}
-
-	/**
-	 * Remove storage servers.
-	 * @param storageServers Storage servers to be removed
-	 * @return True if request has been sent to actor
-	 */
-	public boolean removeStorageServers(final StorageServer...storageServers) {
-		MessageInfo info = new MessageInfo();
-		info.setType(REMOVE_STORAGESERVERS);
-		return post(info, (Serializable[]) storageServers);
-	}
-
-	/**
-	 * Retrieve all storage volumes
-	 * @param sender Sending actor
-	 * @param responsible Class to handle call back
-	 * @return True if request has been sent to actor
-	 */
-	public boolean retrieveStorageVolumes(Actor sender, Responsible responsible) {
-		MessageInfo info = new MessageInfo();
-		info.setSender(sender);
-		info.setResponsible(responsible);
-		info.setType(RETRIEVE_STORAGEVOLUMES);
-		return post(info);
-	}
-
-	/**
-	 * Add new and write changed storage volumes
-	 * @param storageVolumes Storage volumes to be written
-	 * @return True if storage volumes have been sent to actor
-	 */
-	public boolean writeStorageVolumes(final StorageVolume...storageVolumes) {
-		MessageInfo info = new MessageInfo();
-		info.setType(WRITE_STORAGEVOLUMES);
-		return post(info, (Serializable[]) storageVolumes);
-	}
-
-	/**
-	 * Remove storage volumes.
-	 * @param storageVolumes Storage volumes to be removed
-	 * @return True if request has been sent to actor
-	 */
-	public boolean removeStorageVolumes(final StorageVolume...storageVolumes) {
-		MessageInfo info = new MessageInfo();
-		info.setType(REMOVE_STORAGEVOLUMES);
-		return post(info, (Serializable[]) storageVolumes);
-	}
-
-	/**
 	 * Retrieve all synced module settings
 	 * @param sender Sending actor
 	 * @param responsible Class to handle call back
@@ -469,20 +384,6 @@ public class ResourceActor extends Actor {
 					info.response((Serializable) this.settings.getLocalSettings());
 				}
 				break;
-			case RETRIEVE_STORAGESERVERS:
-				synchronized (settings.getSyncedSettings().getStorageServers()) {
-					info.response((Serializable[]) this.settings
-							.getSyncedSettings().getStorageServers()
-							.getStorageServers().toArray(new StorageServer[0]));
-				}
-				break;
-			case RETRIEVE_STORAGEVOLUMES:
-				synchronized (settings.getSyncedSettings().getStorageVolumes()) {
-					info.response((Serializable[]) this.settings
-							.getSyncedSettings().getStorageVolumes()
-							.getStorageVolumes().toArray(new StorageVolume[0]));
-				}
-				break;
 			case RETRIEVE_SYNCEDMODULESETTINGS:
 				synchronized (settings.getSyncedSettings().getSyncedModuleSettings()) {
 					info.response((Serializable[]) this.settings
@@ -552,28 +453,6 @@ public class ResourceActor extends Actor {
 					persistence.updateOrPersistEntity((LocalSettings) data[0]);
 				}
 				break;
-			case WRITE_STORAGESERVERS:
-				synchronized (settings.getSyncedSettings().getStorageServers()) {
-					StorageServers storageServers = this.settings.getSyncedSettings().getStorageServers();
-					for (Object object : data) {
-						StorageServer storageServer = (StorageServer) object;
-						storageServers.put(storageServer);
-						persistence.updateOrPersistEntity(storageServer);
-						eventEmitter.emit(EventNameConstants.EVENT_STORAGESERVER_ADDED, storageServer);
-					}
-				}
-				break;
-			case WRITE_STORAGEVOLUMES:
-				synchronized (settings.getSyncedSettings().getStorageVolumes()) {
-					StorageVolumes storageVolumes = this.settings.getSyncedSettings().getStorageVolumes();
-					for (Object object : data) {
-						StorageVolume storageVolume = (StorageVolume) object;
-						storageVolumes.put(storageVolume);
-						persistence.updateOrPersistEntity(storageVolume);
-						eventEmitter.emit(EventNameConstants.EVENT_STORAGEVOLUME_ADDED, storageVolume);
-					}
-				}
-				break;
 			case WRITE_SYNCEDMODULESETTINGS:
 				synchronized (settings.getSyncedSettings().getSyncedModuleSettings()) {
 					Set<SyncedModuleSettings> syncedModuleSettingsList = this.settings.getSyncedSettings()
@@ -641,28 +520,6 @@ public class ResourceActor extends Actor {
 						localModuleSettingsList.remove(localModuleSettings);
 						persistence.removeEntity(localModuleSettings.getPersistenceID(), localModuleSettings.getClass());
 						//TODO: EMIT THIS EVENT?
-					}
-				}
-				break;
-			case REMOVE_STORAGESERVERS:
-				synchronized (settings.getSyncedSettings().getStorageServers()) {
-					StorageServers storageServers = this.settings.getSyncedSettings().getStorageServers();
-					for (Object object : data) {
-						StorageServer storageServer = (StorageServer) object;
-						storageServers.remove(storageServer);
-						persistence.removeEntity(storageServer.getPersistenceID(), storageServer.getClass());
-						eventEmitter.emit(EventNameConstants.EVENT_STORAGESERVER_REMOVED, storageServer);
-					}
-				}
-				break;
-			case REMOVE_STORAGEVOLUMES:
-				synchronized (settings.getSyncedSettings().getStorageVolumes()) {
-					StorageVolumes storageVolumes = this.settings.getSyncedSettings().getStorageVolumes();
-					for (Object object : data) {
-						StorageVolume storageVolume = (StorageVolume) object;
-						storageVolumes.remove(storageVolume);
-						persistence.removeEntity(storageVolume.getPersistenceID(), storageVolume.getClass());
-						eventEmitter.emit(EventNameConstants.EVENT_STORAGEVOLUME_REMOVED, storageVolume);
 					}
 				}
 				break;

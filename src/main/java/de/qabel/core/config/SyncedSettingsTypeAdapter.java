@@ -40,18 +40,6 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 				new DropServersTypeAdapter();
 		dropServersAdapter.write(out, value.getDropServers());
 		
-		// StorageServers
-		out.name("storage_servers");
-		TypeAdapter<StorageServers> storageServersAdapter = 
-				new StorageServersTypeAdapter();
-		storageServersAdapter.write(out, value.getStorageServers());
-		
-		// StorageVolumes
-		out.name("storage_volumes");
-		TypeAdapter<StorageVolumes> storageVolumesAdapter =
-				new StorageVolumesTypeAdapter();
-		storageVolumesAdapter.write(out, value.getStorageVolumes());
-		
 		// SyncedModuleSettings
 		out.name("module_data");
 		TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
@@ -81,8 +69,6 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 		Contacts contacts = null;
 		Identities identities = null;
 		DropServers dropServers = null;
-		StorageServers storageServers = null;
-		StorageVolumes storageVolumes = null;		
 		Set<SyncedModuleSettings> syncedModuleSettings = null;
 		
 		in.beginObject();
@@ -108,16 +94,6 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 						new DropServersTypeAdapter();
 				dropServers = dropServersAdapter.read(in);
 				break;
-			case "storage_servers":
-				TypeAdapter<StorageServers> storageServersAdapter = 
-						new StorageServersTypeAdapter();
-				storageServers = storageServersAdapter.read(in);
-				break;
-			case "storage_volumes":
-				TypeAdapter<StorageVolumes> storageVolumesAdapter =
-						new StorageVolumesTypeAdapter();
-				storageVolumes = storageVolumesAdapter.read(in);
-				break;
 			case "module_data":
 				syncedModuleSettings = new HashSet<SyncedModuleSettings>();
 				TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
@@ -137,8 +113,6 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 				|| contacts == null
 				|| identities == null
 				|| dropServers == null
-				|| storageServers == null
-				|| storageVolumes == null
 				|| syncedModuleSettings == null) {
 			return null;
 		}
@@ -149,21 +123,12 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 							contact.getContactOwnerKeyId()));
 		}
 		
-		for (StorageVolume volume : storageVolumes.getStorageVolumes()) {
-			// remove and re-insert updated volume to update hash
-			storageVolumes.remove(volume);
-			volume.setStorageServer(
-					storageServers.getStorageServerByUri(volume.getServerUriString()));
-			storageVolumes.put(volume);
-		}
-		
+
 		syncedSettings = new SyncedSettings();
 		syncedSettings.setAccounts(accounts);
 		syncedSettings.setContacts(contacts);
 		syncedSettings.setIdentities(identities);
 		syncedSettings.setDropServers(dropServers);
-		syncedSettings.setStorageServers(storageServers);
-		syncedSettings.setStorageVolumes(storageVolumes);
 		syncedSettings.getSyncedModuleSettings().addAll(syncedModuleSettings);
 		
 		return syncedSettings;

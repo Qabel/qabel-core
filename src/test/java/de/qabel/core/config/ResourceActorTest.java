@@ -31,14 +31,10 @@ public class ResourceActorTest {
 	ArrayList<Identity> identitiesList;
 	ArrayList<LocaleModuleSettings> localModuleSettingsList;
 	LocalSettings localSettings;
-	ArrayList<StorageServer> storageServersList;
-	ArrayList<StorageVolume> storageVolumesList;
 	ArrayList<SyncedModuleSettings> syncedModuleSettingsList;
 	AccountTestFactory accountFactory;
 	DropServerTestFactory dropServerFactory;
 	IdentityTestFactory identityFactory;
-	StorageServerTestFactory storageServerFactory;
-	StorageVolumeTestFactory storageVolumeFactory;
 	Thread actorThread;
 	Thread configActorThread;
 	ArrayList<Contact> receivedContacts = null;
@@ -54,8 +50,6 @@ public class ResourceActorTest {
 		accountFactory = new AccountTestFactory();
 		dropServerFactory = new DropServerTestFactory();
 		identityFactory = new IdentityTestFactory();
-		storageServerFactory = new StorageServerTestFactory();
-		storageVolumeFactory = new StorageVolumeTestFactory();
 		configActorThread = new Thread(resourceActor);
 		configActorThread.start();
 	}
@@ -324,76 +318,6 @@ public class ResourceActorTest {
 	}
 
 	@Test
-	public void addRetrieveRemoveStorageServersTest() throws InterruptedException {
-		StorageServer storageServer1 = storageServerFactory.create();
-		StorageServer storageServer2 = storageServerFactory.create();
-
-		testActor.writeStorageServers(storageServer1, storageServer2);
-		testActor.retrieveStorageServers();
-		Assert.assertTrue(storageServersList.contains(storageServer1));
-		Assert.assertTrue(storageServersList.contains(storageServer2));
-
-		testActor.removeStorageServers(storageServer1, storageServer2);
-		testActor.retrieveStorageServers();
-		Assert.assertFalse(storageServersList.contains(storageServer1));
-		Assert.assertFalse(storageServersList.contains(storageServer2));
-	}
-
-	@Test
-	public void changeStorageServersTest() throws InterruptedException {
-		StorageServer storageServer1 = storageServerFactory.create();
-		StorageServer storageServer2 = storageServerFactory.create();
-
-		testActor.writeStorageServers(storageServer1, storageServer2);
-		testActor.retrieveStorageServers();
-		int listSize = storageServersList.size();
-
-		storageServer1.setAuth("changedAuth1");
-		storageServer2.setAuth("changedAuth2");
-
-		testActor.writeStorageServers(storageServer1, storageServer2);
-		testActor.retrieveStorageServers();
-		Assert.assertEquals(listSize, storageServersList.size());
-		Assert.assertEquals(storageServer1, storageServersList.get((storageServersList.indexOf(storageServer1))));
-		Assert.assertEquals(storageServer2, storageServersList.get((storageServersList.indexOf(storageServer2))));
-	}
-
-	@Test
-	public void addRetrieveRemoveStorageVolumesTest() throws InterruptedException {
-		StorageVolume storageVolume1 = storageVolumeFactory.create();
-		StorageVolume storageVolume2 = storageVolumeFactory.create();
-
-		testActor.writeStorageVolumes(storageVolume1, storageVolume2);
-		testActor.retrieveStorageVolumes();
-		Assert.assertTrue(storageVolumesList.contains(storageVolume1));
-		Assert.assertTrue(storageVolumesList.contains(storageVolume2));
-
-		testActor.removeStorageVolumes(storageVolume1, storageVolume2);
-		testActor.retrieveStorageVolumes();
-		Assert.assertFalse(storageVolumesList.contains(storageVolume1));
-		Assert.assertFalse(storageVolumesList.contains(storageVolume2));
-	}
-
-	@Test
-	public void changeStorageVolumesTest() throws InterruptedException {
-		StorageVolume storageVolume1 = storageVolumeFactory.create();
-		StorageVolume storageVolume2 = storageVolumeFactory.create();
-
-		testActor.writeStorageVolumes(storageVolume1, storageVolume2);
-		testActor.retrieveStorageVolumes();
-		int listSize = storageVolumesList.size();
-
-		storageVolume1.setToken("changedToken1");
-		storageVolume2.setToken("changedToken2");
-
-		testActor.writeStorageVolumes(storageVolume1, storageVolume2);
-		testActor.retrieveStorageVolumes();
-		Assert.assertEquals(listSize, storageVolumesList.size());
-		Assert.assertEquals(storageVolume1, storageVolumesList.get((storageVolumesList.indexOf(storageVolume1))));
-		Assert.assertEquals(storageVolume2, storageVolumesList.get((storageVolumesList.indexOf(storageVolume2))));
-	}
-
-	@Test
 	public void retrieveLocalSettingsTest() throws InterruptedException {
 		testActor.retrieveLocalSettings();
 		Assert.assertNotNull(localSettings);
@@ -424,11 +348,7 @@ public class ResourceActorTest {
 			on(EventNameConstants.EVENT_DROPSERVER_ADDED, this);
 			on(EventNameConstants.EVENT_DROPSERVER_REMOVED, this);
 			on(EventNameConstants.EVENT_ACCOUNT_ADDED, this);
-			on(EventNameConstants.EVENT_STORAGESERVER_ADDED, this);
-			on(EventNameConstants.EVENT_STORAGEVOLUME_ADDED, this);
 			on(EventNameConstants.EVENT_ACCOUNT_REMOVED, this);
-			on(EventNameConstants.EVENT_STORAGESERVER_REMOVED, this);
-			on(EventNameConstants.EVENT_STORAGEVOLUME_REMOVED , this);
 		}
 
 		private void restartActor() {
@@ -528,31 +448,6 @@ public class ResourceActorTest {
 			actorThread.join();
 		}
 
-		public void retrieveStorageServers() throws InterruptedException {
-			restartActor();
-			resourceActor.retrieveStorageServers(this, new Responsible() {
-				@Override
-				public void onResponse(Serializable... data) {
-					storageServersList = new ArrayList<>(Arrays.asList((StorageServer[])data));
-					stop();
-				}
-			});
-			actorThread.join();
-		}
-
-		public void retrieveStorageVolumes() throws InterruptedException {
-			restartActor();
-			resourceActor.retrieveStorageVolumes(this, new Responsible() {
-				@Override
-				public void onResponse(Serializable... data) {
-					storageVolumesList = new ArrayList<>(
-							Arrays.asList((StorageVolume[])data));
-					stop();
-				}
-			});
-			actorThread.join();
-		}
-
 		public void retrieveSyncedModuleSettings() throws InterruptedException {
 			restartActor();
 			resourceActor.retrieveSyncedModuleSettings(this, new Responsible() {
@@ -601,19 +496,6 @@ public class ResourceActorTest {
 			actorThread.join();
 		}
 
-		public void writeStorageServers(StorageServer...data) throws InterruptedException {
-			restartActor();
-			numExpectedEvents = data.length;
-			resourceActor.writeStorageServers(data);
-			actorThread.join();
-		}
-
-		public void writeStorageVolumes(StorageVolume...data) throws InterruptedException {
-			restartActor();
-			numExpectedEvents = data.length;
-			resourceActor.writeStorageVolumes(data);
-			actorThread.join();
-		}
 
 		public void writeSyncedModuleSettings(SyncedModuleSettings...data) throws InterruptedException {
 			restartActor();
@@ -647,20 +529,6 @@ public class ResourceActorTest {
 			restartActor();
 			numExpectedEvents = data.length;
 			resourceActor.removeLocalModuleSettings(data);
-			actorThread.join();
-		}
-
-		public void removeStorageServers(StorageServer...data) throws InterruptedException {
-			restartActor();
-			numExpectedEvents = data.length;
-			resourceActor.removeStorageServers(data);
-			actorThread.join();
-		}
-
-		public void removeStorageVolumes(StorageVolume...data) throws InterruptedException {
-			restartActor();
-			numExpectedEvents = data.length;
-			resourceActor.removeStorageVolumes(data);
 			actorThread.join();
 		}
 

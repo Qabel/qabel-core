@@ -12,16 +12,12 @@ class SyncedSettingsEquivalentTestFactory implements EquivalentFactory<SyncedSet
 	Contacts contacts;
 	DropServers dropServers;
 	Identities identities;
-	StorageServers storageServers;
-	StorageVolumes storageVolumes;
-	
+
 	SyncedSettingsEquivalentTestFactory () {
 		accounts = (new AccountsTestFactory()).create();
 		contacts = (new ContactsTestFactory()).create();
 		dropServers = (new DropServersTestFactory()).create();
 		identities = (new IdentitiesTestFactory()).create();
-		storageServers = (new StorageServersTestFactory()).create();
-		storageVolumes = (new StorageVolumesTestFactory()).create();
 	}
 	
 	@Override
@@ -32,8 +28,6 @@ class SyncedSettingsEquivalentTestFactory implements EquivalentFactory<SyncedSet
 		syncedSettings.setContacts(contacts);
 		syncedSettings.setDropServers(dropServers);
 		syncedSettings.setIdentities(identities);
-		syncedSettings.setStorageServers(storageServers);
-		syncedSettings.setStorageVolumes(storageVolumes);
 
 		return syncedSettings;
 	}
