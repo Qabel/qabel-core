@@ -22,7 +22,7 @@ public class AccountingHTTPTest {
 	public void setServer() throws URISyntaxException, IOException {
 		server = new AccountingServer(new URI("http://localhost:9696"),
 				"testuser", "testuser");
-		accountingHTTP = new AccountingHTTP(server);
+		accountingHTTP = new AccountingHTTP(server, new AccountingProfile());
 		assertTrue("Login to accounting server failed", accountingHTTP.login());
 	}
 
@@ -63,6 +63,17 @@ public class AccountingHTTPTest {
 		assertNotNull("No AWS key", credentials.getAWSAccessKeyId());
 		assertNotNull("No AWS secret key", credentials.getAWSSecretKey());
 		assertNotNull("No AWS token", credentials.getSessionToken());
+	}
+
+	@Test
+	public void testGetPrefix() throws IOException {
+		assertNotNull(accountingHTTP.getPrefix());
+	}
+
+	@Test
+	public void testUpdateProfile() throws IOException {
+		accountingHTTP.updateProfile();
+		assertNotNull(accountingHTTP.getProfile());
 	}
 
 

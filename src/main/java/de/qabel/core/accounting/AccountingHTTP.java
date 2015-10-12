@@ -30,9 +30,11 @@ public class AccountingHTTP {
 	private AccountingServer server;
 	private final CloseableHttpClient httpclient;
 	private Gson gson;
+	private AccountingProfile profile;
 
-	public AccountingHTTP(AccountingServer server) {
+	public AccountingHTTP(AccountingServer server, AccountingProfile profile) {
 		this.server = server;
+		this.profile = profile;
 		httpclient = HttpClients.createMinimal();
 		gson = new Gson();
 	}
@@ -75,6 +77,15 @@ public class AccountingHTTP {
 	}
 
 	public int getQuota() throws IOException {
+		Integer quota = profile.getQuota();
+		if (quota == null) {
+			updateProfile();
+			quota = profile.getQuota();
+		}
+		return quota;
+	}
+
+	public void updateProfile() throws IOException {
 		if (server.getAuthToken() == null) {
 			login();
 		}
@@ -93,9 +104,10 @@ public class AccountingHTTP {
 			}
 			String responseString = EntityUtils.toString(entity);
 			try {
-				Map<String, Double> answer = gson.fromJson(responseString, HashMap.class);
-				return answer.get("quota").intValue();
-			} catch (JsonSyntaxException|NumberFormatException|NullPointerException e) {
+				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
+				profile.setQuota(((Double) answer.get("quota")).intValue());
+				profile.setPrefix((String) answer.get("prefix"));
+			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
 				throw e;
 			}
@@ -148,4 +160,17 @@ public class AccountingHTTP {
 					.setPath("/" + resource + "/");
 	}
 
+	public String getPrefix() throws IOException {
+		String prefix = profile.getPrefix();
+		if (prefix == null) {
+			updateProfile();
+			prefix = profile.getPrefix();
+		}
+		return prefix;
+
+	}
+
+	public AccountingProfile getProfile() {
+		return profile;
+	}
 }
