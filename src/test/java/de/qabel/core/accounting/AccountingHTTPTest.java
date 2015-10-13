@@ -2,6 +2,7 @@ package de.qabel.core.accounting;
 
 import com.amazonaws.auth.BasicSessionCredentials;
 import de.qabel.core.config.AccountingServer;
+import de.qabel.core.exceptions.QblInvalidCredentials;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,11 +20,11 @@ public class AccountingHTTPTest {
 	private AccountingHTTP accountingHTTP;
 
 	@Before
-	public void setServer() throws URISyntaxException, IOException {
+	public void setServer() throws URISyntaxException, IOException, QblInvalidCredentials {
 		server = new AccountingServer(new URI("http://localhost:9696"),
 				"testuser", "testuser");
 		accountingHTTP = new AccountingHTTP(server, new AccountingProfile());
-		assertTrue("Login to accounting server failed", accountingHTTP.login());
+		accountingHTTP.login();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -44,20 +45,27 @@ public class AccountingHTTPTest {
 		assertNotNull("Auth token not set after login", server.getAuthToken());
 	}
 
+	@Test(expected = QblInvalidCredentials.class)
+	public void testLoginFailed() throws IOException, QblInvalidCredentials {
+		server.setAuthToken(null);
+		server.setPassword("foobar");
+		accountingHTTP.login();
+	}
+
 	@Test
-	public void testGetQuota() throws IOException {
+	public void testGetQuota() throws IOException, QblInvalidCredentials {
 		assertEquals(100, accountingHTTP.getQuota());
 	}
 
 	@Test
-	public void testAutologin() throws IOException {
+	public void testAutologin() throws IOException, QblInvalidCredentials {
 		server.setAuthToken(null);
 		accountingHTTP.getQuota();
 		assertNotNull(server.getAuthToken());
 	}
 
 	@Test
-	public void testGetCredentials() throws IOException {
+	public void testGetCredentials() throws IOException, QblInvalidCredentials {
 		BasicSessionCredentials credentials = accountingHTTP.getCredentials();
 		assertNotNull(credentials);
 		assertNotNull("No AWS key", credentials.getAWSAccessKeyId());
@@ -66,12 +74,12 @@ public class AccountingHTTPTest {
 	}
 
 	@Test
-	public void testGetPrefix() throws IOException {
+	public void testGetPrefix() throws IOException, QblInvalidCredentials {
 		assertNotNull(accountingHTTP.getPrefix());
 	}
 
 	@Test
-	public void testUpdateProfile() throws IOException {
+	public void testUpdateProfile() throws IOException, QblInvalidCredentials {
 		accountingHTTP.updateProfile();
 		assertNotNull(accountingHTTP.getProfile());
 	}

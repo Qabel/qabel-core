@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import de.qabel.core.config.AccountingServer;
+import de.qabel.core.exceptions.QblInvalidCredentials;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -20,7 +21,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AccountingHTTP {
@@ -39,7 +42,7 @@ public class AccountingHTTP {
 		gson = new Gson();
 	}
 
-	public boolean login() throws IOException {
+	public void login() throws IOException, QblInvalidCredentials {
 		URI uri;
 		try {
 			uri = this.buildUri("api/v0/auth/login").build();
@@ -62,10 +65,12 @@ public class AccountingHTTP {
 			}
 			String responseString = EntityUtils.toString(entity);
 			try {
-				Map<String, String> answer = gson.fromJson(responseString, HashMap.class);
+				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
 				if (answer.containsKey("key")) {
-					server.setAuthToken(answer.get("key"));
-					return true;
+					server.setAuthToken((String) answer.get("key"));
+				} else if (answer.containsKey("non_field_errors")) {
+					List<String> errors = (ArrayList<String>) answer.get("non_field_errors");
+					throw new QblInvalidCredentials(errors.get(0));
 				} else {
 					throw new IOException("Illegal response from accounting server");
 				}
@@ -76,7 +81,7 @@ public class AccountingHTTP {
 		}
 	}
 
-	public int getQuota() throws IOException {
+	public int getQuota() throws IOException, QblInvalidCredentials {
 		Integer quota = profile.getQuota();
 		if (quota == null) {
 			updateProfile();
@@ -85,7 +90,7 @@ public class AccountingHTTP {
 		return quota;
 	}
 
-	public void updateProfile() throws IOException {
+	public void updateProfile() throws IOException, QblInvalidCredentials {
 		if (server.getAuthToken() == null) {
 			login();
 		}
@@ -115,7 +120,7 @@ public class AccountingHTTP {
 		}
 	}
 
-	public BasicSessionCredentials getCredentials() throws IOException {
+	public BasicSessionCredentials getCredentials() throws IOException, QblInvalidCredentials {
 		if (server.getAuthToken() == null) {
 			login();
 		}
@@ -160,7 +165,7 @@ public class AccountingHTTP {
 					.setPath('/' + resource + '/');
 	}
 
-	public String getPrefix() throws IOException {
+	public String getPrefix() throws IOException, QblInvalidCredentials {
 		String prefix = profile.getPrefix();
 		if (prefix == null) {
 			updateProfile();
