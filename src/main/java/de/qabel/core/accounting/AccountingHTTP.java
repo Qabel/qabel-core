@@ -67,11 +67,11 @@ public class AccountingHTTP {
 					server.setAuthToken(answer.get("key"));
 					return true;
 				} else {
-					throw new IOException(answer.toString());
+					throw new IOException("Illegal response from accounting server");
 				}
 			} catch (JsonSyntaxException e) {
 				logger.error("Illegal response: {}", responseString);
-				throw e;
+				throw new IOException("Illegal response from accounting server", e);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class AccountingHTTP {
 				profile.setPrefix((String) answer.get("prefix"));
 			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
-				throw e;
+				throw new IOException("Illegal response from accounting server", e);
 			}
 
 		}
@@ -145,7 +145,7 @@ public class AccountingHTTP {
 				// NullPointerException also means that our response was not ok because on of the
 				// .get() failed
 				logger.error("Illegal response: {}", responseString);
-				throw e;
+				throw new IOException("Illegal response from accounting server", e);
 			}
 		}
 
@@ -157,7 +157,7 @@ public class AccountingHTTP {
 			throw new RuntimeException("Illegal resource");
 		}
 		return new URIBuilder(this.server.getUri())
-					.setPath("/" + resource + "/");
+					.setPath('/' + resource + '/');
 	}
 
 	public String getPrefix() throws IOException {
