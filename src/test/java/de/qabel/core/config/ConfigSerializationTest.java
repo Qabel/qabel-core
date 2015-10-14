@@ -47,12 +47,6 @@ public class ConfigSerializationTest {
 		identity = new Identity("alias", drops, key);
 		syncedSettings.getIdentities().put(identity);
 		
-		//generate and put a "storage_servers" entry
-		StorageServer storageServer = new StorageServer(new URI("https://storage.qabel.de"), "auth");
-		syncedSettings.getStorageServers().put(storageServer);
-		
-		//generate and put a "storage_volumes" entry
-		syncedSettings.getStorageVolumes().put(new StorageVolume(storageServer, "publicIdentifier", "token", "revokeToken"));
 		syncedSettings.getSyncedModuleSettings().add(new FooModuleSettings(1));
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());

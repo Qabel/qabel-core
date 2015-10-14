@@ -51,25 +51,6 @@ public class ConfigHashCodeTest {
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}
 
-	@Test
-	public void storageServerHashCodeTest() {
-		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		Configuration config = new ConfigurationBuilder()
-			.ignoreProperty("serialVersionUID")
-			.overrideFactory("uri", new UriTestFactory())
-			.build();
-		tester.testHashCodeMethod(new StorageServerEquivalentTestFactory(), config);
-	}
-
-	@Test
-	public void storageVolumeHashCodeTest() {
-		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		Configuration config = new ConfigurationBuilder()
-			.ignoreProperty("serialVersionUID")
-			.overrideFactory("storageServer", new StorageServerTestFactory())
-			.build();
-		tester.testHashCodeMethod(new StorageVolumeEquivalentTestFactory(), config);
-	}
 
 	@Test
 	public void accountsHashCodeTest() {
@@ -101,17 +82,6 @@ public class ConfigHashCodeTest {
 		tester.testHashCodeMethod(new IdentitiesEquivalentTestFactory(), config);
 	}
 
-	@Test
-	public void storageServersHashCodeTest() {
-		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new StorageServersEquivalentTestFactory());
-	}
-
-	@Test
-	public void storageVolumesHashCodeTest() {
-		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
-		tester.testHashCodeMethod(new StorageVolumesEquivalentTestFactory());
-	}
 
 	@Test
 	public void localSettingsHashCodeTest() {
@@ -131,8 +101,6 @@ public class ConfigHashCodeTest {
 			.overrideFactory("contacts", new ContactsTestFactory())
 			.overrideFactory("dropServers", new DropServersTestFactory())
 			.overrideFactory("identities", new IdentitiesTestFactory())
-			.overrideFactory("storageServers", new StorageServersTestFactory())
-			.overrideFactory("storageVolumes", new StorageVolumesTestFactory())
 			.build();
 		tester.testHashCodeMethod(new SyncedSettingsEquivalentTestFactory(), config);
 	}

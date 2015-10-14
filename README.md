@@ -36,4 +36,10 @@ Qabel Core is the core component of a Qabel Client.
    ```
    
 0. Fire up Eclipse and import the project using ```File``` -> ```Import...``` -> ```Gradle Project```.
-   
+
+
+## testing
+
+You need a qabel-drop server at port 8000, a qabel-storage server at port 6000
+and a qabel-accounting server at port 9696
+(running with `./manage.py testserver testdata.json --addrport 9696`)
