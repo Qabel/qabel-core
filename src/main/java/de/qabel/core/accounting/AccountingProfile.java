@@ -3,18 +3,19 @@ package de.qabel.core.accounting;
 import de.qabel.core.config.SyncSettingItem;
 
 public class AccountingProfile extends SyncSettingItem{
+	
+	private Integer quota;
+	private String prefix;
 
 	public AccountingProfile() {
 	}
 
 	public AccountingProfile(int quota, String prefix) {
-
 		this.quota = quota;
 		this.prefix = prefix;
 	}
 
 	public Integer getQuota() {
-
 		return quota;
 	}
 
@@ -30,6 +31,4 @@ public class AccountingProfile extends SyncSettingItem{
 		this.prefix = prefix;
 	}
 
-	private Integer quota;
-	private String prefix;
 }
