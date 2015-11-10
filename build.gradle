@@ -29,6 +29,7 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
 	compile project(':ackack')
+	compile 'com.amazonaws:aws-java-sdk:1.10.32'
 }
 
 task nativeHeaders {
