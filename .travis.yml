@@ -1,20 +1,18 @@
-language: java
+language: python
 
-jdk:
- - oraclejdk7
- - openjdk7
- - oraclejdk8
-
-matrix:
- allow_failures:
-   - openjdk7
-   - oraclejdk8
+python:
+ - "3.4"
 
 notifications:
   email: false
 
+services:
+  - redis-server
+
+before_install:
+  - "export TERM=dumb"
+
 install:
- - redis-server > /dev/null 2>&1 &
  - cd ..
  - git clone --depth 1 https://github.com/Qabel/qabel.git
  - cd qabel
@@ -22,29 +20,16 @@ install:
  - git submodule update --depth 1
  - rm -rf qabel-core
  - mv ../qabel-core ./
- - virtualenv --system-site-packages qabel-drop
- - source qabel-drop/bin/activate 
- - pip install --upgrade pip
- - pip install --user -r qabel-drop/requirements.txt
- - pip install --user -r qabel-accounting/requirements.txt
- - ./qabel-accounting/manage.py migrate
+ - pip install -r qabel-drop/requirements.txt
+ - pip install -r qabel-accounting/requirements.txt
 
 cache:
  apt: true
+ pip: true
  directories:
-  - $HOME/.cache/pip
   - $HOME/.gradle/caches
-  - $HOME/build/qabel/qabel-drop/lib
 
 sudo: false
 
-addons:
- apt:
-  packages:
-   - python34
-   - python-pip
-   - nodejs
-   - python-virtualenv
-
 script:
- - travis_wait ./gradlew check
+ - ./gradlew check
