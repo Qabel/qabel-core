@@ -132,11 +132,6 @@ binaries.withType(SharedLibraryBinary) { binary ->
     test.dependsOn nativeJar
 }
 
-task wrapper(type: Wrapper) {
-    //gradleVersion = '2.2.1'
-}
-
-
 tasks.withType(Test) {
     def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
     systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
