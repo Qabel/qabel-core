@@ -11,8 +11,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.bouncycastle.crypto.InvalidCipherTextException;
-import org.bouncycastle.util.encoders.Hex;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.params.KeyParameter;
+import org.spongycastle.util.encoders.Hex;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -29,7 +30,8 @@ public class CryptoUtilsTest {
 
 	@Test
 	public void fileDecryptionTest() throws IOException, InvalidKeyException {
-		SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
+		//SecretKeySpec key = new SecretKeySpec(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"), SYMM_KEY_ALGORITHM);
+		KeyParameter key = new KeyParameter(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"));
 		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
 		File testFileEnc = new File(testFileName + ".enc");
 		File testFileDec = new File(testFileName + ".dec");
@@ -45,8 +47,8 @@ public class CryptoUtilsTest {
 			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
 					Hex.toHexString(Files.readAllBytes(testFileDec.toPath())));
 		} finally {
-			testFileEnc.delete();
-			testFileDec.delete();
+			//testFileEnc.delete();
+			//testFileDec.delete();
 		}
 	}
 

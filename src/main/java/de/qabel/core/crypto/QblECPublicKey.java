@@ -1,6 +1,6 @@
 package de.qabel.core.crypto;
 
-import org.bouncycastle.util.encoders.Hex;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.Serializable;
 import java.util.Arrays;
