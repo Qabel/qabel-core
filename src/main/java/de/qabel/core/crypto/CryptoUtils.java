@@ -22,7 +22,6 @@ import java.util.Arrays;
 
 
 public class CryptoUtils {
-
 	// https://github.com/Qabel/qabel-doc/wiki/Components-Crypto
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
 	private final static int SYMM_NONCE_SIZE_BYTE = 12;
