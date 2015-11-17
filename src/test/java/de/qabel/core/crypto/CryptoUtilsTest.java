@@ -47,8 +47,8 @@ public class CryptoUtilsTest {
 			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
 					Hex.toHexString(Files.readAllBytes(testFileDec.toPath())));
 		} finally {
-			//testFileEnc.delete();
-			//testFileDec.delete();
+			testFileEnc.delete();
+			testFileDec.delete();
 		}
 	}
 
