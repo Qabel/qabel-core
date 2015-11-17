@@ -202,10 +202,6 @@ public class CryptoUtils {
 				 * are read to fulfill the block cipher min. length requirements.
 				 */
                 usedBytes = gcmCipher.processBytes(tempIn, 0, usedBytes, tempOut, 0);
-                if (tempOut == null) {
-                    logger.error("Input too short for block cipher. Input length was " + usedBytes);
-                    throw new RuntimeException("Decryption failed due to unexpected input length.");
-                }
                 fileOutput.write(tempOut, 0, usedBytes);
             }
             try {
