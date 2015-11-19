@@ -11,6 +11,8 @@ Qabel Core is the core component of a Qabel Client.
 
 0. Make sure you have a working [git client](http://git-scm.com/) installed
 
+0. Make sure you have a working c compiler installed.
+
 0. clone the source
    ```
    git clone https://github.com/Qabel/qabel-core.git
