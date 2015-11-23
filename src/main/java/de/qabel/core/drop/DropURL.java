@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.bouncycastle.util.encoders.DecoderException;
-import org.bouncycastle.util.encoders.UrlBase64;
+import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.UrlBase64;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 

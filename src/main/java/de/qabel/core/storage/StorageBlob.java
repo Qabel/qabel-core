@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import org.bouncycastle.util.encoders.DecoderException;
-import org.bouncycastle.util.encoders.UrlBase64;
+import org.spongycastle.util.encoders.DecoderException;
+import org.spongycastle.util.encoders.UrlBase64;
 
 import de.qabel.core.exceptions.QblStorageInvalidBlobName;
 

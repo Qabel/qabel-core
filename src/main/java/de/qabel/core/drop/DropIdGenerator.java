@@ -2,7 +2,7 @@ package de.qabel.core.drop;
 
 import java.util.Arrays;
 
-import org.bouncycastle.util.encoders.UrlBase64;
+import org.spongycastle.util.encoders.UrlBase64;
 
 public abstract class DropIdGenerator {
 	/**
