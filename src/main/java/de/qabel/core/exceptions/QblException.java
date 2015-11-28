@@ -14,4 +14,12 @@ public abstract class QblException extends Exception {
 	public QblException(String msg) {
 		super(msg);
 	}
+
+	public QblException(Throwable e) {
+		super(e);
+	}
+
+	public QblException(String msg, Throwable e) {
+		super(msg, e);
+	}
 }
