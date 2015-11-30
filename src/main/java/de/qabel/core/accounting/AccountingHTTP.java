@@ -140,12 +140,7 @@ public class AccountingHTTP {
 				throw new IOException("No answer from login");
 			}
 			String responseString = EntityUtils.toString(entity);
-			if(responseString.length() > 6) {
-				prefixes = new ArrayList<>(Arrays.asList(
-						responseString.subSequence(2, responseString.length() - 2).toString().split("\", \"")));
-			} else {
-				prefixes = new ArrayList<>();
-			}
+			prefixes = new ArrayList<>(Arrays.asList(gson.fromJson(responseString, String[].class)));
 			profile.setPrefixes(prefixes);
 		}
 	}
