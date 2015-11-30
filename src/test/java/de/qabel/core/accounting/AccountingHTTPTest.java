@@ -75,7 +75,7 @@ public class AccountingHTTPTest {
 
 	@Test
 	public void testGetPrefix() throws IOException, QblInvalidCredentials {
-		assertNotNull(accountingHTTP.getPrefix());
+		assertNotNull(accountingHTTP.getPrefixes());
 	}
 
 	@Test
