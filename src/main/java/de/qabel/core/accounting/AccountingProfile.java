@@ -3,12 +3,10 @@ package de.qabel.core.accounting;
 import de.qabel.core.config.SyncSettingItem;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class AccountingProfile extends SyncSettingItem{
 	
 	private Integer quota;
-	private String prefix;
 	private ArrayList<String> prefixes;
 
 	public AccountingProfile() {
@@ -17,7 +15,6 @@ public class AccountingProfile extends SyncSettingItem{
 
 	public AccountingProfile(int quota, String prefix) {
 		this.quota = quota;
-		this.prefix = prefix;
 		this.prefixes = new ArrayList<>();
 		this.prefixes.add(prefix);
 	}
