@@ -25,6 +25,7 @@ public class AccountingHTTPTest {
 				"testuser", "testuser");
 		accountingHTTP = new AccountingHTTP(server, new AccountingProfile());
 		accountingHTTP.login();
+		accountingHTTP.createPrefix();
 	}
 
 	@Test(expected = RuntimeException.class)

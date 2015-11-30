@@ -35,4 +35,7 @@ public class AccountingProfile extends SyncSettingItem{
 		this.prefixes = prefixes;
 	}
 
+	public void addPrefix(String prefix) {
+		this.prefixes.add(prefix);
+	}
 }

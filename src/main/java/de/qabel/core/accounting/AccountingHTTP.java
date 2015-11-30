@@ -145,6 +145,28 @@ public class AccountingHTTP {
 		}
 	}
 
+	public void createPrefix() throws IOException, QblInvalidCredentials {
+		if (server.getAuthToken() == null) {
+			login();
+		}
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/prefix").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+		HttpPost httpPost = new HttpPost(uri);
+		httpPost.addHeader("Authorization", "Token " + server.getAuthToken());
+		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer from login");
+			}
+			String responseString = EntityUtils.toString(entity);
+			profile.addPrefix(gson.fromJson(responseString, String.class));
+		}
+	}
+
 	public BasicSessionCredentials getCredentials() throws IOException, QblInvalidCredentials {
 		if (server.getAuthToken() == null) {
 			login();
@@ -197,7 +219,6 @@ public class AccountingHTTP {
 			prefixes = profile.getPrefixes();
 		}
 		return prefixes;
-
 	}
 
 	public AccountingProfile getProfile() {
