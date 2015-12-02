@@ -25,6 +25,7 @@ public class AccountingHTTPTest {
 				"testuser", "testuser");
 		accountingHTTP = new AccountingHTTP(server, new AccountingProfile());
 		accountingHTTP.login();
+		accountingHTTP.createPrefix();
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -75,7 +76,8 @@ public class AccountingHTTPTest {
 
 	@Test
 	public void testGetPrefix() throws IOException, QblInvalidCredentials {
-		assertNotNull(accountingHTTP.getPrefix());
+		assertNotNull(accountingHTTP.getPrefixes());
+		assertNotEquals(accountingHTTP.getPrefixes().size(),0);
 	}
 
 	@Test

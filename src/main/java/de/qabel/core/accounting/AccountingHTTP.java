@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
 
 public class AccountingHTTP {
 
@@ -111,12 +112,58 @@ public class AccountingHTTP {
 			try {
 				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
 				profile.setQuota(((Double) answer.get("quota")).intValue());
-				profile.setPrefix((String) answer.get("prefix"));
+				this.updatePrefixes();
 			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
 				throw new IOException("Illegal response from accounting server", e);
 			}
 
+		}
+	}
+
+	public void updatePrefixes() throws IOException, QblInvalidCredentials {
+		ArrayList<String> prefixes;
+		if (server.getAuthToken() == null) {
+			login();
+		}
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/prefix").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+		HttpGet httpGet = new HttpGet(uri);
+		httpGet.addHeader("Authorization", "Token " + server.getAuthToken());
+		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer from login");
+			}
+			String responseString = EntityUtils.toString(entity);
+			prefixes = new ArrayList<>(Arrays.asList(gson.fromJson(responseString, String[].class)));
+			profile.setPrefixes(prefixes);
+		}
+	}
+
+	public void createPrefix() throws IOException, QblInvalidCredentials {
+		if (server.getAuthToken() == null) {
+			login();
+		}
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/prefix").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+		HttpPost httpPost = new HttpPost(uri);
+		httpPost.addHeader("Authorization", "Token " + server.getAuthToken());
+		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer from login");
+			}
+			String responseString = EntityUtils.toString(entity);
+			profile.addPrefix(gson.fromJson(responseString, String.class));
 		}
 	}
 
@@ -165,14 +212,13 @@ public class AccountingHTTP {
 					.setPath('/' + resource + '/');
 	}
 
-	public String getPrefix() throws IOException, QblInvalidCredentials {
-		String prefix = profile.getPrefix();
-		if (prefix == null) {
-			updateProfile();
-			prefix = profile.getPrefix();
+	public ArrayList<String> getPrefixes() throws IOException, QblInvalidCredentials {
+		ArrayList<String> prefixes = profile.getPrefixes();
+		if (prefixes.size() == 0) {
+			updatePrefixes();
+			prefixes = profile.getPrefixes();
 		}
-		return prefix;
-
+		return prefixes;
 	}
 
 	public AccountingProfile getProfile() {
