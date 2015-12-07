@@ -19,7 +19,6 @@ import java.security.InvalidKeyException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-
 public class CryptoUtils {
 	// https://github.com/Qabel/qabel-doc/wiki/Components-Crypto
 	private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
@@ -46,7 +45,6 @@ public class CryptoUtils {
 	private CipherKeyGenerator keyGenerator;
 
 	public CryptoUtils() {
-
 		secRandom = new SecureRandom();
 		gcmCipher = new GCMBlockCipher(new AESEngine());
 		hmac = new HMac(new SHA512Digest());
@@ -121,7 +119,7 @@ public class CryptoUtils {
 	 * @throws InvalidKeyException if key is invalid
 	 */
 	public boolean encryptStreamAuthenticatedSymmetric(InputStream inputStream, OutputStream outputStream,
-													   KeyParameter key, byte[] nonce) throws InvalidKeyException {
+			KeyParameter key, byte[] nonce) throws InvalidKeyException {
 		DataOutputStream cipherText = new DataOutputStream(outputStream);
 		byte[] tempIn = new byte[SYMM_GCM_READ_SIZE_BYTE];
 		byte[] tempOut = new byte[SYMM_GCM_READ_SIZE_BYTE];
@@ -148,7 +146,8 @@ public class CryptoUtils {
 			cipherText.write(tempOut, 0, usedBytes);
 			inputStream.close();
 		} catch (InvalidCipherTextException e) {
-			logger.debug("Encryption: Code mistake since it can only thrown during decryption.", e);
+			// Should not happen
+			logger.debug("Encryption: Block size of cipher was illegal => code mistake.", e);
 		} catch (IOException e) {
 			logger.debug("Encryption: Input/output Stream cannot be written/read to/from.", e);
 			return false;
@@ -206,7 +205,10 @@ public class CryptoUtils {
 				usedBytes = gcmCipher.doFinal(tempOut, 0);
 				fileOutput.write(tempOut, 0, usedBytes);
 			} catch (InvalidCipherTextException e) {
-				logger.debug("Decryption: Either cipher text is too short or authentication tag is invalid", e);
+				logger.error("Decryption: Either cipher text is too short or authentication tag is invalid!", e);
+				// truncate file to avoid leakage of incomplete or unauthenticated data
+				fileOutput.getChannel().truncate(0);
+				return false;
 			}
 		} finally {
 			fileOutput.close();
@@ -351,12 +353,16 @@ public class CryptoUtils {
 
 	/**
 	 * Gets the plain content from a received noise box.
-	 *
-	 * @param targetKey receivers EC key pair
-	 * @param noiseBox  ciphertext which is received
-	 * @return plaintext which is the content of the received noise box
-	 * @throws java.security.InvalidKeyException                  if kdf cannot distribute a key from DH of given EC keys
-	 * @throws org.spongycastle.crypto.InvalidCipherTextException on decryption errors
+	 * @param targetKey
+	 * 		receivers EC key pair
+	 * @param noiseBox
+	 * 		ciphertext which is received
+	 * @return
+	 * 		plaintext which is the content of the received noise box
+	 * @throws java.security.InvalidKeyException
+	 * 		if kdf cannot distribute a key from DH of given EC keys
+	 * @throws org.spongycastle.crypto.InvalidCipherTextException
+	 * 		on decryption errors
 	 */
 	public DecryptedPlaintext readBox(QblECKeyPair targetKey, byte[] noiseBox) throws InvalidKeyException, InvalidCipherTextException {
 		ByteArrayInputStream key1, key2;
