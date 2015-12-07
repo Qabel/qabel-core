@@ -115,3 +115,40 @@ catch(SomeException e1)
 
 ### Misguided behavior
 You will find code which is not conform to our style (e.g. you will find spaces instead of tabs). Never address style issues in your pull request or commits. Big patch sets just for re-formatting the source code will not help anyone. Try to commit conform code in the future instead and eventually the style will become conform. Of course big refactoring patch sets may still be a good idea after reaching certain milestones but this has to be discussed (e.g. in an issue) beforehand.
+
+## Secure Coding
+If you plan to write code that directly uses crypto routines or even
+plan to write your own crypto functionality, then you really MUST carefully
+read the following notes.
+
+### Timing Awareness
+The execution time of a program routine can be a critical information when
+it comes to cryptography.
+
+#### Constant-time comparison
+Code that compares a user-provided value with a reference value to check
+the correctness of credentials or message authentication code (MAC)
+MUST in any case take a constant execution time.
+
+This code example taken from the java.security.MessageDigest.isEquals
+illustrates how to write a time-constant comparison:
+```Java
+	public static boolean isEqual(byte[] digesta, byte[] digestb) {
+		if (digesta.length != digestb.length) {
+			return false;
+		}
+		int result = 0;
+
+		// time-constant comparison
+		for (int i = 0; i < digesta.length; i++) {
+			result |= digesta[i] ^ digestb[i];
+		}
+		return result == 0;
+	}
+```
+
+### Message Size Awareness
+The length of an encrypted message can provide more information than only the length of the plain text.
+
+#### Compression Avoidance for Interactive Messages
+Compression of external initiated messages (e.g. acknowledge messages) can leak information, if a part of the message can be chosen by the initiator (see [CRIME](http://en.wikipedia.org/wiki/CRIME)). Since we do not want to distinguish between such messages and uncritical ones, no direct message from A to B should be compressed (i.e. drop messages).
