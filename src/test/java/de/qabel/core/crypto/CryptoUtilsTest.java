@@ -2,10 +2,7 @@ package de.qabel.core.crypto;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -46,6 +43,30 @@ public class CryptoUtilsTest {
 			testFileEnc.delete();
 			testFileDec.delete();
 		}
+	}
+
+	@Test
+	public void fileFailingDecryptionTest() throws IOException, InvalidKeyException {
+		KeyParameter key = new KeyParameter(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"));
+		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
+		File testFileEnc = new File(testFileName + ".enc");
+		File testFileDec = new File(testFileName + ".dec");
+
+		// create encrypted file for decryption test
+		cu.encryptFileAuthenticatedSymmetric(new File(testFileName), new FileOutputStream(testFileEnc), key, nonce);
+
+		RandomAccessFile modTestFileEnc = new RandomAccessFile(testFileEnc, "rws");
+		modTestFileEnc.seek(nonce.length);
+		modTestFileEnc.write(Hex.decode("EC40"));
+		modTestFileEnc.close();
+
+		FileInputStream cipherStream = new FileInputStream(testFileEnc);
+		boolean result = cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream, testFileDec, key);
+
+		testFileEnc.delete();
+		testFileDec.delete();
+
+		assertFalse(result);
 	}
 
 	/**
