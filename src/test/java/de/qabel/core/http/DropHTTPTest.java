@@ -24,18 +24,18 @@ public class DropHTTPTest {
 	public void setUp() {
 		try {
 			workingUri = new URI(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
+					"http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
 
-			tooShortUri = new URI("http://localhost:6000/IAmTooShort");
+			tooShortUri = new URI("http://localhost:5000/IAmTooShort");
 
 			notExistingUri = new URI(
-					"http://localhost:6000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
+					"http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
 
             shouldContainMessagesUri = new URI(
-                    "http://localhost:6000/abcdefghijklmnopqrstuvshouldContainMessages");
+                    "http://localhost:5000/abcdefghijklmnopqrstuvshouldContainMessages");
 
             shouldContainNoNewMessagesSinceDateUri = new URI(
-                    "http://localhost:6000/abcdefghshouldContainNoNewMessagesSinceDate");
+                    "http://localhost:5000/abcdefghshouldContainNoNewMessagesSinceDate");
 
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -237,7 +237,7 @@ public class DropHTTPTest {
 		assertFalse(result.isOk());
 	}
 
-	// HEAD 404 + SINCE
+	// HEAD 204 + SINCE
 	@Test
 	public void shouldBeEmptyWithSinceDate() {
 		// Given

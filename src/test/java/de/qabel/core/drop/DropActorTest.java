@@ -15,8 +15,8 @@ import java.security.InvalidKeyException;
 import java.util.HashSet;
 
 public class DropActorTest {
-    private static final String iUrl = "http://localhost:6000/123456789012345678901234567890123456789012c";
-    private static String cUrl = "http://localhost:6000/123456789012345678901234567890123456789012d";
+    private static final String iUrl = "http://localhost:5000/123456789012345678901234567890123456789012c";
+    private static String cUrl = "http://localhost:5000/123456789012345678901234567890123456789012d";
 	private static final String DB_NAME = "DropActorTest.sqlite";
 	private Identity sender, recipient;
     private Contact senderContact, recipientContact;
