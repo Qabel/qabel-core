@@ -117,9 +117,9 @@ catch(SomeException e1)
 You will find code which is not conform to our style (e.g. you will find spaces instead of tabs). Never address style issues in your pull request or commits. Big patch sets just for re-formatting the source code will not help anyone. Try to commit conform code in the future instead and eventually the style will become conform. Of course big refactoring patch sets may still be a good idea after reaching certain milestones but this has to be discussed (e.g. in an issue) beforehand.
 
 ## Secure Coding
-If you plan to write code that directly uses crypto routines or even
-plan to write your own crypto functionality, then you really MUST carefully
-read the following notes.
+In order to uphold the security level of Qabel you really MUST carefully
+read the following notes if you plan to write code that directly 
+uses crypto routines or even plan to write your own crypto functionality.
 
 ### Timing Awareness
 The execution time of a program routine can be a critical information when
@@ -133,18 +133,18 @@ MUST in any case take a constant execution time.
 This code example taken from the java.security.MessageDigest.isEquals
 illustrates how to write a time-constant comparison:
 ```Java
-	public static boolean isEqual(byte[] digesta, byte[] digestb) {
-		if (digesta.length != digestb.length) {
-			return false;
-		}
-		int result = 0;
+public static boolean isEqual(byte[] digesta, byte[] digestb) {
+    if (digesta.length != digestb.length) {
+        return false;
+    }
+    int result = 0;
 
-		// time-constant comparison
-		for (int i = 0; i < digesta.length; i++) {
-			result |= digesta[i] ^ digestb[i];
-		}
-		return result == 0;
-	}
+    // time-constant comparison
+    for (int i = 0; i < digesta.length; i++) {
+        result |= digesta[i] ^ digestb[i];
+    }
+    return result == 0;
+}
 ```
 
 ### Message Size Awareness
