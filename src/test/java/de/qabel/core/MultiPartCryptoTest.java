@@ -98,19 +98,19 @@ public class MultiPartCryptoTest {
         Collection<DropURL> alicesDrops = new ArrayList<DropURL>();
         alicesDrops.add(
                 new DropURL(
-                        "http://localhost:6000/12345678901234567890123456789012345678alice"));
+                        "http://localhost:5000/12345678901234567890123456789012345678alice"));
         alice = new Identity("Alice", alicesDrops, alicesKey);
 
         QblECKeyPair bobsKey = new QblECKeyPair();
         Identity bob = new Identity("Bob", new ArrayList<DropURL>(), bobsKey);
         bob.addDrop(new DropURL(
-        		"http://localhost:6000/1234567890123456789012345678901234567890bob"));
+				"http://localhost:5000/1234567890123456789012345678901234567890bob"));
 
 		Contact alicesContact = new Contact(alice, "Bob", null, bobsKey.getPub());
-        alicesContact.addDrop(new DropURL("http://localhost:6000/1234567890123456789012345678901234567890bob"));
+        alicesContact.addDrop(new DropURL("http://localhost:5000/1234567890123456789012345678901234567890bob"));
 
         Contact bobsContact = new Contact(bob, "Alice", null, alicesKey.getPub());
-        alicesContact.addDrop(new DropURL("http://localhost:6000/12345678901234567890123456789012345678alice"));
+        alicesContact.addDrop(new DropURL("http://localhost:5000/12345678901234567890123456789012345678alice"));
 
         contacts = new Contacts();
         contacts.put(alicesContact);
