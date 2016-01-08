@@ -33,6 +33,10 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		out.name("alias");
 		out.value(value.getAlias());
 
+		out.name("email").value(value.getEmail());
+
+		out.name("phone").value(value.getPhone());
+
 		out.name("my_identity");
 		out.value(value.getContactOwnerKeyId());
 		
@@ -70,6 +74,8 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		Contact contact;
 		String contactOwnerKeyId = null;
 		String alias = null;
+		String email = null;
+		String phone = null;
 		QblECPublicKey ecPublicKey = null;
 		Collection<DropURL> dropURLs = null;
 		SyncSettingItem syncItem = new SyncSettingItem();
@@ -85,6 +91,12 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 				break;
 			case "alias":
 				alias = in.nextString();
+				break;
+			case "email":
+				email = in.nextString();
+				break;
+			case "phone":
+				phone = in.nextString();
 				break;
 			case "drop_urls":
 				in.beginArray();
@@ -126,6 +138,9 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		}
 		
 		contact = new Contact(contactOwnerKeyId, alias, dropURLs, ecPublicKey);
+
+		contact.setEmail(email);
+		contact.setPhone(phone);
 
 		// copy all sync item properties
 		contact.setId(syncItem.getId());
