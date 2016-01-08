@@ -25,6 +25,7 @@ import de.qabel.ackack.Responsible;
 public class ResourceActorTest {
 	private final static String DB_NAME = "ResourceActorTest.sqlite";
 	private final static char[] encryptionPassword = "qabel".toCharArray();
+	private final static int PBKDF2_ROUNDS = 1; // Low value only for testing
 
 	ArrayList<Account> accountsList;
 	ArrayList<DropServer> dropServersList;
@@ -45,7 +46,7 @@ public class ResourceActorTest {
 
 	@Before
 	public void setUp() throws QblInvalidEncryptionKeyException {
-		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		accountFactory = new AccountTestFactory();
 		dropServerFactory = new DropServerTestFactory();

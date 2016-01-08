@@ -28,6 +28,7 @@ public class MultiPartCryptoTest {
 	private final static String TEST_MESSAGE_TYPE = "test_message";
 	private final static String TEST_MESSAGE_TYPE_UNWANTED = "test_message_unwanted";
 	private final static String TEST_MESSAGE = "Test";
+	private final static int PBKDF2_ROUNDS = 1; // Low value only for testing
 
 	private EventEmitter emitter;
     private Contacts contacts;
@@ -40,7 +41,7 @@ public class MultiPartCryptoTest {
 
     @Before
     public void setUp() throws InvalidKeyException, URISyntaxException, QblDropInvalidURL, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
-        Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+        Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
         resourceActorThread.start();

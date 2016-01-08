@@ -10,11 +10,12 @@ import java.util.List;
 public class PersistenceTest {
 	private final static char[] encryptionPassword = "qabel".toCharArray();
 	private final static String DB_NAME = "PersistenceTest.sqlite";
+	private final static int PBKDF2_ROUNDS = 1; // Low value only for testing
 	Persistence<String> persistence;
 
 	@Before
 	public void setUp() throws QblInvalidEncryptionKeyException {
-		persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		persistence = new SQLitePersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 	}
 
 	@After
@@ -27,7 +28,7 @@ public class PersistenceTest {
 
 	@Test(expected=QblInvalidEncryptionKeyException.class)
 	public void openWithWrongPasswordTest() throws QblInvalidEncryptionKeyException {
-		persistence = new SQLitePersistence(DB_NAME, "wrongPassword".toCharArray());
+		persistence = new SQLitePersistence(DB_NAME, "wrongPassword".toCharArray(), PBKDF2_ROUNDS);
 	}
 
 	@Test
