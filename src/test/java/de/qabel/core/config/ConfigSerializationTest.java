@@ -75,7 +75,9 @@ public class ConfigSerializationTest {
 			QblECKeyPair ecKeyPair = new QblECKeyPair();
 			contact = new Contact(i, "", null, ecKeyPair.getPub());
 			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
-			
+			contact.setEmail("alice@example.org");
+			contact.setPhone("+49123456789012");
+
 			GsonBuilder builder = new GsonBuilder();
 			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
 			Gson gson = builder.create();
@@ -85,6 +87,8 @@ public class ConfigSerializationTest {
 			deserializedContact.setContactOwner(i);
 			
 			assertEquals(contact, deserializedContact);
+			assertEquals("alice@example.org", deserializedContact.getEmail());
+			assertEquals("+49123456789012", deserializedContact.getPhone());
 			
 		} catch (QblDropInvalidURL | URISyntaxException e) {
 			// TODO Auto-generated catch block

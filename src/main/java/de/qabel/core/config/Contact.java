@@ -5,31 +5,19 @@ import de.qabel.core.drop.DropURL;
 
 import java.util.*;
 
-/**
- * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact
- */
 public class Contact extends Entity {
 	private static final long serialVersionUID = 3971315594579958553L;
-	/**
-	 * Alias name of the contact
-	 * Field name in serialized json: "alias"
-	 */
+
 	private String alias;
-	/**
-	 * Primary public key of the contact
-	 * Field name in serialized json: "keys"
-	 */
+
+	private String email;
+
+	private String phone;
+
 	private QblECPublicKey ecPublicKey;
-	/**
-	 * The owner identity which owns this contact.
-	 * Note: This is not the identity which is represented by this contact!
-	 */
+
 	private Identity contactOwner;
-	/**
-	 * The key identifier of the identity the contact belongs to.
-	 * A key identifier is defined as the right-most 64 bit of the identity's public fingerprint
-	 * Field name in serialized json: "my_identity"
-	 */
+
 	private String contactOwnerKeyId;
 
 	/**
@@ -50,16 +38,55 @@ public class Contact extends Entity {
 		ecPublicKey = key;
 	}
 
+	/**
+	 * Returns the alias name of the identity.
+	 * @return alias
+	 */
 	public String getAlias() {
-		return alias;
+		return this.alias;
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
+	public void setAlias(String value) {
+		this.alias = value;
 	}
 
 	/**
-	 * Returns the identity which owns the contact
+	 * Returns the email address of the identity.
+	 * @return email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * Sets the email address of the identity.
+	 * The email address is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * @param email the email address of the identity
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * Returns the phone number of the identity.
+	 * @return phone the phone number of the identity
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * Sets the phone number of the identity.
+	 * The phone number is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * @param phone the phone number of the identity
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	/**
+	 * Returns the identity which owns the contact.
+	 * Note: This is not the identity which is represented by this contact!
 	 * @return contactOwner
 	 */
 	public Identity getContactOwner()
@@ -68,7 +95,9 @@ public class Contact extends Entity {
 	}
 
 	/**
-	 * Sets the contact owning identity
+	 * Sets the contact owning identity.
+	 * Note: This is not the identity which is represented by this contact!
+	 * Automatically updates the contactOwnerKeyId.
 	 * @param identity
 	 */
 	public void setContactOwner (Identity identity) {
@@ -77,7 +106,8 @@ public class Contact extends Entity {
 	}
 
 	/**
-	 * Returns the key identifier of the contact owning identity
+	 * The key identifier of the identity the contact belongs to.
+	 * A key identifier is defined as the right-most 64 bit of the identity's public fingerprint.
 	 * @return contactOwnerKeyId
 	 */
 	public String getContactOwnerKeyId() {

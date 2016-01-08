@@ -159,6 +159,8 @@ public class ConfigEqualsTest {
 		Configuration config = new ConfigurationBuilder()
 			.overrideFactory("drops", new DropUrlListTestFactory())
 			.overrideFactory("primaryKeyPair", new QblEcPairTestFactory())
+			.ignoreProperty("email")
+			.ignoreProperty("phone")
 			.iterations(10)
 			.build();
 		tester.testEqualsMethod(new IdentityEquivalentTestFactory(), config);
@@ -180,6 +182,8 @@ public class ConfigEqualsTest {
 			.iterations(10)
 			.overrideFactory("ecPublicKey", new QblECPublicKeyTestFactory())
 			.overrideFactory("contactOwner", new IdentityTestFactory())
+			.ignoreProperty("email")
+			.ignoreProperty("phone")
 			.build();
 		tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
 	}

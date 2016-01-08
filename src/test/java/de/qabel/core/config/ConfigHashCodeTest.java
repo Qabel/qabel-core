@@ -26,6 +26,8 @@ public class ConfigHashCodeTest {
 		.overrideFactory("contactOwner", new IdentityTestFactory())
 		.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
 		.ignoreProperty("serialVersionUID")
+		.ignoreProperty("email")
+		.ignoreProperty("phone")
 		.build();
 		tester.testHashCodeMethod(new ContactEquivalentTestFactory(), config);
 	}
@@ -47,6 +49,8 @@ public class ConfigHashCodeTest {
 		.overrideFactory("ecKeyPair", new QblEcPairTestFactory())
 		.overrideFactory("drops", new DropUrlListTestFactory())
 		.ignoreProperty("serialVersionUID")
+		.ignoreProperty("email")
+		.ignoreProperty("phone")
 		.build();
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}

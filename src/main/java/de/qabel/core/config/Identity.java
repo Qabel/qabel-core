@@ -7,38 +7,23 @@ import java.util.Collection;
 
 import com.google.gson.annotations.SerializedName;
 
-/**
- * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#identity
- */
 public class Identity extends Entity {
 	private static final long serialVersionUID = 3949018763372790094L;
-	/**
-	 * Alias name of the identity
-	 * Field name in serialized json: "alias"
-	 */
+
 	private String alias;
-	/**
-	 * Primary key pair of the identity
-	 * Field name in serialized json: "keys"
-	 */
+
+	private String email;
+
+	private String phone;
+
 	@SerializedName("keys")
 	private QblECKeyPair primaryKeyPair;
 
-	/**
-	 * Creates an instance of Identity.
-	 * @param alias Name of the identity.
-	 * @param drops Drops of the identity.
-	 * @param primaryKeyPair Primary Key pair of the identity.
-	 */
 	public Identity(String alias, Collection<DropURL> drops,
 					QblECKeyPair primaryKeyPair) {
 		super(drops);
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
-	}
-
-	public void setAlias(String value) {
-		this.alias = value;
 	}
 
 	/**
@@ -47,6 +32,44 @@ public class Identity extends Entity {
 	 */
 	public String getAlias() {
 		return this.alias;
+	}
+
+	public void setAlias(String value) {
+		this.alias = value;
+	}
+
+	/**
+	 * Returns the email address of the identity.
+	 * @return email
+	 */
+	public String getEmail() {
+		return email;
+	}
+
+	/**
+	 * Sets the email address of the identity.
+	 * The email address is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * @param email the email address of the identity
+	 */
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/**
+	 * Returns the phone number of the identity.
+	 * @return phone the phone number of the identity
+	 */
+	public String getPhone() {
+		return phone;
+	}
+
+	/**
+	 * Sets the phone number of the identity.
+	 * The phone number is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * @param phone the phone number of the identity
+	 */
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 	/**
@@ -59,7 +82,7 @@ public class Identity extends Entity {
 	}
 
 	/**
-	 * Returns the primary key pair of the identity
+	 * Returns the primary key pair of the identity.
 	 * @return QblECKeyPair
 	 */
 	public QblECKeyPair getPrimaryKeyPair()
@@ -85,14 +108,12 @@ public class Identity extends Entity {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (super.equals(obj) == false) {
+		if (!super.equals(obj)) {
 		    return (false);
 		}
 
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Identity other = (Identity) obj;
