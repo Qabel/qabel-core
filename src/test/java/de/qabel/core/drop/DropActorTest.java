@@ -18,6 +18,7 @@ public class DropActorTest {
     private static final String iUrl = "http://localhost:5000/123456789012345678901234567890123456789012c";
     private static String cUrl = "http://localhost:5000/123456789012345678901234567890123456789012d";
 	private static final String DB_NAME = "DropActorTest.sqlite";
+	private static final int PBKDF2_ROUNDS = 1; // Low value only for testing
 	private Identity sender, recipient;
     private Contact senderContact, recipientContact;
     private DropCommunicatorUtil controller;
@@ -32,7 +33,7 @@ public class DropActorTest {
 
     @Before
     public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
-		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword);
+		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
         resourceActorThread.start();

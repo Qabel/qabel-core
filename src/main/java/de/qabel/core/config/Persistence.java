@@ -25,11 +25,13 @@ import java.util.List;
 public abstract class Persistence<T> {
 	private final static Logger logger = LoggerFactory.getLogger(Persistence.class.getName());
 	private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
-	private static final int PBKDF2_ROUNDS = 65536;
+	//TODO: Find a reasonable default value
+	private static final int NUM_DEFAULT_PBKDF2_ROUNDS = 65536;
 	private static final int AES_KEY_SIZE_BIT = 256;
 
 	private KeyParameter keyParameter;
 	private SecretKeyFactory secretKeyFactory;
+	private final int pbkdf2Rounds;
 
 	protected static final int AES_KEY_SIZE_BYTE = AES_KEY_SIZE_BIT / 8;
 	protected static final int NONCE_SIZE_BYTE = 32;
@@ -37,8 +39,26 @@ public abstract class Persistence<T> {
 
 	protected CryptoUtils cryptoutils;
 
+	/**
+	 * Construct Persistence with default PBKDF2 rounds.
+	 * @param database Generic database object. Used for generic connect(T) method.
+	 * @param password Password to encrypt database with.
+	 * @throws QblInvalidEncryptionKeyException
+	 */
 	public Persistence(T database, char[] password) throws QblInvalidEncryptionKeyException {
+		this(database, password, NUM_DEFAULT_PBKDF2_ROUNDS);
+	}
+
+	/**
+	 * Construct Persistence.
+	 * @param database Generic database object. Used for generic connect(T) method.
+	 * @param password Password to encrypt database with.
+	 * @param numPBKDF2rounds Number of PBKDF2 rounds.
+	 * @throws QblInvalidEncryptionKeyException
+	 */
+	public Persistence(T database, char[] password, int numPBKDF2rounds) throws QblInvalidEncryptionKeyException {
 		this.cryptoutils = new CryptoUtils();
+		this.pbkdf2Rounds = numPBKDF2rounds;
 		try {
 			this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
 		} catch (NoSuchAlgorithmException e) {
@@ -62,9 +82,6 @@ public abstract class Persistence<T> {
 	 * @return True if password has been changed
 	 */
 	final public boolean changePassword(char[] oldPassword, char[] newPassword) {
-		if (oldPassword == null || newPassword == null) {
-			throw new IllegalArgumentException("Arguments cannot be null!");
-		}
 		return reEncryptMasterKey(deriveKey(oldPassword, getSalt(false)), deriveKey(newPassword, getSalt(true)));
 	}
 
@@ -158,7 +175,7 @@ public abstract class Persistence<T> {
 		}
 		SecretKey key;
 		try {
-			key = secretKeyFactory.generateSecret(new PBEKeySpec(password, salt, PBKDF2_ROUNDS, AES_KEY_SIZE_BIT));
+			key = secretKeyFactory.generateSecret(new PBEKeySpec(password, salt, pbkdf2Rounds, AES_KEY_SIZE_BIT));
 			return new KeyParameter(key.getEncoded());
 		} catch (InvalidKeySpecException e) {
 			logger.error("Invalid KeySpec!", e);
