@@ -43,7 +43,7 @@ public class PersistenceTest {
 		Assert.assertTrue(persistence.persistEntity(pto));
 		Assert.assertTrue(persistence.persistEntity(pto2));
 
-		List<Persistable> objects = persistence.getEntities(PersistenceTestObject.class);
+		List<PersistenceTestObject> objects = persistence.getEntities(PersistenceTestObject.class);
 		Assert.assertEquals(2, objects.size());
 		Assert.assertTrue(objects.contains(pto));
 		Assert.assertTrue(objects.contains(pto2));
@@ -51,7 +51,7 @@ public class PersistenceTest {
 
 	@Test
 	public void getEntitiesEmptyTest() {
-		List<Persistable> objects = persistence.getEntities(PersistenceTestObject.class);
+		List<PersistenceTestObject> objects = persistence.getEntities(PersistenceTestObject.class);
 		Assert.assertEquals(0, objects.size());
 	}
 

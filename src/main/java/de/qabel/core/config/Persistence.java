@@ -100,21 +100,21 @@ public abstract class Persistence<T> {
 	 * @param object Entity to persist
 	 * @return Result of the operation
 	 */
-	protected abstract boolean persistEntity(Persistable object);
+	public abstract boolean persistEntity(Persistable object);
 
 	/**
 	 * Updates a previously stored entity
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	protected abstract boolean updateEntity(Persistable object);
+	public abstract boolean updateEntity(Persistable object);
 
 	/**
 	 * Updates a previously stored entity or persist a new entity
 	 * @param object Entity to replace stored entity with
 	 * @return Result of the operation
 	 */
-	protected abstract boolean updateOrPersistEntity(Persistable object);
+	public abstract boolean updateOrPersistEntity(Persistable object);
 
 	/**
 	 * Removes a persisted entity
@@ -122,7 +122,7 @@ public abstract class Persistence<T> {
 	 * @param cls Class of persisted entity
 	 * @return Result of the operation
 	 */
-	protected abstract boolean removeEntity(String id, Class cls);
+	public abstract boolean removeEntity(String id, Class<? extends Persistable> cls);
 
 	/**
 	 * Get an entity
@@ -130,21 +130,21 @@ public abstract class Persistence<T> {
 	 * @param cls Class of the entity to receive
 	 * @return Stored entity or null if entity not found
 	 */
-	protected abstract Persistable getEntity(String id, Class cls);
+	public abstract <U extends Persistable> U getEntity(String id, Class<? extends U> cls);
 
 	/**
 	 * Get all entities of the provides Class
 	 * @param cls Class to get all stored entities for
 	 * @return List of stored entities
 	 */
-	protected abstract List<Persistable> getEntities(Class cls);
+	public abstract <U extends Persistable> List<U> getEntities(Class<? extends U> cls);
 
 	/**
 	 * Drops the table for the provided Class
 	 * @param cls Class to drop table for
 	 * @return Result of the operation
 	 */
-	protected abstract boolean dropTable(Class cls);
+	protected abstract boolean dropTable(Class<? extends Persistable> cls);
 
 	/**
 	 * Derives the encryption key from the password and a salt.

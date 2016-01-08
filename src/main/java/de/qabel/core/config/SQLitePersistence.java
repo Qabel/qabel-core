@@ -271,7 +271,7 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	protected boolean updateEntity(Persistable object) {
+	public boolean updateEntity(Persistable object) {
 		if (object == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
@@ -323,21 +323,21 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public Persistable getEntity(String id, Class cls) {
+	public <U extends Persistable> U getEntity(String id, Class<? extends U> cls) {
 		if (id == null || cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		if (id.length() == 0) {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
-		Persistable object = null;
+		U object = null;
 		String sql = "SELECT BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"" +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setString(1, id);
 			try (ResultSet rs = statement.executeQuery()) {
-				object = (Persistable) deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
+				object = (U) deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
 			}
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
@@ -346,17 +346,17 @@ public class SQLitePersistence extends Persistence<String> {
 	}
 
 	@Override
-	public List<Persistable> getEntities(Class cls) {
+	public  <U extends Persistable> List<U> getEntities(Class<? extends U> cls) {
 		if (cls == null) {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
-		List<Persistable> objects = new ArrayList<>();
+		List<U> objects = new ArrayList<>();
 		String sql = "SELECT ID, BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"";
 		try (Statement statement = c.createStatement()){
 			try (ResultSet rs = statement.executeQuery(sql)) {
 				while (rs.next()) {
-					objects.add((Persistable) deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
+					objects.add((U) deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
 				}
 			}
 		} catch (SQLException | IllegalArgumentException e) {
