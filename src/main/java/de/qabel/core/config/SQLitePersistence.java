@@ -25,6 +25,10 @@ public class SQLitePersistence extends Persistence<String> {
 
 	private Connection c;
 
+	public SQLitePersistence(String database, char[] password) throws QblInvalidEncryptionKeyException {
+		super(database, password);
+	}
+
 	/**
 	 * Stores entities in a local SQLite database
 	 * @param dbName Database file name.
