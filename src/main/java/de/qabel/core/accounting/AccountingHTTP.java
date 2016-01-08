@@ -7,10 +7,12 @@ import com.google.gson.internal.LinkedTreeMap;
 import de.qabel.core.config.AccountingServer;
 import de.qabel.core.exceptions.QblInvalidCredentials;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -19,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ import java.util.Arrays;
 public class AccountingHTTP {
 
 	private final static Logger logger = LoggerFactory.getLogger(AccountingHTTP.class.getName());
+	public static final String EMAIL_KEY = "email";
 
 	private AccountingServer server;
 	private final CloseableHttpClient httpclient;
@@ -37,9 +41,13 @@ public class AccountingHTTP {
 	private AccountingProfile profile;
 
 	public AccountingHTTP(AccountingServer server, AccountingProfile profile) {
+		this(server, profile, HttpClients.createMinimal());
+	}
+
+	public AccountingHTTP(AccountingServer server, AccountingProfile profile, CloseableHttpClient httpclient) {
 		this.server = server;
 		this.profile = profile;
-		httpclient = HttpClients.createMinimal();
+		this.httpclient = httpclient;
 		gson = new Gson();
 	}
 
@@ -223,5 +231,52 @@ public class AccountingHTTP {
 
 	public AccountingProfile getProfile() {
 		return profile;
+	}
+
+	public void resetPassword(String email) throws IOException {
+		URI uri;
+		try {
+			uri = this.buildUri("api/v0/auth/password/reset").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+		HttpPost httpPost = new HttpPost(uri);
+		Map<String, String> params = new HashMap<>();
+		params.put("email", email);
+		String json = gson.toJson(params);
+		StringEntity input;
+		try {
+			input = new StringEntity(json);
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("failed to encode request:" + e.getMessage(), e);
+		}
+		input.setContentType("application/json");
+		httpPost.setEntity(input);
+
+		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer received on reset password request");
+			}
+			String responseString = EntityUtils.toString(entity);
+			try {
+				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
+				String message = "failed to reset password";
+				if (response.getStatusLine().getStatusCode() >= 300) {
+					if(response.getStatusLine().getStatusCode() < 500) {
+						if (answer.containsKey(EMAIL_KEY)) {
+							message = ((ArrayList<String>) answer.get(EMAIL_KEY)).get(0);
+						}
+						throw new IllegalArgumentException(message);
+					} else {
+						throw new IllegalStateException(message);
+					}
+				}
+			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
+				logger.error("Illegal response: {}", responseString);
+				throw new IOException("Illegal response from accounting server", e);
+			}
+
+		}
 	}
 }
