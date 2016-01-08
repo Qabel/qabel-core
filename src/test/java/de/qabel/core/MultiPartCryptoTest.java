@@ -60,7 +60,7 @@ public class MultiPartCryptoTest {
 		}
     }
 
-    @Test
+    @Test(timeout=5000L)
     public void multiPartCryptoOnlyOneMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 		communicatorUtil.registerModelObject(TEST_MESSAGE_TYPE);
 
@@ -72,7 +72,7 @@ public class MultiPartCryptoTest {
 		assertEquals("Test", msg.getDropPayload());
     }
 
-    @Test
+    @Test(timeout=5000L)
     public void multiPartCryptoMultiMessageTest() throws InterruptedException, QblDropPayloadSizeException {
 		communicatorUtil.registerModelObject(TEST_MESSAGE_TYPE);
 
