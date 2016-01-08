@@ -25,6 +25,8 @@ import java.util.List;
 public abstract class Persistence<T> {
 	private final static Logger logger = LoggerFactory.getLogger(Persistence.class.getName());
 	private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
+	//TODO: Find a reasonable default value
+	private static final int NUM_DEFAULT_PBKDF2_ROUNDS = 65536;
 	private static final int AES_KEY_SIZE_BIT = 256;
 
 	private KeyParameter keyParameter;
@@ -37,6 +39,23 @@ public abstract class Persistence<T> {
 
 	protected CryptoUtils cryptoutils;
 
+	/**
+	 * Construct Persistence with default PBKDF2 rounds.
+	 * @param database Generic database object. Used for generic connect(T) method.
+	 * @param password Password to encrypt database with.
+	 * @throws QblInvalidEncryptionKeyException
+	 */
+	public Persistence(T database, char[] password) throws QblInvalidEncryptionKeyException {
+		this(database, password, NUM_DEFAULT_PBKDF2_ROUNDS);
+	}
+
+	/**
+	 * Construct Persistence.
+	 * @param database Generic database object. Used for generic connect(T) method.
+	 * @param password Password to encrypt database with.
+	 * @param numPBKDF2rounds Number of PBKDF2 rounds.
+	 * @throws QblInvalidEncryptionKeyException
+	 */
 	public Persistence(T database, char[] password, int numPBKDF2rounds) throws QblInvalidEncryptionKeyException {
 		this.cryptoutils = new CryptoUtils();
 		this.pbkdf2Rounds = numPBKDF2rounds;
