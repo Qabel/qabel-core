@@ -120,7 +120,7 @@ You will find code which is not conform to our style (e.g. you will find spaces 
 ### Use provided Code
 Use provided functions like encryption or constant time comparison instead of writing new code. See the public crypto functions in [Crypto Utils](https://github.com/Qabel/qabel-core/blob/master/src/main/java/de/qabel/core/crypto/CryptoUtils.java) and [Drop Message Crypto Util](https://github.com/Qabel/qabel-core/blob/master/src/main/java/de/qabel/core/drop/DropMessageCryptorUtil.java)
 
-### If you write own Code
+### Writing own Code
 In order to uphold the security level of Qabel you really MUST carefully
 read the following linked notes if you plan to write code that directly 
 uses crypto routines or even plan to write your own crypto functionality.
@@ -130,4 +130,4 @@ uses crypto routines or even plan to write your own crypto functionality.
 
 ### Network Attack Awareness
 Additionally you should be aware of certain network attacks and the problems they base on if you write network message initiating code.
-To name one example: Compression of external initiated messages (e.g., acknowledge messages) can leak information, if a part of the message can be chosen by the initiator (see [CRIME](http://en.wikipedia.org/wiki/CRIME)). Thus we do not want to compress such messages (i.e. drop messages).
+To name one example: compression of external initiated messages (e.g., acknowledge messages) can leak information, if a part of the message can be chosen by the initiator (see [CRIME](http://en.wikipedia.org/wiki/CRIME)). Thus we do not want to compress such messages (i.e. drop messages).
