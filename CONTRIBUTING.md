@@ -34,7 +34,7 @@ Prior merging a pull request, the following conditions must be met.
 * All discussions must be resolved.
   * This includes comments on outdated diffs (of course they are resolved when the diff is outdated due to resolving).
 * After merging a pull request the code in the affected branch must still compile and all the tests that work without the merge must still work.
-* Two integrators need to acknowledge the pull request independently.
+* At least one integrator needs to acknowledge the pull request.
 * The integrator who performs the merge takes responsibility and therefore should have reviewed the pull request *in the state that will be merged*.
   * Remember that force pushing can alter the patch set of the old commits -- not just the hashes ;)
 
