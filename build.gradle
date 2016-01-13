@@ -63,6 +63,10 @@ model {
             architecture "amd64"
             operatingSystem "windows"
         }
+        osx_amd64 {
+            architecture "amd64"
+            operatingSystem "osx"
+        }
     }
 }
 
@@ -80,6 +84,9 @@ libraries {
                 cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
                 cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/win32"
                 linker.args "Shlwapi.lib", "Advapi32.lib"
+            } else {
+                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/darwin"
             }
 
             tasks.withType(CCompile) { task ->
