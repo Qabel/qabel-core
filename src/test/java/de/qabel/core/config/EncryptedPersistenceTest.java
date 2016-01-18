@@ -1,22 +1,21 @@
 package de.qabel.core.config;
 
 import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-public class PersistenceTest {
-	private final static String DB_NAME = "PersistenceTest.sqlite";
-	Persistence<String> persistence;
+public class EncryptedPersistenceTest {
+	private final static char[] encryptionPassword = "qabel".toCharArray();
+	private final static String DB_NAME = "EncryptedPersistenceTest.sqlite";
+	private final static int PBKDF2_ROUNDS = 1; // Low value only for testing
+	EncryptedPersistence<String> persistence;
 
 	@Before
 	public void setUp() throws QblInvalidEncryptionKeyException {
-		persistence = new SQLitePersistence(DB_NAME);
+		persistence = new SQLiteEncryptedPersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 	}
 
 	@After
@@ -25,6 +24,11 @@ public class PersistenceTest {
 		if(persistenceTestDB.exists()) {
 			persistenceTestDB.delete();
 		}
+	}
+
+	@Test(expected=QblInvalidEncryptionKeyException.class)
+	public void openWithWrongPasswordTest() throws QblInvalidEncryptionKeyException {
+		persistence = new SQLiteEncryptedPersistence(DB_NAME, "wrongPassword".toCharArray(), PBKDF2_ROUNDS);
 	}
 
 	@Test
@@ -116,6 +120,30 @@ public class PersistenceTest {
 	@Test
 	public void dropNotExistingTableTest() {
 		Assert.assertFalse(persistence.dropTable(PersistenceTestObject.class));
+	}
+
+	@Test
+	public void changeMasterKeyTest() {
+		PersistenceTestObject pto = new PersistenceTestObject("pto");
+		persistence.persistEntity(pto);
+
+		Assert.assertTrue(persistence.changePassword(encryptionPassword, "qabel2".toCharArray()));
+
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
+		Assert.assertEquals(pto, receivedPto);
+	}
+
+	@Test
+	public void changeMasterKeyFailTest() {
+		PersistenceTestObject pto = new PersistenceTestObject("pto");
+		persistence.persistEntity(pto);
+
+		Assert.assertFalse(persistence.changePassword("wrongPassword".toCharArray(), "qabel2".toCharArray()));
+
+		PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+				PersistenceTestObject.class);
+		Assert.assertEquals(pto, receivedPto);
 	}
 
 	static public class PersistenceTestObject extends Persistable implements Serializable {

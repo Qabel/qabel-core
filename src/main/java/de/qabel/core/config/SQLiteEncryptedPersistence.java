@@ -1,7 +1,10 @@
 package de.qabel.core.config;
 
-import org.slf4j.Logger;
+import de.qabel.core.exceptions.QblInvalidEncryptionKeyException;
+import org.spongycastle.crypto.InvalidCipherTextException;
+import org.spongycastle.crypto.params.KeyParameter;
 import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,16 +13,27 @@ import java.util.List;
 /**
  * Stores entities in a local SQLite database
  */
-public class SQLitePersistence extends Persistence<String> {
-	private final static Logger logger = LoggerFactory.getLogger(SQLitePersistence.class.getName());
+public class SQLiteEncryptedPersistence extends EncryptedPersistence<String> {
+	private final static Logger logger = LoggerFactory.getLogger(SQLiteEncryptedPersistence.class.getName());
+	private final static String STR_MASTER_KEY = "MASTERKEY";
+	private final static String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";
+	private final static String STR_SALT = "SALT";
 	private final static String STR_DATA = "DATA";
 	private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
 	private final static String JDBC_PREFIX = "jdbc:sqlite:";
 
 	private Connection c;
 
-	public SQLitePersistence(String database) {
-			connect(database);
+	public SQLiteEncryptedPersistence(String database, char[] password) throws QblInvalidEncryptionKeyException {
+		super(database, password);
+	}
+
+	/**
+	 * Stores entities in a local SQLite database
+	 * @param dbName Database file name.
+	 */
+	public SQLiteEncryptedPersistence(String dbName, char[] password, int numPBKDF2rounds) throws QblInvalidEncryptionKeyException {
+		super(dbName, password, numPBKDF2rounds);
 	}
 
 	@Override
@@ -36,6 +50,102 @@ public class SQLitePersistence extends Persistence<String> {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	protected byte[] getSalt(boolean forceNewSalt) {
+		byte[] salt = null;
+
+		if (forceNewSalt) {
+			deleteConfigValue(STR_SALT);
+		} else {
+			salt = getConfigValue(STR_SALT);
+		}
+
+		if (salt == null) {
+			salt = cryptoutils.getRandomBytes(SALT_SIZE_BYTE);
+			setConfigValue(STR_SALT, salt);
+		}
+		return salt;
+	}
+
+	@Override
+	protected KeyParameter getMasterKey(KeyParameter encryptionKey) {
+		if (encryptionKey == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		byte[] masterKey = null;
+		byte[] masterKeyNonce = getConfigValue(STR_MASTER_KEY_NONCE);
+
+		if (masterKeyNonce != null) {
+			try {
+				masterKey = cryptoutils.decrypt(encryptionKey, masterKeyNonce, getConfigValue(STR_MASTER_KEY), null);
+			} catch (InvalidCipherTextException e) {
+				logger.error("Cannot decrypt master key!", e);
+				return null;
+			}
+		}
+
+		if (masterKey == null) {
+			masterKey = cryptoutils.getRandomBytes(AES_KEY_SIZE_BYTE);
+			masterKeyNonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
+
+			if (!setConfigValue(STR_MASTER_KEY_NONCE, masterKeyNonce)) {
+				logger.error("Cannot insert master key nonce into database!");
+				return null;
+			}
+
+			try {
+				if (!setConfigValue(STR_MASTER_KEY, cryptoutils.encrypt(encryptionKey, masterKeyNonce, masterKey, null))) {
+					logger.error("Cannot insert master key into database!");
+					return null;
+				}
+			} catch (InvalidCipherTextException e) {
+				logger.error("Cannot encrypt master key!", e);
+				return null;
+			}
+		}
+		return new KeyParameter(masterKey);
+	}
+
+	@Override
+	protected boolean reEncryptMasterKey(KeyParameter oldKey, KeyParameter newKey) {
+		if (oldKey == null || newKey == null) {
+			throw new IllegalArgumentException("Arguments cannot be null!");
+		}
+		KeyParameter oldMasterKey = getMasterKey(oldKey);
+		if (oldMasterKey == null) {
+			logger.error("Cannot decrypt master key. Wrong password?");
+			return false;
+		}
+		boolean success = false;
+		try {
+			c.setAutoCommit(false);
+
+			deleteConfigValue(STR_MASTER_KEY);
+			deleteConfigValue(STR_MASTER_KEY_NONCE);
+
+			byte[] masterKeyNonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
+			setConfigValue(STR_MASTER_KEY_NONCE, masterKeyNonce);
+			setConfigValue(STR_MASTER_KEY, cryptoutils.encrypt(newKey, masterKeyNonce, oldMasterKey.getKey(), null));
+
+		} catch (SQLException | InvalidCipherTextException e) {
+			logger.error("Cannot re-encrypt master key!", e);
+			try {
+				c.rollback();
+			} catch (SQLException e1) {
+				logger.error("Cannot rollback changes!", e1);
+			}
+		} finally {
+			try {
+				c.commit();
+				c.setAutoCommit(true);
+				success = true;
+			} catch (SQLException e) {
+				logger.error("Cannot apply changes!", e);
+			}
+		}
+		return success;
 	}
 
 	private void createTables(){
@@ -139,6 +249,7 @@ public class SQLitePersistence extends Persistence<String> {
 		String sql = "CREATE TABLE IF NOT EXISTS " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
 				"(ID TEXT PRIMARY KEY NOT NULL," +
+				"NONCE TEXT NOT NULL," +
 				"BLOB BLOB NOT NULL)";
 		try (Statement statement = c.createStatement()){
 			statement.executeUpdate(sql);
@@ -148,10 +259,12 @@ public class SQLitePersistence extends Persistence<String> {
 
 		sql = "INSERT INTO " +
 				"\"" + object.getClass().getCanonicalName() + "\"" +
-				" VALUES(?, ?)";
+				" VALUES(?, ?, ?)";
 		try (PreparedStatement statement = c.prepareStatement(sql)) {
+			byte[] nonce = cryptoutils.getRandomBytes(NONCE_SIZE_BYTE);
 			statement.setString(1, object.getPersistenceID());
-			statement.setBytes(2, serialize(object.getPersistenceID(), object));
+			statement.setBytes(2, nonce);
+			statement.setBytes(3, serialize(object.getPersistenceID(), object, nonce));
 			statement.executeUpdate();
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot persist or already persisted entity!", e);
@@ -170,7 +283,8 @@ public class SQLitePersistence extends Persistence<String> {
 				"SET BLOB = ? " +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
-			statement.setBytes(1, serialize(object.getPersistenceID(), object));
+			statement.setBytes(1, serialize(object.getPersistenceID(), object, getNonce(
+					object.getPersistenceID(), object.getClass())));
 			statement.setString(2, object.getPersistenceID());
 			statement.executeUpdate();
 		} catch (SQLException e) {
@@ -220,13 +334,13 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("ID cannot be empty!");
 		}
 		U object = null;
-		String sql = "SELECT BLOB FROM " +
+		String sql = "SELECT BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"" +
 				" WHERE ID = ?";
 		try (PreparedStatement statement = c.prepareStatement(sql)){
 			statement.setString(1, id);
 			try (ResultSet rs = statement.executeQuery()) {
-				object = (U) deserialize(id, rs.getBytes("BLOB"));
+				object = (U) deserialize(id, rs.getBytes("BLOB"), rs.getBytes("NONCE"));
 			}
 		} catch (SQLException | IllegalArgumentException e) {
 			logger.error("Cannot get entity!", e);
@@ -240,12 +354,12 @@ public class SQLitePersistence extends Persistence<String> {
 			throw new IllegalArgumentException("Arguments cannot be null!");
 		}
 		List<U> objects = new ArrayList<>();
-		String sql = "SELECT ID, BLOB FROM " +
+		String sql = "SELECT ID, BLOB, NONCE FROM " +
 				"\"" + cls.getCanonicalName() + "\"";
 		try (Statement statement = c.createStatement()){
 			try (ResultSet rs = statement.executeQuery(sql)) {
 				while (rs.next()) {
-					objects.add((U) deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB")));
+					objects.add((U) deserialize(new String(rs.getBytes("ID")), rs.getBytes("BLOB"), rs.getBytes("NONCE")));
 				}
 			}
 		} catch (SQLException | IllegalArgumentException e) {
