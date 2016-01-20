@@ -33,7 +33,7 @@ public class DropActorTest {
 
     @Before
     public void setup() throws URISyntaxException, QblDropInvalidURL, InvalidKeyException, InterruptedException, InstantiationException, IllegalAccessException, QblInvalidEncryptionKeyException {
-		Persistence<String> persistence = new SQLitePersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
+		EncryptedPersistence<String> persistence = new SQLiteEncryptedPersistence(DB_NAME, encryptionPassword, PBKDF2_ROUNDS);
 		resourceActor = new ResourceActor(persistence, EventEmitter.getDefault());
 		resourceActorThread = new Thread(resourceActor);
         resourceActorThread.start();

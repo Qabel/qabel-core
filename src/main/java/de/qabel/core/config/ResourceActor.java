@@ -22,7 +22,7 @@ public class ResourceActor extends Actor {
 	private final Contacts contacts;
 	private final Settings settings;
 	private EventEmitter eventEmitter;
-	private Persistence persistence;
+	private EncryptedPersistence persistence;
 
 	private static final String RETRIEVE_CONTACTS = "retrieveContacts";
 	private static final String RETRIEVE_ACCOUNTS = "retrieveAccounts";
@@ -49,7 +49,7 @@ public class ResourceActor extends Actor {
 
 	private final static Logger logger = LoggerFactory.getLogger(ResourceActor.class.getName());
 
-	public ResourceActor(Persistence persistence, EventEmitter eventEmitter) {
+	public ResourceActor(EncryptedPersistence persistence, EventEmitter eventEmitter) {
 		this.persistence = persistence;
 		this.settings = new Settings();
 		this.contacts = new Contacts();
