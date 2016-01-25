@@ -75,7 +75,7 @@ public class DropMessage implements Serializable {
      * @param sender Entity to be registered as sender.
      * @return true if the given sender matches the senderKeyId, otherwise false.
      */
-    boolean registerSender(Entity sender) {
+    public boolean registerSender(Entity sender) {
     	if (!senderKeyId.equals(sender.getKeyIdentifier())) {
     		return false;
     	}
