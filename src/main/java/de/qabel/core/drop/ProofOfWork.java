@@ -3,7 +3,6 @@ package de.qabel.core.drop;
 import de.qabel.core.crypto.CryptoUtils;
 import org.spongycastle.crypto.digests.SHA256Digest;
 import org.spongycastle.util.encoders.Base64;
-import org.spongycastle.util.encoders.Base64Encoder;
 
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -18,7 +17,6 @@ public class ProofOfWork {
 	private byte[] IVserver;
 	private byte[] IVclient;
 	private long time;
-	private byte[] timeBytes;
 	private byte[] messageHash;
 	private long counter;
 
@@ -48,14 +46,14 @@ public class ProofOfWork {
 		this.messageHash = messageHash;
 
 		time = calendar.getTimeInMillis() / 1000L;
-		timeBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
+		byte[] timeBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
 		IVclient = cUtils.getRandomBytes(16);
 
 		byte[] fix = new byte[IVserver.length + IVclient.length + timeBytes.length + messageHash.length];
 		System.arraycopy(IVserver, 0, fix, 0, IVserver.length);
 		System.arraycopy(IVclient, 0, fix, IVserver.length, IVclient.length);
 		System.arraycopy(timeBytes, 0, fix, IVserver.length+IVclient.length, timeBytes.length);
-		System.arraycopy(messageHash, 0, fix, IVserver.length+IVclient.length+timeBytes.length, messageHash.length);
+		System.arraycopy(messageHash, 0, fix, IVserver.length+IVclient.length+ timeBytes.length, messageHash.length);
 
 		//Find counter which fulfills pattern
 		long i = 0;
