@@ -29,7 +29,7 @@ public class ProofOfWork {
 		cUtils = new CryptoUtils();
 		digest = new SHA256Digest();
 
-		// byte array for hash result
+		//byte array for hash result
 		pow = new byte[256/8];
 	}
 
@@ -45,6 +45,7 @@ public class ProofOfWork {
 		this.IVserver = IVserver;
 		this.messageHash = messageHash;
 
+		//time in seconds since epoch UTC
 		time = calendar.getTimeInMillis() / 1000L;
 		byte[] timeBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
 		IVclient = cUtils.getRandomBytes(16);
