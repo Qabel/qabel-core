@@ -2,6 +2,8 @@ package de.qabel.core.drop;
 
 import de.qabel.core.crypto.CryptoUtils;
 import org.spongycastle.crypto.digests.SHA256Digest;
+import org.spongycastle.util.encoders.Base64;
+import org.spongycastle.util.encoders.Base64Encoder;
 
 import java.nio.ByteBuffer;
 import java.util.Calendar;
@@ -72,6 +74,26 @@ public class ProofOfWork {
 		result[1] = pow;
 
 		return result;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public long getCounter() {
+		return counter;
+	}
+
+	public String getIVserverB64() {
+		return Base64.toBase64String(IVserver);
+	}
+
+	public String getIVclientB64() {
+		return Base64.toBase64String(IVclient);
+	}
+
+	public String getMessageHashB64() {
+		return Base64.toBase64String(messageHash);
 	}
 
 	private boolean enoughZeros(byte[] hash) {
