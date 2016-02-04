@@ -3,7 +3,9 @@ package de.qabel.core.config;
 import de.qabel.core.crypto.*;
 import de.qabel.core.drop.DropURL;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -16,6 +18,8 @@ public class Identity extends Entity {
 
 	private String phone;
 
+	private List<String> prefixes;
+
 	@SerializedName("keys")
 	private QblECKeyPair primaryKeyPair;
 
@@ -24,6 +28,11 @@ public class Identity extends Entity {
 		super(drops);
 		this.setAlias(alias);
 		this.setPrimaryKeyPair(primaryKeyPair);
+		prefixes = new ArrayList<>();
+	}
+
+	public List<String> getPrefixes() {
+		return prefixes;
 	}
 
 	/**
