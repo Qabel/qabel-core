@@ -112,6 +112,7 @@ public class Identity extends Entity {
 		result = super.hashCode();
 		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
 		result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
+		result = prime * result + ((prefixes == null) ? 0 : prefixes.hashCode());
 		return result;
 	}
 
