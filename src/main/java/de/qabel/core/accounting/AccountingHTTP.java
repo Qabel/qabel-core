@@ -5,14 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.internal.LinkedTreeMap;
 import de.qabel.core.config.AccountingServer;
+import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.BasicHttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -24,11 +24,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Arrays;
+import java.util.*;
 
 public class AccountingHTTP {
 
@@ -121,7 +117,7 @@ public class AccountingHTTP {
 				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
 				profile.setQuota(((Double) answer.get("quota")).intValue());
 				this.updatePrefixes();
-			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
+			} catch (JsonSyntaxException | NumberFormatException | NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
 				throw new IOException("Illegal response from accounting server", e);
 			}
@@ -175,49 +171,13 @@ public class AccountingHTTP {
 		}
 	}
 
-	public BasicSessionCredentials getCredentials() throws IOException, QblInvalidCredentials {
-		if (server.getAuthToken() == null) {
-			login();
-		}
-		URI uri;
-		try {
-			uri = this.buildUri("api/v0/token").build();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException("Token url building failed", e);
-		}
-		HttpPost httpPost = new HttpPost(uri);
-		httpPost.addHeader("Authorization", "Token " + server.getAuthToken());
-		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-			HttpEntity entity = response.getEntity();
-			if (entity == null) {
-				throw new IOException("No answer from login");
-			}
-			String responseString = EntityUtils.toString(entity);
-			try {
-				LinkedTreeMap<String, Object> answer = gson.fromJson(responseString, LinkedTreeMap.class);
-				LinkedTreeMap<String, String> credentials =
-						(LinkedTreeMap<String, String>) answer.get("Credentials");
-				return new BasicSessionCredentials(
-						credentials.get("AccessKeyId"),
-						credentials.get("SecretAccessKey"),
-						credentials.get("SessionToken"));
-			} catch (JsonSyntaxException|NullPointerException e) {
-				// NullPointerException also means that our response was not ok because on of the
-				// .get() failed
-				logger.error("Illegal response: {}", responseString);
-				throw new IOException("Illegal response from accounting server", e);
-			}
-		}
-
-	}
-
 	public URIBuilder buildUri(String resource) {
 		if (resource.endsWith("/") || resource.startsWith("/")) {
 			logger.error("Resource {} starts or ends with /", resource);
 			throw new RuntimeException("Illegal resource");
 		}
 		return new URIBuilder(this.server.getUri())
-					.setPath('/' + resource + '/');
+				.setPath('/' + resource + '/');
 	}
 
 	public ArrayList<String> getPrefixes() throws IOException, QblInvalidCredentials {
@@ -263,7 +223,7 @@ public class AccountingHTTP {
 				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
 				String message = "failed to reset password";
 				if (response.getStatusLine().getStatusCode() >= 300) {
-					if(response.getStatusLine().getStatusCode() < 500) {
+					if (response.getStatusLine().getStatusCode() < 500) {
 						if (answer.containsKey(EMAIL_KEY)) {
 							message = ((ArrayList<String>) answer.get(EMAIL_KEY)).get(0);
 						}
@@ -272,11 +232,58 @@ public class AccountingHTTP {
 						throw new IllegalStateException(message);
 					}
 				}
-			} catch (JsonSyntaxException |NumberFormatException|NullPointerException e) {
+			} catch (JsonSyntaxException | NumberFormatException | NullPointerException e) {
 				logger.error("Illegal response: {}", responseString);
 				throw new IOException("Illegal response from accounting server", e);
 			}
+		}
+	}
 
+	public void createBoxAccount(String email) throws IOException, QblCreateAccountFailException {
+
+		URI uri;
+
+		try {
+			uri = this.buildUri("api/v0/auth/registration").build();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Url building failed", e);
+		}
+
+		HttpPost httpPost = new HttpPost(uri);
+		Map<String, String> params = new HashMap<>();
+		params.put("email", email);
+		params.put("username", server.getUsername());
+		params.put("password1", server.getPassword());
+		params.put("password2", server.getPassword());
+		String json = gson.toJson(params);
+		StringEntity input;
+
+		try {
+			input = new StringEntity(json);
+		} catch (UnsupportedEncodingException e) {
+			throw new IllegalArgumentException("failed to encode request:" + e.getMessage(), e);
+		}
+
+		input.setContentType("application/json");
+		httpPost.setEntity(input);
+
+		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
+			if (response.getStatusLine().getStatusCode() >= 400 && response.getStatusLine().getStatusCode() < 500) {
+				String exceptionJson = IOUtils.toString(response.getEntity().getContent());
+				HashMap map = gson.fromJson(exceptionJson, HashMap.class);
+				throw new QblCreateAccountFailException(map);
+			}
+
+			if (response.getStatusLine().getStatusCode() < 200 || response.getStatusLine().getStatusCode() >= 300) {
+				throw new IllegalStateException("Failed to create box Account StatusCode: " +
+						response.getStatusLine().getStatusCode() + " " +
+						response.getStatusLine().getReasonPhrase());
+			}
+
+			HttpEntity entity = response.getEntity();
+			if (entity == null) {
+				throw new IOException("No answer received on reset password request");
+			}
 		}
 	}
 }
