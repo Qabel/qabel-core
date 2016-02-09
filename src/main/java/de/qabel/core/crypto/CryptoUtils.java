@@ -40,13 +40,11 @@ public class CryptoUtils {
 			.getName());
 
 	private SecureRandom secRandom;
-	private GCMBlockCipher gcmCipher;
 	private Mac hmac;
 	private CipherKeyGenerator keyGenerator;
 
 	public CryptoUtils() {
 		secRandom = new SecureRandom();
-		gcmCipher = new GCMBlockCipher(new AESEngine());
 		hmac = new HMac(new SHA512Digest());
 
 		//New key generator needs random for initialization
@@ -129,6 +127,7 @@ public class CryptoUtils {
 			nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE);
 		}
 
+		GCMBlockCipher gcmCipher = new GCMBlockCipher(new AESEngine());
 		try {
 			gcmCipher.init(true, new AEADParameters(key, MAC_BIT, nonce, null));
 		} catch (IllegalArgumentException e) {
@@ -184,6 +183,7 @@ public class CryptoUtils {
 			throw e;
 		}
 
+		GCMBlockCipher gcmCipher = new GCMBlockCipher(new AESEngine());
 		try {
 			gcmCipher.init(false, new AEADParameters(key, MAC_BIT, nonce, null));
 		} catch (IllegalArgumentException e) {
