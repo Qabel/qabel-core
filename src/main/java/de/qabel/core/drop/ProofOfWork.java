@@ -19,8 +19,8 @@ public class ProofOfWork {
 	private byte[] messageHash;
 	private long counter;
 	private byte[] pow;
-	private static int longLength = Long.SIZE / Byte.SIZE;
-	private static int hashLength = 256/8; //SHA-256
+	static final int longLength = Long.SIZE / Byte.SIZE;
+	static final int hashLength = 256/8; //SHA-256
 
 	/**
 	 * Initializes PoW
@@ -74,7 +74,7 @@ public class ProofOfWork {
 
 		//time in seconds since epoch UTC
 		time = calendar.getTimeInMillis() / 1000L;
-		byte[] timeBytes = ByteBuffer.allocate(longLength).putLong(time).array();
+		byte[] timeBytes = toByteArray(time);
 		initVectorClient = cryptoUtils.getRandomBytes(16);
 
 		byte[] fix = composeFixParts(initVectorServer, initVectorClient, timeBytes, messageHash);
@@ -126,14 +126,14 @@ public class ProofOfWork {
 		long counter = 0;
 		if(pow.length == hashLength) {
 			digest.update(fix, 0, fix.length);
-			digest.update(ByteBuffer.allocate(longLength).putLong(counter).array(), 0, longLength);
+			digest.update(toByteArray(counter), 0, longLength);
 			digest.doFinal(pow, 0);
 
 			while (!enoughZeros(pow, leadingZeros)) {
 				counter++;
 				digest.reset();
 				digest.update(fix, 0, fix.length);
-				digest.update(ByteBuffer.allocate(longLength).putLong(counter).array(), 0, longLength);
+				digest.update(toByteArray(counter), 0, longLength);
 				digest.doFinal(pow, 0);
 			}
 			digest.reset();
@@ -142,4 +142,6 @@ public class ProofOfWork {
 			return 0;
 		}
 	}
+
+	static byte[] toByteArray(long number) { return ByteBuffer.allocate(longLength).putLong(number).array(); }
 }

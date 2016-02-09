@@ -10,12 +10,10 @@ import java.nio.ByteBuffer;
 import static org.junit.Assert.assertEquals;
 
 public class ProofOfWorkTest {
-	private static int longLength = Long.SIZE / Byte.SIZE;
-
 	@Test
 	public void proofOfWorkTest() {
 		SHA256Digest digest = new SHA256Digest();
-		byte[] hash = new byte[256/8];
+		byte[] hash = new byte[ProofOfWork.hashLength];
 
 		//Create a PoW with 16 leading zero bits
 		ProofOfWork pow;
@@ -23,9 +21,9 @@ public class ProofOfWorkTest {
 
 		digest.update(Base64.decode(pow.getIVserverB64()), 0, Base64.decode(pow.getIVserverB64()).length);
 		digest.update(Base64.decode(pow.getIVclientB64()), 0, Base64.decode(pow.getIVclientB64()).length);
-		digest.update(ByteBuffer.allocate(longLength).putLong(pow.getTime()).array(), 0, longLength);
+		digest.update(ProofOfWork.toByteArray(pow.getTime()), 0, ProofOfWork.longLength);
 		digest.update(Base64.decode(pow.getMessageHashB64()), 0, Base64.decode(pow.getMessageHashB64()).length);
-		digest.update(ByteBuffer.allocate(longLength).putLong(pow.getCounter()).array(), 0, longLength);
+		digest.update(ProofOfWork.toByteArray(pow.getCounter()), 0, ProofOfWork.longLength);
 
 		digest.doFinal(hash, 0);
 
