@@ -9,67 +9,56 @@ import java.util.Calendar;
 import java.util.TimeZone;
 
 public class ProofOfWork {
-	private SHA256Digest digest;
-	private Calendar calendar;
-	private CryptoUtils cUtils;
-
-	private int X;
-	private byte[] IVserver;
-	private byte[] IVclient;
+	/**
+	 * For further description of the scheme see http://qabel.github.io/docs/Qabel-Protocol-ProofOfWork/
+	 */
+	private int leadingZeros;
+	private byte[] initVectorServer;
+	private byte[] initVectorClient;
 	private long time;
 	private byte[] messageHash;
 	private long counter;
+	private static int longLength = Long.SIZE / Byte.SIZE;
+	private static int hashLength = 256/8; //SHA-256
 
 	private byte[] pow;
 	/**
 	 * Initializes PoW
 	 */
 	public ProofOfWork() {
-		calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		cUtils = new CryptoUtils();
-		digest = new SHA256Digest();
-
 		//byte array for hash result
-		pow = new byte[256/8];
+		pow = new byte[hashLength];
 	}
 
 	/**
 	 * Calculates the PoW for given parameters
-	 * @param X Number of leading zero bits of PoW hash
-	 * @param IVserver Server IV which is part of the PoW
+	 * @param leadingZeros Number of leading zero bits of PoW hash
+	 * @param initVectorServer Server IV which is part of the PoW
 	 * @param messageHash hash of message to be sent
 	 * @return byte[][]: byte[0]=plain parameters byte[1]=PoW hash
 	 */
-	public byte[][] calculate(int X, byte[] IVserver, byte[] messageHash) {
-		this.X = X;
-		this.IVserver = IVserver;
+	public byte[][] calculate(int leadingZeros, byte[] initVectorServer, byte[] messageHash) {
+		CryptoUtils cryptoUtils = new CryptoUtils();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		this.leadingZeros = leadingZeros;
+		this.initVectorServer = initVectorServer;
 		this.messageHash = messageHash;
 
 		//time in seconds since epoch UTC
 		time = calendar.getTimeInMillis() / 1000L;
-		byte[] timeBytes = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(time).array();
-		IVclient = cUtils.getRandomBytes(16);
+		byte[] timeBytes = ByteBuffer.allocate(longLength).putLong(time).array();
+		initVectorClient = cryptoUtils.getRandomBytes(16);
 
-		byte[] fix = new byte[IVserver.length + IVclient.length + timeBytes.length + messageHash.length];
-		System.arraycopy(IVserver, 0, fix, 0, IVserver.length);
-		System.arraycopy(IVclient, 0, fix, IVserver.length, IVclient.length);
-		System.arraycopy(timeBytes, 0, fix, IVserver.length+IVclient.length, timeBytes.length);
-		System.arraycopy(messageHash, 0, fix, IVserver.length+IVclient.length+ timeBytes.length, messageHash.length);
+		byte[] fix = composeFixParts(initVectorServer, initVectorClient, timeBytes, messageHash);
 
 		//Find counter which fulfills pattern
-		long i = 0;
-		updatePow(fix, i);
-		while(!enoughZeros(pow)) {
-			i++;
-			updatePow(fix, i);
-		}
-		counter = i;
+		counter = calculatePow(pow, fix, leadingZeros);
 
 		//Byte array which contains plain pow text and pow hash
-		byte[][] result = new byte[2][Math.max(fix.length+Long.SIZE/Byte.SIZE,256/8)];
+		byte[][] result = new byte[2][Math.max(fix.length+longLength,hashLength)];
 		System.arraycopy(fix, 0, result[0], 0, fix.length);
-		System.arraycopy(ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(counter).array(),
-				0, result[0], fix.length, Long.SIZE/Byte.SIZE);
+		System.arraycopy(ByteBuffer.allocate(longLength).putLong(counter).array(),
+				0, result[0], fix.length, longLength);
 		result[1] = pow;
 
 		return result;
@@ -84,19 +73,38 @@ public class ProofOfWork {
 	}
 
 	public String getIVserverB64() {
-		return Base64.toBase64String(IVserver);
+		return Base64.toBase64String(initVectorServer);
 	}
 
 	public String getIVclientB64() {
-		return Base64.toBase64String(IVclient);
+		return Base64.toBase64String(initVectorClient);
 	}
 
 	public String getMessageHashB64() {
 		return Base64.toBase64String(messageHash);
 	}
 
-	private boolean enoughZeros(byte[] hash) {
-		for(int i=0; i<X; i++) {
+	private static byte[] composeFixParts(byte[] initVectorServer, byte[] initVectorClient, byte[] time, byte[] messageHash) {
+		byte[] fix = new byte[initVectorServer.length + initVectorClient.length + time.length + messageHash.length];
+		int offset = 0;
+		System.arraycopy(initVectorServer, 0, fix, offset, initVectorServer.length);
+		offset = initVectorServer.length;
+		System.arraycopy(initVectorClient, 0, fix, offset, initVectorClient.length);
+		offset += initVectorClient.length;
+		System.arraycopy(time, 0, fix, offset, time.length);
+		offset += time.length;
+		System.arraycopy(messageHash, 0, fix, offset, messageHash.length);
+		return fix;
+	}
+
+	/**
+	 * Checks whether hash starts with required leading zero bits
+	 * @param hash hash to be verified
+	 * @param leadingZeros required leading zeros
+	 * @return true of hash starts with required leading zero bits
+	 */
+	private static boolean enoughZeros(byte[] hash, int leadingZeros) {
+		for(int i=0; i<leadingZeros; i++) {
 			//check whether i-th bit is zero
 			if(((hash[i/8]>>(i%8))&1) != 0) {
 				return false;
@@ -105,10 +113,32 @@ public class ProofOfWork {
 		return true;
 	}
 
-	private void updatePow(byte[] fix, long i) {
-		digest.reset();
-		digest.update(fix, 0, fix.length);
-		digest.update(ByteBuffer.allocate(Long.SIZE / Byte.SIZE).putLong(i).array(), 0, Long.SIZE / Byte.SIZE);
-		digest.doFinal(pow,0);
+	/**
+	 * Finds a valid proof of work hash with leading zeros
+	 * @param pow result of the calculation
+	 * @param fix fix part of the proof of work
+	 * @param leadingZeros required leading zeros
+	 * @return counter for the valid hash
+	 */
+	private static long calculatePow(byte[] pow, byte[] fix, int leadingZeros) {
+		SHA256Digest digest = new SHA256Digest();
+		long counter = 0;
+		if(pow.length == hashLength) {
+			digest.update(fix, 0, fix.length);
+			digest.update(ByteBuffer.allocate(longLength).putLong(counter).array(), 0, longLength);
+			digest.doFinal(pow, 0);
+
+			while (!enoughZeros(pow, leadingZeros)) {
+				counter++;
+				digest.reset();
+				digest.update(fix, 0, fix.length);
+				digest.update(ByteBuffer.allocate(longLength).putLong(counter).array(), 0, longLength);
+				digest.doFinal(pow, 0);
+			}
+			digest.reset();
+			return counter;
+		} else {
+			return 0;
+		}
 	}
 }

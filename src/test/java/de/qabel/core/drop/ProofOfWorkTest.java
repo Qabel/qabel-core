@@ -6,9 +6,6 @@ import org.spongycastle.util.encoders.Hex;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by paul on 25.01.16.
- */
 public class ProofOfWorkTest {
 
 	@Test
