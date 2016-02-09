@@ -10,17 +10,11 @@ import java.nio.file.Paths;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.params.KeyParameter;
 import org.spongycastle.util.encoders.Hex;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 public class CryptoUtilsTest {
-
 	final CryptoUtils cu = new CryptoUtils();
 	String testFileName = "src/test/java/de/qabel/core/crypto/testFile";
-
-	@Rule
-	public ExpectedException exception = ExpectedException.none();
 
 	@Test
 	public void fileDecryptionTest() throws IOException, InvalidKeyException {
@@ -42,6 +36,51 @@ public class CryptoUtilsTest {
 		} finally {
 			testFileEnc.delete();
 			testFileDec.delete();
+		}
+	}
+
+	@Test
+	public void allowsForConcurrentDecryption() throws Exception {
+		final KeyParameter key = new KeyParameter(Hex.decode("feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308"));
+		byte[] nonce = Hex.decode("cafebabefacedbaddecaf888");
+		final File testFileEnc = new File(testFileName + ".enc");
+
+		// create encrypted file for decryption test
+		cu.encryptFileAuthenticatedSymmetric(new File(testFileName), new FileOutputStream(testFileEnc), key, nonce);
+
+		final DelayedStream cipherStream1 = new DelayedStream(new FileInputStream(testFileEnc));
+
+		final File testFileDec = new File(testFileName + ".dec");
+		Thread decryptor = new Thread() {
+			public void run() {
+				try {
+					cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream1, testFileDec, key);
+				} catch (Exception e) {
+					System.err.println(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+		};
+		decryptor.start();
+		while(!cipherStream1.isBlocked())
+			Thread.sleep(10);
+
+		File testFileDec2 = new File(testFileName + ".dec2");
+		InputStream cipherStream2 = new FileInputStream(testFileEnc);
+		cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream2, testFileDec2, key);
+		cipherStream1.setBlockOnRead(false);
+		cipherStream1.unblock();
+		decryptor.join();
+
+		try {
+			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
+					Hex.toHexString(Files.readAllBytes(testFileDec.toPath())));
+			assertEquals(Hex.toHexString(Files.readAllBytes(Paths.get(testFileName))),
+					Hex.toHexString(Files.readAllBytes(testFileDec2.toPath())));
+		} finally {
+			testFileEnc.delete();
+			testFileDec.delete();
+			testFileDec2.delete();
 		}
 	}
 
