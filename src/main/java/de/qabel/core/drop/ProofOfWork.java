@@ -18,50 +18,21 @@ public class ProofOfWork {
 	private long time;
 	private byte[] messageHash;
 	private long counter;
+	private byte[] pow;
 	private static int longLength = Long.SIZE / Byte.SIZE;
 	private static int hashLength = 256/8; //SHA-256
 
-	private byte[] pow;
 	/**
 	 * Initializes PoW
 	 */
-	public ProofOfWork() {
-		//byte array for hash result
-		pow = new byte[hashLength];
-	}
-
-	/**
-	 * Calculates the PoW for given parameters
-	 * @param leadingZeros Number of leading zero bits of PoW hash
-	 * @param initVectorServer Server IV which is part of the PoW
-	 * @param messageHash hash of message to be sent
-	 * @return byte[][]: byte[0]=plain parameters byte[1]=PoW hash
-	 */
-	public byte[][] calculate(int leadingZeros, byte[] initVectorServer, byte[] messageHash) {
-		CryptoUtils cryptoUtils = new CryptoUtils();
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+	public ProofOfWork(int leadingZeros, byte[] initVectorServer, byte[] initVectorClient, long time, byte[] messageHash, long counter, byte[] pow) {
 		this.leadingZeros = leadingZeros;
 		this.initVectorServer = initVectorServer;
+		this.initVectorClient = initVectorClient;
+		this.time = time;
 		this.messageHash = messageHash;
-
-		//time in seconds since epoch UTC
-		time = calendar.getTimeInMillis() / 1000L;
-		byte[] timeBytes = ByteBuffer.allocate(longLength).putLong(time).array();
-		initVectorClient = cryptoUtils.getRandomBytes(16);
-
-		byte[] fix = composeFixParts(initVectorServer, initVectorClient, timeBytes, messageHash);
-
-		//Find counter which fulfills pattern
-		counter = calculatePow(pow, fix, leadingZeros);
-
-		//Byte array which contains plain pow text and pow hash
-		byte[][] result = new byte[2][Math.max(fix.length+longLength,hashLength)];
-		System.arraycopy(fix, 0, result[0], 0, fix.length);
-		System.arraycopy(ByteBuffer.allocate(longLength).putLong(counter).array(),
-				0, result[0], fix.length, longLength);
-		result[1] = pow;
-
-		return result;
+		this.counter = counter;
+		this.pow = pow;
 	}
 
 	public long getTime() {
@@ -82,6 +53,36 @@ public class ProofOfWork {
 
 	public String getMessageHashB64() {
 		return Base64.toBase64String(messageHash);
+	}
+
+	public String getProofOfWorkHashB64() { return Base64.toBase64String(pow); }
+
+	/**
+	 * Calculates the PoW for given parameters
+	 * @param leadingZeros Number of leading zero bits of PoW hash
+	 * @param initVectorServer Server IV which is part of the PoW
+	 * @param messageHash hash of message to be sent
+	 * @return byte[][]: byte[0]=plain parameters byte[1]=PoW hash
+	 */
+	public static ProofOfWork calculate(int leadingZeros, byte[] initVectorServer, byte[] messageHash) {
+		long time;
+		long counter;
+		byte[] initVectorClient;
+		byte[] pow = new byte[hashLength];
+		CryptoUtils cryptoUtils = new CryptoUtils();
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+
+		//time in seconds since epoch UTC
+		time = calendar.getTimeInMillis() / 1000L;
+		byte[] timeBytes = ByteBuffer.allocate(longLength).putLong(time).array();
+		initVectorClient = cryptoUtils.getRandomBytes(16);
+
+		byte[] fix = composeFixParts(initVectorServer, initVectorClient, timeBytes, messageHash);
+
+		//Find counter which fulfills pattern
+		counter = calculatePow(pow, fix, leadingZeros);
+
+		return new ProofOfWork(leadingZeros, initVectorServer, initVectorClient, time, messageHash, counter,pow);
 	}
 
 	private static byte[] composeFixParts(byte[] initVectorServer, byte[] initVectorClient, byte[] time, byte[] messageHash) {
