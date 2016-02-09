@@ -2,6 +2,7 @@ package de.qabel.core.accounting;
 
 import com.amazonaws.auth.BasicSessionCredentials;
 import de.qabel.core.config.AccountingServer;
+import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.entity.BasicHttpEntity;
@@ -14,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -73,18 +76,9 @@ public class AccountingHTTPTest {
 	}
 
 	@Test
-	public void testGetCredentials() throws IOException, QblInvalidCredentials {
-		BasicSessionCredentials credentials = accountingHTTP.getCredentials();
-		assertNotNull(credentials);
-		assertNotNull("No AWS key", credentials.getAWSAccessKeyId());
-		assertNotNull("No AWS secret key", credentials.getAWSSecretKey());
-		assertNotNull("No AWS token", credentials.getSessionToken());
-	}
-
-	@Test
 	public void testGetPrefix() throws IOException, QblInvalidCredentials {
 		assertNotNull(accountingHTTP.getPrefixes());
-		assertNotEquals(accountingHTTP.getPrefixes().size(),0);
+		assertNotEquals(accountingHTTP.getPrefixes().size(), 0);
 	}
 
 	@Test
@@ -95,6 +89,7 @@ public class AccountingHTTPTest {
 
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
+
 	@Test
 	public void resetPasswordThrowsIllegalArgumentExceptionOnInvalidMail() throws Exception {
 		expectedEx.expectMessage("Enter a valid email address.");
@@ -125,6 +120,89 @@ public class AccountingHTTPTest {
 		CloseableHttpClientStub client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 200, responseContent);
 		AccountingHTTP http = new AccountingHTTP(server, profile, client);
 		http.resetPassword("mymail");
+	}
+
+	@Test
+	public void createBoxAccount() throws Exception {
+		Random rand = new Random();
+
+		String name = "testUser" + rand.nextInt(10000);
+		server = new AccountingServer(new URI("http://localhost:9696"),
+				name, "123456");
+		accountingHTTP = new AccountingHTTP(server, profile);
+		accountingHTTP.createBoxAccount(name + "@example.com");
+		accountingHTTP.login();
+		assertNotNull("Auth token not set after login", server.getAuthToken());
+	}
+
+	@Test
+	public void createBoxAccountEMailNotCorrect() throws Exception {
+
+		server = new AccountingServer(new URI("http://localhost:9696"),
+				"testUser", "123456");
+		accountingHTTP = new AccountingHTTP(server, profile);
+		Map map = null;
+		try {
+			accountingHTTP.createBoxAccount("testUser");
+			fail("No Exception thrown");
+		} catch (QblCreateAccountFailException e) {
+			map = e.getMap();
+		}
+		assertNotNull(map);
+		assertTrue(map.containsKey("email"));
+	}
+
+	@Test
+	public void createBoxAccountPsToShort() throws Exception {
+
+		String name = "testUser";
+		server = new AccountingServer(new URI("http://localhost:9696"),
+				name, "12345");
+		accountingHTTP = new AccountingHTTP(server, profile);
+		Map map = null;
+		try {
+			accountingHTTP.createBoxAccount("testUser");
+			fail("No Exception thrown");
+		} catch (QblCreateAccountFailException e) {
+			map = e.getMap();
+		}
+		assertNotNull(map);
+		assertTrue(map.containsKey("password1"));
+	}
+
+	@Test
+	public void createBoxAccountUsernameAlreadyInUse() throws Exception {
+
+		server = new AccountingServer(new URI("http://localhost:9696"),
+				"testuser", "123456");
+		accountingHTTP = new AccountingHTTP(server, profile);
+		Map map = null;
+		try {
+			accountingHTTP.createBoxAccount("testUser");
+			fail("No Exception thrown");
+		} catch (QblCreateAccountFailException e) {
+			map = e.getMap();
+		}
+		assertNotNull(map);
+		assertTrue(map.containsKey("username"));
+	}
+
+	@Test
+	public void createBoxAccountEmailAlreadyInUse() throws Exception {
+
+		String name = "testuser";
+		server = new AccountingServer(new URI("http://localhost:9696"),
+				name, "123456");
+		accountingHTTP = new AccountingHTTP(server, profile);
+		Map map = null;
+		try {
+			accountingHTTP.createBoxAccount(name);
+			fail("No Exception thrown");
+		} catch (QblCreateAccountFailException e) {
+			map = e.getMap();
+		}
+		assertNotNull(map);
+		assertTrue(map.containsKey("email"));
 	}
 
 	private CloseableHttpClientStub stubClient(String method, String uri, int statusCode, String responseContent) {
