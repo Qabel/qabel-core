@@ -31,8 +31,21 @@ public class Identity extends Entity {
 		prefixes = new ArrayList<>();
 	}
 
+	/**
+	 * Returns the list of prefixes of the identity
+	 * @return prefixes
+	 */
 	public List<String> getPrefixes() {
 		return prefixes;
+	}
+
+	/**
+	 * Sets the list of prefixes of the identity.
+	 * The list of prefixes is mutable, thus has no influence on the hashCode evaluation.
+	 * @param prefixes the prefixes of the identity
+	 */
+	public void setPrefixes(List<String> prefixes) {
+		this.prefixes = prefixes;
 	}
 
 	/**
@@ -43,8 +56,13 @@ public class Identity extends Entity {
 		return this.alias;
 	}
 
-	public void setAlias(String value) {
-		this.alias = value;
+	/**
+	 * Sets the alias address of the identity.
+	 * The alias is mutable, thus has no influence on the hashCode evaluation.
+	 * @param alias the alias of the identity
+	 */
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 	/**
@@ -57,7 +75,7 @@ public class Identity extends Entity {
 
 	/**
 	 * Sets the email address of the identity.
-	 * The email address is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * The email address is optional, thus has no influence on the hashCode evaluation.
 	 * @param email the email address of the identity
 	 */
 	public void setEmail(String email) {
@@ -74,7 +92,7 @@ public class Identity extends Entity {
 
 	/**
 	 * Sets the phone number of the identity.
-	 * The phone number is optional, thus has no influence on the identity / hashCode / equals evaluation.
+	 * The phone number is optional, thus has no influence on the hashCode evaluation.
 	 * @param phone the phone number of the identity
 	 */
 	public void setPhone(String phone) {
@@ -110,7 +128,6 @@ public class Identity extends Entity {
 		int result = 1;
 
 		result = super.hashCode();
-		result = prime * result + ((alias == null) ? 0 : alias.hashCode());
 		result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
 		return result;
 	}
@@ -135,6 +152,21 @@ public class Identity extends Entity {
 			if (other.primaryKeyPair != null)
 				return false;
 		} else if (!primaryKeyPair.equals(other.primaryKeyPair))
+			return false;
+		if (prefixes == null) {
+			if (other.prefixes != null)
+				return false;
+		} else if (!prefixes.equals(other.prefixes))
+			return false;
+		if (email == null) {
+			if (other.email != null)
+				return false;
+		} else if (!email.equals(other.email))
+			return false;
+		if (phone == null) {
+			if (other.phone != null)
+				return false;
+		} else if (!phone.equals(other.phone))
 			return false;
 
 		return true;

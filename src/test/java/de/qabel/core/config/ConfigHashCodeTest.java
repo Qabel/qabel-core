@@ -49,8 +49,10 @@ public class ConfigHashCodeTest {
 		.overrideFactory("ecKeyPair", new QblEcPairTestFactory())
 		.overrideFactory("drops", new DropUrlListTestFactory())
 		.ignoreProperty("serialVersionUID")
+		.ignoreProperty("alias")
 		.ignoreProperty("email")
 		.ignoreProperty("phone")
+		.ignoreProperty("prefixes")
 		.build();
 		tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
 	}
