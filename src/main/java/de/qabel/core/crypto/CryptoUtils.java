@@ -40,12 +40,10 @@ public class CryptoUtils {
 			.getName());
 
 	private SecureRandom secRandom;
-	private Mac hmac;
 	private CipherKeyGenerator keyGenerator;
 
 	public CryptoUtils() {
 		secRandom = new SecureRandom();
-		hmac = new HMac(new SHA512Digest());
 
 		//New key generator needs random for initialization
 		keyGenerator = new CipherKeyGenerator();
@@ -246,6 +244,7 @@ public class CryptoUtils {
 		// expected length, but it might improve the performance
 		KeyParameter key = new KeyParameter(secret);
 		ByteArrayOutputStream bs = new ByteArrayOutputStream(info.length + 1 + 32 + extraSecret.length);
+		HMac hmac = new HMac(new SHA512Digest());
 		for (int c = 0; c <= Math.ceil((double) outputLen / H_LEN) - 1; c++) {
 			try {
 				bs.write(info);
