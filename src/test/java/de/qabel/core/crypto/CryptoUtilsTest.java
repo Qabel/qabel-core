@@ -62,8 +62,9 @@ public class CryptoUtilsTest {
 			}
 		};
 		decryptor.start();
-		while(!cipherStream1.isBlocked())
+		while (!cipherStream1.isBlocked()) {
 			Thread.sleep(10);
+		}
 
 		File testFileDec2 = new File(testFileName + ".dec2");
 		InputStream cipherStream2 = new FileInputStream(testFileEnc);

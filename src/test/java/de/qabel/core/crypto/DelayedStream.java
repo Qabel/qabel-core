@@ -14,19 +14,23 @@ public class DelayedStream extends FilterInputStream {
 
 	@Override
 	public int read() throws IOException {
-		while(blocked)
+		while (blocked) {
 			Thread.yield();
-		if (blockOnRead)
+		}
+		if (blockOnRead) {
 			block();
+		}
 		return super.read();
 	}
 
 	@Override
 	public int read(byte[] b, int off, int len) throws IOException {
-		while(blocked)
+		while (blocked) {
 			Thread.yield();
-		if (blockOnRead)
+		}
+		if (blockOnRead) {
 			block();
+		}
 		return super.read(b, off, len);
 	}
 
