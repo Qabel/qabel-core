@@ -10,7 +10,8 @@ import java.util.*;
  * @see Entity
  */
 abstract class EntityMap<T extends Entity> implements Serializable {
-	private static final long serialVersionUID = -8004819460313825206L;
+	private static final long serialVersionUID = -4541440187172822588L;
+
 	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
 
 	/**

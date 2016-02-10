@@ -15,7 +15,7 @@ import com.google.gson.annotations.SerializedName;
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
  */
 public class LocalSettings extends Persistable {
-	private static final long serialVersionUID = 2524933619654534515L;
+	private static final long serialVersionUID = 354451411302690221L;
 
 	/**
 	 * Poll interval of the client

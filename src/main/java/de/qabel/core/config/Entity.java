@@ -13,7 +13,7 @@ import de.qabel.core.drop.DropURL;
  * communication.
  */
 public abstract class Entity extends SyncSettingItem {
-	private static final long serialVersionUID = 570661846263644501L;
+	private static final long serialVersionUID = -1239476740864486761L;
 
 	private final Set<DropURL> dropUrls;
 
