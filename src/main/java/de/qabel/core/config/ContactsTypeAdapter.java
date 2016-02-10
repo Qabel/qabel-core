@@ -12,7 +12,7 @@ import com.google.gson.stream.JsonWriter;
 import de.qabel.core.drop.DropURL;
 
 public class ContactsTypeAdapter extends TypeAdapter<Contacts> {
-	public static final String IDENTITY_NAME = "my_identity";
+	public static final String IDENTITY_NAME = "owner";
 	public static final String CONTACTS_NAME = "contacts";
 	private Identities identities;
 
