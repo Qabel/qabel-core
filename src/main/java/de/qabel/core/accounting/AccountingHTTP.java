@@ -123,8 +123,8 @@ public class AccountingHTTP {
 		}
 	}
 
-	public void authorize(HttpRequest httpGet) throws IOException, QblInvalidCredentials {
-		httpGet.addHeader("Authorization", "Token " + getAuthToken());
+	public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
+		request.addHeader("Authorization", "Token " + getAuthToken());
 	}
 
 	private String getAuthToken() throws IOException, QblInvalidCredentials {
