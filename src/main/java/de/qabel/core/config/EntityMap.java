@@ -65,7 +65,7 @@ abstract class EntityMap<T extends Entity> implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((entities == null) ? 0 : entities.hashCode());
+		result = prime * result + entities.hashCode();
 		return result;
 	}
 
@@ -78,10 +78,7 @@ abstract class EntityMap<T extends Entity> implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityMap<T> other = (EntityMap<T>) obj;
-		if (entities == null) {
-			if (other.entities != null)
-				return false;
-		} else if (!entities.equals(other.entities))
+		if (!entities.equals(other.entities))
 			return false;
 		return true;
 	}

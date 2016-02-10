@@ -21,7 +21,6 @@ class ContactTestFactory implements Factory<Contact>{
 	@Override
 	public Contact create() {
 		return new Contact(
-				idFactory.create(),
 				"",
 				null,
 				qppkFactory.create());

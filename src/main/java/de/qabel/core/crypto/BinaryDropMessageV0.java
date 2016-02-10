@@ -59,11 +59,11 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 		return PAYLOAD_SIZE + HEADER_SIZE + BOX_HEADER_SIZE;
 	}
 
-	private byte[] buildBody(Contact recipient) {
+	private byte[] buildBody(Contact recipient, Identity sender) {
 		CryptoUtils cu = new CryptoUtils();
 		byte[] box;
 		try {
-			box = cu.createBox(recipient.getContactOwner().getPrimaryKeyPair(),
+			box = cu.createBox(sender.getPrimaryKeyPair(),
 					recipient.getEcPublicKey(), getPaddedMessage(), 0);
 		} catch (InvalidKeyException e) {
 			// should not happen
@@ -74,8 +74,8 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
 	}
 
 	@Override
-	public byte[] assembleMessageFor(Contact recipient) {
-		return ArrayUtils.addAll(getHeader(), buildBody(recipient));
+	public byte[] assembleMessageFor(Contact recipient, Identity sender) {
+		return ArrayUtils.addAll(getHeader(), buildBody(recipient, sender));
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public class DropMessageCryptorUtil {
 										   Identity sender, Contact recipient) throws QblDropPayloadSizeException {
 		DropMessage dropMessage = new DropMessage(sender, payload, dropMessageType);
 		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(dropMessage);
-		return binaryMessage.assembleMessageFor(recipient);
+		return binaryMessage.assembleMessageFor(recipient, sender);
 	}
 
 	/**

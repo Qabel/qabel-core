@@ -7,6 +7,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Set;
 
 import de.qabel.core.crypto.QblECKeyPair;
 import org.junit.Test;
@@ -42,12 +43,15 @@ public class ConfigSerializationTest {
 		Identity identity;
 			
 		key = new QblECKeyPair();
-		drops = new ArrayList<DropURL>();
+		drops = new ArrayList<>();
 		drops.add(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 		identity = new Identity("alias", drops, key);
 		syncedSettings.getIdentities().put(identity);
-		
-		syncedSettings.getSyncedModuleSettings().add(new FooModuleSettings(1));
+
+		//add contacts entry
+		Contacts contacts = new Contacts(identity);
+		contacts.put(new Contact("alias", null, key.getPub()));
+		syncedSettings.getContacts().add(contacts);
 
 		SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
 		assertEquals(syncedSettings.toJson(), deserializedSyncedSettings.toJson());
@@ -73,7 +77,7 @@ public class ConfigSerializationTest {
 			Identity i = new Identity("alias", new ArrayList<DropURL>(), new QblECKeyPair());
 			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
 			QblECKeyPair ecKeyPair = new QblECKeyPair();
-			contact = new Contact(i, "", null, ecKeyPair.getPub());
+			contact = new Contact("", null, ecKeyPair.getPub());
 			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
 			contact.setEmail("alice@example.org");
 			contact.setPhone("+49123456789012");
@@ -82,9 +86,6 @@ public class ConfigSerializationTest {
 			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
 			Gson gson = builder.create();
 			deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
-			
-			//this has to be set by the caller for deserialization:
-			deserializedContact.setContactOwner(i);
 			
 			assertEquals(contact, deserializedContact);
 			assertEquals("alice@example.org", deserializedContact.getEmail());

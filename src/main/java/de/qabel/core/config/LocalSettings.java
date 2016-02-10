@@ -16,7 +16,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LocalSettings extends Persistable {
 	private static final long serialVersionUID = 2524933619654534515L;
-	private Set<LocaleModuleSettings> localeModuleSettings;
+
 	/**
 	 * Poll interval of the client
 	 * Field name in serialized json: "poll_interval"
@@ -42,17 +42,6 @@ public class LocalSettings extends Persistable {
 	public LocalSettings(long pollInterval, Date dropLastUpdate) {
 		this.setPollInterval(pollInterval);
 		this.setdropLastUpdate(dropLastUpdate);
-	}
-
-	/**
-	 * Returns a set of module specific local settings.
-	 * @return Set<LocaleModuleSettings>
-	 */
-	public Set<LocaleModuleSettings> getLocaleModuleSettings() {
-		if (this.localeModuleSettings == null) {
-			this.localeModuleSettings = new HashSet<LocaleModuleSettings>();
-		}
-		return this.localeModuleSettings;
 	}
 
 	/**
@@ -120,10 +109,6 @@ public class LocalSettings extends Persistable {
 		int result = 1;
 		result = prime * result
 				+ ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
-		result = prime
-				* result
-				+ ((localeModuleSettings == null) ? 0 : localeModuleSettings
-						.hashCode());
 		result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
 		return result;
 	}
@@ -141,11 +126,6 @@ public class LocalSettings extends Persistable {
 			if (other.dropLastUpdate != null)
 				return false;
 		} else if (!dropLastUpdate.equals(other.dropLastUpdate))
-			return false;
-		if (localeModuleSettings == null) {
-			if (other.localeModuleSettings != null)
-				return false;
-		} else if (!localeModuleSettings.equals(other.localeModuleSettings))
 			return false;
 		if (pollInterval != other.pollInterval)
 			return false;

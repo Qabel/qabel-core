@@ -1,16 +1,17 @@
 package de.qabel.core.config;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.gson.JsonParseException;
 
 public class SyncedSettings {
-	private Set<SyncedModuleSettings> syncedModuleSettings;
 	private Identities identities;
 	private Accounts accounts;
-	private Contacts contacts;
+	private Set<Contacts> contacts;
 	private DropServers dropServers;
 
 	/**
@@ -18,20 +19,9 @@ public class SyncedSettings {
 	 */
 	public SyncedSettings() {
 		this.accounts = new Accounts();
-		this.contacts = new Contacts();
+		this.contacts = new HashSet<>();
 		this.dropServers = new DropServers();
 		this.identities = new Identities();
-	}
-
-	/**
-	 * Returns a set of module specific synced settings
-	 * @return Set<SyncedModuleSettings>
-	 */
-	public Set<SyncedModuleSettings> getSyncedModuleSettings() {
-		if (this.syncedModuleSettings == null) {
-			this.syncedModuleSettings = new HashSet<SyncedModuleSettings>();
-		}
-		return this.syncedModuleSettings;
 	}
 
 	public void setIdentities(Identities value) {
@@ -40,13 +30,18 @@ public class SyncedSettings {
 	public Identities getIdentities() {
 		return this.identities;
 	}
-	public Contacts getContacts() {
+	public Set<Contacts> getContacts() {
 		return this.contacts;
 	}
 
-
 	public void setContacts(Contacts value) {
-		this.contacts = value;
+		for (Contacts c : this.contacts.toArray(new Contacts[this.contacts.size()])) {
+			if (c.getIdentity() == value.getIdentity()) {
+				this.contacts.remove(c);
+				break;
+			}
+		}
+		this.contacts.add(value);
 	}
 
 	public void setAccounts(Accounts value) {
@@ -100,10 +95,6 @@ public class SyncedSettings {
 				+ ((dropServers == null) ? 0 : dropServers.hashCode());
 		result = prime * result
 				+ ((identities == null) ? 0 : identities.hashCode());
-		result = prime
-				* result
-				+ ((syncedModuleSettings == null) ? 0 : syncedModuleSettings
-						.hashCode());
 		return result;
 	}
 

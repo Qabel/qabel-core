@@ -21,40 +21,30 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 		TypeAdapter<Accounts> accountsAdapter = 
 				new AccountsTypeAdapter();
 		accountsAdapter.write(out, value.getAccounts());
-		
+
+		// Identities
+		out.name("identities");
+		TypeAdapter<Identities> identitiesAdapter =
+				new IdentitiesTypeAdapter();
+		identitiesAdapter.write(out, value.getIdentities());
+
 		// Contacts
 		out.name("contacts");
 		TypeAdapter<Contacts> contactsAdapter =
-				new ContactsTypeAdapter();
-		contactsAdapter.write(out, value.getContacts());
-		
-		// Identities
-		out.name("identities");
-		TypeAdapter<Identities> identitiesAdapter = 
-				new IdentitiesTypeAdapter();
-		identitiesAdapter.write(out, value.getIdentities());
-		
+				new ContactsTypeAdapter(value.getIdentities());
+		out.beginArray();
+		for (Contacts contacts : value.getContacts()) {
+			contactsAdapter.write(out, contacts);
+		}
+		out.endArray();
+
 		// DropServers
 		out.name("drop_servers");
 		TypeAdapter<DropServers> dropServersAdapter = 
 				new DropServersTypeAdapter();
 		dropServersAdapter.write(out, value.getDropServers());
 		
-		// SyncedModuleSettings
-		out.name("module_data");
-		TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
-			.registerTypeAdapter(SyncedModuleSettings.class, new SyncedModuleSettingsTypeAdapter())
-			.create().getAdapter(SyncedModuleSettings.class);
-		out.beginArray();
-		for (SyncedModuleSettings settings : value.getSyncedModuleSettings()) {
-			adapter.write(out, settings);
-		}
-		out.endArray();
-		
-		
 		out.endObject();
-				
-		return;
 	}
 
 	@Override
@@ -64,13 +54,12 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 			return null;
 		}
 		
-		SyncedSettings syncedSettings = null;
+		SyncedSettings syncedSettings;
 		Accounts accounts = null;
-		Contacts contacts = null;
+		Set<Contacts> contacts = new HashSet<>();
 		Identities identities = null;
 		DropServers dropServers = null;
-		Set<SyncedModuleSettings> syncedModuleSettings = null;
-		
+
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
@@ -81,8 +70,15 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 				break;
 			case "contacts":
 				TypeAdapter<Contacts> contactsAdapter = 
-						new ContactsTypeAdapter();
-				contacts = contactsAdapter.read(in);
+						new ContactsTypeAdapter(identities);
+				in.beginArray();
+				while(in.hasNext()) {
+					Contacts read = contactsAdapter.read(in);
+					if (read != null) {
+						contacts.add(read);
+					}
+				}
+				in.endArray();
 				break;
 			case "identities":
 				TypeAdapter<Identities> identitiesAdapter = 
@@ -94,43 +90,22 @@ public class SyncedSettingsTypeAdapter extends TypeAdapter<SyncedSettings> {
 						new DropServersTypeAdapter();
 				dropServers = dropServersAdapter.read(in);
 				break;
-			case "module_data":
-				syncedModuleSettings = new HashSet<SyncedModuleSettings>();
-				TypeAdapter<SyncedModuleSettings> adapter = new GsonBuilder()
-					.registerTypeAdapter(SyncedModuleSettings.class, new SyncedModuleSettingsTypeAdapter())
-					.create().getAdapter(SyncedModuleSettings.class);
-				in.beginArray();
-				while (in.hasNext()) {
-					syncedModuleSettings.add(adapter.read(in));
-				}
-				in.endArray();
-				break;
 			}
 		}
 		in.endObject();
 		
-		if(accounts == null
-				|| contacts == null
-				|| identities == null
-				|| dropServers == null
-				|| syncedModuleSettings == null) {
+		if(accounts == null || identities == null || dropServers == null) {
 			return null;
 		}
 
-		for(Contact contact : contacts.getContacts()) {
-			contact.setContactOwner(
-					identities.getByKeyIdentifier(
-							contact.getContactOwnerKeyId()));
-		}
-		
-
 		syncedSettings = new SyncedSettings();
 		syncedSettings.setAccounts(accounts);
-		syncedSettings.setContacts(contacts);
+		for (Contacts c : contacts) {
+			syncedSettings.setContacts(c);
+		}
 		syncedSettings.setIdentities(identities);
 		syncedSettings.setDropServers(dropServers);
-		syncedSettings.getSyncedModuleSettings().addAll(syncedModuleSettings);
-		
+
 		return syncedSettings;
 	}
 }
