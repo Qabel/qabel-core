@@ -9,6 +9,7 @@ import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -96,9 +97,6 @@ public class AccountingHTTP {
 	}
 
 	public void updateProfile() throws IOException, QblInvalidCredentials {
-		if (server.getAuthToken() == null) {
-			login();
-		}
 		URI uri;
 		try {
 			uri = this.buildUri("api/v0/profile").build();
@@ -106,7 +104,7 @@ public class AccountingHTTP {
 			throw new RuntimeException("Url building failed", e);
 		}
 		HttpGet httpGet = new HttpGet(uri);
-		httpGet.addHeader("Authorization", "Token " + server.getAuthToken());
+		authorize(httpGet);
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			HttpEntity entity = response.getEntity();
 			if (entity == null) {
@@ -125,11 +123,19 @@ public class AccountingHTTP {
 		}
 	}
 
-	public void updatePrefixes() throws IOException, QblInvalidCredentials {
-		ArrayList<String> prefixes;
+	public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
+		request.addHeader("Authorization", "Token " + getAuthToken());
+	}
+
+	private String getAuthToken() throws IOException, QblInvalidCredentials {
 		if (server.getAuthToken() == null) {
 			login();
 		}
+		return server.getAuthToken();
+	}
+
+	public void updatePrefixes() throws IOException, QblInvalidCredentials {
+		ArrayList<String> prefixes;
 		URI uri;
 		try {
 			uri = this.buildUri("api/v0/prefix").build();
@@ -137,7 +143,7 @@ public class AccountingHTTP {
 			throw new RuntimeException("Url building failed", e);
 		}
 		HttpGet httpGet = new HttpGet(uri);
-		httpGet.addHeader("Authorization", "Token " + server.getAuthToken());
+		authorize(httpGet);
 		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
 			HttpEntity entity = response.getEntity();
 			if (entity == null) {
@@ -150,9 +156,6 @@ public class AccountingHTTP {
 	}
 
 	public void createPrefix() throws IOException, QblInvalidCredentials {
-		if (server.getAuthToken() == null) {
-			login();
-		}
 		URI uri;
 		try {
 			uri = this.buildUri("api/v0/prefix").build();
@@ -160,7 +163,7 @@ public class AccountingHTTP {
 			throw new RuntimeException("Url building failed", e);
 		}
 		HttpPost httpPost = new HttpPost(uri);
-		httpPost.addHeader("Authorization", "Token " + server.getAuthToken());
+		httpPost.addHeader("Authorization", "Token " + getAuthToken());
 		try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
 			HttpEntity entity = response.getEntity();
 			if (entity == null) {
@@ -240,7 +243,6 @@ public class AccountingHTTP {
 	}
 
 	public void createBoxAccount(String email) throws IOException, QblCreateAccountFailException {
-
 		URI uri;
 
 		try {
