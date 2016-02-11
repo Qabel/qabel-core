@@ -12,6 +12,7 @@ public class Contacts extends EntityMap<Contact> {
 	private Identity identity;
 
 	public Contacts(Identity identity) {
+		super();
 		this.identity = identity;
 	}
 

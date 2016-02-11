@@ -1,6 +1,5 @@
 package de.qabel.core.config;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,10 +8,13 @@ import java.util.*;
  * 
  * @see Entity
  */
-abstract class EntityMap<T extends Entity> implements Serializable {
+abstract class EntityMap<T extends Entity> extends Persistable {
 	private static final long serialVersionUID = -4541440187172822588L;
-
 	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
+
+	public EntityMap() {
+		super();
+	}
 
 	/**
 	 * Returns unmodifiable set of contained contacts
