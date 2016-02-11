@@ -37,9 +37,6 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 
 		out.name("phone").value(value.getPhone());
 
-		out.name("my_identity");
-		out.value(value.getContactOwnerKeyId());
-		
 		out.name("drop_urls");
 		out.beginArray();
 		Collection<DropURL> dropUrls = value.getDropUrls();
@@ -72,7 +69,6 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 			return null;
 		}
 		Contact contact;
-		String contactOwnerKeyId = null;
 		String alias = null;
 		String email = null;
 		String phone = null;
@@ -85,9 +81,6 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 			case "keys":
 				QblEcPublicKeyTypeAdapter publicKeyTypeAdapter = new QblEcPublicKeyTypeAdapter();
 				ecPublicKey = publicKeyTypeAdapter.read(in);
-				break;
-			case "my_identity":
-				contactOwnerKeyId = in.nextString();
 				break;
 			case "alias":
 				alias = in.nextString();
@@ -133,11 +126,11 @@ public class ContactTypeAdapter extends TypeAdapter<Contact> {
 		}
 		in.endObject();
 		
-		if(ecPublicKey == null || contactOwnerKeyId == null || dropURLs == null) {
+		if(ecPublicKey == null || dropURLs == null) {
 			return null;
 		}
 		
-		contact = new Contact(contactOwnerKeyId, alias, dropURLs, ecPublicKey);
+		contact = new Contact(alias, dropURLs, ecPublicKey);
 
 		contact.setEmail(email);
 		contact.setPhone(phone);

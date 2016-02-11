@@ -26,6 +26,7 @@ public class ConfigHashCodeTest {
 		.overrideFactory("contactOwner", new IdentityTestFactory())
 		.ignoreProperty("contactOwnerKeyId") // depends on contactOwner, therefore not significant
 		.ignoreProperty("serialVersionUID")
+		.ignoreProperty("alias")
 		.ignoreProperty("email")
 		.ignoreProperty("phone")
 		.build();
@@ -69,6 +70,8 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.ignoreProperty("serialVersionUID")
+			.ignoreProperty("entities")
+			.overrideFactory("identity", new IdentityTestFactory())
 			.build();
 		tester.testHashCodeMethod(new ContactsEquivalentTestFactory(), config);
 	}
@@ -104,7 +107,7 @@ public class ConfigHashCodeTest {
 		ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
 		Configuration config = new ConfigurationBuilder()
 			.overrideFactory("accounts", new AccountsTestFactory())
-			.overrideFactory("contacts", new ContactsTestFactory())
+			.overrideFactory("contacts", new ContactsSetTestFactory())
 			.overrideFactory("dropServers", new DropServersTestFactory())
 			.overrideFactory("identities", new IdentitiesTestFactory())
 			.build();

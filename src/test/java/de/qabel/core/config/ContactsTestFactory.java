@@ -8,18 +8,24 @@ import org.meanbean.lang.Factory;
  * Attention: For testing purposes only!
  */
 class ContactsTestFactory implements Factory<Contacts>{
+	IdentityTestFactory identityTestFactory;
 	ContactTestFactory contactFactory;
 	ContactsTestFactory() {
-		contactFactory = new ContactTestFactory(); 
+		contactFactory = new ContactTestFactory();
+		identityTestFactory = new IdentityTestFactory();
 	}
 
-	@Override
-	public Contacts create() {
-		Contacts contacts = new Contacts();
+	public Contacts create(Identity identity) {
+		Contacts contacts = new Contacts(identity);
 
 		contacts.put(contactFactory.create());
 		contacts.put(contactFactory.create());
 
 		return contacts;
+	}
+
+	@Override
+	public Contacts create() {
+		return create(identityTestFactory.create());
 	}
 }

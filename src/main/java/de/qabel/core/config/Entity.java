@@ -13,10 +13,9 @@ import de.qabel.core.drop.DropURL;
  * communication.
  */
 public abstract class Entity extends SyncSettingItem {
-	private static final long serialVersionUID = 570661846263644501L;
+	private static final long serialVersionUID = -1239476740864486761L;
 
 	private final Set<DropURL> dropUrls;
-	private final Set<AbstractModuleSettings> moduleSettings = new HashSet<AbstractModuleSettings>(); // TODO: Will
 
 	public Entity(Collection<DropURL> drops) {
 		if (drops != null) {
@@ -45,16 +44,11 @@ public abstract class Entity extends SyncSettingItem {
 		this.dropUrls.add(drop);
 	}
 
-	public Set<AbstractModuleSettings> getModuleSettings() {
-		return moduleSettings;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + ((dropUrls == null) ? 0 : dropUrls.hashCode());
-		result = prime * result + ((moduleSettings == null) ? 0 : moduleSettings.hashCode());
 		return result;
 	}
 
@@ -67,15 +61,7 @@ public abstract class Entity extends SyncSettingItem {
 		if (getClass() != obj.getClass())
 			return false;
 		Entity other = (Entity) obj;
-		if (dropUrls == null) {
-			if (other.dropUrls != null)
-				return false;
-		} else if (!dropUrls.equals(other.dropUrls))
-			return false;
-		if (moduleSettings == null) {
-			if (other.moduleSettings != null)
-				return false;
-		} else if (!moduleSettings.equals(other.moduleSettings))
+		if (!dropUrls.equals(other.dropUrls))
 			return false;
 		return true;
 	}

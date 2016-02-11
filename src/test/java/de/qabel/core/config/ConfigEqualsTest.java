@@ -50,7 +50,7 @@ public class ConfigEqualsTest {
 	@Test
 	public void contactsEqualsTest() {
 		EqualsMethodTester tester = new EqualsMethodTester();
-		tester.testEqualsMethod(Contacts.class);
+		tester.testEqualsMethod(new ContactsEquivalentTestFactory());
 
 		ContactTestFactory contactFactory = new ContactTestFactory();
 
@@ -58,9 +58,11 @@ public class ConfigEqualsTest {
 		Contact a2 = contactFactory.create();
 		Contact c1 = contactFactory.create();
 
-		Contacts a = new Contacts();
-		Contacts b = new Contacts();
-		Contacts c = new Contacts();
+		Identity i = new IdentityTestFactory().create();
+
+		Contacts a = new Contacts(i);
+		Contacts b = new Contacts(i);
+		Contacts c = new Contacts(i);
 
 		a.put(a1);
 		a.put(a2);
@@ -181,7 +183,6 @@ public class ConfigEqualsTest {
 		Configuration config = new ConfigurationBuilder()
 			.iterations(10)
 			.overrideFactory("ecPublicKey", new QblECPublicKeyTestFactory())
-			.overrideFactory("contactOwner", new IdentityTestFactory())
 			.ignoreProperty("email")
 			.ignoreProperty("phone")
 			.build();

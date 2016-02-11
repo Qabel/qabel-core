@@ -26,7 +26,7 @@ public class DropMessageCryptorUtilTest {
 		QblECKeyPair recipientKey = new QblECKeyPair();
 		Identity recipient = new Identity(RECIPIENT, new ArrayList<DropURL>(), recipientKey);
 
-		Contact recipientContact = new Contact(senderIdentity, RECIPIENT_CONTACT, null, recipientKey.getPub());
+		Contact recipientContact = new Contact(RECIPIENT_CONTACT, null, recipientKey.getPub());
 
 		byte[] encryptedDropMessage = DropMessageCryptorUtil
 				.createEncryptedDropMessage(DROP_MESSAGE_PAYLOAD, DROP_MESSAGE_PAYLOAD_TYPE, senderIdentity, recipientContact);

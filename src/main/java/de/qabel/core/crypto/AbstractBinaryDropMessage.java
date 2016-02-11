@@ -102,9 +102,10 @@ public abstract class AbstractBinaryDropMessage {
 	 * Assembles a binary transport message for the given recipient.
 	 * 
 	 * @param recipient Recipient of the message.
+	 * @param sender Sender of the message
 	 * @return assembled binary message.
 	 */
-	abstract public byte[] assembleMessageFor(Contact recipient);
+	abstract public byte[] assembleMessageFor(Contact recipient, Identity sender);
 
 	abstract DecryptedPlaintext disassembleRawMessage(Identity identity);
 

@@ -17,8 +17,6 @@ import java.util.Collection;
 
 public class DropHTTP {
 
-	String dateFormat;
-
 	public HTTPResult<?> send(URI uri, byte[] message) {
 		HTTPResult<?> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);

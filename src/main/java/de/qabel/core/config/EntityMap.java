@@ -1,6 +1,5 @@
 package de.qabel.core.config;
 
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,9 +8,13 @@ import java.util.*;
  * 
  * @see Entity
  */
-abstract class EntityMap<T extends Entity> implements Serializable {
-	private static final long serialVersionUID = -8004819460313825206L;
+abstract class EntityMap<T extends Entity> extends Persistable {
+	private static final long serialVersionUID = -4541440187172822588L;
 	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
+
+	public EntityMap() {
+		super();
+	}
 
 	/**
 	 * Returns unmodifiable set of contained contacts
@@ -65,7 +68,7 @@ abstract class EntityMap<T extends Entity> implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((entities == null) ? 0 : entities.hashCode());
+		result = prime * result + entities.hashCode();
 		return result;
 	}
 
@@ -78,10 +81,7 @@ abstract class EntityMap<T extends Entity> implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityMap<T> other = (EntityMap<T>) obj;
-		if (entities == null) {
-			if (other.entities != null)
-				return false;
-		} else if (!entities.equals(other.entities))
+		if (!entities.equals(other.entities))
 			return false;
 		return true;
 	}
