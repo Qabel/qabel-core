@@ -150,7 +150,7 @@ public class AccountingHTTP {
 				throw new IOException("No answer from login");
 			}
 			String responseString = EntityUtils.toString(entity);
-			prefixes = new ArrayList<>(Arrays.asList(gson.fromJson(responseString, String[].class)));
+			prefixes = new ArrayList<>(Arrays.asList(gson.fromJson(responseString, PrefixListDto.class).prefixes));
 			profile.setPrefixes(prefixes);
 		}
 	}
@@ -170,7 +170,7 @@ public class AccountingHTTP {
 				throw new IOException("No answer from login");
 			}
 			String responseString = EntityUtils.toString(entity);
-			profile.addPrefix(gson.fromJson(responseString, String.class));
+			profile.addPrefix(gson.fromJson(responseString, PrefixDto.class).prefix);
 		}
 	}
 
