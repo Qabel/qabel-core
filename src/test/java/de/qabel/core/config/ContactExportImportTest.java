@@ -50,7 +50,7 @@ public class ContactExportImportTest {
 	@Test
 	public void testExportImportContact() throws QblDropInvalidURL, JSONException, URISyntaxException {
 		String contactJSON = ContactExportImport.exportContact(contact1);
-		Contact importedContact1 = ContactExportImport.parseContactForIdentity(identity, contactJSON);
+		Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
 		contactEquals(contact1, importedContact1);
 	}
 
@@ -59,7 +59,7 @@ public class ContactExportImportTest {
 		contact1.setEmail("test@example.com");
 		contact1.setPhone("+491111111");
 		String contactJSON = ContactExportImport.exportContact(contact1);
-		Contact importedContact1 = ContactExportImport.parseContactForIdentity(identity, contactJSON);
+		Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
 		contactEquals(contact1, importedContact1);
 	}
 
@@ -89,7 +89,7 @@ public class ContactExportImportTest {
     public void testImportExportedContactFromIdentity() throws URISyntaxException, QblDropInvalidURL, JSONException {
          String json = ContactExportImport.exportIdentityAsContact(identity);
         // Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test
-        Contact contact = ContactExportImport.parseContactForIdentity(identity, json);
+        Contact contact = ContactExportImport.parseContactForIdentity(json);
 
         assertThat(identity.getAlias(), is(contact.getAlias()));
         assertThat(identity.getDropUrls(), is(contact.getDropUrls()));
