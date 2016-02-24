@@ -2,7 +2,6 @@ package de.qabel.core.config;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import de.qabel.core.crypto.QblECKeyPair;

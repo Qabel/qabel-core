@@ -97,7 +97,6 @@ public class IdentityExportImport {
 		if (jsonObject.has(KEY_PHONE)) {
 			identity.setPhone(jsonObject.getString(KEY_PHONE));
 		}
-
 		return identity;
 	}
 }

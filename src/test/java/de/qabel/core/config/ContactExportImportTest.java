@@ -94,7 +94,7 @@ public class ContactExportImportTest {
 	public void testImportExportedContactFromIdentity() throws URISyntaxException, QblDropInvalidURL, JSONException {
 
 		String json = ContactExportImport.exportIdentityAsContact(identity);
-		// Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test
+		// Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test.
 		Contact contact = ContactExportImport.parseContactForIdentity(json);
 
 		assertThat(identity.getAlias(), is(contact.getAlias()));
