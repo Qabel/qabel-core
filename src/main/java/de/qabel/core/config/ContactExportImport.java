@@ -19,7 +19,7 @@ public class ContactExportImport {
     private static final String KEY_EMAIL = "email";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_PUBLIC_KEY = "public_key";
-    private static final String KEY_DROP_URLS = "dropURLs";
+    private static final String KEY_DROP_URLS = "drop_urls";
     private static final String KEY_CONTACTS = "contacts";
 
     public static String exportContacts(Contacts contacts) throws JSONException {
@@ -88,16 +88,15 @@ public class ContactExportImport {
     /**
      * Parse a {@link Contact} from a {@link Contact} JSON string
      *
-     * @param identity {@link Identity} for setting the owner of the {@link Contact}
      * @param json     {@link Contact} JSON string
      * @return {@link Contact} parsed from JSON string
      * @throws JSONException
      * @throws URISyntaxException
      * @throws QblDropInvalidURL
      */
-    public static Contact parseContactForIdentity(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+    public static Contact parseContactForIdentity(String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
 
-        return parseContactFromJSON(identity, json);
+        return parseContactFromJSON(json);
     }
 
     /**
@@ -116,13 +115,13 @@ public class ContactExportImport {
         JSONObject jsonObject = new JSONObject(json);
         JSONArray jsonContacts = jsonObject.getJSONArray(KEY_CONTACTS);
         for (int i = 0; i < jsonContacts.length(); i++) {
-            contacts.put(parseContactFromJSON(identity, jsonContacts.getString(i)));
+            JSONObject o = (JSONObject)jsonContacts.get(i);
+            contacts.put(parseContactFromJSON(o.toString()));
         }
         return contacts;
     }
 
-    //@NonNull
-    private static Contact parseContactFromJSON(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+    private static Contact parseContactFromJSON(String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
 
         JSONObject jsonObject = new JSONObject(json);
 

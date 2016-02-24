@@ -69,31 +69,23 @@ public class ConfigSerializationTest {
 	}
 	
 	@Test
-	public void contactTest() {
+	public void contactTest() throws Exception {
 		Contact contact;
 		Contact deserializedContact;
-		try {
-			
-			Identity i = new Identity("alias", new ArrayList<DropURL>(), new QblECKeyPair());
-			i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
-			QblECKeyPair ecKeyPair = new QblECKeyPair();
-			contact = new Contact("", null, ecKeyPair.getPub());
-			contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
-			contact.setEmail("alice@example.org");
-			contact.setPhone("+49123456789012");
 
-			GsonBuilder builder = new GsonBuilder();
-			builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
-			Gson gson = builder.create();
-			deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
-			
-			assertEquals(contact, deserializedContact);
-			assertEquals("alice@example.org", deserializedContact.getEmail());
-			assertEquals("+49123456789012", deserializedContact.getPhone());
-			
-		} catch (QblDropInvalidURL | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Identity i = new Identity("alias", new ArrayList<DropURL>(), new QblECKeyPair());
+		i.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012c"));
+		QblECKeyPair ecKeyPair = new QblECKeyPair();
+		contact = new Contact("", null, ecKeyPair.getPub());
+		contact.addDrop(new DropURL("https://inbox.qabel.de/123456789012345678901234567890123456789012d"));
+
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(Contact.class, new ContactTypeAdapter());
+		Gson gson = builder.create();
+		deserializedContact = gson.fromJson(gson.toJson(contact), Contact.class);
+
+		assertEquals(contact, deserializedContact);
+		assertEquals("alice@example.org", deserializedContact.getEmail());
+		assertEquals("+49123456789012", deserializedContact.getPhone());
 	}
 }
