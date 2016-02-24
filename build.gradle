@@ -7,149 +7,149 @@ version = '0.1'
 group = 'de.qabel.core'
 
 jar {
-    manifest {
-        attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
-    }
+	manifest {
+		attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
+	}
 }
 
 repositories {
-    mavenCentral()
+	mavenCentral()
 }
 
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.+'
-    testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
-    compile 'com.google.code.gson:gson:2.+'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.4'
-    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.4'
-    compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
-    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
-    compile 'com.amazonaws:aws-java-sdk:1.10.32'
-    compile 'com.madgag.spongycastle:prov:1.53.0.0'
-    compile 'org.json:json:20160212'
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+	compile 'com.google.code.gson:gson:2.+'
+	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.4'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.4'
+	compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
+	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
+	compile 'com.amazonaws:aws-java-sdk:1.10.32'
+	compile 'com.madgag.spongycastle:prov:1.53.0.0'
+	compile 'org.json:json:20160212'
 }
 
 task nativeHeaders {
-    String inputClass = 'de.qabel.core.crypto.Curve25519'
-    String inputClassPath = '../build/classes/main'
-    String outputFile = "jni/curve25519-jni.h"
-    inputs.file sourceSets.main.output.asFileTree.matching {
-        include inputClassPath
-    }
-    outputs.file outputFile
-    doLast {
-        ant.javah(class: inputClass, outputFile: outputFile, classpath: sourceSets.main.output.asPath)
-    }
+	String inputClass = 'de.qabel.core.crypto.Curve25519'
+	String inputClassPath = '../build/classes/main'
+	String outputFile = "jni/curve25519-jni.h"
+	inputs.file sourceSets.main.output.asFileTree.matching {
+		include inputClassPath
+	}
+	outputs.file outputFile
+	doLast {
+		ant.javah(class: inputClass, outputFile: outputFile, classpath: sourceSets.main.output.asPath)
+	}
 }
 
 model {
-    platforms {
-        linux_i386 {
-            architecture "i386"
-            operatingSystem "linux"
-        }
-        linux_amd64 {
-            architecture "amd64"
-            operatingSystem "linux"
-        }
-        windows_i386 {
-            architecture "i386"
-            operatingSystem "windows"
-        }
-        windows_amd64 {
-            architecture "amd64"
-            operatingSystem "windows"
-        }
-        osx_amd64 {
-            architecture "amd64"
-            operatingSystem "osx"
-        }
-    }
+	platforms {
+		linux_i386 {
+			architecture "i386"
+			operatingSystem "linux"
+		}
+		linux_amd64 {
+			architecture "amd64"
+			operatingSystem "linux"
+		}
+		windows_i386 {
+			architecture "i386"
+			operatingSystem "windows"
+		}
+		windows_amd64 {
+			architecture "amd64"
+			operatingSystem "windows"
+		}
+		osx_amd64 {
+			architecture "amd64"
+			operatingSystem "osx"
+		}
+	}
 }
 
 libraries {
-    curve25519 {
-        baseName 'curve25519'
-    }
+	curve25519 {
+		baseName 'curve25519'
+	}
 
-    all {
-        binaries.all {
-            $platform
-            if (targetPlatform.operatingSystem.linux) {
-                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
-            } else if (targetPlatform.operatingSystem.windows) {
-                cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-                cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/win32"
-                linker.args "Shlwapi.lib", "Advapi32.lib"
-            } else {
-                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
-                cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/darwin"
-            }
+	all {
+		binaries.all {
+			$platform
+			if (targetPlatform.operatingSystem.linux) {
+				cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+				cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
+			} else if (targetPlatform.operatingSystem.windows) {
+				cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+				cCompiler.args "-I${org.gradle.internal.jvm.Jvm.current().javaHome}/include/win32"
+				linker.args "Shlwapi.lib", "Advapi32.lib"
+			} else {
+				cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
+				cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/darwin"
+			}
 
-            tasks.withType(CCompile) { task ->
-                task.dependsOn nativeHeaders
-            }
-        }
-    }
+			tasks.withType(CCompile) { task ->
+				task.dependsOn nativeHeaders
+			}
+		}
+	}
 }
 
 sources {
-    curve25519 {
-        c {
-            source.srcDirs = ['jni']
-            exportedHeaders.srcDirs = ['src/shared/headers']
-        }
-    }
+	curve25519 {
+		c {
+			source.srcDirs = ['jni']
+			exportedHeaders.srcDirs = ['src/shared/headers']
+		}
+	}
 }
 
 configurations {
-    jni
+	jni
 }
 
 binaries.withType(SharedLibraryBinary) { binary ->
-    if (!buildable) {
-        return
-    }
-    def arch = System.properties['os.arch']
-    if (targetPlatform.operatingSystem.name in ['linux'] && targetPlatform.architecture.name != arch) {
-        // Native plugins don't detect whether multilib support is available or not. Assume not for now
-        return
-    }
+	if (!buildable) {
+		return
+	}
+	def arch = System.properties['os.arch']
+	if (targetPlatform.operatingSystem.name in ['linux'] && targetPlatform.architecture.name != arch) {
+		// Native plugins don't detect whether multilib support is available or not. Assume not for now
+		return
+	}
 
-    def variantName = "${targetPlatform.operatingSystem.name}-${targetPlatform.architecture.name}"
+	def variantName = "${targetPlatform.operatingSystem.name}-${targetPlatform.architecture.name}"
 
-    def taskName = "jar-${variantName}"
-    def nativeJar = project.tasks.findByName(taskName)
-    if (nativeJar == null) {
-        nativeJar = project.task(taskName, type: Jar) {
-            baseName = "curve25519-$variantName"
-        }
-        artifacts {
-            jni nativeJar
-            runtime nativeJar
-        }
-    }
+	def taskName = "jar-${variantName}"
+	def nativeJar = project.tasks.findByName(taskName)
+	if (nativeJar == null) {
+		nativeJar = project.task(taskName, type: Jar) {
+			baseName = "curve25519-$variantName"
+		}
+		artifacts {
+			jni nativeJar
+			runtime nativeJar
+		}
+	}
 
-    def builderTask = binary.tasks
-    nativeJar.into("de/qabel/platform/$variantName") { from builderTask.outputFile }
-    nativeJar.dependsOn builderTask
-    test.dependsOn nativeJar
+	def builderTask = binary.tasks
+	nativeJar.into("de/qabel/platform/$variantName") { from builderTask.outputFile }
+	nativeJar.dependsOn builderTask
+	test.dependsOn nativeJar
 }
 
 tasks.withType(Test) {
-    def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
-    systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
+	def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
+	systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
 }
 
 sourceSets {
-    main {
-        resources.srcDirs += ['src/resources/config/']
-    }
-    test {
-        resources.srcDirs += ['src/resources/config/']
-    }
+	main {
+		resources.srcDirs += ['src/resources/config/']
+	}
+	test {
+		resources.srcDirs += ['src/resources/config/']
+	}
 }
