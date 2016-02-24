@@ -7,42 +7,42 @@ version = '0.1'
 group = 'de.qabel.core'
 
 jar {
-	manifest {
-		attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
-	}
+    manifest {
+        attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
-	compile 'com.google.code.gson:gson:2.+'
-	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.4'
-	compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.4'
-	compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
-	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
-	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
-	compile 'com.amazonaws:aws-java-sdk:1.10.32'
-	compile 'com.madgag.spongycastle:prov:1.53.0.0'
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+    compile 'com.google.code.gson:gson:2.+'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.4'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.4'
+    compile group: 'org.apache.james', name: 'apache-mime4j', version: '0.7.2'
+    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
+    compile 'com.amazonaws:aws-java-sdk:1.10.32'
+    compile 'com.madgag.spongycastle:prov:1.53.0.0'
     compile 'org.json:json:20160212'
 }
 
 task nativeHeaders {
-	String inputClass = 'de.qabel.core.crypto.Curve25519'
-	String inputClassPath = '../build/classes/main'
-	String outputFile = "jni/curve25519-jni.h"
-	inputs.file sourceSets.main.output.asFileTree.matching {
-		include inputClassPath
-	}
-	outputs.file outputFile
-	doLast {
-		ant.javah(class: inputClass, outputFile: outputFile, classpath:sourceSets.main.output.asPath)
-	}
+    String inputClass = 'de.qabel.core.crypto.Curve25519'
+    String inputClassPath = '../build/classes/main'
+    String outputFile = "jni/curve25519-jni.h"
+    inputs.file sourceSets.main.output.asFileTree.matching {
+        include inputClassPath
+    }
+    outputs.file outputFile
+    doLast {
+        ant.javah(class: inputClass, outputFile: outputFile, classpath: sourceSets.main.output.asPath)
+    }
 }
 
 model {
@@ -76,7 +76,8 @@ libraries {
     }
 
     all {
-        binaries.all {$platform
+        binaries.all {
+            $platform
             if (targetPlatform.operatingSystem.linux) {
                 cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include"
                 cCompiler.args '-I', "${org.gradle.internal.jvm.Jvm.current().javaHome}/include/linux"
@@ -97,7 +98,7 @@ libraries {
 }
 
 sources {
-   curve25519 {
+    curve25519 {
         c {
             source.srcDirs = ['jni']
             exportedHeaders.srcDirs = ['src/shared/headers']
@@ -120,7 +121,7 @@ binaries.withType(SharedLibraryBinary) { binary ->
     }
 
     def variantName = "${targetPlatform.operatingSystem.name}-${targetPlatform.architecture.name}"
-    
+
     def taskName = "jar-${variantName}"
     def nativeJar = project.tasks.findByName(taskName)
     if (nativeJar == null) {
@@ -145,10 +146,10 @@ tasks.withType(Test) {
 }
 
 sourceSets {
-	main {
-	    resources.srcDirs += ['src/resources/config/'] 
-	}
-	test {
-            resources.srcDirs += ['src/resources/config/'] 
-	}
+    main {
+        resources.srcDirs += ['src/resources/config/']
+    }
+    test {
+        resources.srcDirs += ['src/resources/config/']
+    }
 }

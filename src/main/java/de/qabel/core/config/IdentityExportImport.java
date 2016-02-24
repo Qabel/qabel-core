@@ -29,6 +29,7 @@ public class IdentityExportImport {
      * @return {@link Identity} information as JSON string
      */
     public static String exportIdentity(Identity identity) {
+
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonDropUrls = new JSONArray();
 
@@ -59,6 +60,7 @@ public class IdentityExportImport {
 
     /**
      * Parse a {@link Identity} from a {@link Identity} JSON string
+     *
      * @param json {@link Identity} JSON string
      * @return {@link Identity} parsed from JSON string
      * @throws JSONException
@@ -66,6 +68,7 @@ public class IdentityExportImport {
      * @throws QblDropInvalidURL
      */
     public static Identity parseIdentity(String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+
         Collection<DropURL> dropURLs = new ArrayList<>();
 
         JSONObject jsonObject = new JSONObject(json);
@@ -79,7 +82,7 @@ public class IdentityExportImport {
 
         Identity identity = new Identity(alias, dropURLs, qblECKeyPair);
 
-        if(jsonObject.has(KEY_PREFIXES)) {
+        if (jsonObject.has(KEY_PREFIXES)) {
             JSONArray jsonPrefixes = jsonObject.getJSONArray(KEY_PREFIXES);
             for (int i = 0; i < jsonPrefixes.length(); i++) {
                 identity.getPrefixes().add(jsonPrefixes.getString(i));
@@ -97,5 +100,4 @@ public class IdentityExportImport {
 
         return identity;
     }
-
 }

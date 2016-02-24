@@ -15,132 +15,132 @@ import de.qabel.core.exceptions.QblDropInvalidURL;
 
 public class ContactExportImport {
 
-    private static final String KEY_ALIAS = "alias";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_PHONE = "phone";
-    private static final String KEY_PUBLIC_KEY = "public_key";
-    private static final String KEY_DROP_URLS = "dropURLs";
-    private static final String KEY_CONTACTS = "contacts";
+	private static final String KEY_ALIAS = "alias";
+	private static final String KEY_EMAIL = "email";
+	private static final String KEY_PHONE = "phone";
+	private static final String KEY_PUBLIC_KEY = "public_key";
+	private static final String KEY_DROP_URLS = "dropURLs";
+	private static final String KEY_CONTACTS = "contacts";
 
-    public static String exportContacts(Contacts contacts) throws JSONException {
+	public static String exportContacts(Contacts contacts) throws JSONException {
 
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonContacts = new JSONArray();
-        for (Contact contact : contacts.getContacts()) {
-            jsonContacts.put(getJSONfromContact(contact));
-        }
-        jsonObject.put(KEY_CONTACTS, jsonContacts);
-        return jsonObject.toString();
-    }
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonContacts = new JSONArray();
+		for (Contact contact : contacts.getContacts()) {
+			jsonContacts.put(getJSONfromContact(contact));
+		}
+		jsonObject.put(KEY_CONTACTS, jsonContacts);
+		return jsonObject.toString();
+	}
 
-    public static String exportContact(Contact contact) {
+	public static String exportContact(Contact contact) {
 
-        return getJSONfromContact(contact).toString();
-    }
+		return getJSONfromContact(contact).toString();
+	}
 
-    private static JSONObject getJSONfromContact(Contact contact) {
+	private static JSONObject getJSONfromContact(Contact contact) {
 
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonDropUrls = new JSONArray();
-        try {
-            jsonObject.put(KEY_ALIAS, contact.getAlias());
-            jsonObject.put(KEY_EMAIL, contact.getEmail());
-            jsonObject.put(KEY_PHONE, contact.getPhone());
-            jsonObject.put(KEY_PUBLIC_KEY, contact.getKeyIdentifier());
-            for (DropURL dropURL : contact.getDropUrls()) {
-                jsonDropUrls.put(dropURL);
-            }
-            jsonObject.put(KEY_DROP_URLS, jsonDropUrls);
-        } catch (JSONException e) {
-            // Shouldn't be possible to trigger this exception
-            throw new RuntimeException("Cannot build JSONObject", e);
-        }
-        return jsonObject;
-    }
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonDropUrls = new JSONArray();
+		try {
+			jsonObject.put(KEY_ALIAS, contact.getAlias());
+			jsonObject.put(KEY_EMAIL, contact.getEmail());
+			jsonObject.put(KEY_PHONE, contact.getPhone());
+			jsonObject.put(KEY_PUBLIC_KEY, contact.getKeyIdentifier());
+			for (DropURL dropURL : contact.getDropUrls()) {
+				jsonDropUrls.put(dropURL);
+			}
+			jsonObject.put(KEY_DROP_URLS, jsonDropUrls);
+		} catch (JSONException e) {
+			// Shouldn't be possible to trigger this exception
+			throw new RuntimeException("Cannot build JSONObject", e);
+		}
+		return jsonObject;
+	}
 
-    /**
-     * Exports the {@link Contact} information as a JSON string from an {@link Identity}
-     *
-     * @param identity {@link Identity} to export {@link Contact} information from
-     * @return {@link Contact} information as JSON string
-     */
-    public static String exportIdentityAsContact(Identity identity) {
+	/**
+	 * Exports the {@link Contact} information as a JSON string from an {@link Identity}
+	 *
+	 * @param identity {@link Identity} to export {@link Contact} information from
+	 * @return {@link Contact} information as JSON string
+	 */
+	public static String exportIdentityAsContact(Identity identity) {
 
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonDropUrls = new JSONArray();
-        try {
-            jsonObject.put(KEY_ALIAS, identity.getAlias());
-            jsonObject.put(KEY_EMAIL, identity.getEmail());
-            jsonObject.put(KEY_PHONE, identity.getPhone());
-            jsonObject.put(KEY_PUBLIC_KEY, identity.getKeyIdentifier());
-            for (DropURL dropURL : identity.getDropUrls()) {
-                jsonDropUrls.put(dropURL);
-            }
-            jsonObject.put(KEY_DROP_URLS, jsonDropUrls);
-        } catch (JSONException e) {
-            // Shouldn't be possible to trigger this exception
-            throw new RuntimeException("Cannot build JSONObject", e);
-        }
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonDropUrls = new JSONArray();
+		try {
+			jsonObject.put(KEY_ALIAS, identity.getAlias());
+			jsonObject.put(KEY_EMAIL, identity.getEmail());
+			jsonObject.put(KEY_PHONE, identity.getPhone());
+			jsonObject.put(KEY_PUBLIC_KEY, identity.getKeyIdentifier());
+			for (DropURL dropURL : identity.getDropUrls()) {
+				jsonDropUrls.put(dropURL);
+			}
+			jsonObject.put(KEY_DROP_URLS, jsonDropUrls);
+		} catch (JSONException e) {
+			// Shouldn't be possible to trigger this exception
+			throw new RuntimeException("Cannot build JSONObject", e);
+		}
 
-        return jsonObject.toString();
-    }
+		return jsonObject.toString();
+	}
 
-    /**
-     * Parse a {@link Contact} from a {@link Contact} JSON string
-     *
-     * @param identity {@link Identity} for setting the owner of the {@link Contact}
-     * @param json     {@link Contact} JSON string
-     * @return {@link Contact} parsed from JSON string
-     * @throws JSONException
-     * @throws URISyntaxException
-     * @throws QblDropInvalidURL
-     */
-    public static Contact parseContactForIdentity(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+	/**
+	 * Parse a {@link Contact} from a {@link Contact} JSON string
+	 *
+	 * @param identity {@link Identity} for setting the owner of the {@link Contact}
+	 * @param json     {@link Contact} JSON string
+	 * @return {@link Contact} parsed from JSON string
+	 * @throws JSONException
+	 * @throws URISyntaxException
+	 * @throws QblDropInvalidURL
+	 */
+	public static Contact parseContactForIdentity(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
 
-        return parseContactFromJSON(identity, json);
-    }
+		return parseContactFromJSON(identity, json);
+	}
 
-    /**
-     * Parse {@link Contacts} from a {@link Contacts} JSON string
-     *
-     * @param identity {@link Identity} for setting the owner of the {@link Contact}s
-     * @param json     {@link Contacts} JSON string
-     * @return {@link Contacts} parsed from JSON string
-     * @throws JSONException
-     * @throws URISyntaxException
-     * @throws QblDropInvalidURL
-     */
-    public static Contacts parseContactsForIdentity(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+	/**
+	 * Parse {@link Contacts} from a {@link Contacts} JSON string
+	 *
+	 * @param identity {@link Identity} for setting the owner of the {@link Contact}s
+	 * @param json     {@link Contacts} JSON string
+	 * @return {@link Contacts} parsed from JSON string
+	 * @throws JSONException
+	 * @throws URISyntaxException
+	 * @throws QblDropInvalidURL
+	 */
+	public static Contacts parseContactsForIdentity(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
 
-        Contacts contacts = new Contacts(identity);
-        JSONObject jsonObject = new JSONObject(json);
-        JSONArray jsonContacts = jsonObject.getJSONArray(KEY_CONTACTS);
-        for (int i = 0; i < jsonContacts.length(); i++) {
-            contacts.put(parseContactFromJSON(identity, jsonContacts.getString(i)));
-        }
-        return contacts;
-    }
+		Contacts contacts = new Contacts(identity);
+		JSONObject jsonObject = new JSONObject(json);
+		JSONArray jsonContacts = jsonObject.getJSONArray(KEY_CONTACTS);
+		for (int i = 0; i < jsonContacts.length(); i++) {
+			contacts.put(parseContactFromJSON(identity, jsonContacts.getString(i)));
+		}
+		return contacts;
+	}
 
-    //@NonNull
-    private static Contact parseContactFromJSON(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
+	//@NonNull
+	private static Contact parseContactFromJSON(Identity identity, String json) throws JSONException, URISyntaxException, QblDropInvalidURL {
 
-        JSONObject jsonObject = new JSONObject(json);
+		JSONObject jsonObject = new JSONObject(json);
 
-        Collection<DropURL> dropURLs = new ArrayList<>();
-        String alias = jsonObject.getString(KEY_ALIAS);
-        JSONArray jsonDropURLS = jsonObject.getJSONArray(KEY_DROP_URLS);
-        for (int i = 0; i < jsonDropURLS.length(); i++) {
-            dropURLs.add(new DropURL(jsonDropURLS.getString(i)));
-        }
-        String keyIdentifier = jsonObject.getString(KEY_PUBLIC_KEY);
+		Collection<DropURL> dropURLs = new ArrayList<>();
+		String alias = jsonObject.getString(KEY_ALIAS);
+		JSONArray jsonDropURLS = jsonObject.getJSONArray(KEY_DROP_URLS);
+		for (int i = 0; i < jsonDropURLS.length(); i++) {
+			dropURLs.add(new DropURL(jsonDropURLS.getString(i)));
+		}
+		String keyIdentifier = jsonObject.getString(KEY_PUBLIC_KEY);
 
-        Contact contact = new Contact(alias, dropURLs, new QblECPublicKey(Hex.decode(keyIdentifier)));
-        if (jsonObject.has(KEY_EMAIL)) {
-            contact.setEmail(jsonObject.getString(KEY_EMAIL));
-        }
-        if (jsonObject.has(KEY_PHONE)) {
-            contact.setPhone(jsonObject.getString(KEY_PHONE));
-        }
-        return contact;
-    }
+		Contact contact = new Contact(alias, dropURLs, new QblECPublicKey(Hex.decode(keyIdentifier)));
+		if (jsonObject.has(KEY_EMAIL)) {
+			contact.setEmail(jsonObject.getString(KEY_EMAIL));
+		}
+		if (jsonObject.has(KEY_PHONE)) {
+			contact.setPhone(jsonObject.getString(KEY_PHONE));
+		}
+		return contact;
+	}
 }
