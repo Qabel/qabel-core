@@ -28,6 +28,7 @@ public class ContactExportImportTest {
 
 	@Before
 	public void setUp() throws Exception {
+
 		qblECKeyPair = new QblECKeyPair();
 		Collection<DropURL> dropURLs = new ArrayList<>();
 		dropURLs.add(new DropURL(DROP_URL_1));
@@ -49,22 +50,25 @@ public class ContactExportImportTest {
 
 	@Test
 	public void testExportImportContact() throws QblDropInvalidURL, JSONException, URISyntaxException {
+
 		String contactJSON = ContactExportImport.exportContact(contact1);
-		Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
+		Contact importedContact1 = ContactExportImport.parseContactForIdentity(identity, contactJSON);
 		contactEquals(contact1, importedContact1);
 	}
 
 	@Test
 	public void testExportImportContactWithOptionals() throws QblDropInvalidURL, JSONException, URISyntaxException {
+
 		contact1.setEmail("test@example.com");
 		contact1.setPhone("+491111111");
 		String contactJSON = ContactExportImport.exportContact(contact1);
-		Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
+		Contact importedContact1 = ContactExportImport.parseContactForIdentity(identity, contactJSON);
 		contactEquals(contact1, importedContact1);
 	}
 
 	@Test
 	public void testExportImportContacts() throws JSONException, URISyntaxException, QblDropInvalidURL {
+
 		String contactsJSON = ContactExportImport.exportContacts(contacts);
 
 		Contacts importedContacts = ContactExportImport.parseContactsForIdentity(identity, contactsJSON);
@@ -77,7 +81,8 @@ public class ContactExportImportTest {
 		contactEquals(contact2, importedContact2);
 	}
 
-	private void contactEquals(Contact contact1, Contact contact2){
+	private void contactEquals(Contact contact1, Contact contact2) {
+
 		assertThat(contact1.getAlias(), is(contact2.getAlias()));
 		assertThat(contact1.getDropUrls(), is(contact2.getDropUrls()));
 		assertThat(contact1.getEcPublicKey().getReadableKeyIdentifier(), is(contact2.getEcPublicKey().getReadableKeyIdentifier()));
@@ -85,16 +90,17 @@ public class ContactExportImportTest {
 		assertThat(contact1.getEmail(), is(contact2.getEmail()));
 	}
 
-    @Test
-    public void testImportExportedContactFromIdentity() throws URISyntaxException, QblDropInvalidURL, JSONException {
-         String json = ContactExportImport.exportIdentityAsContact(identity);
-        // Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test
-        Contact contact = ContactExportImport.parseContactForIdentity(json);
+	@Test
+	public void testImportExportedContactFromIdentity() throws URISyntaxException, QblDropInvalidURL, JSONException {
 
-        assertThat(identity.getAlias(), is(contact.getAlias()));
-        assertThat(identity.getDropUrls(), is(contact.getDropUrls()));
-        assertThat(identity.getEcPublicKey().getReadableKeyIdentifier(), is(contact.getEcPublicKey().getReadableKeyIdentifier()));
+		String json = ContactExportImport.exportIdentityAsContact(identity);
+		// Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test
+		Contact contact = ContactExportImport.parseContactForIdentity(json);
+
+		assertThat(identity.getAlias(), is(contact.getAlias()));
+		assertThat(identity.getDropUrls(), is(contact.getDropUrls()));
+		assertThat(identity.getEcPublicKey().getReadableKeyIdentifier(), is(contact.getEcPublicKey().getReadableKeyIdentifier()));
 		assertThat(identity.getPhone(), is(contact.getPhone()));
 		assertThat(identity.getEmail(), is(contact.getEmail()));
-    }
+	}
 }

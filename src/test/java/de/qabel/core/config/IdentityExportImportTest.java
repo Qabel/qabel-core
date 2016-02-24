@@ -12,50 +12,51 @@ import static org.junit.Assert.assertEquals;
 
 public class IdentityExportImportTest {
 
-	@Test
-	public void testExportImportIdentity() throws Exception {
-		QblECKeyPair qblECKeyPair = new QblECKeyPair();
-		Collection<DropURL> dropURLs = new ArrayList<>();
-		dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
-		dropURLs.add(new DropURL("http://localhost:6000/0000000000000000000000000000000000000000000"));
+    @Test
+    public void testExportImportIdentity() throws Exception {
 
-		Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
-		identity.setPhone("049111111");
-		identity.setEmail("test@example.com");
-		identity.getPrefixes().add("prefix1");
-		identity.getPrefixes().add("prefix2");
+        QblECKeyPair qblECKeyPair = new QblECKeyPair();
+        Collection<DropURL> dropURLs = new ArrayList<>();
+        dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
+        dropURLs.add(new DropURL("http://localhost:6000/0000000000000000000000000000000000000000000"));
 
-		String exportedIdentity = IdentityExportImport.exportIdentity(identity);
+        Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
+        identity.setPhone("049111111");
+        identity.setEmail("test@example.com");
+        identity.getPrefixes().add("prefix1");
+        identity.getPrefixes().add("prefix2");
 
-		Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
+        String exportedIdentity = IdentityExportImport.exportIdentity(identity);
 
-		assertEquals(identity.getId(), importedIdentity.getId());
-		assertEquals(identity.getEmail(), importedIdentity.getEmail());
-		assertEquals(identity.getPhone(), importedIdentity.getPhone());
-		assertEquals(identity.getPrimaryKeyPair(), importedIdentity.getPrimaryKeyPair());
-		assertEquals(identity.getDropUrls(), importedIdentity.getDropUrls());
-		assertEquals(identity.getPrefixes(), importedIdentity.getPrefixes());
-	}
+        Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
 
-	@Test
-	public void testExportImportIdentityMissingOptionals() throws Exception {
-		QblECKeyPair qblECKeyPair = new QblECKeyPair();
-		Collection<DropURL> dropURLs = new ArrayList<>();
-		dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
-		dropURLs.add(new DropURL("http://localhost:6000/0000000000000000000000000000000000000000000"));
+        assertEquals(identity.getId(), importedIdentity.getId());
+        assertEquals(identity.getEmail(), importedIdentity.getEmail());
+        assertEquals(identity.getPhone(), importedIdentity.getPhone());
+        assertEquals(identity.getPrimaryKeyPair(), importedIdentity.getPrimaryKeyPair());
+        assertEquals(identity.getDropUrls(), importedIdentity.getDropUrls());
+        assertEquals(identity.getPrefixes(), importedIdentity.getPrefixes());
+    }
 
-		Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
+    @Test
+    public void testExportImportIdentityMissingOptionals() throws Exception {
 
-		String exportedIdentity = IdentityExportImport.exportIdentity(identity);
+        QblECKeyPair qblECKeyPair = new QblECKeyPair();
+        Collection<DropURL> dropURLs = new ArrayList<>();
+        dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
+        dropURLs.add(new DropURL("http://localhost:6000/0000000000000000000000000000000000000000000"));
 
-		Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
+        Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
 
-		assertEquals(identity.getId(), importedIdentity.getId());
-		assertEquals(identity.getEmail(), importedIdentity.getEmail());
-		assertEquals(identity.getPhone(), importedIdentity.getPhone());
-		assertEquals(identity.getPrimaryKeyPair(), importedIdentity.getPrimaryKeyPair());
-		assertEquals(identity.getDropUrls(), importedIdentity.getDropUrls());
-		assertEquals(identity.getPrefixes(), importedIdentity.getPrefixes());
-	}
+        String exportedIdentity = IdentityExportImport.exportIdentity(identity);
 
+        Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
+
+        assertEquals(identity.getId(), importedIdentity.getId());
+        assertEquals(identity.getEmail(), importedIdentity.getEmail());
+        assertEquals(identity.getPhone(), importedIdentity.getPhone());
+        assertEquals(identity.getPrimaryKeyPair(), importedIdentity.getPrimaryKeyPair());
+        assertEquals(identity.getDropUrls(), importedIdentity.getDropUrls());
+        assertEquals(identity.getPrefixes(), importedIdentity.getPrefixes());
+    }
 }
