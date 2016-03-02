@@ -23,6 +23,7 @@ public class DropHTTP {
 		conn.setDoOutput(true); // indicates POST method
 		conn.setDoInput(true);
 		conn.setRequestProperty("Content-Type", "application/octet-stream");
+		conn.setRequestProperty("Authorization", "Client Qabel");
 
 		// conn.setFixedLengthStreamingMode();
 		DataOutputStream out;
