@@ -34,7 +34,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	 */
 	public synchronized T put(T entity) {
 		T result = this.entities.put(entity.getKeyIdentifier(), entity);
-		notifiedObserver();
+		notifyObservers();
 		return result;
 	}
 
@@ -46,7 +46,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	 */
 	public synchronized T remove(T entity) {
 		T result = this.remove(entity.getKeyIdentifier());
-		notifiedObserver();
+		notifyObservers();
 		return result;
 	}
 
@@ -57,9 +57,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	 * @return old Entity associated to the given key identifier, or null if there was no such Entity
 	 */
 	public synchronized T remove(String keyIdentifier) {
-		T result = this.entities.remove(keyIdentifier);
-		notifiedObserver();
-		return result;
+		return this.entities.remove(keyIdentifier);
 	}
 
 	/**
@@ -99,8 +97,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 		getObserverList().add(observer);
 	}
 
-	@Override
-	public void notifiedObserver() {
+	private void notifyObservers() {
 		List<EntityObserver> lst = getObserverList();
 
 		for (EntityObserver e : lst) {
@@ -111,7 +108,6 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	private List<EntityObserver> getObserverList() {
 		if (observerList == null) {
 			observerList = new LinkedList<>();
-			return observerList;
 		}
 		return observerList;
 	}
