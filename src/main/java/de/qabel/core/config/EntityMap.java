@@ -105,10 +105,10 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	}
 
 	private void notifyObservers() {
-		CopyOnWriteArrayList<EntityObserver> lst = getObserverList();
+		List<EntityObserver> observers = getObserverList();
 
 
-		for (EntityObserver e : lst) {
+		for (EntityObserver e : observers) {
 			e.update();
 		}
 	}

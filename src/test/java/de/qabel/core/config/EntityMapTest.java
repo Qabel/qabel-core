@@ -3,6 +3,7 @@ package de.qabel.core.config;
 import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.net.URISyntaxException;
@@ -20,9 +21,19 @@ public class EntityMapTest {
 	private Contacts contacts;
 	private Contact contact;
 
+	@Before
+	public void setUp() throws Exception {
+		final boolean[] uptoDate = {false};
+		dropURLs = new ArrayList<>();
+		dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
+		identity = new Identity("Identity", dropURLs, qblECKeyPair);
+		contacts = new Contacts(identity);
+		contact = new Contact("Contact", identity.getDropUrls(), identity.getEcPublicKey());
+		contacts.put(contact);
+	}
+
 	@Test
 	public void testPutNotifyObserver() throws Exception {
-		setup();
 		final boolean[] uptoDate = {false};
 
 		EntityObserver observer = new EntityObserver() {
@@ -39,7 +50,6 @@ public class EntityMapTest {
 
 	@Test
 	public void testRemoveNotifyObserver() throws Exception {
-		setup();
 		final boolean[] uptoDate = {false};
 
 		EntityObserver observer = new EntityObserver() {
@@ -57,7 +67,6 @@ public class EntityMapTest {
 
 	@Test
 	public void testRemoveStringNotifyObserver() throws Exception {
-		setup();
 
 		final boolean[] uptoDate = {false};
 
@@ -76,7 +85,6 @@ public class EntityMapTest {
 
 	@Test
 	public void testRemoveEntityNotifyObserver() throws Exception {
-		setup();
 		final boolean[] uptoDate = {false};
 
 		EntityObserver observer = new EntityObserver() {
@@ -92,14 +100,7 @@ public class EntityMapTest {
 		assertTrue(uptoDate[0]);
 	}
 
-	private void setup() throws URISyntaxException, QblDropInvalidURL {
-		dropURLs = new ArrayList<>();
-		dropURLs.add(new DropURL("http://localhost:6000/1234567890123456789012345678901234567891234"));
-		identity = new Identity("Identity", dropURLs, qblECKeyPair);
-		contacts = new Contacts(identity);
-		contact = new Contact("Contact", identity.getDropUrls(), identity.getEcPublicKey());
-		contacts.put(contact);
-	}
+
 
 
 }
