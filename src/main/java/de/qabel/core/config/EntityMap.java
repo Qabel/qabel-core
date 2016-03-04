@@ -1,6 +1,7 @@
 package de.qabel.core.config;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * EntityMaps provide functionality to lookup an Entity based
@@ -11,7 +12,7 @@ import java.util.*;
 abstract class EntityMap<T extends Entity> extends Persistable implements EntityObservable {
 	private static final long serialVersionUID = -4541440187172822588L;
 	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
-	private transient List<EntityObserver> observerList = new LinkedList<>();
+	private transient CopyOnWriteArrayList<EntityObserver> observerList = new CopyOnWriteArrayList<>();
 
 	public EntityMap() {
 		super();
@@ -45,9 +46,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	 * @return old Entity associated to the key identifier of the given Entity, or null if there was no such Entity
 	 */
 	public synchronized T remove(T entity) {
-		T result = this.remove(entity.getKeyIdentifier());
-		notifyObservers();
-		return result;
+		return this.remove(entity.getKeyIdentifier());
 	}
 
 	/**
@@ -57,7 +56,9 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 	 * @return old Entity associated to the given key identifier, or null if there was no such Entity
 	 */
 	public synchronized T remove(String keyIdentifier) {
-		return this.entities.remove(keyIdentifier);
+		T result = this.entities.remove(keyIdentifier);
+		notifyObservers();
+		return result;
 	}
 
 	/**
@@ -97,17 +98,24 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 		getObserverList().add(observer);
 	}
 
+
+	@Override
+	public void removeObserver(EntityObserver observer) {
+		getObserverList().remove(observer);
+	}
+
 	private void notifyObservers() {
-		List<EntityObserver> lst = getObserverList();
+		CopyOnWriteArrayList<EntityObserver> lst = getObserverList();
+
 
 		for (EntityObserver e : lst) {
 			e.update();
 		}
 	}
 
-	private List<EntityObserver> getObserverList() {
+	private CopyOnWriteArrayList<EntityObserver> getObserverList() {
 		if (observerList == null) {
-			observerList = new LinkedList<>();
+			observerList = new CopyOnWriteArrayList<>();
 		}
 		return observerList;
 	}
