@@ -1,16 +1,18 @@
 package de.qabel.core.config;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * EntityMaps provide functionality to lookup an Entity based
  * on its key identifier.
- * 
+ *
  * @see Entity
  */
-abstract class EntityMap<T extends Entity> extends Persistable {
+abstract class EntityMap<T extends Entity> extends Persistable implements EntityObservable {
 	private static final long serialVersionUID = -4541440187172822588L;
 	private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
+	private transient CopyOnWriteArrayList<EntityObserver> observerList = new CopyOnWriteArrayList<>();
 
 	public EntityMap() {
 		super();
@@ -18,7 +20,7 @@ abstract class EntityMap<T extends Entity> extends Persistable {
 
 	/**
 	 * Returns unmodifiable set of contained contacts
-	 * 
+	 *
 	 * @return Set<Contact>
 	 */
 	public synchronized Set<T> getEntities() {
@@ -27,17 +29,19 @@ abstract class EntityMap<T extends Entity> extends Persistable {
 
 	/**
 	 * Inserts new Entity into the map associated to its key identifier.
-	 * 
+	 *
 	 * @param entity Entity to insert
 	 * @return old Entity associated to the same key identifier or null if no such old Entity was present.
 	 */
 	public synchronized T put(T entity) {
-		return this.entities.put(entity.getKeyIdentifier(), entity);
+		T result = this.entities.put(entity.getKeyIdentifier(), entity);
+		notifyObservers();
+		return result;
 	}
 
 	/**
 	 * Removes given Entity from the map.
-	 * 
+	 *
 	 * @param entity Entity to remove
 	 * @return old Entity associated to the key identifier of the given Entity, or null if there was no such Entity
 	 */
@@ -47,16 +51,19 @@ abstract class EntityMap<T extends Entity> extends Persistable {
 
 	/**
 	 * Removes Entity with the given key identifier from the map.
-	 * 
+	 *
 	 * @param keyIdentifier key identifier of the Entity that is to be removed
 	 * @return old Entity associated to the given key identifier, or null if there was no such Entity
 	 */
 	public synchronized T remove(String keyIdentifier) {
-		return this.entities.remove(keyIdentifier);
+		T result = this.entities.remove(keyIdentifier);
+		notifyObservers();
+		return result;
 	}
 
 	/**
 	 * Get entity by key identifier (right most 64 bit of the identity's public fingerprint)
+	 *
 	 * @param keyIdentifier
 	 * @return entity to which the key identifier is mapped or null if there is no mapping for this key identifier
 	 */
@@ -85,4 +92,32 @@ abstract class EntityMap<T extends Entity> extends Persistable {
 			return false;
 		return true;
 	}
+
+	@Override
+	public void addObserver(EntityObserver observer) {
+		getObserverList().add(observer);
+	}
+
+
+	@Override
+	public void removeObserver(EntityObserver observer) {
+		getObserverList().remove(observer);
+	}
+
+	private void notifyObservers() {
+		List<EntityObserver> observers = getObserverList();
+
+
+		for (EntityObserver e : observers) {
+			e.update();
+		}
+	}
+
+	private CopyOnWriteArrayList<EntityObserver> getObserverList() {
+		if (observerList == null) {
+			observerList = new CopyOnWriteArrayList<>();
+		}
+		return observerList;
+	}
+
 }
