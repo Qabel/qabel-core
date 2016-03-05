@@ -2,11 +2,9 @@ package de.qabel.core.config;
 
 import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.DropURL;
-import de.qabel.core.exceptions.QblDropInvalidURL;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -30,6 +28,12 @@ public class EntityMapTest {
 		contacts = new Contacts(identity);
 		contact = new Contact("Contact", identity.getDropUrls(), identity.getEcPublicKey());
 		contacts.put(contact);
+	}
+
+	@Test
+	public void testContains(){
+		Contact newContact = new Contact("Contact", identity.getDropUrls(), identity.getEcPublicKey());
+		assertTrue(contacts.contains(newContact));
 	}
 
 	@Test

@@ -71,6 +71,16 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
 		return this.entities.get(keyIdentifier);
 	}
 
+	/**
+	 * Returns true if the map contains a mapping for the key identifier of the entity.
+	 *
+	 * @param entity
+	 * @return true if a mapping for the key identifier exists
+	 */
+	public synchronized boolean contains(T entity){
+		return this.entities.containsKey(entity.getKeyIdentifier());
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
