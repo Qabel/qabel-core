@@ -32,7 +32,8 @@ public class EntityMapTest {
 
 	@Test
 	public void testContains(){
-		assertTrue(contacts.contains(contact));
+		Contact newContact = new Contact("Contact", identity.getDropUrls(), identity.getEcPublicKey());
+		assertTrue(contacts.contains(newContact));
 	}
 
 	@Test
