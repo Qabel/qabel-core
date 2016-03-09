@@ -5,6 +5,7 @@ import java.net.URI;
 public class AccountingServer extends SyncSettingItem {
 
 	private URI uri;
+	private URI blockUri;
 	private String username;
 	private String password;
 
@@ -16,6 +17,10 @@ public class AccountingServer extends SyncSettingItem {
 
 	public void setUri(URI uri) {
 		this.uri = uri;
+	}
+
+	public URI getBlockUri() {
+		return blockUri;
 	}
 
 	public String getUsername() {
@@ -42,8 +47,9 @@ public class AccountingServer extends SyncSettingItem {
 		this.authToken = authToken;
 	}
 
-	public AccountingServer(URI uri, String username, String password) {
+	public AccountingServer(URI uri, URI blockUri, String username, String password) {
 		this.uri = uri;
+		this.blockUri = blockUri;
 		this.username = username;
 		this.password = password;
 	}

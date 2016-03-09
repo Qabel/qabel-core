@@ -5,7 +5,6 @@ import de.qabel.core.config.SyncSettingItem;
 import java.util.ArrayList;
 
 public class AccountingProfile extends SyncSettingItem{
-	
 	private Integer quota;
 	private ArrayList<String> prefixes;
 

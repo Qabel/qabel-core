@@ -88,39 +88,8 @@ public class AccountingHTTP {
 	}
 
 	public int getQuota() throws IOException, QblInvalidCredentials {
-		Integer quota = profile.getQuota();
-		if (quota == null) {
-			updateProfile();
-			quota = profile.getQuota();
-		}
-		return quota;
-	}
-
-	public void updateProfile() throws IOException, QblInvalidCredentials {
-		URI uri;
-		try {
-			uri = this.buildUri("api/v0/profile").build();
-		} catch (URISyntaxException e) {
-			throw new RuntimeException("Url building failed", e);
-		}
-		HttpGet httpGet = new HttpGet(uri);
-		authorize(httpGet);
-		try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
-			HttpEntity entity = response.getEntity();
-			if (entity == null) {
-				throw new IOException("No answer from login");
-			}
-			String responseString = EntityUtils.toString(entity);
-			try {
-				Map<String, Object> answer = gson.fromJson(responseString, HashMap.class);
-				profile.setQuota(((Double) answer.get("quota")).intValue());
-				this.updatePrefixes();
-			} catch (JsonSyntaxException | NumberFormatException | NullPointerException e) {
-				logger.error("Illegal response: {}", responseString);
-				throw new IOException("Illegal response from accounting server", e);
-			}
-
-		}
+		getAuthToken();
+		return 100;	//TODO implement when servers support it
 	}
 
 	public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
@@ -138,7 +107,7 @@ public class AccountingHTTP {
 		ArrayList<String> prefixes;
 		URI uri;
 		try {
-			uri = this.buildUri("api/v0/prefix").build();
+			uri = this.buildBlockUri("api/v0/prefix").build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Url building failed", e);
 		}
@@ -158,7 +127,7 @@ public class AccountingHTTP {
 	public void createPrefix() throws IOException, QblInvalidCredentials {
 		URI uri;
 		try {
-			uri = this.buildUri("api/v0/prefix").build();
+			uri = this.buildBlockUri("api/v0/prefix").build();
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Url building failed", e);
 		}
@@ -175,12 +144,20 @@ public class AccountingHTTP {
 	}
 
 	public URIBuilder buildUri(String resource) {
+		return buildResourceUri(resource, server.getUri());
+	}
+
+	private URIBuilder buildResourceUri(String resource, URI server) {
 		if (resource.endsWith("/") || resource.startsWith("/")) {
 			logger.error("Resource {} starts or ends with /", resource);
 			throw new RuntimeException("Illegal resource");
 		}
-		return new URIBuilder(this.server.getUri())
+		return new URIBuilder(server)
 				.setPath('/' + resource + '/');
+	}
+
+	public URIBuilder buildBlockUri(String resource) {
+		return buildResourceUri(resource, server.getBlockUri());
 	}
 
 	public ArrayList<String> getPrefixes() throws IOException, QblInvalidCredentials {
