@@ -30,7 +30,7 @@ public class AccountingHTTPTest {
 
 	@Before
 	public void setServer() throws URISyntaxException, IOException, QblInvalidCredentials {
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
 				"testuser", "testuser");
 		profile = new AccountingProfile();
 		accountingHTTP = new AccountingHTTP(server, profile);
@@ -81,12 +81,6 @@ public class AccountingHTTPTest {
 		assertNotEquals(accountingHTTP.getPrefixes().size(), 0);
 	}
 
-	@Test
-	public void testUpdateProfile() throws IOException, QblInvalidCredentials {
-		accountingHTTP.updateProfile();
-		assertNotNull(accountingHTTP.getProfile());
-	}
-
 	@Rule
 	public ExpectedException expectedEx = ExpectedException.none();
 
@@ -127,7 +121,7 @@ public class AccountingHTTPTest {
 		Random rand = new Random();
 
 		String name = "testUser" + rand.nextInt(10000);
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
 				name, "123456");
 		accountingHTTP = new AccountingHTTP(server, profile);
 		accountingHTTP.createBoxAccount(name + "@example.com");
@@ -138,7 +132,7 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountEMailNotCorrect() throws Exception {
 
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
 				"testUser", "123456");
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
@@ -156,7 +150,7 @@ public class AccountingHTTPTest {
 	public void createBoxAccountPsToShort() throws Exception {
 
 		String name = "testUser";
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
 				name, "12345");
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
@@ -173,7 +167,7 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountUsernameAlreadyInUse() throws Exception {
 
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9696"),
 				"testuser", "123456");
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
@@ -191,7 +185,7 @@ public class AccountingHTTPTest {
 	public void createBoxAccountEmailAlreadyInUse() throws Exception {
 
 		String name = "testuser";
-		server = new AccountingServer(new URI("http://localhost:9696"),
+		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9696"),
 				name, "123456");
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;

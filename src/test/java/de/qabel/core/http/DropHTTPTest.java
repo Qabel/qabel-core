@@ -35,7 +35,7 @@ public class DropHTTPTest {
                     "http://localhost:5000/abcdefghijklmnopqrstuvshouldContainMessages");
 
             shouldContainNoNewMessagesSinceDateUri = new URI(
-                    "http://localhost:5000/abcdefghshouldContainNoNewMessagesSinceDate");
+                    "http://localhost:5000/xbcdefghshouldContainNoNewMessagesSinceDate");
 
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -45,7 +45,6 @@ public class DropHTTPTest {
         DropHTTP h = new DropHTTP();
         h.send(shouldContainMessagesUri, "shouldContainMessagesTestMessage".getBytes());
         h.send(shouldContainNoNewMessagesSinceDateUri, "shouldContainNoNewMessagesSinceDate".getBytes());
-
 	}
 
 	// POST 200
@@ -153,7 +152,7 @@ public class DropHTTPTest {
 		DropHTTP dHTTP = new DropHTTP();
 		// When
 		HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.shouldContainNoNewMessagesSinceDateUri,
-				System.currentTimeMillis());
+				System.currentTimeMillis() + 1000L);
 		// Then
 		assertNotEquals(null, result.getData());
 		assertEquals(new ArrayList<byte[]>(), result.getData());
@@ -231,7 +230,7 @@ public class DropHTTPTest {
 		DropHTTP dHTTP = new DropHTTP();
 		// When
 		HTTPResult<?> result = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUri,
-				System.currentTimeMillis());
+				System.currentTimeMillis() + 1000L);
 		// Then
 		assertEquals(304, result.getResponseCode());
 		assertFalse(result.isOk());
