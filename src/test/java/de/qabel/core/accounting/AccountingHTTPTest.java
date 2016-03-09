@@ -27,11 +27,12 @@ public class AccountingHTTPTest {
 	public AccountingServer server;
 	private AccountingHTTP accountingHTTP;
 	private AccountingProfile profile;
+	private TestAccountingServerBuilder serverBuilder;
 
 	@Before
 	public void setServer() throws URISyntaxException, IOException, QblInvalidCredentials {
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
-				"testuser", "testuser");
+		serverBuilder = new TestAccountingServerBuilder();
+		server = serverBuilder.build();
 		profile = new AccountingProfile();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		accountingHTTP.login();
@@ -121,8 +122,7 @@ public class AccountingHTTPTest {
 		Random rand = new Random();
 
 		String name = "testUser" + rand.nextInt(10000);
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
-				name, "123456");
+		server = serverBuilder.user(name).build();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		accountingHTTP.createBoxAccount(name + "@example.com");
 		accountingHTTP.login();
@@ -132,8 +132,7 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountEMailNotCorrect() throws Exception {
 
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
-				"testUser", "123456");
+		server = serverBuilder.user("testUser").build();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
 		try {
@@ -149,9 +148,7 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountPsToShort() throws Exception {
 
-		String name = "testUser";
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"),
-				name, "12345");
+		server = serverBuilder.user("testUser").pass("12345").build();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
 		try {
@@ -167,8 +164,7 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountUsernameAlreadyInUse() throws Exception {
 
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9696"),
-				"testuser", "123456");
+		server = serverBuilder.user("testuser").build();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
 		try {
@@ -184,13 +180,11 @@ public class AccountingHTTPTest {
 	@Test
 	public void createBoxAccountEmailAlreadyInUse() throws Exception {
 
-		String name = "testuser";
-		server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9696"),
-				name, "123456");
+		server = serverBuilder.user("testuser").build();
 		accountingHTTP = new AccountingHTTP(server, profile);
 		Map map = null;
 		try {
-			accountingHTTP.createBoxAccount(name);
+			accountingHTTP.createBoxAccount("testuser");
 			fail("No Exception thrown");
 		} catch (QblCreateAccountFailException e) {
 			map = e.getMap();
