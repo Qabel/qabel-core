@@ -1,4 +1,17 @@
-Qabel Public License Version 0.1 (QaPL v0.1) (c) Qabel GmbH, Hannover
+** The software "Qabel" is licensed under the QaPL, a specially developed proprietary license. 
+The QaPL can neither be classified according to the standards of
+the Free Software Foundation (FSF), nor to the standards of the Open Source Initiative (OSI)
+as "Free Software License" or "Open Source License" respectively.
+
+We have decided to do it that way in order to keep the project going, while at the same time
+ensuring the greatest possible freedom.
+
+The QaPL does not satisfy the standards of those "Open Source" or "Free Software" licenses,
+due to our non-commercialization and non-military clauses.** 
+
+++++++++++
+
+Qabel Public License Version 0.2 (QaPL v0.2) (c) Qabel GmbH, Hannover
 
 You may copy and distribute verbatim copies of this license agreement. You may
 also use content from it for your own license agreement. Unless not expressly
@@ -35,8 +48,8 @@ software licensed under the QaPL or parts thereof into Proprietary Software,
 executable software, or consulting services utilizing the Library or other
 software licensed under the QaPL or parts thereof. It is not considered
 Commercial Use if the Licensee, including a commercial enterprise, uses the
-Library or other software licensed under the QaPL or parts thereof for internal
-or for academic and/or study purposes, or if the project is solely based on
+Library or other software licensed under the QaPL or parts thereof for
+academic, study and/or research purposes, or if a software project is solely based on
 donations.  
 [c] "Original Copyright Holder" means Qabel GmbH.  
 [d] "Contributor" means any person or entity that creates or contributes to the
@@ -173,7 +186,7 @@ current license version and will not impose on any Licensee or copyright holder
 additional obligations. QaPL license updates shall replace all older license
 versions in existing agreements. This does not apply to original copyright
 holders other than Qabel GmbH, who have chosen to submit their program to the
-QaPL, unless they have designated their program as licensed under "QaPL 0.1
+QaPL, unless they have designated their program as licensed under "QaPL 0.2
 or any later version".
 
 [9] Miscellaneous 
