@@ -3,7 +3,7 @@
 	<img src="https://files.qabel.de/img/qabel_logo_orange_preview.png" height="150px" align="left"/>
 </a>
 <img align="left" width="0" height="150px" hspace="25"/>
-> The Qabel Core
+> The Qabel Core Library
 
 This project provides a core library for all Qabel Clients implementing <a href="https://qabel.de"><img alt="Qabel" src="https://files.qabel.de/img/qabel-kl.png" height="18px"/></a>.
 
