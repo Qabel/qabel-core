@@ -19,7 +19,7 @@ This project provides a core library for all Qabel Clients implementing <a href=
 
 # Introduction
 
-For a comprehensive documentation of the whole Qabel Platform use https://qabel.de as the main source of information. http://qabel.github.io/docs/ may provide additional technical information.
+For a comprehensive documentation of the whole Qabel Platform use https://qabel.de as the main source of information. https://qabel.github.io/docs/ may provide additional technical information.
 
 Qabel consists of multiple Projects:
  * [Qabel Android Client](https://github.com/Qabel/qabel-android)
