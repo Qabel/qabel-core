@@ -162,4 +162,3 @@ For the Qabel Desktop Client, use the **feedback button** (<img alt="feedback ic
 For issues concerning the Qabel Core Library, use the Issue tracker of GitHub.
 
 Please read the Contribution Guidelines (CONTRIBUTING.md) carefully.
-ś
