@@ -24,18 +24,18 @@ public class DropHTTPTest {
 	public void setUp() {
 		try {
 			workingUri = new URI(
-					"http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
+					"http://localhost:5001/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
 
-			tooShortUri = new URI("http://localhost:5000/IAmTooShort");
+			tooShortUri = new URI("http://localhost:5001/IAmTooShort");
 
 			notExistingUri = new URI(
-					"http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
+					"http://localhost:5001/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
 
             shouldContainMessagesUri = new URI(
-                    "http://localhost:5000/abcdefghijklmnopqrstuvshouldContainMessages");
+                    "http://localhost:5001/abcdefghijklmnopqrstuvshouldContainMessages");
 
             shouldContainNoNewMessagesSinceDateUri = new URI(
-                    "http://localhost:5000/xbcdefghshouldContainNoNewMessagesSinceDate");
+                    "http://localhost:5001/xbcdefghshouldContainNoNewMessagesSinceDate");
 
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
