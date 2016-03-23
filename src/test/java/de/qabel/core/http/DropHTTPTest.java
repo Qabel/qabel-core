@@ -1,10 +1,6 @@
 package de.qabel.core.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -13,6 +9,8 @@ import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class DropHTTPTest {
 
@@ -91,7 +89,7 @@ public class DropHTTPTest {
 
 	// GET 200
 	@Test
-	public void getRequestShouldGetCompleteDrop() {
+	public void getRequestShouldGetCompleteDrop() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -101,11 +99,12 @@ public class DropHTTPTest {
 		assertNotEquals(new ArrayList<byte[]>(), result.getData());
 		assertTrue(result.isOk());
 		assertEquals(200, result.getResponseCode());
+		assertNotNull("missing Last-Modified information", result.lastModified());
 	}
 
 	// GET 400
 	@Test
-	public void getRequestWithInvalidOrMissingDropIdShouldBe400() {
+	public void getRequestWithInvalidOrMissingDropIdShouldBe400() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -119,7 +118,7 @@ public class DropHTTPTest {
 
 	// GET 204
 	@Test
-	public void getRequestForEmptyDropShouldBe204() {
+	public void getRequestForEmptyDropShouldBe204() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -133,7 +132,7 @@ public class DropHTTPTest {
 
 	// GET 200 SINCE
 	@Test
-	public void getRequestShouldEntriesSinceDate() {
+	public void getRequestShouldEntriesSinceDate() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -147,7 +146,7 @@ public class DropHTTPTest {
 
 	// GET 304 SINCE
 	@Test
-	public void getRequestWithSinceDateShouldBe304() {
+	public void getRequestWithSinceDateShouldBe304() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -162,7 +161,7 @@ public class DropHTTPTest {
 
 	// GET 204 SINCE
 	@Test
-	public void getRequestWithSinceDateForEmptyDropShouldBe204() {
+	public void getRequestWithSinceDateForEmptyDropShouldBe204() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -177,7 +176,7 @@ public class DropHTTPTest {
 
 	// HEAD 200
 	@Test
-	public void shouldContainMessages() {
+	public void shouldContainMessages() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -189,7 +188,7 @@ public class DropHTTPTest {
 
 	// HEAD 400
 	@Test
-	public void shouldBeInvalidOrMissingDropId() {
+	public void shouldBeInvalidOrMissingDropId() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -201,7 +200,7 @@ public class DropHTTPTest {
 
 	// HEAD 204
 	@Test
-	public void shouldBeEmpty() {
+	public void shouldBeEmpty() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -213,7 +212,7 @@ public class DropHTTPTest {
 
 	// HEAD 200 SINCE
 	@Test
-	public void shouldContainNewMessagesSinceDate() {
+	public void shouldContainNewMessagesSinceDate() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -225,7 +224,7 @@ public class DropHTTPTest {
 
 	// HEAD 304 SINCE
 	@Test
-	public void shouldContainNoNewMessagesSinceDate() {
+	public void shouldContainNoNewMessagesSinceDate() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
@@ -238,7 +237,7 @@ public class DropHTTPTest {
 
 	// HEAD 204 + SINCE
 	@Test
-	public void shouldBeEmptyWithSinceDate() {
+	public void shouldBeEmptyWithSinceDate() throws Exception {
 		// Given
 		DropHTTP dHTTP = new DropHTTP();
 		// When
