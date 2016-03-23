@@ -11,7 +11,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.scope = :box
   end
 
-  config.vm.network "forwarded_port", guest: 5001, host: 5001
+  config.vm.network "forwarded_port", guest: 5000, host: 5000, auto_correct: true
+  config.vm.network "forwarded_port", guest: 9696, host: 9696, auto_correct: true
+  config.vm.network "forwarded_port", guest: 9697, host: 9697, auto_correct: true
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = 1024
@@ -23,7 +25,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         set -e
         # prepare innosetup (needs wine and an extractor)
         apt-get -y update
-        apt-get install -y build-essential
+        apt-get install -y \
+            build-essential \
+            libc6-dev-i386 \
+            g++-multilib
 
         apt-get -y install unzip unrar unp
 
@@ -47,6 +52,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         easy_install pip
 
         echo "CREATE DATABASE qabel_drop; CREATE USER qabel WITH PASSWORD 'qabel_test'; GRANT ALL PRIVILEGES ON DATABASE qabel_drop TO qabel;" | sudo -u postgres psql postgres
+        echo "CREATE DATABASE block_dummy; CREATE USER block_dummy WITH PASSWORD 'qabel_test_dummy'; GRANT ALL PRIVILEGES ON DATABASE block_dummy TO block_dummy;" | sudo -u postgres psql postgres
 
         if [ ! -d /home/vagrant/.virtualenv ]; then
             mkdir /home/vagrant/.virtualenv
@@ -59,6 +65,8 @@ SCRIPT
     config.vm.provision "shell", run: "always", privileged: "false", inline: <<SCRIPT
         set -e
         cd /vagrant
+
+        DIRHASH=$(pwd | shasum | cut -d" " -f1)
 
         function waitForPort {
             started=false
@@ -104,10 +112,78 @@ SCRIPT
           cp drop_server/config.py.example drop_server/config.py
         fi
         python manage.py create_db
-        python manage.py runserver --host 0.0.0.0 --port 5001 > drop.log 2>&1 &
+        python manage.py runserver --host 0.0.0.0 --port 5000 > drop.log 2>&1 &
         echo $! > drop.pid
         deactivate
         cd ..
-        waitForPort 5001
+        waitForPort 5000
+
+        if [ ! -d qabel-accounting ]; then
+            git clone https://github.com/Qabel/qabel-accounting
+        else
+            cd qabel-accounting
+            git pull origin master
+            cd ..
+        fi
+
+        echo -e "\n### STARTING ACCOUNTING SERVER"
+        # qabel-accounting
+        cd qabel-accounting
+        ACCOUNTING_VENV="venv_"${DIRHASH}
+        if [ -f accounting.pid ]; then
+            echo "stopping old accounting instance"
+            cat accounting.pid | xargs kill || echo "already gone"
+        fi
+        if [ ! -d ${ACCOUNTING_VENV} ]; then
+          virtualenv --no-site-packages --always-copy --python=python3.4 ${ACCOUNTING_VENV}
+        fi
+        source ${ACCOUNTING_VENV}"/bin/activate"
+        echo "installing dependencies..."
+        pip install -q -U pip
+        pip install -q -r requirements.txt
+        yes "yes" | python manage.py migrate
+        cp qabel_id/settings/local_settings.example.py qabel_id/settings/local_settings.py
+        echo -e "\nEMAIL_BACKEND = 'django.core.mail.backends.dummy.EmailBackend'\n" >> qabel_id/settings/local_settings.py
+        echo -e "\nSECRET_KEY = '=tmcici-p92_^_jih9ud11#+wb7*i21firlrtcqh\$p+d7o*49@'\n" >> qabel_id/settings/local_settings.py
+        DJANGO_SETTINGS_MODULE=qabel_id.settings.production_settings python manage.py testserver testdata.json --addrport 0.0.0.0:9696 > accounting.log 2>&1 &
+        echo $! > accounting.pid
+        deactivate
+        cd ..
+
+
+        echo -e "\n### STARTING BLOCK SERVER"
+        # qabel-block
+        if [ ! -d qabel-block ]; then
+            git clone https://github.com/Qabel/qabel-block
+        else
+            cd qabel-block
+            git pull origin master
+            cd ..
+        fi
+        cd qabel-block
+        BLOCK_VENV="venv_"${DIRHASH}
+        if [ -f block.pid ]; then
+            echo "stopping old block instance"
+            cat block.pid | xargs kill || echo "already gone"
+        fi
+        if [ ! -d ${BLOCK_VENV} ]; then
+          virtualenv --no-site-packages --always-copy --python=python3.5 ${BLOCK_VENV}
+        fi
+        cp config.ini.example config.ini
+        sed --in-place 's/api_secret=".*"/api_secret="Changeme"/g' config.ini
+        echo -e "\npsql_dsn='postgres://block_dummy:qabel_test_dummy@localhost/block_dummy'" >> config.ini
+        source ${BLOCK_VENV}"/bin/activate"
+        echo "installing dependencies..."
+        pip install -q -U pip
+        pip install -q -r requirements.txt
+        cd src
+
+        echo "preparing database..."
+        alembic -x 'url=postgres://block_dummy:qabel_test_dummy@localhost/block_dummy' upgrade head
+        python run.py --debug --dummy --dummy-log --dummy-cache --apisecret=Changeme --accounting-host=http://localhost:9696 --address=0.0.0.0 --port=9697 --psql-dsn='postgres://block_dummy:qabel_test_dummy@localhost/block_dummy' > ../block.log 2>&1 &
+        echo $! > ../block.pid
+        deactivate
+        cd ../..
+        waitForPort 9697
 SCRIPT
 end
