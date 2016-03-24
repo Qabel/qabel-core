@@ -40,6 +40,9 @@ Prior merging a pull request, the following conditions must be met.
 
 The integrator who performs the merge decides on how to [perform the merge](https://help.github.com/articles/merging-a-pull-request/). Sometimes manual merges need to be done. Sometimes even a manual reabase and/or merge can be helpful (e.g. to fix history issues the contributor cannot fix or the integrator want to help the contributor with). Merging via the GitHub web interface (the *green button*) should be preferred.
 
+#### Test your code
+Code without tests is broken (if it isn't broken yet, someone will break it in the future - and you can't prove it still works). Include simple, small and readable tests in your changes. Remember: tests are part of your code and equally important as the "rest" of the code.
+
 #### Commits
 * One commit can incorporate a big or a small patch but address **one** *thing* per commit.
 * A commit does not include unnecessary changes. This is especially true for changes due to auto formating and fixing spelling errors in comments. Adding / changing documentation to added / changed functionality is **not** *unnecessary* here.
@@ -62,12 +65,13 @@ We do not dogmatically follow a particular style guide but generally the [Code C
 Regarding the look and feel most -- but not all -- of this is reflected by the Eclipse default settings.
 
 ### Our style
-* Use tabs instead of spaces.
+* Use **tabs** instead of spaces.
 * Try to fit your code into **80** characters but do not wrap your line of code just for the sake of wrapping it. Use **120** in your auto format settings.
 * Statements like ```if``` always with ```{ }```. Do not just write ```if (foo) bar;```
-* Our code does not need to be compatible to versions below Java 7. That means you can and should use Java 7 features and syntax.
+* Our code does not need to be compatible to versions below **Java 7**. That means you can and should use Java 7 features and syntax.
 * Developers want their software to always be in a defined and consistent state and this should be preferred but sometimes it is not possible. In such cases not only document these conditions but also handle unwanted conditions.
   * E.g. there are cases where an ```initialize()``` method needs to be called *after* an object has been created (i.e. the constructor has been invoked) to fully initialize this object but *before* other methods work as intended. Such dependencies must not only be documented (using Javadoc) but also the methods which depend on a call of ```initialize()``` must check if this call has happened and give a meaningful error if not. In cases like this we use an ```IllegalStateException```.
+* **Use Exceptions to control application flow**. Returning `null` or empty collections when the happy path of a method is not met leads to defensive programming or exceptions elsewhere in the code where they are hard to track. In such cases, just throw a meaningful exception with a helpful message. The exception, if contained in the methods signature, tells each caller what to expect. The message combined with the stacktrace tells each debugger where to look and what to look for.
 
 #### Documentation
 Qabel is a big project and it has a lot of code which will be called from other components -- e.g. from a module. Code -- especially public methods or classes -- must be well documented. *Well* means class, method and parameter names should speak for themselves. Nevertheless often additional Javadoc is needed to understand what is going on. These comments should contain actual information and not repeat things the class, method or parameter names should provide anyway.
