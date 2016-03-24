@@ -1,6 +1,7 @@
 package de.qabel.core.http;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.utils.DateUtils;
 import org.apache.james.mime4j.MimeException;
 import org.apache.james.mime4j.stream.EntityState;
 import org.apache.james.mime4j.stream.MimeTokenStream;
@@ -9,10 +10,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 
 
 public class DropHTTP {
@@ -44,20 +49,26 @@ public class DropHTTP {
 		return result;
 	}
 
-	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri) {
+	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri) throws IOException {
 		return this.receiveMessages(uri, 0);
 	}
 
-	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri, long sinceDate) {
+	public HTTPResult<Collection<byte[]>> receiveMessages(URI uri, long sinceDate) throws IOException {
 		HTTPResult<Collection<byte[]>> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
 		conn.setIfModifiedSince(sinceDate);
-		Collection<byte[]> messages = new ArrayList<byte[]>();
+		Collection<byte[]> messages = new ArrayList<>();
 		try {
 			conn.setRequestMethod("GET");
 			result.setResponseCode(conn.getResponseCode());
 			result.setOk(conn.getResponseCode() == 200);
 			if (result.isOk()) {
+				if (conn.getHeaderField("Last-Modified") != null) {
+					try {
+						result.setLastModified(parseDate(conn.getHeaderField("Last-Modified")));
+					} catch (ParseException ignored) {
+					}
+				}
 				InputStream inputstream = conn.getInputStream();
 				MimeTokenStream stream = new MimeTokenStream();
 				stream.parseHeadless(inputstream, conn.getContentType());
@@ -70,10 +81,8 @@ public class DropHTTP {
 					}		
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		} catch (MimeException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("error while parsing mime response: " + e.getMessage(), e);
 		} finally {
 			conn.disconnect();
 		}
@@ -81,11 +90,15 @@ public class DropHTTP {
 		return result;
 	}
 
-	public HTTPResult<?> head(URI uri) {
+	private Date parseDate(String dateHeader) throws ParseException {
+		return DateUtils.parseDate(dateHeader);
+	}
+
+	public HTTPResult<?> head(URI uri) throws IOException {
 		return this.head(uri, 0);
 	}
 
-	public HTTPResult<?> head(URI uri, long sinceDate) {
+	public HTTPResult<?> head(URI uri, long sinceDate) throws IOException {
 		HTTPResult<?> result = new HTTPResult<>();
 		HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
 		conn.setIfModifiedSince(sinceDate);
@@ -93,9 +106,6 @@ public class DropHTTP {
 			conn.setRequestMethod("GET");
 			result.setResponseCode(conn.getResponseCode());
 			result.setOk(conn.getResponseCode() == 200);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} finally {
 			conn.disconnect();
 		}

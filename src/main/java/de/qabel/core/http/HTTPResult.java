@@ -1,8 +1,11 @@
 package de.qabel.core.http;
 
+import java.util.Date;
+
 public class HTTPResult<T> {
 	int responseCode = 0;
 	boolean ok = false;
+	Date lastModified = null;
 	T data;
 
 	public boolean isOk() {
@@ -27,5 +30,13 @@ public class HTTPResult<T> {
 
 	public void setData(T data) {
 		this.data = data;
+	}
+
+	public void setLastModified(Date lastModified) {
+		this.lastModified = lastModified;
+	}
+
+	public Date lastModified() {
+		return lastModified;
 	}
 }

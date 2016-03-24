@@ -8,6 +8,7 @@ public class QblCreateAccountFailException extends IllegalArgumentException {
 	private Map map;
 
 	public QblCreateAccountFailException(HashMap map) {
+		super(map.toString());
 		this.map = map;
 	}
 

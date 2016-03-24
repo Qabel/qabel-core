@@ -6,10 +6,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class TestAccountingServerBuilder {
+	public static final String DEFAULT_PASS = "testuser";
 	private URI accountingUri;
 	private URI blockUri;
 	private String user = "testuser";
-	private String pass = "testuser";
+	private String pass = DEFAULT_PASS;
 
 	public TestAccountingServerBuilder() throws URISyntaxException {
 		this.accountingUri = new URI("http://localhost:9696");
@@ -18,6 +19,9 @@ public class TestAccountingServerBuilder {
 
 	public TestAccountingServerBuilder user(String user) {
 		this.user = user;
+		if (pass.equals(DEFAULT_PASS)) {
+			pass = "randomPass";
+		}
 		return this;
 	}
 
