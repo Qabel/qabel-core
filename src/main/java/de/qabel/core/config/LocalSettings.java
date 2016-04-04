@@ -30,7 +30,7 @@ public class LocalSettings extends Persistable {
     /**
      * Constant string which defines the date format in the serialized json
      */
-    final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
+    static final String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * Creates an instance of LocalSettings.
@@ -39,8 +39,8 @@ public class LocalSettings extends Persistable {
      * @param dropLastUpdate Date of the last time the core asked the drop servers for new messages.
      */
     public LocalSettings(long pollInterval, Date dropLastUpdate) {
-        this.setPollInterval(pollInterval);
-        this.setdropLastUpdate(dropLastUpdate);
+        setPollInterval(pollInterval);
+        setdropLastUpdate(dropLastUpdate);
     }
 
     /**
@@ -49,14 +49,14 @@ public class LocalSettings extends Persistable {
      * @param value Value to set the poll interval to.
      */
     public void setPollInterval(long value) {
-        this.pollInterval = value;
+        pollInterval = value;
     }
 
     /*
      * @return Returns the poll interval.
      */
     public long getPollInterval() {
-        return this.pollInterval;
+        return pollInterval;
     }
 
     /**
@@ -65,7 +65,7 @@ public class LocalSettings extends Persistable {
      * @param value Date of the last time the core asked the drop servers for new messages.
      */
     public void setdropLastUpdate(Date value) {
-        this.dropLastUpdate = value;
+        dropLastUpdate = value;
     }
 
     /**
@@ -74,7 +74,7 @@ public class LocalSettings extends Persistable {
      * @return Date
      */
     public Date getLastUpdate() {
-        return this.dropLastUpdate;
+        return dropLastUpdate;
     }
 
     /**
@@ -109,8 +109,8 @@ public class LocalSettings extends Persistable {
         final int prime = 31;
         int result = 1;
         result = prime * result
-            + ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
-        result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
+            + (dropLastUpdate == null ? 0 : dropLastUpdate.hashCode());
+        result = prime * result + (int) (pollInterval ^ pollInterval >>> 32);
         return result;
     }
 
@@ -133,10 +133,7 @@ public class LocalSettings extends Persistable {
         } else if (!dropLastUpdate.equals(other.dropLastUpdate)) {
             return false;
         }
-        if (pollInterval != other.pollInterval) {
-            return false;
-        }
-        return true;
+        return pollInterval == other.pollInterval;
     }
 
 }

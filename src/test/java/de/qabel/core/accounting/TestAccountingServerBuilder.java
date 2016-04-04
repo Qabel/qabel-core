@@ -13,8 +13,8 @@ public class TestAccountingServerBuilder {
     private String pass = DEFAULT_PASS;
 
     public TestAccountingServerBuilder() throws URISyntaxException {
-        this.accountingUri = new URI("http://localhost:9696");
-        this.blockUri = new URI("http://localhost:9697");
+        accountingUri = new URI("http://localhost:9696");
+        blockUri = new URI("http://localhost:9697");
     }
 
     public TestAccountingServerBuilder user(String user) {

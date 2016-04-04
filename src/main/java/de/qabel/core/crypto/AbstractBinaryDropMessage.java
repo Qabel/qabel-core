@@ -28,7 +28,7 @@ public abstract class AbstractBinaryDropMessage {
 
     public AbstractBinaryDropMessage(DropMessage dropMessage)
         throws QblDropPayloadSizeException {
-        this.plainPayload = serializeMessage(dropMessage);
+        plainPayload = serializeMessage(dropMessage);
         if (plainPayload.length > getPayloadSize()) {
             throw new QblDropPayloadSizeException();
         }
@@ -53,7 +53,7 @@ public abstract class AbstractBinaryDropMessage {
         }
     }
 
-    abstract public byte getVersion();
+    public abstract byte getVersion();
 
     abstract int getTotalSize();
 
@@ -103,7 +103,7 @@ public abstract class AbstractBinaryDropMessage {
      * @param sender    Sender of the message
      * @return assembled binary message.
      */
-    abstract public byte[] assembleMessageFor(Contact recipient, Identity sender);
+    public abstract byte[] assembleMessageFor(Contact recipient, Identity sender);
 
     abstract DecryptedPlaintext disassembleRawMessage(Identity identity);
 

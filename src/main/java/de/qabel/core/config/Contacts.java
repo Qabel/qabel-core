@@ -12,7 +12,6 @@ public class Contacts extends EntityMap<Contact> {
     private Identity identity;
 
     public Contacts(Identity identity) {
-        super();
         this.identity = identity;
     }
 
@@ -22,7 +21,7 @@ public class Contacts extends EntityMap<Contact> {
      * @return Set<Contact>
      */
     public Set<Contact> getContacts() {
-        return this.getEntities();
+        return getEntities();
     }
 
     public Identity getIdentity() {

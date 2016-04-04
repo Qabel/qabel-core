@@ -16,48 +16,48 @@ public class SyncedSettings {
      * Creates an instance of SyncedSettings
      */
     public SyncedSettings() {
-        this.accounts = new Accounts();
-        this.contacts = new HashSet<>();
-        this.dropServers = new DropServers();
-        this.identities = new Identities();
+        accounts = new Accounts();
+        contacts = new HashSet<>();
+        dropServers = new DropServers();
+        identities = new Identities();
     }
 
     public void setIdentities(Identities value) {
-        this.identities = value;
+        identities = value;
     }
 
     public Identities getIdentities() {
-        return this.identities;
+        return identities;
     }
 
     public Set<Contacts> getContacts() {
-        return this.contacts;
+        return contacts;
     }
 
     public void setContacts(Contacts value) {
-        for (Contacts c : this.contacts.toArray(new Contacts[this.contacts.size()])) {
+        for (Contacts c : contacts.toArray(new Contacts[contacts.size()])) {
             if (c.getIdentity() == value.getIdentity()) {
-                this.contacts.remove(c);
+                contacts.remove(c);
                 break;
             }
         }
-        this.contacts.add(value);
+        contacts.add(value);
     }
 
     public void setAccounts(Accounts value) {
-        this.accounts = value;
+        accounts = value;
     }
 
     public Accounts getAccounts() {
-        return this.accounts;
+        return accounts;
     }
 
     public void setDropServers(DropServers value) {
-        this.dropServers = value;
+        dropServers = value;
     }
 
     public DropServers getDropServers() {
-        return this.dropServers;
+        return dropServers;
     }
 
 
@@ -87,13 +87,13 @@ public class SyncedSettings {
         final int prime = 31;
         int result = 1;
         result = prime * result
-            + ((accounts == null) ? 0 : accounts.hashCode());
+            + (accounts == null ? 0 : accounts.hashCode());
         result = prime * result
-            + ((contacts == null) ? 0 : contacts.hashCode());
+            + (contacts == null ? 0 : contacts.hashCode());
         result = prime * result
-            + ((dropServers == null) ? 0 : dropServers.hashCode());
+            + (dropServers == null ? 0 : dropServers.hashCode());
         result = prime * result
-            + ((identities == null) ? 0 : identities.hashCode());
+            + (identities == null ? 0 : identities.hashCode());
         return result;
     }
 

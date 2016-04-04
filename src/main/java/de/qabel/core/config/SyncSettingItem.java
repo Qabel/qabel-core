@@ -8,10 +8,10 @@ import java.util.Date;
 public class SyncSettingItem extends Persistable {
     private static final long serialVersionUID = -923043585748841729L;
 
-    private int id = 0;
+    private int id;
     private long created = new Date().getTime();
-    private long updated = 0;
-    private long deleted = 0;
+    private long updated;
+    private long deleted;
 
     /**
      * Get id of the item
@@ -90,9 +90,9 @@ public class SyncSettingItem extends Persistable {
         final int prime = 31;
         int result = 1;
         result = prime * result + id;
-        result = prime * result + new Long(this.created).hashCode();
-        result = prime * result + new Long(this.updated).hashCode();
-        result = prime * result + new Long(this.deleted).hashCode();
+        result = prime * result + new Long(created).hashCode();
+        result = prime * result + new Long(updated).hashCode();
+        result = prime * result + new Long(deleted).hashCode();
 
         return result;
     }
@@ -113,19 +113,16 @@ public class SyncSettingItem extends Persistable {
 
         other = (SyncSettingItem) obj;
 
-        if (this.created != other.created) {
-            return (false);
-        }
-        if (this.updated != other.updated) {
-            return (false);
-        }
-        if (this.deleted != other.deleted) {
-            return (false);
-        }
-        if (this.id != other.id) {
+        if (created != other.created) {
             return false;
         }
+        if (updated != other.updated) {
+            return false;
+        }
+        if (deleted != other.deleted) {
+            return false;
+        }
+        return id == other.id;
 
-        return true;
     }
 }

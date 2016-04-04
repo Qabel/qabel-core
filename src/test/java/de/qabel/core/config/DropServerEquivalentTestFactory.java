@@ -15,7 +15,7 @@ class DropServerEquivalentTestFactory implements EquivalentFactory<DropServer> {
     long created = new Date().getTime();
 
     DropServerEquivalentTestFactory() {
-        uri = (new UriTestFactory()).create();
+        uri = new UriTestFactory().create();
     }
 
     @Override

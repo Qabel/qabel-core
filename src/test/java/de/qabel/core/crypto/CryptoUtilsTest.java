@@ -52,6 +52,7 @@ public class CryptoUtilsTest {
 
         final File testFileDec = new File(testFileName + ".dec");
         Thread decryptor = new Thread() {
+            @Override
             public void run() {
                 try {
                     cu.decryptFileAuthenticatedSymmetricAndValidateTag(cipherStream1, testFileDec, key);

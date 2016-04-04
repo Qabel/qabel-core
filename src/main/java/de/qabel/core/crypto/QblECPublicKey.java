@@ -45,11 +45,8 @@ public class QblECPublicKey implements Serializable {
 
         QblECPublicKey that = (QblECPublicKey) o;
 
-        if (!Arrays.equals(pubKey, that.pubKey)) {
-            return false;
-        }
+        return Arrays.equals(pubKey, that.pubKey);
 
-        return true;
     }
 
     @Override

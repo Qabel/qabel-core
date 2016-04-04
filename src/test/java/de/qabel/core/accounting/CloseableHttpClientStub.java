@@ -17,12 +17,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CloseableHttpClientStub extends CloseableHttpClient {
-    private boolean closed = false;
+    private boolean closed;
     private Map<String, CloseableHttpResponse> responses = new HashMap<>();
     private String body;
 
     @Override
-    protected CloseableHttpResponse doExecute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
+    protected CloseableHttpResponse doExecute(HttpHost target, HttpRequest request, HttpContext context) throws IOException {
         if (request instanceof HttpEntityEnclosingRequest) {
             InputStream contentStream = ((HttpEntityEnclosingRequest) request).getEntity().getContent();
             body = IOUtils.toString(contentStream);

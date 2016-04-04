@@ -8,7 +8,7 @@ import org.meanbean.lang.Factory;
  * Attention: For testing purposes only!
  */
 class AccountsTestFactory implements Factory<Accounts> {
-    int i = 0;
+    int i;
 
     @Override
     public Accounts create() {

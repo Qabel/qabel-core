@@ -21,7 +21,7 @@ import java.security.spec.InvalidKeySpecException;
  * methods and a key derived from the provides password with PBKDF2 and a salt.
  */
 public abstract class EncryptedPersistence<T> extends Persistence<T> {
-    private final static Logger logger = LoggerFactory.getLogger(EncryptedPersistence.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(EncryptedPersistence.class.getName());
     private static final String SECRET_KEY_ALGORITHM = "PBKDF2WithHmacSHA1";
     //TODO: Find a reasonable default value
     private static final int NUM_DEFAULT_PBKDF2_ROUNDS = 65536;
@@ -55,10 +55,10 @@ public abstract class EncryptedPersistence<T> extends Persistence<T> {
      * @param numPBKDF2rounds Number of PBKDF2 rounds.
      */
     public EncryptedPersistence(T database, char[] password, int numPBKDF2rounds) throws QblInvalidEncryptionKeyException {
-        this.cryptoutils = new CryptoUtils();
-        this.pbkdf2Rounds = numPBKDF2rounds;
+        cryptoutils = new CryptoUtils();
+        pbkdf2Rounds = numPBKDF2rounds;
         try {
-            this.secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
+            secretKeyFactory = SecretKeyFactory.getInstance(SECRET_KEY_ALGORITHM);
         } catch (NoSuchAlgorithmException e) {
             logger.error("Cannot find selected algorithm!", e);
             throw new RuntimeException("Cannot find selected algorithm!", e);
@@ -67,8 +67,8 @@ public abstract class EncryptedPersistence<T> extends Persistence<T> {
             logger.error("Cannot connect to database!");
             throw new RuntimeException("Cannot connect to database!");
         }
-        this.keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
-        if (this.keyParameter == null) {
+        keyParameter = getMasterKey(deriveKey(password, getSalt(false)));
+        if (keyParameter == null) {
             throw new QblInvalidEncryptionKeyException();
         }
     }
@@ -80,7 +80,7 @@ public abstract class EncryptedPersistence<T> extends Persistence<T> {
      * @param newPassword New password
      * @return True if password has been changed
      */
-    final public boolean changePassword(char[] oldPassword, char[] newPassword) {
+    public final boolean changePassword(char[] oldPassword, char[] newPassword) {
         return reEncryptMasterKey(deriveKey(oldPassword, getSalt(false)), deriveKey(newPassword, getSalt(true)));
     }
 

@@ -11,9 +11,9 @@ import java.io.Serializable;
 import java.util.List;
 
 public class EncryptedPersistenceTest {
-    private final static char[] encryptionPassword = "qabel".toCharArray();
-    private final static String DB_NAME = "EncryptedPersistenceTest.sqlite";
-    private final static int PBKDF2_ROUNDS = 1; // Low value only for testing
+    private static final char[] encryptionPassword = "qabel".toCharArray();
+    private static final String DB_NAME = "EncryptedPersistenceTest.sqlite";
+    private static final int PBKDF2_ROUNDS = 1; // Low value only for testing
     EncryptedPersistence<String> persistence;
 
     @Before
@@ -67,7 +67,7 @@ public class EncryptedPersistenceTest {
         Assert.assertTrue(persistence.persistEntity(pto));
         Assert.assertTrue(persistence.updateEntity(pto));
 
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
@@ -77,13 +77,13 @@ public class EncryptedPersistenceTest {
         PersistenceTestObject pto = new PersistenceTestObject("pto");
 
         Assert.assertTrue(persistence.updateOrPersistEntity(pto));
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
 
         pto.data = "changed";
         Assert.assertTrue(persistence.updateOrPersistEntity(pto));
-        receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
@@ -100,13 +100,13 @@ public class EncryptedPersistenceTest {
         persistence.persistEntity(pto);
 
         // Assure that pto has been persisted
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
 
         Assert.assertTrue(persistence.removeEntity(pto.getPersistenceID(), PersistenceTestObject.class));
 
-        PersistenceTestObject receivedPto2 = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto2 = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertNull(receivedPto2);
     }
@@ -132,7 +132,7 @@ public class EncryptedPersistenceTest {
 
         Assert.assertTrue(persistence.changePassword(encryptionPassword, "qabel2".toCharArray()));
 
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
@@ -144,12 +144,12 @@ public class EncryptedPersistenceTest {
 
         Assert.assertFalse(persistence.changePassword("wrongPassword".toCharArray(), "qabel2".toCharArray()));
 
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
 
-    static public class PersistenceTestObject extends Persistable implements Serializable {
+    public static class PersistenceTestObject extends Persistable {
         private static final long serialVersionUID = -9721591389456L;
         public String data;
 
@@ -177,7 +177,7 @@ public class EncryptedPersistenceTest {
         }
     }
 
-    static public class PersistenceTestObject2 extends Persistable implements Serializable {
+    public static class PersistenceTestObject2 extends Persistable {
         private static final long serialVersionUID = -832569264920L;
         public String data;
 

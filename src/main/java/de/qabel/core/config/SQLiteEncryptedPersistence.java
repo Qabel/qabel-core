@@ -14,13 +14,13 @@ import java.util.List;
  * Stores entities in a local SQLite database
  */
 public class SQLiteEncryptedPersistence extends EncryptedPersistence<String> {
-    private final static Logger logger = LoggerFactory.getLogger(SQLiteEncryptedPersistence.class.getName());
-    private final static String STR_MASTER_KEY = "MASTERKEY";
-    private final static String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";
-    private final static String STR_SALT = "SALT";
-    private final static String STR_DATA = "DATA";
-    private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
-    private final static String JDBC_PREFIX = "jdbc:sqlite:";
+    private static final Logger logger = LoggerFactory.getLogger(SQLiteEncryptedPersistence.class.getName());
+    private static final String STR_MASTER_KEY = "MASTERKEY";
+    private static final String STR_MASTER_KEY_NONCE = "MASTERKEYNONCE";
+    private static final String STR_SALT = "SALT";
+    private static final String STR_DATA = "DATA";
+    private static final String JDBC_CLASS_NAME = "org.sqlite.JDBC";
+    private static final String JDBC_PREFIX = "jdbc:sqlite:";
 
     private Connection c;
 

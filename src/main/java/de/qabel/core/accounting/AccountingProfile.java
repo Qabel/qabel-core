@@ -9,13 +9,13 @@ public class AccountingProfile extends SyncSettingItem {
     private ArrayList<String> prefixes;
 
     public AccountingProfile() {
-        this.prefixes = new ArrayList<>();
+        prefixes = new ArrayList<>();
     }
 
     public AccountingProfile(int quota, String prefix) {
         this.quota = quota;
-        this.prefixes = new ArrayList<>();
-        this.prefixes.add(prefix);
+        prefixes = new ArrayList<>();
+        prefixes.add(prefix);
     }
 
     public Integer getQuota() {
@@ -35,6 +35,6 @@ public class AccountingProfile extends SyncSettingItem {
     }
 
     public void addPrefix(String prefix) {
-        this.prefixes.add(prefix);
+        prefixes.add(prefix);
     }
 }

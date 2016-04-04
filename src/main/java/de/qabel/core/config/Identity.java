@@ -26,8 +26,8 @@ public class Identity extends Entity {
     public Identity(String alias, Collection<DropURL> drops,
                     QblECKeyPair primaryKeyPair) {
         super(drops);
-        this.setAlias(alias);
-        this.setPrimaryKeyPair(primaryKeyPair);
+        setAlias(alias);
+        setPrimaryKeyPair(primaryKeyPair);
         prefixes = new ArrayList<>();
     }
 
@@ -56,7 +56,7 @@ public class Identity extends Entity {
      * @return alias
      */
     public String getAlias() {
-        return this.alias;
+        return alias;
     }
 
     /**
@@ -113,7 +113,7 @@ public class Identity extends Entity {
      * @param key Primary Key pair of the identity.
      */
     public void setPrimaryKeyPair(QblECKeyPair key) {
-        this.primaryKeyPair = key;
+        primaryKeyPair = key;
     }
 
     /**
@@ -122,12 +122,12 @@ public class Identity extends Entity {
      * @return QblECKeyPair
      */
     public QblECKeyPair getPrimaryKeyPair() {
-        return this.primaryKeyPair;
+        return primaryKeyPair;
     }
 
     @Override
     public QblECPublicKey getEcPublicKey() {
-        return this.getPrimaryKeyPair().getPub();
+        return getPrimaryKeyPair().getPub();
     }
 
     @Override
@@ -136,14 +136,14 @@ public class Identity extends Entity {
         int result = 1;
 
         result = super.hashCode();
-        result = prime * result + ((primaryKeyPair == null) ? 0 : primaryKeyPair.hashCode());
+        result = prime * result + (primaryKeyPair == null ? 0 : primaryKeyPair.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (!super.equals(obj)) {
-            return (false);
+            return false;
         }
 
         if (this == obj) {

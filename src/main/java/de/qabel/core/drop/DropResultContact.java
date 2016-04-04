@@ -10,7 +10,7 @@ import java.util.Arrays;
 public class DropResultContact {
     private Contact contact;
     private int[] errorCode = new int[0];
-    private boolean success = false;
+    private boolean success;
 
     /**
      * Constructor
@@ -29,12 +29,12 @@ public class DropResultContact {
      */
     boolean addErrorCode(int errorCode) {
         if (errorCode == 200) {
-            this.success = true;
+            success = true;
         }
 
-        this.errorCode = this.addElement(this.errorCode, errorCode);
+        this.errorCode = addElement(this.errorCode, errorCode);
 
-        return this.success;
+        return success;
     }
 
     /**
@@ -43,7 +43,7 @@ public class DropResultContact {
      * @return Contact object
      */
     public Contact getContact() {
-        return this.contact;
+        return contact;
     }
 
     /**
@@ -52,7 +52,7 @@ public class DropResultContact {
      * @return Error code
      */
     public int[] getErrorCode() {
-        return this.errorCode;
+        return errorCode;
     }
 
     /**
@@ -61,7 +61,7 @@ public class DropResultContact {
      * @return Return state
      */
     public boolean isSuccess() {
-        return this.success;
+        return success;
     }
 
     private int[] addElement(int[] array, int element) {

@@ -10,12 +10,12 @@ import java.util.List;
  * whether everything is okay
  */
 public class DropResult {
-    private boolean checked = false;
+    private boolean checked;
     private boolean success = true;
     private List<DropResultContact> results;
 
     public DropResult() {
-        this.results = new ArrayList<DropResultContact>();
+        results = new ArrayList<DropResultContact>();
     }
 
     /**
@@ -32,11 +32,11 @@ public class DropResult {
         while (iterator.hasNext()) {
             DropResultContact item;
 
-            this.checked = true;
+            checked = true;
 
             item = iterator.next();
             if (item.isSuccess() == false) {
-                this.success = false;
+                success = false;
             }
         }
     }
@@ -47,12 +47,12 @@ public class DropResult {
      * @param result Object of DropResultContact
      */
     public void addContactResult(DropResultContact result) {
-        this.results.add(result);
+        results.add(result);
 
-        this.checked = true;
+        checked = true;
 
         if (result.isSuccess() == false) {
-            this.success = false;
+            success = false;
         }
     }
 
@@ -62,11 +62,11 @@ public class DropResult {
      * @return State of the shipping
      */
     public boolean isSuccess() {
-        if (this.checked == false) {
+        if (checked == false) {
             return false;
         }
 
-        return this.success;
+        return success;
     }
 
     /**
@@ -75,7 +75,7 @@ public class DropResult {
      * @return List of all results
      */
     public List<DropResultContact> getList() {
-        return Collections.unmodifiableList(this.results);
+        return Collections.unmodifiableList(results);
     }
 
 }

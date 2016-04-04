@@ -22,7 +22,7 @@ public class DropHTTP {
 
     public HTTPResult<?> send(URI uri, byte[] message) {
         HTTPResult<?> result = new HTTPResult<>();
-        HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
+        HttpURLConnection conn = (HttpURLConnection) setupConnection(uri);
         conn.setDoOutput(true); // indicates POST method
         conn.setDoInput(true);
         conn.setRequestProperty("Content-Type", "application/octet-stream");
@@ -48,12 +48,12 @@ public class DropHTTP {
     }
 
     public HTTPResult<Collection<byte[]>> receiveMessages(URI uri) throws IOException {
-        return this.receiveMessages(uri, 0);
+        return receiveMessages(uri, 0);
     }
 
     public HTTPResult<Collection<byte[]>> receiveMessages(URI uri, long sinceDate) throws IOException {
         HTTPResult<Collection<byte[]>> result = new HTTPResult<>();
-        HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
+        HttpURLConnection conn = (HttpURLConnection) setupConnection(uri);
         conn.setIfModifiedSince(sinceDate);
         Collection<byte[]> messages = new ArrayList<>();
         try {
@@ -93,12 +93,12 @@ public class DropHTTP {
     }
 
     public HTTPResult<?> head(URI uri) throws IOException {
-        return this.head(uri, 0);
+        return head(uri, 0);
     }
 
     public HTTPResult<?> head(URI uri, long sinceDate) throws IOException {
         HTTPResult<?> result = new HTTPResult<>();
-        HttpURLConnection conn = (HttpURLConnection) this.setupConnection(uri);
+        HttpURLConnection conn = (HttpURLConnection) setupConnection(uri);
         conn.setIfModifiedSince(sinceDate);
         try {
             conn.setRequestMethod("GET");

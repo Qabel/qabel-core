@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class CloseableHttpResponseStub implements CloseableHttpResponse {
-    public boolean closed = false;
+    public boolean closed;
     public StatusLine statusLine = new BasicStatusLine(new ProtocolVersion("HTTP", 1, 0), 200, "OK");
     public HttpEntity entity;
 

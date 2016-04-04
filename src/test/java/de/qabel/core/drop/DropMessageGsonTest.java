@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class DropMessageGsonTest {
     public static final String TEST_MESSAGE = "baz";
     public static final String TEST_MESSAGE_TYPE = "test_message";
-    String json = null;
+    String json;
 
     @Test(expected = NullPointerException.class)
     public void invalidJsonDeserializeTest() {

@@ -15,7 +15,6 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
     private transient CopyOnWriteArrayList<EntityObserver> observerList = new CopyOnWriteArrayList<>();
 
     public EntityMap() {
-        super();
     }
 
     /**
@@ -34,7 +33,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
      * @return old Entity associated to the same key identifier or null if no such old Entity was present.
      */
     public synchronized T put(T entity) {
-        T result = this.entities.put(entity.getKeyIdentifier(), entity);
+        T result = entities.put(entity.getKeyIdentifier(), entity);
         notifyObservers();
         return result;
     }
@@ -46,7 +45,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
      * @return old Entity associated to the key identifier of the given Entity, or null if there was no such Entity
      */
     public synchronized T remove(T entity) {
-        return this.remove(entity.getKeyIdentifier());
+        return remove(entity.getKeyIdentifier());
     }
 
     /**
@@ -56,7 +55,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
      * @return old Entity associated to the given key identifier, or null if there was no such Entity
      */
     public synchronized T remove(String keyIdentifier) {
-        T result = this.entities.remove(keyIdentifier);
+        T result = entities.remove(keyIdentifier);
         notifyObservers();
         return result;
     }
@@ -67,7 +66,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
      * @return entity to which the key identifier is mapped or null if there is no mapping for this key identifier
      */
     public synchronized T getByKeyIdentifier(String keyIdentifier) {
-        return this.entities.get(keyIdentifier);
+        return entities.get(keyIdentifier);
     }
 
     /**
@@ -76,7 +75,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
      * @return true if a mapping for the key identifier exists
      */
     public synchronized boolean contains(T entity) {
-        return this.entities.containsKey(entity.getKeyIdentifier());
+        return entities.containsKey(entity.getKeyIdentifier());
     }
 
     @Override
@@ -99,10 +98,7 @@ abstract class EntityMap<T extends Entity> extends Persistable implements Entity
             return false;
         }
         EntityMap<T> other = (EntityMap<T>) obj;
-        if (!entities.equals(other.entities)) {
-            return false;
-        }
-        return true;
+        return entities.equals(other.entities);
     }
 
     @Override

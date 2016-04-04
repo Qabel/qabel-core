@@ -12,7 +12,7 @@ public abstract class Persistable implements Serializable {
     private UUID persistenceID;
 
     public Persistable() {
-        this.persistenceID = genPersistenceID();
+        persistenceID = genPersistenceID();
     }
 
     public String getPersistenceID() {

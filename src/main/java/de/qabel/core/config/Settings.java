@@ -13,7 +13,7 @@ public class Settings {
      * @param value Value to set the local settings to.
      */
     public void setLocalSettings(LocalSettings value) {
-        this.localSettings = value;
+        localSettings = value;
     }
 
     /**
@@ -22,7 +22,7 @@ public class Settings {
      * @return localSettings
      */
     public LocalSettings getLocalSettings() {
-        return this.localSettings;
+        return localSettings;
     }
 
     /**
@@ -40,7 +40,7 @@ public class Settings {
      * @return SyncedSettings
      */
     public SyncedSettings getSyncedSettings() {
-        return this.syncedSettings;
+        return syncedSettings;
     }
 
     public void setSyncedSettings(SyncedSettings syncedSettings) {

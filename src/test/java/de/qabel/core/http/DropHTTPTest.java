@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class DropHTTPTest {
 
-    public long postedAt = 0;
+    public long postedAt;
     private URI workingUri, tooShortUri, notExistingUri,
         shouldContainMessagesUri, shouldContainNoNewMessagesSinceDateUri;
 
@@ -51,8 +51,8 @@ public class DropHTTPTest {
         DropHTTP dHTTP = new DropHTTP();
         String message = "Test";
         // When
-        HTTPResult<?> result = dHTTP.send(this.workingUri, message.getBytes());
-        this.postedAt = System.currentTimeMillis();
+        HTTPResult<?> result = dHTTP.send(workingUri, message.getBytes());
+        postedAt = System.currentTimeMillis();
         // Then
         assertEquals(200, result.getResponseCode());
         assertTrue(result.isOk());
@@ -65,7 +65,7 @@ public class DropHTTPTest {
         DropHTTP dHTTP = new DropHTTP();
         String message = "";
         // When
-        HTTPResult<?> result = dHTTP.send(this.workingUri, message.getBytes());
+        HTTPResult<?> result = dHTTP.send(workingUri, message.getBytes());
         // Then
         assertEquals(400, result.getResponseCode());
         assertFalse(result.isOk());
@@ -79,7 +79,7 @@ public class DropHTTPTest {
         char[] chars = new char[2574]; // one byte more than the server accepts
         Arrays.fill(chars, 'a');
         // When
-        HTTPResult<?> result = dHTTP.send(this.workingUri,
+        HTTPResult<?> result = dHTTP.send(workingUri,
             new String(chars).getBytes());
         // Then
         assertEquals(413, result.getResponseCode());
@@ -92,7 +92,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.workingUri);
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(workingUri);
         // Then
         assertNotEquals(null, result.getData());
         assertNotEquals(new ArrayList<byte[]>(), result.getData());
@@ -107,7 +107,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.tooShortUri);
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(tooShortUri);
         // Then
         assertNotEquals(null, result.getData());
         assertEquals(new ArrayList<byte[]>(), result.getData());
@@ -121,7 +121,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.notExistingUri);
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(notExistingUri);
         // Then
         assertNotEquals(null, result.getData());
         assertEquals(new ArrayList<byte[]>(), result.getData());
@@ -135,7 +135,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.shouldContainMessagesUri, 0);
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(shouldContainMessagesUri, 0);
         // Then
         assertNotEquals(null, result.getData());
         assertNotEquals(new ArrayList<byte[]>(), result.getData());
@@ -149,7 +149,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.shouldContainNoNewMessagesSinceDateUri,
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(shouldContainNoNewMessagesSinceDateUri,
             System.currentTimeMillis() + 1000L);
         // Then
         assertNotEquals(null, result.getData());
@@ -164,7 +164,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(this.notExistingUri,
+        HTTPResult<Collection<byte[]>> result = dHTTP.receiveMessages(notExistingUri,
             System.currentTimeMillis());
         // Then
         assertNotEquals(null, result.getData());
@@ -179,7 +179,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.shouldContainMessagesUri);
+        HTTPResult<?> result = dHTTP.head(shouldContainMessagesUri);
         // Then
         assertEquals(200, result.getResponseCode());
         assertTrue(result.isOk());
@@ -191,7 +191,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.tooShortUri);
+        HTTPResult<?> result = dHTTP.head(tooShortUri);
         // Then
         assertEquals(400, result.getResponseCode());
         assertFalse(result.isOk());
@@ -203,7 +203,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.notExistingUri);
+        HTTPResult<?> result = dHTTP.head(notExistingUri);
         // Then
         assertEquals(204, result.getResponseCode());
         assertFalse(result.isOk());
@@ -215,7 +215,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.workingUri, this.postedAt);
+        HTTPResult<?> result = dHTTP.head(workingUri, postedAt);
         // Then
         assertEquals(200, result.getResponseCode());
         assertTrue(result.isOk());
@@ -227,7 +227,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.shouldContainNoNewMessagesSinceDateUri,
+        HTTPResult<?> result = dHTTP.head(shouldContainNoNewMessagesSinceDateUri,
             System.currentTimeMillis() + 1000L);
         // Then
         assertEquals(304, result.getResponseCode());
@@ -240,7 +240,7 @@ public class DropHTTPTest {
         // Given
         DropHTTP dHTTP = new DropHTTP();
         // When
-        HTTPResult<?> result = dHTTP.head(this.notExistingUri,
+        HTTPResult<?> result = dHTTP.head(notExistingUri,
             System.currentTimeMillis() + 10);
         // Then
         assertEquals(204, result.getResponseCode());

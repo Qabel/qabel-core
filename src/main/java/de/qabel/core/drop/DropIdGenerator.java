@@ -27,7 +27,7 @@ public abstract class DropIdGenerator {
      * @return the identifier
      */
     public String generateDropId() {
-        byte[] id = Arrays.copyOf(this.generateDropIdBytes(), DROP_ID_LENGTH_BYTE);
+        byte[] id = Arrays.copyOf(generateDropIdBytes(), DROP_ID_LENGTH_BYTE);
         return new String(UrlBase64.encode(id)).substring(0, DROP_ID_LENGTH); // cut off terminating dot
     }
 }

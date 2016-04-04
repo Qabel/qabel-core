@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public class DelayedStream extends FilterInputStream {
     private boolean blockOnRead = true;
-    private boolean blocked = false;
+    private boolean blocked;
 
     protected DelayedStream(InputStream in) {
         super(in);

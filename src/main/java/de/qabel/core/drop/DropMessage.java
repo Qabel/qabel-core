@@ -31,8 +31,8 @@ public class DropMessage implements Serializable {
         this.sender = sender;
         this.dropPayload = dropPayload;
         this.dropPayloadType = dropPayloadType;
-        this.created = new Date();
-        this.acknowledgeId = NOACK;
+        created = new Date();
+        acknowledgeId = NOACK;
     }
 
     /**
@@ -98,10 +98,10 @@ public class DropMessage implements Serializable {
      * @param enabled true enables acknowledging
      */
     public void enableAcknowledging(boolean enabled) {
-        if (enabled && this.acknowledgeId.equals(NOACK)) {
-            this.acknowledgeId = generateAcknowledgeId();
+        if (enabled && acknowledgeId.equals(NOACK)) {
+            acknowledgeId = generateAcknowledgeId();
         } else if (!enabled) {
-            this.acknowledgeId = NOACK;
+            acknowledgeId = NOACK;
         }
     }
 

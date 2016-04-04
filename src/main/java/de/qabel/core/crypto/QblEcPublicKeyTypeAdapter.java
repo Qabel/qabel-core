@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class QblEcPublicKeyTypeAdapter extends TypeAdapter<QblECPublicKey> {
 
-    private final static Logger logger = LoggerFactory.getLogger(QblEcPublicKeyTypeAdapter.class
+    private static final Logger logger = LoggerFactory.getLogger(QblEcPublicKeyTypeAdapter.class
         .getName());
 
     @Override

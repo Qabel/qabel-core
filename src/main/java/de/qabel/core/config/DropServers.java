@@ -19,7 +19,7 @@ public class DropServers {
      * @return Returns unmodifiable set of contained drop servers
      */
     public Set<DropServer> getDropServers() {
-        return Collections.unmodifiableSet(new HashSet<>(this.dropServers.values()));
+        return Collections.unmodifiableSet(new HashSet<>(dropServers.values()));
     }
 
     /**
@@ -29,10 +29,7 @@ public class DropServers {
      * @return True if newly added, false if updated
      */
     public boolean put(DropServer dropServer) {
-        if (this.dropServers.put(dropServer.getPersistenceID(), dropServer) == null) {
-            return true;
-        }
-        return false;
+        return dropServers.put(dropServer.getPersistenceID(), dropServer) == null;
     }
 
     /**
@@ -42,10 +39,7 @@ public class DropServers {
      * @return true if dropServer was contained in list, false if not.
      */
     public boolean remove(DropServer dropServer) {
-        if (this.dropServers.remove(dropServer.getPersistenceID()) == null) {
-            return false;
-        }
-        return true;
+        return dropServers.remove(dropServer.getPersistenceID()) != null;
     }
 
     @Override
@@ -53,7 +47,7 @@ public class DropServers {
         final int prime = 31;
         int result = 1;
         result = prime * result
-            + ((dropServers == null) ? 0 : dropServers.hashCode());
+            + (dropServers == null ? 0 : dropServers.hashCode());
         return result;
     }
 

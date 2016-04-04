@@ -48,7 +48,7 @@ public class ExtendedHashCodeMethodTester extends HashCodeMethodTester {
     @Override
     public void testHashCodeMethod(EquivalentFactory<?> factory) {
         Configuration config = new ConfigurationBuilder().build();
-        this.testHashCodeMethod(factory, config);
+        testHashCodeMethod(factory, config);
     }
 
     /**

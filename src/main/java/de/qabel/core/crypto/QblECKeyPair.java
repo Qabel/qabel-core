@@ -25,7 +25,7 @@ public class QblECKeyPair implements Serializable {
         curve25519 = new Curve25519();
 
         this.privateKey = privateKey;
-        this.pubKey = new QblECPublicKey(curve25519.cryptoScalarmultBase(this.privateKey));
+        pubKey = new QblECPublicKey(curve25519.cryptoScalarmultBase(this.privateKey));
     }
 
     /**
@@ -40,7 +40,7 @@ public class QblECKeyPair implements Serializable {
      *
      * @return random private key
      */
-    static private byte[] generatePrivateKey() {
+    private static byte[] generatePrivateKey() {
         SecureRandom random = new SecureRandom();
         byte[] randomBytes = new byte[KEY_SIZE_BYTE];
         random.nextBytes(randomBytes);
@@ -85,11 +85,8 @@ public class QblECKeyPair implements Serializable {
         if (!Arrays.equals(privateKey, ecKeyPair.privateKey)) {
             return false;
         }
-        if (!pubKey.equals(ecKeyPair.pubKey)) {
-            return false;
-        }
+        return pubKey.equals(ecKeyPair.pubKey);
 
-        return true;
     }
 
     @Override

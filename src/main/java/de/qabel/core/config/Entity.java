@@ -19,13 +19,13 @@ public abstract class Entity extends SyncSettingItem {
 
     public Entity(Collection<DropURL> drops) {
         if (drops != null) {
-            this.dropUrls = new HashSet<>(drops);
+            dropUrls = new HashSet<>(drops);
         } else {
-            this.dropUrls = new HashSet<>();
+            dropUrls = new HashSet<>();
         }
     }
 
-    abstract public QblECPublicKey getEcPublicKey();
+    public abstract QblECPublicKey getEcPublicKey();
 
     /**
      * Returns the key identifier. The key identifier consists of the right-most 64 bit of the public fingerprint
@@ -33,7 +33,7 @@ public abstract class Entity extends SyncSettingItem {
      * @return key identifier
      */
     public String getKeyIdentifier() {
-        return this.getEcPublicKey().getReadableKeyIdentifier();
+        return getEcPublicKey().getReadableKeyIdentifier();
     }
 
     public Set<DropURL> getDropUrls() {
@@ -41,14 +41,14 @@ public abstract class Entity extends SyncSettingItem {
     }
 
     public void addDrop(DropURL drop) {
-        this.dropUrls.add(drop);
+        dropUrls.add(drop);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + ((dropUrls == null) ? 0 : dropUrls.hashCode());
+        result = prime * result + (dropUrls == null ? 0 : dropUrls.hashCode());
         return result;
     }
 
@@ -64,9 +64,6 @@ public abstract class Entity extends SyncSettingItem {
             return false;
         }
         Entity other = (Entity) obj;
-        if (!dropUrls.equals(other.dropUrls)) {
-            return false;
-        }
-        return true;
+        return dropUrls.equals(other.dropUrls);
     }
 }

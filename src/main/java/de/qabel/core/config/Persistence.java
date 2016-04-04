@@ -12,7 +12,7 @@ import java.util.List;
  */
 public abstract class Persistence<T> {
 
-    private final static Logger logger = LoggerFactory.getLogger(Persistence.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(Persistence.class.getName());
 
     /**
      * Connect to the used database

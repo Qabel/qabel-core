@@ -17,9 +17,9 @@ class SyncedSettingsEquivalentTestFactory implements EquivalentFactory<SyncedSet
     List<Contacts> contactsList = new LinkedList<>();
 
     SyncedSettingsEquivalentTestFactory() {
-        accounts = (new AccountsTestFactory()).create();
-        dropServers = (new DropServersTestFactory()).create();
-        identities = (new IdentitiesTestFactory()).create();
+        accounts = new AccountsTestFactory().create();
+        dropServers = new DropServersTestFactory().create();
+        identities = new IdentitiesTestFactory().create();
         for (Identity identity : identities.getIdentities()) {
             Contacts value = new ContactsTestFactory().create(identity);
             contactsList.add(value);

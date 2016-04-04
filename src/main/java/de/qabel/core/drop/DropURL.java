@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 public class DropURL implements Serializable {
     private static final long serialVersionUID = 8103657475203731210L;
 
-    private final static Logger logger = LoggerFactory.getLogger(DropURL.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(DropURL.class.getName());
 
     private URI uri;
 
@@ -29,8 +29,8 @@ public class DropURL implements Serializable {
      * @throws QblDropInvalidURL  if the url is generally well-formed but violates the drop url syntax
      */
     public DropURL(String url) throws URISyntaxException, QblDropInvalidURL {
-        this.uri = new URI(url);
-        this.checkDropIdFromUrl();
+        uri = new URI(url);
+        checkDropIdFromUrl();
     }
 
     /**
@@ -54,7 +54,7 @@ public class DropURL implements Serializable {
         String dropId = generator.generateDropId();
 
         try {
-            this.uri = new URI(server.getUri().toString() + "/" + dropId);
+            uri = new URI(server.getUri() + "/" + dropId);
         } catch (URISyntaxException e) {
             logger.error("Failed to create drop url.", e);
             // should not happen - cannot recover from this
@@ -68,7 +68,7 @@ public class DropURL implements Serializable {
      * @return the drop id
      */
     private String getDropId() {
-        String path = this.uri.getPath();
+        String path = uri.getPath();
         return path.substring(path.lastIndexOf("/") + 1);
     }
 
@@ -77,7 +77,7 @@ public class DropURL implements Serializable {
      */
     private void checkDropIdFromUrl() throws QblDropInvalidURL {
         // check if its a valid Drop-URL.
-        String dropID = this.getDropId();
+        String dropID = getDropId();
 
         if (dropID.length() != DropIdGenerator.DROP_ID_LENGTH) {
             throw new QblDropInvalidURL();
@@ -96,19 +96,19 @@ public class DropURL implements Serializable {
      * @return the URI
      */
     public URI getUri() {
-        return this.uri;
+        return uri;
     }
 
     @Override
     public String toString() {
-        return this.uri.toString();
+        return uri.toString();
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        result = prime * result + (uri == null ? 0 : uri.hashCode());
         return result;
     }
 

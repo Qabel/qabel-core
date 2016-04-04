@@ -3,9 +3,9 @@ package de.qabel.core.http;
 import java.util.Date;
 
 public class HTTPResult<T> {
-    int responseCode = 0;
-    boolean ok = false;
-    Date lastModified = null;
+    int responseCode;
+    boolean ok;
+    Date lastModified;
     T data;
 
     public boolean isOk() {

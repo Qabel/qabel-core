@@ -9,7 +9,7 @@ import org.meanbean.lang.Factory;
  */
 public class DropServerTestFactory implements Factory<DropServer> {
     UriTestFactory urlFactory;
-    int i = 0;
+    int i;
 
     DropServerTestFactory() {
         urlFactory = new UriTestFactory();

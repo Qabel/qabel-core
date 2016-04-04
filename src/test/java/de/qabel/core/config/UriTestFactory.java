@@ -11,7 +11,7 @@ import java.net.URISyntaxException;
  * Attention: For testing purposes only
  */
 class UriTestFactory implements Factory<URI> {
-    int i = 0;
+    int i;
 
     @Override
     public URI create() {

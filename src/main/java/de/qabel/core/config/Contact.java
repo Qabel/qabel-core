@@ -39,11 +39,11 @@ public class Contact extends Entity {
      * @return alias
      */
     public String getAlias() {
-        return this.alias;
+        return alias;
     }
 
     public void setAlias(String value) {
-        this.alias = value;
+        alias = value;
     }
 
     /**
@@ -89,7 +89,7 @@ public class Contact extends Entity {
      */
     public Contact(String alias, Collection<DropURL> dropUrls, QblECPublicKey pubKey) {
         super(dropUrls);
-        this.setEcPublicKey(pubKey);
+        setEcPublicKey(pubKey);
         this.alias = alias;
     }
 
@@ -106,7 +106,7 @@ public class Contact extends Entity {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result
-            + ((ecPublicKey == null) ? 0 : ecPublicKey.hashCode());
+            + (ecPublicKey == null ? 0 : ecPublicKey.hashCode());
         return result;
     }
 

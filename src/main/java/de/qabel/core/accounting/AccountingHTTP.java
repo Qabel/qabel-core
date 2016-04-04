@@ -27,7 +27,7 @@ import java.util.*;
 
 public class AccountingHTTP {
 
-    private final static Logger logger = LoggerFactory.getLogger(AccountingHTTP.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(AccountingHTTP.class.getName());
     public static final String EMAIL_KEY = "email";
 
     private AccountingServer server;
@@ -49,7 +49,7 @@ public class AccountingHTTP {
     public void login() throws IOException, QblInvalidCredentials {
         URI uri;
         try {
-            uri = this.buildUri("api/v0/auth/login").build();
+            uri = buildUri("api/v0/auth/login").build();
         } catch (URISyntaxException e) {
             logger.error("Login url building failed", e);
             throw new RuntimeException("Login url building failed", e);
@@ -105,7 +105,7 @@ public class AccountingHTTP {
         ArrayList<String> prefixes;
         URI uri;
         try {
-            uri = this.buildBlockUri("api/v0/prefix").build();
+            uri = buildBlockUri("api/v0/prefix").build();
         } catch (URISyntaxException e) {
             throw new RuntimeException("Url building failed", e);
         }
@@ -125,7 +125,7 @@ public class AccountingHTTP {
     public void createPrefix() throws IOException, QblInvalidCredentials {
         URI uri;
         try {
-            uri = this.buildBlockUri("api/v0/prefix").build();
+            uri = buildBlockUri("api/v0/prefix").build();
         } catch (URISyntaxException e) {
             throw new RuntimeException("Url building failed", e);
         }
@@ -174,7 +174,7 @@ public class AccountingHTTP {
     public void resetPassword(String email) throws IOException {
         URI uri;
         try {
-            uri = this.buildUri("api/v0/auth/password/reset").build();
+            uri = buildUri("api/v0/auth/password/reset").build();
         } catch (URISyntaxException e) {
             throw new RuntimeException("Url building failed", e);
         }
@@ -221,7 +221,7 @@ public class AccountingHTTP {
         URI uri;
 
         try {
-            uri = this.buildUri("api/v0/auth/registration").build();
+            uri = buildUri("api/v0/auth/registration").build();
         } catch (URISyntaxException e) {
             throw new RuntimeException("Url building failed", e);
         }

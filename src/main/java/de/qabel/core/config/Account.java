@@ -29,33 +29,33 @@ public class Account extends SyncSettingItem {
      * @param auth     Authentication of the account
      */
     public Account(String provider, String user, String auth) {
-        this.setProvider(provider);
-        this.setUser(user);
-        this.setAuth(auth);
+        setProvider(provider);
+        setUser(user);
+        setAuth(auth);
     }
 
     public void setProvider(String value) {
-        this.provider = value;
+        provider = value;
     }
 
     public String getProvider() {
-        return this.provider;
+        return provider;
     }
 
     public void setUser(String value) {
-        this.user = value;
+        user = value;
     }
 
     public String getUser() {
-        return this.user;
+        return user;
     }
 
     public void setAuth(String value) {
-        this.auth = value;
+        auth = value;
     }
 
     public String getAuth() {
-        return this.auth;
+        return auth;
     }
 
     @Override
@@ -65,16 +65,16 @@ public class Account extends SyncSettingItem {
 
         result = super.hashCode();
 
-        result = prime * result + ((auth == null) ? 0 : auth.hashCode());
-        result = prime * result + ((provider == null) ? 0 : provider.hashCode());
-        result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + (auth == null ? 0 : auth.hashCode());
+        result = prime * result + (provider == null ? 0 : provider.hashCode());
+        result = prime * result + (user == null ? 0 : user.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj) == false) {
-            return (false);
+            return false;
         }
 
         if (this == obj) {

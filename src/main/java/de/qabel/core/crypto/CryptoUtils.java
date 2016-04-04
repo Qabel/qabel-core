@@ -20,10 +20,10 @@ import java.util.Arrays;
 
 public class CryptoUtils {
     // https://github.com/Qabel/qabel-doc/wiki/Components-Crypto
-    private final static int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
-    private final static int SYMM_NONCE_SIZE_BYTE = 12;
-    private final static int AES_KEY_SIZE_BYTE = 32;
-    private final static int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
+    private static final int SYMM_GCM_READ_SIZE_BYTE = 4096; // Should be multiple of 4096 byte due to flash block size.
+    private static final int SYMM_NONCE_SIZE_BYTE = 12;
+    private static final int AES_KEY_SIZE_BYTE = 32;
+    private static final int AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8;
 
     private static byte[] SUITE_NAME = "Noise255/AES256-GCM\0\0\0\0\0".getBytes();
     private static final int H_LEN = 64;
@@ -35,7 +35,7 @@ public class CryptoUtils {
     private static final int PADDING_LEN_BYTES = 4;
     public static final int ASYM_KEY_SIZE_BYTE = 32;
 
-    private final static Logger logger = LoggerFactory.getLogger(CryptoUtils.class
+    private static final Logger logger = LoggerFactory.getLogger(CryptoUtils.class
         .getName());
 
     private SecureRandom secRandom;
@@ -94,7 +94,7 @@ public class CryptoUtils {
     public boolean encryptFileAuthenticatedSymmetric(File file, OutputStream outputStream, KeyParameter key, byte[] nonce)
         throws InvalidKeyException, FileNotFoundException {
         FileInputStream fileInputStream = new FileInputStream(file);
-        return this.encryptStreamAuthenticatedSymmetric(fileInputStream, outputStream, key, nonce);
+        return encryptStreamAuthenticatedSymmetric(fileInputStream, outputStream, key, nonce);
     }
 
     /**
@@ -230,7 +230,7 @@ public class CryptoUtils {
      *                    provided 'info' is different.
      * @param outputLen   length out the output
      * @return derived key or null on unexpected errors
-     * @throws java.security.InvalidKeyException if secret cannot be used as a HMAC secret
+     * @throws InvalidKeyException if secret cannot be used as a HMAC secret
      */
     byte[] kdf(byte[] secret, byte[] extraSecret, byte[] info, int outputLen) throws InvalidKeyException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -272,7 +272,7 @@ public class CryptoUtils {
      * @param appData      appData which will be decrypted
      * @param padLen       length of padding added to the box. Negative values are ignored.
      * @return ciphertext of mentioned format
-     * @throws java.security.InvalidKeyException if kdf cannot distribute a key from DH of given EC keys
+     * @throws InvalidKeyException if kdf cannot distribute a key from DH of given EC keys
      */
     public byte[] createBox(QblECKeyPair senderKey, QblECPublicKey targetPubKey, byte[] appData, int padLen)
         throws InvalidKeyException {
@@ -352,8 +352,8 @@ public class CryptoUtils {
      * @param targetKey receivers EC key pair
      * @param noiseBox  ciphertext which is received
      * @return plaintext which is the content of the received noise box
-     * @throws java.security.InvalidKeyException                  if kdf cannot distribute a key from DH of given EC keys
-     * @throws org.spongycastle.crypto.InvalidCipherTextException on decryption errors
+     * @throws InvalidKeyException                  if kdf cannot distribute a key from DH of given EC keys
+     * @throws InvalidCipherTextException on decryption errors
      */
     public DecryptedPlaintext readBox(QblECKeyPair targetKey, byte[] noiseBox) throws InvalidKeyException, InvalidCipherTextException {
         ByteArrayInputStream key1, key2;
@@ -448,7 +448,7 @@ public class CryptoUtils {
      * @param plaintext      plaintext to encrypt
      * @param associatedData additionally associated data
      * @return encrypted plaintext
-     * @throws org.spongycastle.crypto.InvalidCipherTextException on encryption errors
+     * @throws InvalidCipherTextException on encryption errors
      */
     public byte[] encrypt(KeyParameter key, byte[] nonce, byte[] plaintext, byte[] associatedData) throws InvalidCipherTextException {
         AEADParameters params = new AEADParameters(key, MAC_BIT, nonce, associatedData);
@@ -469,7 +469,7 @@ public class CryptoUtils {
      * @param ciphertext     ciphertext to encrypt
      * @param associatedData additionally associated data
      * @return encrypted ciphertext
-     * @throws org.spongycastle.crypto.InvalidCipherTextException on decryption errors
+     * @throws InvalidCipherTextException on decryption errors
      */
     public byte[] decrypt(KeyParameter key, byte[] nonce, byte[] ciphertext, byte[] associatedData) throws InvalidCipherTextException {
         AEADParameters params = new AEADParameters(key, MAC_BIT, nonce, associatedData);

@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PersistenceTest {
-    private final static String DB_NAME = "PersistenceTest.sqlite";
+    private static final String DB_NAME = "PersistenceTest.sqlite";
     Persistence<String> persistence;
 
     @Before
@@ -60,7 +60,7 @@ public class PersistenceTest {
         Assert.assertTrue(persistence.persistEntity(pto));
         Assert.assertTrue(persistence.updateEntity(pto));
 
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
@@ -70,13 +70,13 @@ public class PersistenceTest {
         PersistenceTestObject pto = new PersistenceTestObject("pto");
 
         Assert.assertTrue(persistence.updateOrPersistEntity(pto));
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
 
         pto.data = "changed";
         Assert.assertTrue(persistence.updateOrPersistEntity(pto));
-        receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
     }
@@ -93,13 +93,13 @@ public class PersistenceTest {
         persistence.persistEntity(pto);
 
         // Assure that pto has been persisted
-        PersistenceTestObject receivedPto = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertEquals(pto, receivedPto);
 
         Assert.assertTrue(persistence.removeEntity(pto.getPersistenceID(), PersistenceTestObject.class));
 
-        PersistenceTestObject receivedPto2 = (PersistenceTestObject) persistence.getEntity(pto.getPersistenceID(),
+        PersistenceTestObject receivedPto2 = persistence.getEntity(pto.getPersistenceID(),
             PersistenceTestObject.class);
         Assert.assertNull(receivedPto2);
     }
@@ -118,7 +118,7 @@ public class PersistenceTest {
         Assert.assertFalse(persistence.dropTable(PersistenceTestObject.class));
     }
 
-    static public class PersistenceTestObject extends Persistable implements Serializable {
+    public static class PersistenceTestObject extends Persistable {
         private static final long serialVersionUID = -9721591389456L;
         public String data;
 
@@ -146,7 +146,7 @@ public class PersistenceTest {
         }
     }
 
-    static public class PersistenceTestObject2 extends Persistable implements Serializable {
+    public static class PersistenceTestObject2 extends Persistable {
         private static final long serialVersionUID = -832569264920L;
         public String data;
 

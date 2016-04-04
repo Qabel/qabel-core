@@ -15,7 +15,7 @@ public class Accounts {
      * @return Set<Account>
      */
     public Set<Account> getAccounts() {
-        return Collections.unmodifiableSet(new HashSet<>(this.accounts.values()));
+        return Collections.unmodifiableSet(new HashSet<>(accounts.values()));
     }
 
     /**
@@ -25,10 +25,7 @@ public class Accounts {
      * @return True if newly added, false if updated
      */
     public boolean put(Account account) {
-        if (this.accounts.put(account.getPersistenceID(), account) == null) {
-            return true;
-        }
-        return false;
+        return accounts.put(account.getPersistenceID(), account) == null;
     }
 
     /**
@@ -38,17 +35,14 @@ public class Accounts {
      * @return true if account was contained in list, false if not
      */
     public boolean remove(Account account) {
-        if (this.accounts.remove(account.getPersistenceID()) == null) {
-            return false;
-        }
-        return true;
+        return accounts.remove(account.getPersistenceID()) != null;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((accounts == null) ? 0 : accounts.hashCode());
+        result = prime * result + (accounts == null ? 0 : accounts.hashCode());
         return result;
     }
 

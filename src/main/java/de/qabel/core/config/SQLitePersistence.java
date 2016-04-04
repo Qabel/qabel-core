@@ -11,10 +11,10 @@ import java.util.List;
  * Stores entities in a local SQLite database
  */
 public class SQLitePersistence extends Persistence<String> {
-    private final static Logger logger = LoggerFactory.getLogger(SQLitePersistence.class.getName());
-    private final static String STR_DATA = "DATA";
-    private final static String JDBC_CLASS_NAME = "org.sqlite.JDBC";
-    private final static String JDBC_PREFIX = "jdbc:sqlite:";
+    private static final Logger logger = LoggerFactory.getLogger(SQLitePersistence.class.getName());
+    private static final String STR_DATA = "DATA";
+    private static final String JDBC_CLASS_NAME = "org.sqlite.JDBC";
+    private static final String JDBC_PREFIX = "jdbc:sqlite:";
 
     private Connection c;
 

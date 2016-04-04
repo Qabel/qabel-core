@@ -111,7 +111,7 @@ public class ProofOfWork {
     private static boolean enoughZeros(byte[] hash, int leadingZeros) {
         for (int i = 0; i < leadingZeros; i++) {
             //check whether i-th bit is zero
-            if (((hash[i / 8] >> (i % 8)) & 1) != 0) {
+            if ((hash[i / 8] >> i % 8 & 1) != 0) {
                 return false;
             }
         }

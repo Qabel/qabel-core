@@ -31,9 +31,9 @@ public class DropServer extends SyncSettingItem {
      * @param active Status flag of the DropServer.
      */
     public DropServer(URI uri, String auth, boolean active) {
-        this.setUri(uri);
-        this.setAuth(auth);
-        this.setActive(active);
+        setUri(uri);
+        setAuth(auth);
+        setActive(active);
     }
 
     /**
@@ -58,7 +58,7 @@ public class DropServer extends SyncSettingItem {
      * @return URI
      */
     public URI getUri() {
-        return this.uri;
+        return uri;
     }
 
     /**
@@ -67,7 +67,7 @@ public class DropServer extends SyncSettingItem {
      * @param value Authentication for the DropServer.
      */
     public void setAuth(String value) {
-        this.auth = value;
+        auth = value;
     }
 
     /**
@@ -76,7 +76,7 @@ public class DropServer extends SyncSettingItem {
      * @return authentication
      */
     public String getAuth() {
-        return this.auth;
+        return auth;
     }
 
     /**
@@ -85,7 +85,7 @@ public class DropServer extends SyncSettingItem {
      * @param value Status flag to set the DropServer to.
      */
     public void setActive(boolean value) {
-        this.active = value;
+        active = value;
     }
 
     /**
@@ -94,7 +94,7 @@ public class DropServer extends SyncSettingItem {
      * @return boolean
      */
     public boolean isActive() {
-        return this.active;
+        return active;
     }
 
     @Override
@@ -105,15 +105,15 @@ public class DropServer extends SyncSettingItem {
         result = super.hashCode();
 
         result = prime * result + (active ? 1231 : 1237);
-        result = prime * result + ((auth == null) ? 0 : auth.hashCode());
-        result = prime * result + ((uri == null) ? 0 : uri.hashCode());
+        result = prime * result + (auth == null ? 0 : auth.hashCode());
+        result = prime * result + (uri == null ? 0 : uri.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (super.equals(obj) == false) {
-            return (false);
+            return false;
         }
 
         if (this == obj) {
