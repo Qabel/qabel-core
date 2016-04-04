@@ -6,7 +6,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.params.HttpParams;
@@ -18,19 +17,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CloseableHttpClientStub extends CloseableHttpClient {
-    private boolean closed = false;
+    private boolean closed;
     private Map<String, CloseableHttpResponse> responses = new HashMap<>();
     private String body;
 
     @Override
-    protected CloseableHttpResponse doExecute(HttpHost target, HttpRequest request, HttpContext context) throws IOException, ClientProtocolException {
+    protected CloseableHttpResponse doExecute(HttpHost target, HttpRequest request, HttpContext context) throws IOException {
         if (request instanceof HttpEntityEnclosingRequest) {
             InputStream contentStream = ((HttpEntityEnclosingRequest) request).getEntity().getContent();
             body = IOUtils.toString(contentStream);
         }
         String hash = hashRequest(request.getRequestLine().getMethod(), request.getRequestLine().getUri());
         if (!responses.containsKey(hash)) {
-           throw new IllegalArgumentException("no response found for request'" + hash + "'");
+            throw new IllegalArgumentException("no response found for request'" + hash + "'");
         }
         return responses.get(hash);
     }

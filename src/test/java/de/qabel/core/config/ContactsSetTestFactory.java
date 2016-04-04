@@ -6,12 +6,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ContactsSetTestFactory implements Factory<Set<Contacts>> {
-	private ContactsTestFactory contactsTestFactory = new ContactsTestFactory();
+    private ContactsTestFactory contactsTestFactory = new ContactsTestFactory();
 
-	@Override
-	public Set<Contacts> create() {
-		HashSet<Contacts> set = new HashSet<>();
-		set.add(contactsTestFactory.create());
-		return set;
-	}
+    @Override
+    public Set<Contacts> create() {
+        HashSet<Contacts> set = new HashSet<>();
+        set.add(contactsTestFactory.create());
+        return set;
+    }
 }

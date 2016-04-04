@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Simple Logger with Level all, and appender to console and file -->
- 
+
 <Configuration status="WARN">
-  <Appenders>
-    <RandomAccessFile name="RandomAccessFile" fileName="log/core.log" immediateFlush="false" append="false">
-      <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </RandomAccessFile>
-    
-    <Console name="Console" target="SYSTEM_OUT">
-      <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
-    </Console>
-  </Appenders>
-  <Loggers>
-    <Root level="all" includeLocation="false">
-      <AppenderRef ref="RandomAccessFile"/>
-      <AppenderRef ref="Console"/>
-    </Root>
-  </Loggers>
+    <Appenders>
+        <RandomAccessFile name="RandomAccessFile" fileName="log/core.log" immediateFlush="false" append="false">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </RandomAccessFile>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="all" includeLocation="false">
+            <AppenderRef ref="RandomAccessFile"/>
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
 </Configuration>

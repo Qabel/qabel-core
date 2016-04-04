@@ -13,35 +13,33 @@ import de.qabel.core.exceptions.QblVersionMismatchException;
  */
 public class DropMessageCryptorUtil {
 
-	/**
-	 * Creates an encrypted {@link DropMessage} for a recipient.
-	 * @param payload Payload for the encrypted {@link DropMessage}
-	 * @param dropMessageType Type of the {@link DropMessage} payload.
-	 * @param sender {@link Identity} to use as sender for the {@link DropMessage}.
-	 * @param recipient {@link Contact} to encrypt the {@link DropMessage} for.
-	 * @return Encrypted {@link DropMessage} for recipient.
-	 * @throws QblDropPayloadSizeException
-	 */
-	public static byte[] createEncryptedDropMessage(String payload, String dropMessageType,
-										   Identity sender, Contact recipient) throws QblDropPayloadSizeException {
-		DropMessage dropMessage = new DropMessage(sender, payload, dropMessageType);
-		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(dropMessage);
-		return binaryMessage.assembleMessageFor(recipient, sender);
-	}
+    /**
+     * Creates an encrypted {@link DropMessage} for a recipient.
+     *
+     * @param payload         Payload for the encrypted {@link DropMessage}
+     * @param dropMessageType Type of the {@link DropMessage} payload.
+     * @param sender          {@link Identity} to use as sender for the {@link DropMessage}.
+     * @param recipient       {@link Contact} to encrypt the {@link DropMessage} for.
+     * @return Encrypted {@link DropMessage} for recipient.
+     */
+    public static byte[] createEncryptedDropMessage(String payload, String dropMessageType,
+                                                    Identity sender, Contact recipient) throws QblDropPayloadSizeException {
+        DropMessage dropMessage = new DropMessage(sender, payload, dropMessageType);
+        BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(dropMessage);
+        return binaryMessage.assembleMessageFor(recipient, sender);
+    }
 
-	/**
-	 * Decrypts an encrypted {@link DropMessage}. Can be used to manually decrypt a {@link DropMessage}
-	 * @param identity {@link Identity} to try to decrypt {@link DropMessage} with.
-	 * @param encryptedDropMessage encrypted {@link DropMessage}
-	 * @return Decrypted {@link DropMessage} if message can be decrypted with
-	 * identity or null if message cannot be decrypted with the identity.
-	 * @throws QblDropInvalidMessageSizeException
-	 * @throws QblVersionMismatchException
-	 * @throws QblSpoofedSenderException
-	 */
-	public static DropMessage decryptDropMessage(Identity identity, byte[] encryptedDropMessage)
-			throws QblDropInvalidMessageSizeException, QblVersionMismatchException, QblSpoofedSenderException {
-		BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(encryptedDropMessage);
-		return binaryMessage.disassembleMessage(identity);
-	}
+    /**
+     * Decrypts an encrypted {@link DropMessage}. Can be used to manually decrypt a {@link DropMessage}
+     *
+     * @param identity             {@link Identity} to try to decrypt {@link DropMessage} with.
+     * @param encryptedDropMessage encrypted {@link DropMessage}
+     * @return Decrypted {@link DropMessage} if message can be decrypted with
+     * identity or null if message cannot be decrypted with the identity.
+     */
+    public static DropMessage decryptDropMessage(Identity identity, byte[] encryptedDropMessage)
+        throws QblDropInvalidMessageSizeException, QblVersionMismatchException, QblSpoofedSenderException {
+        BinaryDropMessageV0 binaryMessage = new BinaryDropMessageV0(encryptedDropMessage);
+        return binaryMessage.disassembleMessage(identity);
+    }
 }

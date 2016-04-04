@@ -8,9 +8,9 @@ import org.meanbean.lang.Factory;
  * Attention: For testing purposes only
  */
 public class QblECPublicKeyTestFactory implements Factory<QblECPublicKey> {
-	@Override
-	public QblECPublicKey create() {
-		QblECKeyPair ecKeyPair = new QblECKeyPair();
-		return ecKeyPair.getPub();
-	}
+    @Override
+    public QblECPublicKey create() {
+        QblECKeyPair ecKeyPair = new QblECKeyPair();
+        return ecKeyPair.getPub();
+    }
 }

@@ -7,23 +7,23 @@ import org.meanbean.lang.EquivalentFactory;
  * Creates logically equivalent instances of class Account
  * Attention: For testing purposes only
  */
-class AccountsEquivalentTestFactory implements EquivalentFactory<Accounts>{
-	Account a;
-	Account b;
+class AccountsEquivalentTestFactory implements EquivalentFactory<Accounts> {
+    Account a;
+    Account b;
 
-	AccountsEquivalentTestFactory() {
-		AccountTestFactory accountFactory = new AccountTestFactory();
-		a = accountFactory.create();
-		b = accountFactory.create();
-	}
+    AccountsEquivalentTestFactory() {
+        AccountTestFactory accountFactory = new AccountTestFactory();
+        a = accountFactory.create();
+        b = accountFactory.create();
+    }
 
-	@Override
-	public Accounts create() {
-		Accounts accounts = new Accounts();
+    @Override
+    public Accounts create() {
+        Accounts accounts = new Accounts();
 
-		accounts.put(a);
-		accounts.put(b);
+        accounts.put(a);
+        accounts.put(b);
 
-		return accounts;
-	}
+        return accounts;
+    }
 }
