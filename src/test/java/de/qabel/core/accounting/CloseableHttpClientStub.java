@@ -6,7 +6,6 @@ import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.params.HttpParams;
@@ -30,7 +29,7 @@ public class CloseableHttpClientStub extends CloseableHttpClient {
         }
         String hash = hashRequest(request.getRequestLine().getMethod(), request.getRequestLine().getUri());
         if (!responses.containsKey(hash)) {
-           throw new IllegalArgumentException("no response found for request'" + hash + "'");
+            throw new IllegalArgumentException("no response found for request'" + hash + "'");
         }
         return responses.get(hash);
     }

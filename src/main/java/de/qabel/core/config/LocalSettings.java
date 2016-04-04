@@ -1,135 +1,142 @@
 package de.qabel.core.config;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.IOException;
+import java.util.Date;
+
 /**
  * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#local-settings
  */
 public class LocalSettings extends Persistable {
-	private static final long serialVersionUID = 354451411302690221L;
+    private static final long serialVersionUID = 354451411302690221L;
 
-	/**
-	 * Poll interval of the client
-	 * Field name in serialized json: "poll_interval"
-	 */
-	@SerializedName("poll_interval")
-	private long pollInterval;
-	/**
-	 * Date of the last time the core asked the drop servers for new messages
-	 * Field name in serialized json: "drop_last_update"
-	 */
-	@SerializedName("drop_last_update")
-	private Date dropLastUpdate;
-	/**
-	 * Constant string which defines the date format in the serialized json
-	 */
-	final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
-	
-	/**
-	 * Creates an instance of LocalSettings.
-	 * @param pollInterval Poll interval of the client.
-	 * @param dropLastUpdate Date of the last time the core asked the drop servers for new messages.
-	 */
-	public LocalSettings(long pollInterval, Date dropLastUpdate) {
-		this.setPollInterval(pollInterval);
-		this.setdropLastUpdate(dropLastUpdate);
-	}
+    /**
+     * Poll interval of the client
+     * Field name in serialized json: "poll_interval"
+     */
+    @SerializedName("poll_interval")
+    private long pollInterval;
+    /**
+     * Date of the last time the core asked the drop servers for new messages
+     * Field name in serialized json: "drop_last_update"
+     */
+    @SerializedName("drop_last_update")
+    private Date dropLastUpdate;
+    /**
+     * Constant string which defines the date format in the serialized json
+     */
+    final static String dateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
-	/**
-	 * Sets the poll interval.
-	 * @param value Value to set the poll interval to.
-	 */
-	public void setPollInterval(long value) {
-		this.pollInterval = value;
-	}
+    /**
+     * Creates an instance of LocalSettings.
+     *
+     * @param pollInterval   Poll interval of the client.
+     * @param dropLastUpdate Date of the last time the core asked the drop servers for new messages.
+     */
+    public LocalSettings(long pollInterval, Date dropLastUpdate) {
+        this.setPollInterval(pollInterval);
+        this.setdropLastUpdate(dropLastUpdate);
+    }
 
-	/*
-	 * @return Returns the poll interval.
-	 */
-	public long getPollInterval() {
-		return this.pollInterval;
-	}
+    /**
+     * Sets the poll interval.
+     *
+     * @param value Value to set the poll interval to.
+     */
+    public void setPollInterval(long value) {
+        this.pollInterval = value;
+    }
 
-	/**
-	 * Sets the date of last drop update.
-	 * @param value Date of the last time the core asked the drop servers for new messages.
-	 */
-	public void setdropLastUpdate(Date value) {
-		this.dropLastUpdate = value;
-	}
+    /*
+     * @return Returns the poll interval.
+     */
+    public long getPollInterval() {
+        return this.pollInterval;
+    }
 
-	/**
-	 * Returns the date of last drop update
-	 * @return Date
-	 */
-	public Date getLastUpdate() {
-		return this.dropLastUpdate;
-	}
+    /**
+     * Sets the date of last drop update.
+     *
+     * @param value Date of the last time the core asked the drop servers for new messages.
+     */
+    public void setdropLastUpdate(Date value) {
+        this.dropLastUpdate = value;
+    }
 
-	/**
-	 * Serializes this class to a Json String.
-	 * @return Json String
-	 * @throws IOException
-	 */
-	public String toJson() throws IOException {
-		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat(dateFormat);
-		Gson gson = builder.create();
-		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
-		return adapter.toJson(this);
-	}
+    /**
+     * Returns the date of last drop update
+     *
+     * @return Date
+     */
+    public Date getLastUpdate() {
+        return this.dropLastUpdate;
+    }
 
-	/**
-	 * Deserializes a Json String.
-	 * @param json Json String to deserialize.
-	 * @return LocalSettings
-	 * @throws IOException
-	 * @throws JsonParseException
-	 */
-	public static LocalSettings fromJson(String json) throws IOException, JsonParseException {
-		GsonBuilder builder = new GsonBuilder();
-		builder.setDateFormat(dateFormat);
-		Gson gson = builder.create();
-		TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
-		return adapter.fromJson(json);
-	}
+    /**
+     * Serializes this class to a Json String.
+     *
+     * @return Json String
+     */
+    public String toJson() throws IOException {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setDateFormat(dateFormat);
+        Gson gson = builder.create();
+        TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
+        return adapter.toJson(this);
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
-		result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
-		return result;
-	}
+    /**
+     * Deserializes a Json String.
+     *
+     * @param json Json String to deserialize.
+     * @return LocalSettings
+     */
+    public static LocalSettings fromJson(String json) throws IOException, JsonParseException {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setDateFormat(dateFormat);
+        Gson gson = builder.create();
+        TypeAdapter<LocalSettings> adapter = gson.getAdapter(LocalSettings.class);
+        return adapter.fromJson(json);
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		LocalSettings other = (LocalSettings) obj;
-		if (dropLastUpdate == null) {
-			if (other.dropLastUpdate != null)
-				return false;
-		} else if (!dropLastUpdate.equals(other.dropLastUpdate))
-			return false;
-		if (pollInterval != other.pollInterval)
-			return false;
-		return true;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+            + ((dropLastUpdate == null) ? 0 : dropLastUpdate.hashCode());
+        result = prime * result + (int) (pollInterval ^ (pollInterval >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        LocalSettings other = (LocalSettings) obj;
+        if (dropLastUpdate == null) {
+            if (other.dropLastUpdate != null) {
+                return false;
+            }
+        } else if (!dropLastUpdate.equals(other.dropLastUpdate)) {
+            return false;
+        }
+        if (pollInterval != other.pollInterval) {
+            return false;
+        }
+        return true;
+    }
 
 }

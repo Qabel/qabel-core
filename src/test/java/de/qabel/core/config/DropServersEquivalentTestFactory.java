@@ -7,23 +7,23 @@ import org.meanbean.lang.EquivalentFactory;
  * Creates logically equivalent instances of class DropServers
  * Attention: For testing purposes only
  */
-class DropServersEquivalentTestFactory implements EquivalentFactory<DropServers>{
-	DropServer a;
-	DropServer b;
+class DropServersEquivalentTestFactory implements EquivalentFactory<DropServers> {
+    DropServer a;
+    DropServer b;
 
-	DropServersEquivalentTestFactory() {
-		DropServerTestFactory dropServerFactory = new DropServerTestFactory();
-		a = dropServerFactory.create();
-		b = dropServerFactory.create();
-	}
+    DropServersEquivalentTestFactory() {
+        DropServerTestFactory dropServerFactory = new DropServerTestFactory();
+        a = dropServerFactory.create();
+        b = dropServerFactory.create();
+    }
 
-	@Override
-	public DropServers create() {
-		DropServers dropServers = new DropServers();
+    @Override
+    public DropServers create() {
+        DropServers dropServers = new DropServers();
 
-		dropServers.put(a);
-		dropServers.put(b);
+        dropServers.put(a);
+        dropServers.put(b);
 
-		return dropServers;
-	}
+        return dropServers;
+    }
 }

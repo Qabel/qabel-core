@@ -7,25 +7,26 @@ import org.meanbean.lang.Factory;
  * Creates distinct instances of class Accounts
  * Attention: For testing purposes only!
  */
-class ContactsTestFactory implements Factory<Contacts>{
-	IdentityTestFactory identityTestFactory;
-	ContactTestFactory contactFactory;
-	ContactsTestFactory() {
-		contactFactory = new ContactTestFactory();
-		identityTestFactory = new IdentityTestFactory();
-	}
+class ContactsTestFactory implements Factory<Contacts> {
+    IdentityTestFactory identityTestFactory;
+    ContactTestFactory contactFactory;
 
-	public Contacts create(Identity identity) {
-		Contacts contacts = new Contacts(identity);
+    ContactsTestFactory() {
+        contactFactory = new ContactTestFactory();
+        identityTestFactory = new IdentityTestFactory();
+    }
 
-		contacts.put(contactFactory.create());
-		contacts.put(contactFactory.create());
+    public Contacts create(Identity identity) {
+        Contacts contacts = new Contacts(identity);
 
-		return contacts;
-	}
+        contacts.put(contactFactory.create());
+        contacts.put(contactFactory.create());
 
-	@Override
-	public Contacts create() {
-		return create(identityTestFactory.create());
-	}
+        return contacts;
+    }
+
+    @Override
+    public Contacts create() {
+        return create(identityTestFactory.create());
+    }
 }

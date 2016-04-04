@@ -15,6 +15,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Get id of the item
+     *
      * @return Id of the item
      */
     public int getId() {
@@ -23,6 +24,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Set id of the item
+     *
      * @param id Id of the item
      */
     public void setId(int id) {
@@ -31,6 +33,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Get created date of the item
+     *
      * @return Created date of the item
      */
     public Long getCreated() {
@@ -39,6 +42,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Set created date of the item
+     *
      * @param created Created date of the item
      */
     public void setCreated(Long created) {
@@ -47,6 +51,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Get updated date of the item
+     *
      * @return Updated date of the item
      */
     public Long getUpdated() {
@@ -55,6 +60,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Set updated date of the item
+     *
      * @param updated Updated date of the item
      */
     public void setUpdated(Long updated) {
@@ -63,6 +69,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Get delete date of the item
+     *
      * @return Delete date of the item
      */
     public Long getDeleted() {
@@ -71,6 +78,7 @@ public class SyncSettingItem extends Persistable {
 
     /**
      * Set delete date of the item
+     *
      * @param deleted Delete date of the item
      */
     public void setDeleted(Long deleted) {
@@ -106,16 +114,16 @@ public class SyncSettingItem extends Persistable {
         other = (SyncSettingItem) obj;
 
         if (this.created != other.created) {
-        	return (false);
+            return (false);
         }
         if (this.updated != other.updated) {
-        	return (false);
+            return (false);
         }
         if (this.deleted != other.deleted) {
-        	return (false);
+            return (false);
         }
         if (this.id != other.id) {
-        	return false;
+            return false;
         }
 
         return true;

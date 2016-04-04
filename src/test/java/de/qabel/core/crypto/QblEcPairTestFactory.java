@@ -8,14 +8,14 @@ import org.meanbean.lang.Factory;
  * Attention: For testing purposes only
  */
 public class QblEcPairTestFactory implements Factory<QblECKeyPair> {
-	QblECKeyPair ecKeyPair;
+    QblECKeyPair ecKeyPair;
 
-	public QblEcPairTestFactory(){
-	}
+    public QblEcPairTestFactory() {
+    }
 
-	@Override
-	public QblECKeyPair create() {
-		ecKeyPair = new QblECKeyPair();
-		return ecKeyPair;
-	}
+    @Override
+    public QblECKeyPair create() {
+        ecKeyPair = new QblECKeyPair();
+        return ecKeyPair;
+    }
 }

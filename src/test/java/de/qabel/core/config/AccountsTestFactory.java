@@ -7,19 +7,19 @@ import org.meanbean.lang.Factory;
  * Creates distinct instances of class Accounts
  * Attention: For testing purposes only!
  */
-class AccountsTestFactory implements Factory<Accounts>{
-	int i = 0;
-	
-	@Override
-	public Accounts create() {
-		Accounts accounts = new Accounts();
-		
-		Account a = new Account("provider" + i, "user" + i, "auth" + i++);
-		Account b = new Account("provider" + i, "user" + i, "auth" + i++);
+class AccountsTestFactory implements Factory<Accounts> {
+    int i = 0;
 
-		accounts.put(a);
-		accounts.put(b);
-		
-		return accounts;
-	}
+    @Override
+    public Accounts create() {
+        Accounts accounts = new Accounts();
+
+        Account a = new Account("provider" + i, "user" + i, "auth" + i++);
+        Account b = new Account("provider" + i, "user" + i, "auth" + i++);
+
+        accounts.put(a);
+        accounts.put(b);
+
+        return accounts;
+    }
 }
