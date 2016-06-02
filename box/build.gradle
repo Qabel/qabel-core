@@ -1,0 +1,35 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+version = '0.1'
+group = 'de.qabel.box'
+
+jar {
+	manifest {
+		attributes 'Implementation-Title': 'Qabel Core - Box Component', 'Implementation-Version': version
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	testCompile group: 'junit', name: 'junit', version: '4.+'
+	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+	compile project(':core')
+}
+
+tasks.withType(Test) {
+	def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
+	systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
+}
+
+sourceSets {
+	main {
+		resources.srcDirs += ['src/resources/config/']
+	}
+	test {
+		resources.srcDirs += ['src/resources/config/']
+	}
+}
