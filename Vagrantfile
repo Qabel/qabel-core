@@ -24,6 +24,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         set -x
         set -e
         # prepare innosetup (needs wine and an extractor)
+        wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+        echo "deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main" >> /etc/apt/sources.list.d/postgresql.list
+
         apt-get -y update
         apt-get install -y \
             build-essential \
@@ -47,8 +50,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             python3.5-venv \
             libpq-dev \
             redis-server \
-            postgresql-9.4 \
-            postgresql-client-9.4
+            postgresql-9.5 \
+            postgresql-client-9.5
         easy_install pip
 
         echo "CREATE DATABASE qabel_drop; CREATE USER qabel WITH PASSWORD 'qabel_test'; GRANT ALL PRIVILEGES ON DATABASE qabel_drop TO qabel;" | sudo -u postgres psql postgres
