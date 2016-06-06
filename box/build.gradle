@@ -22,7 +22,7 @@ dependencies {
 
 tasks.withType(Test) {
 	def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
-	systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
+	systemProperty "java.library.path", "../core/build/binaries/curve25519SharedLibrary/$platform/"
 }
 
 sourceSets {
