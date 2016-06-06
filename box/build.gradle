@@ -22,7 +22,7 @@ dependencies {
 
 tasks.withType(Test) {
 	def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
-	systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
+	systemProperty "java.library.path", "../core/build/binaries/curve25519SharedLibrary/$platform/"
 }
 
 sourceSets {
@@ -32,4 +32,11 @@ sourceSets {
 	test {
 		resources.srcDirs += ['src/resources/config/']
 	}
+}
+
+task testJar(type: Jar) {
+    from(sourceSets.test.output) {
+        include "**"
+    }
+    baseName = 'box-test-'
 }
