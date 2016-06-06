@@ -33,3 +33,10 @@ sourceSets {
 		resources.srcDirs += ['src/resources/config/']
 	}
 }
+
+task testJar(type: Jar) {
+    from(sourceSets.test.output) {
+        include "**"
+    }
+    baseName = 'box-test-'
+}
