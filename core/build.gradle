@@ -6,9 +6,12 @@ version = '0.1'
 group = 'de.qabel.core'
 
 jar {
-	manifest {
-		attributes 'Implementation-Title': 'Qabel Core', 'Implementation-Version': version
-	}
+    manifest {
+        attributes 'Implementation-Version': version
+        attributes 'Project': 'Qabel Core'
+        attributes 'Component': 'Core'
+        attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
+    }
 }
 
 repositories {
