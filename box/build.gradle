@@ -4,10 +4,18 @@ sourceCompatibility = 1.8
 version = '0.1'
 group = 'de.qabel.box'
 
+ext.sharedManifest = manifest {
+    attributes 'Implementation-Version': version
+    attributes 'Project': 'Qabel Core'
+    attributes 'Component': 'Box'
+    attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
+}
+
 jar {
-	manifest {
-		attributes 'Implementation-Title': 'Qabel Core - Box Component', 'Implementation-Version': version
-	}
+    manifest = project.manifest {
+        from sharedManifest
+        attributes 'Implementation-Title': 'Qabel Core - Box Component'
+    }
 }
 
 repositories {
@@ -39,4 +47,11 @@ task testJar(type: Jar) {
         include "**"
     }
     baseName = 'box-test-'
+    manifest {
+        from sharedManifest
+        attributes 'Implementation-Title': 'Qabel Core - Box Component - Test artifact'
+    }
 }
+
+jar.manifest.writeTo("$buildDir/manifest.mf")
+testJar.manifest.writeTo("$buildDir/test-manifest.mf")
