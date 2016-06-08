@@ -36,7 +36,7 @@ if [ -f drop.pid ]; then
 fi
 DROP_VENV="venv_"${DIRHASH}
 if [ ! -d ${DROP_VENV} ]; then
-  virtualenv --no-site-packages --python=python3.4 ${DROP_VENV}
+  virtualenv --no-site-packages --python=python3.5 ${DROP_VENV}
 fi
 source "${DROP_VENV}/bin/activate"
 echo "installing dependencies..."
@@ -68,7 +68,7 @@ if [ -f accounting.pid ]; then
     cat accounting.pid | xargs kill || echo "already gone"
 fi
 if [ ! -d ${ACCOUNTING_VENV} ]; then
-  virtualenv --no-site-packages --always-copy --python=python3.4 ${ACCOUNTING_VENV}
+  virtualenv --no-site-packages --always-copy --python=python3.5 ${ACCOUNTING_VENV}
 fi
 source "${ACCOUNTING_VENV}/bin/activate"
 echo "installing dependencies..."
