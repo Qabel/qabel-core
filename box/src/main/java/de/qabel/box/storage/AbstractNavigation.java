@@ -40,7 +40,6 @@ public abstract class AbstractNavigation implements BoxNavigation {
     protected final StorageWriteBackend writeBackend;
 
     private final Set<String> deleteQueue = new HashSet<>();
-    private final Set<FileUpdate> updatedFiles = new HashSet<>();
     private final List<DirectoryMetadataChange> changes = new LinkedList<>();
     private final String prefix;
     private IndexNavigation indexNavigation;
@@ -137,9 +136,6 @@ public abstract class AbstractNavigation implements BoxNavigation {
             // ignore our local directory metadata
             // all changes that are not inserted in the new dm are _lost_!
             dm = updatedDM;
-            for (FileUpdate update : updatedFiles) {
-                handleConflict(update);
-            }
             for (DirectoryMetadataChange change : changes) {
                 change.execute(dm);
             }
@@ -151,39 +147,12 @@ public abstract class AbstractNavigation implements BoxNavigation {
         }
 
         deleteQueue.clear();
-        updatedFiles.clear();
         changes.clear();
     }
 
     @Override
     public boolean isUnmodified() {
-        return deleteQueue.isEmpty() && updatedFiles.isEmpty() && changes.isEmpty();
-    }
-
-    private void handleConflict(FileUpdate update) throws QblStorageException {
-        BoxFile local = update.updated;
-        BoxFile newFile = dm.getFile(local.name);
-        if (newFile == null) {
-            try {
-                dm.insertFile(local);
-            } catch (QblStorageNameConflict e) {
-                // name clash with a folder or external
-                local.name = conflictName(local);
-                // try again until we get no name clash
-                handleConflict(update);
-            }
-        } else if (newFile.equals(update.old)) {
-            logger.info("No conflict for the file " + local.name);
-        } else {
-            logger.info("Inserting conflict marked file");
-            local.name = conflictName(local);
-            if (update.old != null) {
-                dm.deleteFile(update.old);
-            }
-            if (dm.getFile(local.name) == null) {
-                dm.insertFile(local);
-            }
-        }
+        return deleteQueue.isEmpty() && changes.isEmpty();
     }
 
     private String conflictName(BoxFile local) {
@@ -271,8 +240,16 @@ public abstract class AbstractNavigation implements BoxNavigation {
             throw new IllegalArgumentException("invalid source file " + file.getAbsolutePath());
         }
         uploadEncrypted(file, key, "blocks/" + block, listener);
-        updatedFiles.add(new FileUpdate(oldFile, boxFile));
-        dm.insertFile(boxFile);
+
+        UpdateFileChange change;
+        if (oldFile == null) {
+            change = new CreateFileChange(boxFile);
+        } else {
+            change = new UpdateFileChange(oldFile, boxFile);
+        }
+        change.execute(dm);
+        changes.add(change);
+
         try {
             if (boxFile.isShared()) {
                 updateFileMetadata(boxFile);
@@ -528,23 +505,6 @@ public abstract class AbstractNavigation implements BoxNavigation {
     @Override
     public void delete(BoxExternal external) throws QblStorageException {
 
-    }
-
-    private static class FileUpdate {
-        final BoxFile old;
-        final BoxFile updated;
-
-        public FileUpdate(BoxFile old, BoxFile updated) {
-            this.old = old;
-            this.updated = updated;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = old != null ? old.hashCode() : 0;
-            result = 31 * result + (updated != null ? updated.hashCode() : 0);
-            return result;
-        }
     }
 
     @Override

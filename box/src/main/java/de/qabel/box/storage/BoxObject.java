@@ -33,4 +33,8 @@ public abstract class BoxObject extends Observable implements Comparable<BoxObje
     }
 
     public abstract String getRef();
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
