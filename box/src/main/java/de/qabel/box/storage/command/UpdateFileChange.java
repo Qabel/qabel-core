@@ -1,6 +1,8 @@
 package de.qabel.box.storage.command;
 
 import de.qabel.box.storage.BoxFile;
+import de.qabel.box.storage.BoxFolder;
+import de.qabel.box.storage.BoxObject;
 import de.qabel.box.storage.DirectoryMetadata;
 import de.qabel.box.storage.exceptions.QblStorageException;
 import de.qabel.box.storage.exceptions.QblStorageNameConflict;
@@ -20,38 +22,49 @@ public class UpdateFileChange implements DirectoryMetadataChange<UpdateFileChang
     @Override
     public Result execute(DirectoryMetadata dm) throws QblStorageException {
         String filename = newFile.getName();
-        BoxFile currentFile = dm.getFile(filename);
-        handleConflict(currentFile, dm);
+        try {
+            dm.insertFile(newFile);
+        } catch (QblStorageNameConflict e) {
+                BoxObject currentFile = findCurrentFileOrFolder(dm, filename);
+                deleteObject(currentFile, dm);
+                dm.insertFile(newFile);
+                while (true) {
+                    try {
+                        logger.debug("Conflicting " + filename);
+                        filename = filename + "_conflict";
+                        logger.debug("Inserting conflict marked file as " + filename);
+                        currentFile.setName(filename);
+                        insertObject(currentFile, dm);
+                        break;
+                    } catch (QblStorageNameConflict ignored) {
+                    }
+                }
+        }
         return new Result();
     }
 
-    private void handleConflict(BoxFile currentFile, DirectoryMetadata dm) throws QblStorageException {
+    private BoxObject findCurrentFileOrFolder(DirectoryMetadata dm, String filename) throws QblStorageException {
+        BoxObject currentFile = dm.getFile(filename);
         if (currentFile == null) {
-            try {
-                dm.insertFile(newFile);
-            } catch (QblStorageNameConflict e) {
-                // name clash with a folder or external
-                newFile.setName(conflictName(newFile));
-                // try again until we get no name clash
-                handleConflict(dm.getFile(newFile.getName()), dm);
-            }
-        } else if (currentFile.equals(oldFile)) {
-            logger.info("No conflict for the file " + newFile.getName());
-            dm.insertFile(newFile);
-        } else {
-            logger.info("Inserting conflict marked file");
-            newFile.setName(conflictName(newFile));
-            if (oldFile != null) {
-                dm.deleteFile(oldFile);
-            }
-            if (dm.getFile(newFile.getName()) == null) {
-                dm.insertFile(newFile);
-            }
+            currentFile = dm.getFolder(filename);
+        }
+        return currentFile;
+    }
+
+    private void insertObject(BoxObject currentFile, DirectoryMetadata dm) throws QblStorageException {
+        if (currentFile instanceof BoxFile) {
+            dm.insertFile((BoxFile) currentFile);
+        } else if (currentFile instanceof BoxFolder) {
+            dm.insertFolder((BoxFolder) currentFile);
         }
     }
 
-    private String conflictName(BoxFile local) {
-        return local.getName() + "_conflict";
+    private void deleteObject(BoxObject currentObject, DirectoryMetadata dm) throws QblStorageException {
+        if (currentObject instanceof BoxFile) {
+            dm.deleteFile((BoxFile) currentObject);
+        } else if (currentObject instanceof BoxFolder) {
+            dm.deleteFolder((BoxFolder) currentObject);
+        }
     }
 
     public static class Result {

@@ -280,10 +280,9 @@ public class DirectoryMetadata extends AbstractMetadata {
         }
     }
 
-
     public void insertFile(BoxFile file) throws QblStorageException {
         int type = isA(file.getName());
-        if (type != TYPE_NONE && type != TYPE_FILE) {
+        if (type != TYPE_NONE) {
             throw new QblStorageNameConflict(file.getName());
         }
         try {
@@ -325,7 +324,7 @@ public class DirectoryMetadata extends AbstractMetadata {
 
     public void insertFolder(BoxFolder folder) throws QblStorageException {
         int type = isA(folder.getName());
-        if (type != TYPE_NONE && type != TYPE_FOLDER) {
+        if (type != TYPE_NONE) {
             throw new QblStorageNameConflict(folder.getName());
         }
         executeStatement(() -> {
@@ -415,7 +414,7 @@ public class DirectoryMetadata extends AbstractMetadata {
 
     void insertExternal(BoxExternalReference external) throws QblStorageException {
         int type = isA(external.name);
-        if (type != TYPE_NONE && type != TYPE_EXTERNAL) {
+        if (type != TYPE_NONE) {
             throw new QblStorageNameConflict(external.name);
         }
         try {
@@ -471,6 +470,30 @@ public class DirectoryMetadata extends AbstractMetadata {
         } catch (SQLException e) {
             throw new QblStorageException(e);
         }
+    }
+
+    public BoxFolder getFolder(String name) throws QblStorageException {
+        try (PreparedStatement statement = connection.prepareStatement(
+            "SELECT ref, name, key FROM folders WHERE name=?"
+        )) {
+            statement.setString(1, name);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return new BoxFolder(rs.getString(1), rs.getString(2), rs.getBytes(3));
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new QblStorageException(e);
+        }
+    }
+
+    public boolean hasFile(String name) throws QblStorageException {
+        return getFile(name) != null;
+    }
+
+    public boolean hasFolder(String name) throws QblStorageException {
+        return getFolder(name) != null;
     }
 
     int isA(String name) throws QblStorageException {

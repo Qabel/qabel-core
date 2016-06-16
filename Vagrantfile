@@ -11,6 +11,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.cache.scope = :box
   end
 
+  config.vm.network "private_network", ip: "192.168.50.42"
+
   config.vm.network "forwarded_port", guest: 5000, host: 5000, auto_correct: true
   config.vm.network "forwarded_port", guest: 9696, host: 9696, auto_correct: true
   config.vm.network "forwarded_port", guest: 9697, host: 9697, auto_correct: true
@@ -54,6 +56,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             postgresql-client-9.5
         easy_install pip
 
+        sudo service postgresql start
         echo "CREATE DATABASE qabel_drop; CREATE USER qabel WITH PASSWORD 'qabel_test'; GRANT ALL PRIVILEGES ON DATABASE qabel_drop TO qabel;" | sudo -u postgres psql postgres
         echo "CREATE DATABASE block_dummy; CREATE USER block_dummy WITH PASSWORD 'qabel_test_dummy'; GRANT ALL PRIVILEGES ON DATABASE block_dummy TO block_dummy;" | sudo -u postgres psql postgres
 
@@ -69,6 +72,7 @@ SCRIPT
         set -e
         cd /vagrant
 
+        sudo service postgresql start
         DIRHASH=$(pwd | shasum | cut -d" " -f1)
 
         function waitForPort {
@@ -105,7 +109,7 @@ SCRIPT
         fi
         DROP_VENV="venv_"${DIRHASH}
         if [ ! -d ${DROP_VENV} ]; then
-          virtualenv --no-site-packages --python=python3.4 ${DROP_VENV}
+          virtualenv --no-site-packages --python=python3.5 ${DROP_VENV}
         fi
         source ${DROP_VENV}"/bin/activate"
         echo "installing dependencies..."
@@ -138,7 +142,7 @@ SCRIPT
             cat accounting.pid | xargs kill || echo "already gone"
         fi
         if [ ! -d ${ACCOUNTING_VENV} ]; then
-          virtualenv --no-site-packages --always-copy --python=python3.4 ${ACCOUNTING_VENV}
+          virtualenv --no-site-packages --always-copy --python=python3.5 ${ACCOUNTING_VENV}
         fi
         source ${ACCOUNTING_VENV}"/bin/activate"
         echo "installing dependencies..."
