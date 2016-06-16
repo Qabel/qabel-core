@@ -51,7 +51,7 @@ cd /vagrant
 # Usage
 
 Currently, we do not provide a distribution of the Qabel Core Library via Maven Repositories.
-Thus, you have to include it via the artifact that you may find after the build at `build/libs/qabel-core-0.1.jar`.
+Thus, you have to include it via the artifact that you may find after the build at `build/libs/qabel-core-x.y.z.jar` and `build/libs/qabel-box-x.y.z.jar`.
 
 Don't forget to include the `curve25519-linux-*.jar` (JNI) and the according libcurve implementation for your system (`build/binaries`).
 Qabel does a lot of crypto that is written in C and called via JNI. When launching your java application,
