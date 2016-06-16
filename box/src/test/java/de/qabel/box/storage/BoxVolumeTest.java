@@ -7,6 +7,7 @@ import de.qabel.box.storage.exceptions.QblStorageNotFound;
 import de.qabel.core.config.Contact;
 import de.qabel.core.crypto.CryptoUtils;
 import de.qabel.core.crypto.QblECKeyPair;
+import de.qabel.core.drop.DropURL;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -55,7 +56,7 @@ public abstract class BoxVolumeTest {
         volumeTmpDir = Files.createTempDirectory("qbl_test").toFile();
 
         keyPair = new QblECKeyPair();
-        contact = new Contact("contact", new LinkedList<>(), new QblECKeyPair().getPub());
+        contact = new Contact("contact", new LinkedList<DropURL>(), new QblECKeyPair().getPub());
 
         setUpVolume();
 
@@ -187,9 +188,12 @@ public abstract class BoxVolumeTest {
 
         BoxNavigation nav2 = volume2.navigate();
         assertFalse(nav2.hasFolder("a"));
-        waitUntil(() -> {
-            BoxNavigation nav3 = volume2.navigate();
-            return nav3.hasFolder("a");
+        waitUntil(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                BoxNavigation nav3 = volume2.navigate();
+                return nav3.hasFolder("a");
+            }
         }, 2000L);
     }
 

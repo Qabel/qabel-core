@@ -24,7 +24,7 @@ public class DirectoryMetadataTest {
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
 
-        dm = DirectoryMetadata.newDatabase("https://localhost", bb.array(),
+        dm = DirectoryMetadata.Companion.newDatabase("https://localhost", bb.array(),
                 new File(System.getProperty("java.io.tmpdir")));
     }
 
@@ -61,7 +61,7 @@ public class DirectoryMetadataTest {
         assertThat(folder, equalTo(dm.listFolders().get(0)));
         dm.deleteFolder(folder);
         assertThat(dm.listFolders().size(), is(0));
-        assertThat(dm.path.getAbsolutePath().toString(), startsWith(System.getProperty("java.io.tmpdir")));
+        assertThat(dm.getPath().getAbsolutePath().toString(), startsWith(System.getProperty("java.io.tmpdir")));
     }
 
     @Test
@@ -107,7 +107,7 @@ public class DirectoryMetadataTest {
     @Test
     public void testLastChangedBy() throws SQLException, QblStorageException {
         assertThat(dm.getDeviceId(), is(dm.getLastChangedBy()));
-        dm.deviceId = new byte[]{1, 1};
+        dm.setDeviceId(new byte[]{1, 1});
         dm.setLastChangedBy();
         assertThat(dm.getDeviceId(), is(dm.getLastChangedBy()));
     }

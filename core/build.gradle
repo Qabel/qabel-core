@@ -1,9 +1,19 @@
 apply plugin: 'java'
 apply plugin: 'c'
+apply plugin: "kotlin"
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.7
 version = '0.7.0'
 group = 'de.qabel.core'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
 
 jar {
     manifest {
@@ -32,6 +42,7 @@ dependencies {
 	compile 'com.amazonaws:aws-java-sdk:1.10.32'
 	compile 'com.madgag.spongycastle:prov:1.53.0.0'
 	compile 'org.json:json:20160212'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 task nativeHeaders {

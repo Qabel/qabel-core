@@ -77,7 +77,7 @@ public class BoxVolume {
         } catch (IOException e) {
             throw new QblStorageIOFailure(e);
         }
-        DirectoryMetadata dm = DirectoryMetadata.openDatabase(tmp, deviceId, rootRef, tempDir);
+        DirectoryMetadata dm = DirectoryMetadata.Companion.openDatabase(tmp, deviceId, rootRef, tempDir);
         return new DefaultIndexNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend);
     }
 
@@ -114,9 +114,9 @@ public class BoxVolume {
      */
     public void createIndex(String root) throws QblStorageException {
         String rootRef = getRootRef();
-        DirectoryMetadata dm = DirectoryMetadata.newDatabase(root, deviceId, tempDir);
+        DirectoryMetadata dm = DirectoryMetadata.Companion.newDatabase(root, deviceId, tempDir);
         try {
-            byte[] plaintext = IOUtils.toByteArray(new FileInputStream(dm.path));
+            byte[] plaintext = IOUtils.toByteArray(new FileInputStream(dm.getPath()));
             byte[] encrypted = cryptoUtils.createBox(keyPair, keyPair.getPub(), plaintext, 0);
             writeBackend.upload(rootRef, new ByteArrayInputStream(encrypted));
         } catch (IOException e) {

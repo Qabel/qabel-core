@@ -27,7 +27,7 @@ public class CreateFolderChange implements DirectoryMetadataChange<ChangeResult<
                 return result;
             }
         }
-        DirectoryMetadata dm = DirectoryMetadata.newDatabase(null, deviceId, parentDM.getTempDir());
+        DirectoryMetadata dm = DirectoryMetadata.Companion.newDatabase(null, deviceId, parentDM.getTempDir());
         BoxFolder folder = new BoxFolder(dm.getFileName(), name, secretKey.getKey());
         parentDM.insertFolder(folder);
         dm.commit();
