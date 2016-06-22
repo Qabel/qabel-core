@@ -67,3 +67,7 @@ task testJar(type: Jar) {
 jar.manifest.writeTo("$buildDir/manifest.mf")
 testJar.manifest.writeTo("$buildDir/test-manifest.mf")
 jar.dependsOn(testJar)
+
+artifacts {
+    archives testJar
+}
