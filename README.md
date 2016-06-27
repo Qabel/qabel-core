@@ -50,8 +50,23 @@ cd /vagrant
 
 # Usage
 
+The Qabel-Core is developed in Java 7 and [Kotlin](https://www.kotlinlang.org). The Kotlin plugin is automatically loaded in the
+gradle build scripts and there are plugins for IntelliJ based IDEs, Eclipse, Vim and Emacs.
+It is recommended that new code is written in Kotlin instead of Java and that the Kotlin standard library is used
+instead of the Java standard library where applicable.
+
 Currently, we do not provide a distribution of the Qabel Core Library via Maven Repositories.
 Thus, you have to include it via the artifact that you may find after the build at `build/libs/qabel-core-x.y.z.jar` and `build/libs/qabel-box-x.y.z.jar`.
+You also need to include the kotlin standard library in your project:
+
+```GROOVY
+buildscript {
+    ext.kotlin_version = '1.0.2'
+}
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+```
 
 Don't forget to include the `curve25519-linux-*.jar` (JNI) and the according libcurve implementation for your system (`build/binaries`).
 Qabel does a lot of crypto that is written in C and called via JNI. When launching your java application,
