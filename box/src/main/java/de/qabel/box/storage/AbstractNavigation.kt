@@ -570,6 +570,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         private val logger = LoggerFactory.getLogger(AbstractNavigation::class.java)
         val BLOCKS_PREFIX = "blocks/"
 
+        @JvmField
         @Deprecated("")
         var DEFAULT_AUTOCOMMIT_DELAY: Long = 0
 

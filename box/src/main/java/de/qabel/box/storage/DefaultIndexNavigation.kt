@@ -69,6 +69,7 @@ class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: Qbl
 
     companion object {
 
+        @JvmStatic
         private val logger = LoggerFactory.getLogger(DefaultIndexNavigation::class.java)
     }
 }

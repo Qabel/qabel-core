@@ -45,7 +45,7 @@ public class FolderNavigation extends AbstractNavigation {
             tmp.deleteOnExit();
             KeyParameter key = new KeyParameter(this.key);
             if (getCryptoUtils().decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                DirectoryMetadata newDM = DirectoryMetadata.Companion.openDatabase(tmp, getDeviceId(), getDm().getFileName(), getDm().getTempDir());
+                DirectoryMetadata newDM = DirectoryMetadata.openDatabase(tmp, getDeviceId(), getDm().getFileName(), getDm().getTempDir());
                 directoryMetadataMHashes.put(Arrays.hashCode(newDM.getVersion()), download.getMHash());
                 return newDM;
             } else {

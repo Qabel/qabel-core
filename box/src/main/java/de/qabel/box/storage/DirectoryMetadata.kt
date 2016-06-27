@@ -476,6 +476,7 @@ class DirectoryMetadata(connection: Connection, deviceId: ByteArray, path: File,
     }
 
     companion object {
+        @JvmField
         val DEFAULT_SIZE = 56320L
 
         private val TYPE_FILE = 0
@@ -518,6 +519,7 @@ class DirectoryMetadata(connection: Connection, deviceId: ByteArray, path: File,
          * @param tempDir  writable temp directory
          */
         @Throws(QblStorageException::class)
+        @JvmStatic
         fun newDatabase(root: String?, deviceId: ByteArray, tempDir: File): DirectoryMetadata {
             val path: File
             try {
@@ -550,6 +552,7 @@ class DirectoryMetadata(connection: Connection, deviceId: ByteArray, path: File,
          * @param tempDir  writable temp directory
          */
         @Throws(QblStorageException::class)
+        @JvmStatic
         fun openDatabase(path: File, deviceId: ByteArray, fileName: String, tempDir: File): DirectoryMetadata {
             val connection: Connection
             try {

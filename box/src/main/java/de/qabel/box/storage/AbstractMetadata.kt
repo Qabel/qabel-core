@@ -52,6 +52,7 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
 
     companion object {
         val TYPE_NONE = -1
+        @JvmField
         val logger = LoggerFactory.getLogger(DirectoryMetadata::class.java)
         val JDBC_PREFIX = "jdbc:sqlite:"
     }

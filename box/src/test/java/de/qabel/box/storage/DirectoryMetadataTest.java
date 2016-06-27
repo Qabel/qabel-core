@@ -24,7 +24,7 @@ public class DirectoryMetadataTest {
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
 
-        dm = DirectoryMetadata.Companion.newDatabase("https://localhost", bb.array(),
+        dm = DirectoryMetadata.newDatabase("https://localhost", bb.array(),
                 new File(System.getProperty("java.io.tmpdir")));
     }
 

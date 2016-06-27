@@ -38,7 +38,7 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
 
             }
         } catch (e: SQLException) {
-            AbstractMetadata.Companion.logger.error("Could not insert file " + boxFile.getName())
+            logger.error("Could not insert file " + boxFile.getName())
             throw QblStorageException(e)
         }
 
@@ -76,6 +76,7 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
                 " mtime LONG NOT NULL," +
                 " key BLOB NOT NULL )", "INSERT INTO spec_version (version) VALUES(0)")
 
+        @JvmStatic
         fun openExisting(path: File): FileMetadata {
             try {
                 val connection = DriverManager.getConnection(AbstractMetadata.Companion.JDBC_PREFIX + path.absolutePath)
@@ -87,6 +88,7 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
 
         }
 
+        @JvmStatic
         @Throws(QblStorageException::class)
         fun openNew(owner: QblECPublicKey, boxFile: BoxFile, tmpDir: File): FileMetadata {
             try {
