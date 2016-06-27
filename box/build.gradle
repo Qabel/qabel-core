@@ -70,5 +70,5 @@ jar.dependsOn(testJar)
 
 artifacts {
     archives jar
-    archives testJar
+    //archives testJar
 }
