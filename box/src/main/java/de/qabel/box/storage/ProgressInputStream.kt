@@ -5,7 +5,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.function.Consumer
+import de.qabel.core.util.Consumer
 
 class ProgressInputStream(`in`: InputStream, private val consumer: Consumer<Long>) : FilterInputStream(`in`) {
     private var read: Long = 0
