@@ -1,11 +1,12 @@
 package de.qabel.box.storage
 
-import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.box.storage.exceptions.QblStorageException
-
+import de.qabel.core.crypto.QblECPublicKey
 import java.io.File
 import java.io.IOException
-import java.sql.*
+import java.sql.Connection
+import java.sql.DriverManager
+import java.sql.SQLException
 
 class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connection, path) {
     override val initSql: Array<String>
@@ -26,12 +27,12 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
                         "VALUES(?, ?, ?, ?, ?, ?, ?)")) { statement ->
                 var i = 0
                 statement.setBytes(++i, owner.key)
-                statement.setString(++i, boxFile.getPrefix())
-                statement.setString(++i, boxFile.getBlock())
-                statement.setString(++i, boxFile.getName())
-                statement.setLong(++i, boxFile.getSize()!!)
-                statement.setLong(++i, boxFile.getMtime()!!)
-                statement.setBytes(++i, boxFile.getKey())
+                statement.setString(++i, boxFile.prefix)
+                statement.setString(++i, boxFile.block)
+                statement.setString(++i, boxFile.name)
+                statement.setLong(++i, boxFile.size!!)
+                statement.setLong(++i, boxFile.mtime!!)
+                statement.setBytes(++i, boxFile.key)
                 if (statement.executeUpdate() != 1) {
                     throw QblStorageException("Failed to insert file")
                 }

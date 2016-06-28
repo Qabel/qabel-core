@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface BoxNavigation extends ReadableBoxNavigation {
 
-    DirectoryMetadata reloadMetadata() throws QblStorageException;
+    JdbcDirectoryMetadata reloadMetadata() throws QblStorageException;
 
-    void setMetadata(DirectoryMetadata dm);
+    void setMetadata(JdbcDirectoryMetadata dm);
 
     /**
      * Bumps the version and uploads the metadata file
@@ -131,7 +131,7 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     void setAutocommitDelay(long delay);
 
-    DirectoryMetadata getMetadata();
+    JdbcDirectoryMetadata getMetadata();
 
     /**
      * Creates and uploads a FileMetadata object for a BoxFile. FileMetadata location is written to BoxFile.meta
@@ -168,5 +168,5 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     List<BoxShare> getSharesOf(BoxObject object) throws QblStorageException;
 
-    boolean hasVersionChanged(DirectoryMetadata dm) throws QblStorageException;
+    boolean hasVersionChanged(JdbcDirectoryMetadata dm) throws QblStorageException;
 }

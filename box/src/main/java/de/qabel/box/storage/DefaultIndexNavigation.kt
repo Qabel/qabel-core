@@ -9,12 +9,12 @@ import java.io.*
 import java.security.InvalidKeyException
 import java.util.*
 
-class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
+class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
                              readBackend: StorageReadBackend, writeBackend: StorageWriteBackend) : AbstractNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
 
     @Throws(QblStorageException::class)
-    override fun reloadMetadata(): DirectoryMetadata {
+    override fun reloadMetadata(): JdbcDirectoryMetadata {
         // TODO: duplicate with BoxVoume.navigate()
         val rootRef = dm.fileName
 
@@ -30,7 +30,7 @@ class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: Qbl
                 val out = FileOutputStream(tmp)
                 out.write(plaintext.plaintext)
                 out.close()
-                val newDm = DirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
+                val newDm = JdbcDirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
                 directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), download.mHash)
                 return newDm
             }

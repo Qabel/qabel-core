@@ -2,14 +2,10 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 import java.io.File
 import java.sql.Connection
-import java.sql.ResultSet
 import java.sql.SQLException
-import java.sql.Statement
 
 abstract class AbstractMetadata(protected val connection: Connection, path: File) {
 
@@ -53,7 +49,7 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     companion object {
         val TYPE_NONE = -1
         @JvmField
-        val logger = LoggerFactory.getLogger(DirectoryMetadata::class.java)
+        val logger = LoggerFactory.getLogger(JdbcDirectoryMetadata::class.java)
         val JDBC_PREFIX = "jdbc:sqlite:"
     }
 }

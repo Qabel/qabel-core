@@ -19,7 +19,7 @@ import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
-abstract class AbstractNavigation(private val prefix: String, protected var dm: DirectoryMetadata, protected val keyPair: QblECKeyPair, protected val deviceId: ByteArray,
+abstract class AbstractNavigation(private val prefix: String, protected var dm: JdbcDirectoryMetadata, protected val keyPair: QblECKeyPair, protected val deviceId: ByteArray,
                                   protected val readBackend: StorageReadBackend, protected val writeBackend: StorageWriteBackend) : BoxNavigation {
     private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils: CryptoUtils
@@ -36,7 +36,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         cryptoUtils = CryptoUtils()
     }
 
-    constructor(prefix: String, dm: DirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
+    constructor(prefix: String, dm: JdbcDirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
                 readBackend: StorageReadBackend, writeBackend: StorageWriteBackend, indexNavigation: IndexNavigation) : this(prefix, dm, keyPair, deviceId, readBackend, writeBackend) {
         this.indexNavigation = indexNavigation
     }
@@ -53,7 +53,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
                 tmp.deleteOnExit()
                 val key = KeyParameter(target.key)
                 if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                    val dm = DirectoryMetadata.openDatabase(
+                    val dm = JdbcDirectoryMetadata.openDatabase(
                             tmp, deviceId, target.ref, this.dm.tempDir)
                     val folderNavigation = FolderNavigation(
                             prefix,
@@ -79,7 +79,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
     }
 
-    @Synchronized override fun setMetadata(dm: DirectoryMetadata) {
+    @Synchronized override fun setMetadata(dm: JdbcDirectoryMetadata) {
         this.dm = dm
     }
 
@@ -97,7 +97,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         dm.commit()
         logger.info("Committing version " + String(Hex.encodeHex(dm.version))
                 + " with device id " + String(Hex.encodeHex(dm.deviceId)))
-        var updatedDM: DirectoryMetadata? = null
+        var updatedDM: JdbcDirectoryMetadata? = null
         try {
             updatedDM = reloadMetadata()
             logger.info("Remote version is " + String(Hex.encodeHex(updatedDM!!.version)))
@@ -130,7 +130,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     private fun conflictName(local: BoxFile): String {
-        return local.name + "_conflict_" + local.getMtime()
+        return local.name + "_conflict_" + local.mtime
     }
 
     @Throws(QblStorageException::class)
@@ -183,7 +183,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         if (oldFile != null) {
             throw QblStorageNameConflict("File already exists")
         }
-        return uploadFile(name, file, null, listener)
+        return uploadFile(name, file, null, oldFile, listener)
     }
 
     @Synchronized @Throws(QblStorageException::class)
@@ -194,19 +194,18 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     @Synchronized @Throws(QblStorageException::class)
     override fun overwrite(name: String, file: File, listener: ProgressListener?): BoxFile {
         val oldFile = dm.getFile(name) ?: throw QblStorageNotFound("Could not find file to overwrite")
-        dm.deleteFile(oldFile)
-        return uploadFile(name, file, oldFile, listener)
+        return uploadFile(name, file, oldFile, oldFile, listener)
     }
 
     @Throws(QblStorageException::class)
-    private fun uploadFile(name: String, file: File, oldFile: BoxFile?, listener: ProgressListener?): BoxFile {
+    private fun uploadFile(name: String, file: File, oldFile: BoxFile?, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val key = cryptoUtils.generateSymmetricKey()
         val block = UUID.randomUUID().toString()
         var meta: String? = null
         var metakey: ByteArray? = null
         if (oldFile != null) {
-            meta = oldFile.getMeta()
-            metakey = oldFile.getMetakey()
+            meta = oldFile.meta
+            metakey = oldFile.metakey
         }
         val boxFile = BoxFile(prefix, block, name, file.length(), 0L, key.key, meta, metakey)
         try {
@@ -300,7 +299,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     @Throws(QblStorageException::class)
     override fun download(boxFile: BoxFile, listener: ProgressListener?): InputStream {
         try {
-            readBackend.download("blocks/" + boxFile.getBlock()).use { download ->
+            readBackend.download("blocks/" + boxFile.block).use { download ->
                 var content = download.inputStream
                 if (listener != null) {
                     listener.setSize(download.size)
@@ -327,9 +326,9 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         try {
             if (!boxFile.isShared) {
                 val block = UUID.randomUUID().toString()
-                boxFile.setMeta(block)
+                boxFile.meta = block
                 val key = cryptoUtils.generateSymmetricKey()
-                boxFile.setMetakey(key.key)
+                boxFile.metakey = key.key
 
                 val fileMetadata = FileMetadata.openNew(owner, boxFile, dm.tempDir)
                 uploadEncrypted(fileMetadata.path, key, block, null)
@@ -342,7 +341,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
                 dm.insertFile(boxFile)
                 autocommit()
             }
-            return BoxExternalReference(false, readBackend.getUrl(boxFile.getMeta()), boxFile.getName(), owner, boxFile.getMetakey())
+            return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
         } catch (e: QblStorageException) {
             throw QblStorageException("Could not create or upload FileMetadata", e)
         }
@@ -351,16 +350,18 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
     override fun updateFileMetadata(boxFile: BoxFile) {
-        if (boxFile.getMeta() == null || boxFile.getMetakey() == null) {
+        val meta = boxFile.meta
+        val metakey = boxFile.metakey
+        if (meta == null || metakey == null) {
             throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
         }
         try {
-            val out = getMetadataFile(boxFile.getMeta(), boxFile.getMetakey())
+            val out = getMetadataFile(meta, metakey)
             val fileMetadataOld = FileMetadata.openExisting(out)
             val fileMetadataNew = FileMetadata.openNew(
                 fileMetadataOld.file?.getOwner() ?: throw QblStorageException("No owner in old file metadata"),
                 boxFile, dm.tempDir)
-            uploadEncrypted(fileMetadataNew.path, KeyParameter(boxFile.getMetakey()), boxFile.getMeta())
+            uploadEncrypted(fileMetadataNew.path, KeyParameter(metakey), meta)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
             throw e
@@ -373,12 +374,14 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun getFileMetadata(boxFile: BoxFile): FileMetadata {
-        if (boxFile.getMeta() == null || boxFile.getMetakey() == null) {
+        val meta = boxFile.meta
+        val metakey = boxFile.metakey
+        if (meta == null || metakey == null) {
             throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
         }
 
         try {
-            val out = getMetadataFile(boxFile.getMeta(), boxFile.getMetakey())
+            val out = getMetadataFile(meta, metakey)
             return FileMetadata.openExisting(out)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
@@ -415,7 +418,11 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         changes.add(createFolderChange)
 
         val folder = result.boxObject
-        val newFolder = FolderNavigation(prefix, result.dm, keyPair, folder.getKey(),
+        val newDm = result.dm
+        if (!(newDm is JdbcDirectoryMetadata)) {
+            throw IllegalStateException("can only handle directory metadata of type jdbc")
+        }
+        val newFolder = FolderNavigation(prefix, newDm, keyPair, folder.getKey(),
                 deviceId, readBackend, writeBackend, indexNavigation)
         newFolder.setAutocommit(autocommit)
         newFolder.setAutocommitDelay(autocommitDelay)
@@ -543,14 +550,14 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         throw IllegalArgumentException("no file named " + name)
     }
 
-    override fun getMetadata(): DirectoryMetadata {
+    override fun getMetadata(): JdbcDirectoryMetadata {
         return dm
     }
 
     @Throws(QblStorageException::class)
     override fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference {
         val ref = createFileMetadata(owner, file)
-        val share = BoxShare(file.getMeta(), recipient)
+        val share = BoxShare(file.meta, recipient)
         indexNavigation?.insertShare(share) ?: throw QblStorageException("No index navigation")
         return ref
     }
@@ -562,7 +569,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    override fun hasVersionChanged(dm: DirectoryMetadata): Boolean {
+    override fun hasVersionChanged(dm: JdbcDirectoryMetadata): Boolean {
         return !Arrays.equals(metadata.version, dm.version)
     }
 
