@@ -116,7 +116,7 @@ public class BoxVolume {
         String rootRef = getRootRef();
         DirectoryMetadata dm = DirectoryMetadata.newDatabase(root, deviceId, tempDir);
         try {
-            byte[] plaintext = IOUtils.toByteArray(new FileInputStream(dm.path));
+            byte[] plaintext = IOUtils.toByteArray(new FileInputStream(dm.getPath()));
             byte[] encrypted = cryptoUtils.createBox(keyPair, keyPair.getPub(), plaintext, 0);
             writeBackend.upload(rootRef, new ByteArrayInputStream(encrypted));
         } catch (IOException e) {

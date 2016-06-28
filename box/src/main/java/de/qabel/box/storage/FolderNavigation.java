@@ -32,33 +32,33 @@ public class FolderNavigation extends AbstractNavigation {
     protected void uploadDirectoryMetadata() throws QblStorageException {
         logger.trace("Uploading directory metadata");
         KeyParameter secretKey = new KeyParameter(key);
-        uploadEncrypted(dm.getPath(), secretKey, dm.getFileName());
+        uploadEncrypted(getDm().getPath(), secretKey, getDm().getFileName());
     }
 
     @Override
     public DirectoryMetadata reloadMetadata() throws QblStorageException {
         logger.trace("Reloading directory metadata");
         // duplicate of navigate()
-        try (StorageDownload download = readBackend.download(dm.getFileName(), getMHash())) {
+        try (StorageDownload download = getReadBackend().download(getDm().getFileName(), getMHash())) {
             InputStream indexDl = download.getInputStream();
-            File tmp = File.createTempFile("dir", "db7", dm.getTempDir());
+            File tmp = File.createTempFile("dir", "db7", getDm().getTempDir());
             tmp.deleteOnExit();
             KeyParameter key = new KeyParameter(this.key);
-            if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                DirectoryMetadata newDM = DirectoryMetadata.openDatabase(tmp, deviceId, dm.getFileName(), dm.getTempDir());
+            if (getCryptoUtils().decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
+                DirectoryMetadata newDM = DirectoryMetadata.openDatabase(tmp, getDeviceId(), getDm().getFileName(), getDm().getTempDir());
                 directoryMetadataMHashes.put(Arrays.hashCode(newDM.getVersion()), download.getMHash());
                 return newDM;
             } else {
                 throw new QblStorageNotFound("Invalid key");
             }
         } catch (UnmodifiedException e) {
-            return dm;
+            return getDm();
         } catch (IOException | InvalidKeyException e) {
             throw new QblStorageException(e);
         }
     }
 
     private String getMHash() throws QblStorageException {
-        return directoryMetadataMHashes.get(Arrays.hashCode(dm.getVersion()));
+        return directoryMetadataMHashes.get(Arrays.hashCode(getDm().getVersion()));
     }
 }
