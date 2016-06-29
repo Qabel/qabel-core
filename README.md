@@ -1,3 +1,6 @@
+[![Release](https://jitpack.io/v/Qabel/qabel-core.svg)](https://jitpack.io/#Qabel/qabel-core)
+[![License](https://img.shields.io/badge/License-QaPL-orange.svg)](http://github.com/Qabel/qabel-core/LICENSE)
+
 <img align="left" width="0" height="150px" hspace="20"/>
 <a href="https://qabel.de" align="left">
 	<img src="https://files.qabel.de/img/qabel_logo_orange_preview.png" height="150px" align="left"/>
