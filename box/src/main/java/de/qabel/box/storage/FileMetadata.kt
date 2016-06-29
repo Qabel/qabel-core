@@ -30,8 +30,8 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
                 statement.setString(++i, boxFile.prefix)
                 statement.setString(++i, boxFile.block)
                 statement.setString(++i, boxFile.name)
-                statement.setLong(++i, boxFile.size!!)
-                statement.setLong(++i, boxFile.mtime!!)
+                statement.setLong(++i, boxFile.size)
+                statement.setLong(++i, boxFile.mtime)
                 statement.setBytes(++i, boxFile.key)
                 if (statement.executeUpdate() != 1) {
                     throw QblStorageException("Failed to insert file")

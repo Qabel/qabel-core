@@ -201,7 +201,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         }
         val boxFile = BoxFile(prefix, block, name, file.length(), 0L, key.key, meta, metakey)
         try {
-            boxFile.setMtime(Files.getLastModifiedTime(file.toPath()).toMillis())
+            boxFile.mtime = Files.getLastModifiedTime(file.toPath()).toMillis()
         } catch (e: IOException) {
             throw IllegalArgumentException("invalid source file " + file.absolutePath)
         }
