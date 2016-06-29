@@ -95,6 +95,6 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
     }
 
     fun isSame(expectedFile: BoxFile?): Boolean {
-        return expectedFile?.block == block ?: false
+        return expectedFile?.block == block
     }
 }

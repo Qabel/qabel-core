@@ -21,11 +21,12 @@ import java.util.concurrent.TimeUnit
 
 abstract class AbstractNavigation(private val prefix: String, protected var dm: JdbcDirectoryMetadata, protected val keyPair: QblECKeyPair, protected val deviceId: ByteArray,
                                   protected val readBackend: StorageReadBackend, protected val writeBackend: StorageWriteBackend) : BoxNavigation {
+
+    private val logger by lazy { LoggerFactory.getLogger(AbstractNavigation::class.java) }
     private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils: CryptoUtils
 
-    private val deleteQueue = HashSet<String>()
-    private val changes = LinkedList<DirectoryMetadataChange<out Any>>()
+    private val changes = LinkedList<DirectoryMetadataChange<*>>()
     open protected var indexNavigation: IndexNavigation? = null
 
     private var autocommit = true
@@ -111,26 +112,17 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
             // ignore our local directory metadata
             // all changes that are not inserted in the new dm are _lost_!
             dm = updatedDM
-            for (change in changes) {
-                change.execute(dm)
-            }
+            changes.execute(dm)
             dm.commit()
         }
         uploadDirectoryMetadata()
-        for (ref in deleteQueue) {
-            writeBackend.delete(ref)
-        }
+        changes.postprocess(dm, writeBackend)
 
-        deleteQueue.clear()
         changes.clear()
     }
 
     override fun isUnmodified(): Boolean {
-        return deleteQueue.isEmpty() && changes.isEmpty()
-    }
-
-    private fun conflictName(local: BoxFile): String {
-        return local.name + "_conflict_" + local.mtime
+        return changes.isEmpty()
     }
 
     @Throws(QblStorageException::class)
@@ -292,9 +284,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    override fun download(boxFile: BoxFile): InputStream {
-        return download(boxFile, null)
-    }
+    override fun download(boxFile: BoxFile) = download(boxFile, null)
 
     @Throws(QblStorageException::class)
     override fun download(boxFile: BoxFile, listener: ProgressListener?): InputStream {
@@ -408,36 +398,16 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         }
     }
 
-    @Synchronized @Throws(QblStorageException::class)
-    override fun createFolder(name: String): BoxFolder {
-        if (hasFolder(name)) {
-            return getFolder(name)
-        }
-        val createFolderChange = CreateFolderChange(name, deviceId)
-        val result = createFolderChange.execute(dm)
-        changes.add(createFolderChange)
-
-        val folder = result.boxObject
-        val newDm = result.dm
-        if (!(newDm is JdbcDirectoryMetadata)) {
-            throw IllegalStateException("can only handle directory metadata of type jdbc")
-        }
-        val newFolder = FolderNavigation(prefix, newDm, keyPair, folder.getKey(),
-                deviceId, readBackend, writeBackend, indexNavigation)
-        newFolder.setAutocommit(autocommit)
-        newFolder.setAutocommitDelay(autocommitDelay)
-        newFolder.commit()
-        autocommit()
-        return folder
+    val folderNavigationFactory by lazy {
+        FolderNavigationFactory(prefix, keyPair, deviceId, readBackend, writeBackend, indexNavigation!!)
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun delete(file: BoxFile) {
-        deleteWithBlock(
-            DeleteFileChange(file,
-                indexNavigation ?: throw QblStorageException("No index navigation"),
-                writeBackend))
-    }
+    override fun createFolder(name: String): BoxFolder
+        = execute(CreateFolderChange(name, deviceId, folderNavigationFactory)).boxObject
+
+    @Synchronized @Throws(QblStorageException::class)
+    override fun delete(file: BoxFile) = execute(DeleteFileChange(file, indexNavigation!!, writeBackend))
 
     @Synchronized @Throws(QblStorageException::class)
     override fun unshare(boxObject: BoxObject) {
@@ -464,9 +434,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
      * @return True if FileMetadata has been deleted. False if meta information is missing.
      */
     @Throws(QblStorageException::class)
-    protected fun removeFileMetadata(boxFile: BoxFile): Boolean {
-        return removeFileMetadata(boxFile, writeBackend, dm)
-    }
+    protected fun removeFileMetadata(boxFile: BoxFile) = removeFileMetadata(boxFile, writeBackend, dm)
 
     @Synchronized @Throws(QblStorageException::class)
     override fun delete(folder: BoxFolder) {
@@ -481,15 +449,14 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         }
         folderNav.commit()
 
-        deleteWithBlock(DeleteFolderChange(folder))
+        execute(DeleteFolderChange(folder))
     }
 
-    @Throws(QblStorageException::class)
-    private fun deleteWithBlock(command: DirectoryMetadataChange<out DeletionResult>) {
+    private fun <T> execute(command: DirectoryMetadataChange<T>): T {
         val result = command.execute(dm)
-        changes.add(command)
-        deleteQueue.add(result.deletedBlockRef)
-        autocommit()
+        changes.add(command);
+        autocommit();
+        return result
     }
 
     @Throws(QblStorageException::class)
@@ -550,9 +517,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         throw IllegalArgumentException("no file named " + name)
     }
 
-    override fun getMetadata(): JdbcDirectoryMetadata {
-        return dm
-    }
+    override fun getMetadata(): JdbcDirectoryMetadata = dm
 
     @Throws(QblStorageException::class)
     override fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference {
@@ -569,12 +534,9 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    override fun hasVersionChanged(dm: JdbcDirectoryMetadata): Boolean {
-        return !Arrays.equals(metadata.version, dm.version)
-    }
+    override fun hasVersionChanged(dm: JdbcDirectoryMetadata) = !Arrays.equals(metadata.version, dm.version)
 
     companion object {
-        private val logger = LoggerFactory.getLogger(AbstractNavigation::class.java)
         val BLOCKS_PREFIX = "blocks/"
 
         @JvmField
@@ -583,7 +545,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
         @Throws(QblStorageException::class)
         fun removeFileMetadata(boxFile: BoxFile, writeBackend: StorageWriteBackend, dm: DirectoryMetadata): Boolean {
-            if (boxFile.meta == null || boxFile.metakey == null) {
+            if (!boxFile.isShared) {
                 return false
             }
 

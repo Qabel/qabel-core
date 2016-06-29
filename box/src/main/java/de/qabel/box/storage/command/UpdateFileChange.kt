@@ -4,20 +4,18 @@ import de.qabel.box.storage.BoxFile
 import de.qabel.box.storage.BoxFolder
 import de.qabel.box.storage.BoxObject
 import de.qabel.box.storage.DirectoryMetadata
-import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import org.slf4j.LoggerFactory
 
-open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: BoxFile) : DirectoryMetadataChange<UpdateFileChange.Result> {
+open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: BoxFile) : DirectoryMetadataChange<Unit> {
     private val logger by lazy {
         LoggerFactory.getLogger(UpdateFileChange::class.java)
     }
 
-    @Throws(QblStorageException::class)
-    override fun execute(dm: DirectoryMetadata): Result {
+    override fun execute(dm: DirectoryMetadata) {
         var filename = newFile.name
         try {
-            var currentFile = dm.getFile(newFile.name)
+            val currentFile = dm.getFile(newFile.name)
             if (currentFile != null) {
                 if (currentFile.isSame(expectedFile)) {
                     dm.deleteFile(currentFile)
@@ -41,11 +39,8 @@ open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: Box
 
             }
         }
-
-        return Result()
     }
 
-    @Throws(QblStorageException::class)
     private fun findCurrentFileOrFolder(dm: DirectoryMetadata, filename: String): BoxObject {
         var currentFile: BoxObject? = dm.getFile(filename)
         if (currentFile == null) {
@@ -57,23 +52,23 @@ open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: Box
         return currentFile
     }
 
-    @Throws(QblStorageException::class)
-    private fun insertObject(currentFile: BoxObject, dm: DirectoryMetadata) {
-        if (currentFile is BoxFile) {
-            dm.insertFile(currentFile)
-        } else if (currentFile is BoxFolder) {
-            dm.insertFolder(currentFile)
+    private fun insertObject(currentObject: BoxObject, dm: DirectoryMetadata) {
+        if (currentObject is BoxFile) {
+            dm.insertFile(currentObject)
+        } else if (currentObject is BoxFolder) {
+            dm.insertFolder(currentObject)
+        } else {
+            throw NotImplementedError("not implemented for " + currentObject.javaClass)
         }
     }
 
-    @Throws(QblStorageException::class)
     private fun deleteObject(currentObject: BoxObject, dm: DirectoryMetadata) {
         if (currentObject is BoxFile) {
             dm.deleteFile(currentObject)
         } else if (currentObject is BoxFolder) {
             dm.deleteFolder(currentObject)
+        } else {
+            throw NotImplementedError("not implemented for " + currentObject.javaClass)
         }
     }
-
-    class Result
 }
