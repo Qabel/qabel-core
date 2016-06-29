@@ -1,5 +1,3 @@
-[![Release](https://img.shields.io/github/release/Qabel/qabel-core.svg)](https://jitpack.io/#Qabel/qabel-core)
-
 <img align="left" width="0" height="150px" hspace="20"/>
 <a href="https://qabel.de" align="left">
 	<img src="https://files.qabel.de/img/qabel_logo_orange_preview.png" height="150px" align="left"/>
@@ -18,6 +16,9 @@ This project provides a core library for all Qabel Clients implementing <a href=
 	<a href="#usage">Usage</a> |
 	<a href="#contribution">Contribution</a>
 </p>
+
+[![Release](https://img.shields.io/github/release/Qabel/qabel-core.svg)](https://jitpack.io/#Qabel/qabel-core)
+[![Release](https://img.shields.io/badge/License-QaPL-blue.svg)](https://github.com/Qabel/qabel-core/blob/master/LICENSE)
 
 # Introduction
 
