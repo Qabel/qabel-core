@@ -101,7 +101,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         var updatedDM: JdbcDirectoryMetadata? = null
         try {
             updatedDM = reloadMetadata()
-            logger.info("Remote version is " + String(Hex.encodeHex(updatedDM!!.version)))
+            logger.info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
         } catch (e: QblStorageNotFound) {
             logger.trace("Could not reload metadata, none exists yet")
         }
