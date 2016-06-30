@@ -59,7 +59,14 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
                         val size = getLong(++i)
                         val mtime = getLong(++i)
                         val key = getBytes(++i)
-                        return BoxExternalFile(QblECPublicKey(ownerKey), prefix, block, name, size, mtime, key)
+                        return BoxExternalFile(
+                            QblECPublicKey(ownerKey),
+                            prefix = prefix,
+                            block = block,
+                            name = name,
+                            size = size,
+                            mtime = mtime,
+                            key = key)
                     }
                     return null
                 }

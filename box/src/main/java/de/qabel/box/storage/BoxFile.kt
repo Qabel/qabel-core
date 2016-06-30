@@ -26,17 +26,17 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
             notifyObservers()
         }
 
-    override fun equals(o: Any?): Boolean {
-        if (this === o) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
             return true
         }
-        if (o == null || javaClass != o.javaClass) {
+        if (other == null || !(other is BoxFile)) {
             return false
         }
 
-        val boxFile = o as BoxFile?
+        val boxFile = other
 
-        if (prefix != boxFile!!.prefix) {
+        if (prefix != boxFile.prefix) {
             return false
         }
         if (block != boxFile.block) {

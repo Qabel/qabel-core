@@ -105,8 +105,7 @@ class JdbcDirectoryMetadata(
         try {
             tryWith(connection.createStatement()) {
                 try {
-                    tryWith(executeQuery(
-                        "SELECT value FROM meta WHERE name='last_change_by'")) {
+                    tryWith(executeQuery("SELECT value FROM meta WHERE name='last_change_by'")) {
                         if (next()) {
                             val lastChanged = getString(1)
                             return Hex.decodeHex(lastChanged.toCharArray())
@@ -141,8 +140,7 @@ class JdbcDirectoryMetadata(
         @Throws(QblStorageException::class)
         get() = try {
             tryWith(connection.createStatement()) {
-                tryWith(executeQuery(
-                        "SELECT version FROM version ORDER BY id DESC LIMIT 1")) {
+                tryWith(executeQuery("SELECT version FROM version ORDER BY id DESC LIMIT 1")) {
                     if (next()) {
                         return getBytes(1)
                     } else {
@@ -168,8 +166,7 @@ class JdbcDirectoryMetadata(
         md.update(oldVersion)
         md.update(deviceId)
         try {
-            tryWith(connection.prepareStatement(
-                    "INSERT INTO version (version, time) VALUES (?, ?)")) {
+            tryWith(connection.prepareStatement("INSERT INTO version (version, time) VALUES (?, ?)")) {
                 setBytes(1, md.digest())
                 setLong(2, System.currentTimeMillis())
                 if (executeUpdate() != 1) {
@@ -188,8 +185,7 @@ class JdbcDirectoryMetadata(
     override fun listFiles(): List<BoxFile> {
         try {
             tryWith(connection.createStatement()) {
-                tryWith(executeQuery(
-                        "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files")) {
+                tryWith(executeQuery("SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files")) {
                     val files = ArrayList<BoxFile>()
                     while (next()) {
                         var i = 0
@@ -219,20 +215,23 @@ class JdbcDirectoryMetadata(
             throw QblStorageNameConflict(file.getName())
         }
         try {
-            val st = connection.prepareStatement(
-                    "INSERT INTO files (prefix, block, name, size, mtime, key, meta, metakey) VALUES(?, ?, ?, ?, ?, ?, ?, ?)")
-            var i = 0
+            tryWith(connection.prepareStatement(
+                """INSERT INTO files (prefix, block, name, size, mtime, key, meta, metakey)
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?)""")
+            ) {
+                var i = 0
 
-            st.setString(++i, file.prefix)
-            st.setString(++i, file.block)
-            st.setString(++i, file.name)
-            st.setLong(++i, file.size)
-            st.setLong(++i, file.mtime / 1000)
-            st.setBytes(++i, file.key)
-            st.setString(++i, file.meta)
-            st.setBytes(++i, file.metakey)
-            if (st.executeUpdate() != 1) {
-                throw QblStorageException("Failed to insert file")
+                setString(++i, file.prefix)
+                setString(++i, file.block)
+                setString(++i, file.name)
+                setLong(++i, file.size)
+                setLong(++i, file.mtime / 1000)
+                setBytes(++i, file.key)
+                setString(++i, file.meta)
+                setBytes(++i, file.metakey)
+                if (executeUpdate() != 1) {
+                    throw QblStorageException("Failed to insert file")
+                }
             }
 
         } catch (e: SQLException) {
@@ -244,13 +243,12 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     override fun deleteFile(file: BoxFile) {
         try {
-            val st = connection.prepareStatement(
-                    "DELETE FROM files WHERE name=?")
-            st.setString(1, file.getName())
-            if (st.executeUpdate() != 1) {
-                throw QblStorageException("Failed to delete file: Not found")
+            tryWith(connection.prepareStatement("DELETE FROM files WHERE name=?")) {
+                setString(1, file.getName())
+                if (executeUpdate() != 1) {
+                    throw QblStorageException("Failed to delete file: Not found")
+                }
             }
-
         } catch (e: SQLException) {
             throw QblStorageException(e)
         }
@@ -264,31 +262,24 @@ class JdbcDirectoryMetadata(
             throw QblStorageNameConflict(folder.getName())
         }
         executeStatement({
-            val st = connection.prepareStatement(
-                    "INSERT INTO folders (ref, name, key) VALUES(?, ?, ?)")
-            st.setString(1, folder.getRef())
-            st.setString(2, folder.getName())
-            st.setBytes(3, folder.getKey())
-            st
+            connection.prepareStatement("INSERT INTO folders (ref, name, key) VALUES(?, ?, ?)").apply{
+                setString(1, folder.getRef())
+                setString(2, folder.getName())
+                setBytes(3, folder.getKey())
+            }
         })
     }
 
     @Throws(QblStorageException::class)
-    override fun deleteFolder(folder: BoxFolder) {
-        executeStatement({
-            val st = connection.prepareStatement(
-                    "DELETE FROM folders WHERE name=?")
-            st.setString(1, folder.getName())
-            st
+    override fun deleteFolder(folder: BoxFolder) = executeStatement({
+            connection.prepareStatement("DELETE FROM folders WHERE name=?").apply{setString(1, folder.getName())}
         })
-    }
 
     @Throws(QblStorageException::class)
     override fun listFolders(): List<BoxFolder> {
         try {
             tryWith(connection.createStatement()) {
-                tryWith(executeQuery(
-                        "SELECT ref, name, key FROM folders")) {
+                tryWith(executeQuery("SELECT ref, name, key FROM folders")) {
                     val folders = ArrayList<BoxFolder>()
                     while (next()) {
                         folders.add(BoxFolder(getString(1), getString(2), getBytes(3)))
@@ -303,22 +294,21 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun insertShare(share: BoxShare) {
-        executeStatement({
+    fun insertShare(share: BoxShare) = executeStatement({
             connection.prepareStatement("INSERT INTO shares (ref, recipient, type) VALUES (?, ?, ?)").apply{
                 setString(1, share.ref)
                 setString(2, share.recipient)
                 setString(3, share.type)
             }
         })
-    }
 
     @Throws(QblStorageException::class)
     private fun executeStatement(statementCallable: () -> PreparedStatement) {
         try {
-            val statement = statementCallable()
-            if (statement.executeUpdate() != 1) {
-                throw QblStorageException("Failed to execute statement")
+            tryWith(statementCallable()) {
+                if (executeUpdate() != 1) {
+                    throw QblStorageException("Failed to execute statement")
+                }
             }
         } catch (e: Exception) {
             throw QblStorageException(e)
@@ -326,27 +316,26 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun deleteShare(share: BoxShare) {
-        executeStatement({
+    fun deleteShare(share: BoxShare) = executeStatement({
             connection.prepareStatement("DELETE FROM shares WHERE ref = ? AND recipient = ? AND type = ?").apply {
                 setString(1, share.ref)
                 setString(2, share.recipient)
                 setString(3, share.type)
             }
         })
-    }
 
     @Throws(QblStorageException::class)
     fun listShares(): List<BoxShare> {
         val shares = LinkedList<BoxShare>()
         try {
-            val statement = connection.prepareStatement(
-                    "SELECT ref, recipient, type FROM shares")
-            val rs = statement.executeQuery()
-            while (rs.next()) {
-                shares.add(BoxShare(rs.getString(1), rs.getString(2), rs.getString(3)))
+            tryWith(connection.prepareStatement("SELECT ref, recipient, type FROM shares")) {
+                tryWith(executeQuery()) {
+                    while (next()) {
+                        shares.add(BoxShare(getString(1), getString(2), getString(3)))
+                    }
+                    return shares
+                }
             }
-            return shares
         } catch (e: SQLException) {
             throw QblStorageException(e)
         }
@@ -361,17 +350,17 @@ class JdbcDirectoryMetadata(
             throw QblStorageNameConflict(external.name)
         }
         try {
-            val st = connection.prepareStatement(
-                    "INSERT INTO externals (is_folder, url, name, owner, key) VALUES(?, ?, ?, ?, ?)")
-            st.setBoolean(1, external.isFolder)
-            st.setString(2, external.url)
-            st.setString(3, external.name)
-            st.setBytes(4, external.owner.key)
-            st.setBytes(5, external.key)
-            if (st.executeUpdate() != 1) {
-                throw QblStorageException("Failed to insert external")
+            tryWith(connection.prepareStatement(
+                    "INSERT INTO externals (is_folder, url, name, owner, key) VALUES(?, ?, ?, ?, ?)")) {
+                setBoolean(1, external.isFolder)
+                setString(2, external.url)
+                setString(3, external.name)
+                setBytes(4, external.owner.key)
+                setBytes(5, external.key)
+                if (executeUpdate() != 1) {
+                    throw QblStorageException("Failed to insert external")
+                }
             }
-
         } catch (e: SQLException) {
             throw QblStorageException(e)
         }
@@ -380,24 +369,20 @@ class JdbcDirectoryMetadata(
 
     @JvmName("deleteExternal")
     @Throws(QblStorageException::class)
-    internal fun deleteExternal(external: BoxExternalReference) {
-        executeStatement({
+    internal fun deleteExternal(external: BoxExternalReference) = executeStatement({
             connection.prepareStatement("DELETE FROM externals WHERE name=?").apply{ setString(1, external.name) }
         })
-    }
 
     @JvmName("listExternals")
     @Throws(QblStorageException::class)
-    internal fun listExternals(): List<BoxExternal> {
-        return ArrayList()
-    }
+    internal fun listExternals(): List<BoxExternal> = ArrayList()
 
     @Throws(QblStorageException::class)
     override fun getFile(name: String): BoxFile? {
         try {
             tryWith(connection.prepareStatement(
-                    "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files WHERE name=?"))
-            {
+                    "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files WHERE name=?"
+            )) {
                 setString(1, name)
                 tryWith(executeQuery()) {
                     if (next()) {
@@ -440,14 +425,10 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun hasFile(name: String): Boolean {
-        return getFile(name) != null
-    }
+    fun hasFile(name: String): Boolean = getFile(name) != null
 
     @Throws(QblStorageException::class)
-    fun hasFolder(name: String): Boolean {
-        return getFolder(name) != null
-    }
+    fun hasFolder(name: String): Boolean = getFolder(name) != null
 
     @Throws(QblStorageException::class)
     internal fun isA(name: String): Int {
