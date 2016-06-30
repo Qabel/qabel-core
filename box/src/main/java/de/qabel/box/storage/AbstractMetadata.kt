@@ -22,11 +22,10 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     @JvmName("getSpecVersion")
     fun findSpecVersion(): Int? =
         try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT version FROM spec_version")) { rs ->
-                    if (rs.next()) {
-                        return rs.getInt(1)
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery("SELECT version FROM spec_version")) {
+                    if (next()) {
+                        return getInt(1)
                     } else {
                         throw QblStorageCorruptMetadata("No version found!")
                     }
@@ -39,8 +38,7 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     @Throws(SQLException::class, QblStorageException::class)
     protected open fun initDatabase() {
         for (q in initSql) {
-            tryWith(connection.createStatement())
-                { statement -> statement.executeUpdate(q) }
+            tryWith(connection.createStatement()) { executeUpdate(q) }
         }
     }
 
@@ -54,7 +52,7 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     }
 }
 
-inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: (T) -> R): R {
+inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: T.() -> R): R {
     try {
         return block(closeable);
     } finally {

@@ -25,8 +25,14 @@ class JdbcDirectoryMetadata(
     var deviceId: ByteArray
     var dmRoot: String? = null
 
-    constructor(connection: Connection, dmRoot: String, deviceId: ByteArray,
-                path: File, fileName: String, tempDir: File) : this(connection, deviceId, path, fileName, tempDir) {
+    constructor(
+        connection: Connection,
+        dmRoot: String,
+        deviceId: ByteArray,
+        path: File,
+        fileName: String,
+        tempDir: File
+    ) : this(connection, deviceId, path, fileName, tempDir) {
         this.dmRoot = dmRoot
     }
 
@@ -37,11 +43,10 @@ class JdbcDirectoryMetadata(
     @Throws(SQLException::class, QblStorageException::class)
     override fun initDatabase() {
         super.initDatabase()
-        tryWith(connection.prepareStatement(
-                "INSERT INTO version (version, time) VALUES (?, ?)")) { statement ->
-            statement.setBytes(1, initVersion())
-            statement.setLong(2, System.currentTimeMillis())
-            statement.executeUpdate()
+        tryWith(connection.prepareStatement("INSERT INTO version (version, time) VALUES (?, ?)")) {
+            setBytes(1, initVersion())
+            setLong(2, System.currentTimeMillis())
+            executeUpdate()
         }
         replaceLastChangedBy()
         // only set root if this actually has a root attribute
@@ -54,10 +59,9 @@ class JdbcDirectoryMetadata(
 
     @Throws(SQLException::class)
     private fun insertRoot(root: String) {
-        tryWith(connection.prepareStatement(
-                "INSERT OR REPLACE INTO meta (name, value) VALUES ('root', ?)")) { statement ->
-            statement.setString(1, root)
-            statement.executeUpdate()
+        tryWith(connection.prepareStatement("INSERT OR REPLACE INTO meta (name, value) VALUES ('root', ?)")) {
+            setString(1, root)
+            executeUpdate()
         }
     }
 
@@ -67,11 +71,10 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     internal fun findRoot(): String {
         try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT value FROM meta WHERE name='root'")) { rs ->
-                    if (rs.next()) {
-                        return rs.getString(1)
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery("SELECT value FROM meta WHERE name='root'")) {
+                    if (next()) {
+                        return getString(1)
                     } else {
                         throw QblStorageNotFound("No root found!")
                     }
@@ -86,11 +89,10 @@ class JdbcDirectoryMetadata(
     @JvmName("setLastChangedBy")
     @Throws(SQLException::class)
     internal fun replaceLastChangedBy() {
-        tryWith(connection.prepareStatement(
-                "INSERT OR REPLACE INTO meta (name, value) VALUES ('last_change_by', ?)")) { statement ->
+        tryWith(connection.prepareStatement("INSERT OR REPLACE INTO meta (name, value) VALUES ('last_change_by', ?)")) {
             val x = String(Hex.encodeHex(deviceId))
-            statement.setString(1, x)
-            statement.executeUpdate()
+            setString(1, x)
+            executeUpdate()
         }
 
     }
@@ -101,12 +103,12 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     internal fun findLastChangedBy(): ByteArray {
         try {
-            tryWith(connection.createStatement()) { statement ->
+            tryWith(connection.createStatement()) {
                 try {
-                    tryWith(statement.executeQuery(
-                        "SELECT value FROM meta WHERE name='last_change_by'")) { rs ->
-                        if (rs.next()) {
-                            val lastChanged = rs.getString(1)
+                    tryWith(executeQuery(
+                        "SELECT value FROM meta WHERE name='last_change_by'")) {
+                        if (next()) {
+                            val lastChanged = getString(1)
                             return Hex.decodeHex(lastChanged.toCharArray())
                         } else {
                             throw QblStorageCorruptMetadata("No version found!")
@@ -138,11 +140,11 @@ class JdbcDirectoryMetadata(
     val version: ByteArray
         @Throws(QblStorageException::class)
         get() = try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT version FROM version ORDER BY id DESC LIMIT 1")) { rs ->
-                    if (rs.next()) {
-                        return rs.getBytes(1)
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery(
+                        "SELECT version FROM version ORDER BY id DESC LIMIT 1")) {
+                    if (next()) {
+                        return getBytes(1)
                     } else {
                         throw QblStorageCorruptMetadata("No version found!")
                     }
@@ -167,10 +169,10 @@ class JdbcDirectoryMetadata(
         md.update(deviceId)
         try {
             tryWith(connection.prepareStatement(
-                    "INSERT INTO version (version, time) VALUES (?, ?)")) { statement ->
-                statement.setBytes(1, md.digest())
-                statement.setLong(2, System.currentTimeMillis())
-                if (statement.executeUpdate() != 1) {
+                    "INSERT INTO version (version, time) VALUES (?, ?)")) {
+                setBytes(1, md.digest())
+                setLong(2, System.currentTimeMillis())
+                if (executeUpdate() != 1) {
                     throw QblStorageException("Could not update version!")
                 }
                 replaceLastChangedBy()
@@ -185,21 +187,21 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     override fun listFiles(): List<BoxFile> {
         try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files")) { rs ->
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery(
+                        "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files")) {
                     val files = ArrayList<BoxFile>()
-                    while (rs.next()) {
+                    while (next()) {
                         var i = 0
                         files.add(BoxFile(
-                                rs.getString(++i),
-                                rs.getString(++i),
-                                rs.getString(++i),
-                                rs.getLong(++i),
-                                rs.getLong(++i) * 1000,
-                                rs.getBytes(++i),
-                                rs.getString(++i),
-                                rs.getBytes(++i)))
+                                getString(++i),
+                                getString(++i),
+                                getString(++i),
+                                getLong(++i),
+                                getLong(++i) * 1000,
+                                getBytes(++i),
+                                getString(++i),
+                                getBytes(++i)))
                     }
                     return files
                 }
@@ -284,12 +286,12 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     override fun listFolders(): List<BoxFolder> {
         try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT ref, name, key FROM folders")) { rs ->
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery(
+                        "SELECT ref, name, key FROM folders")) {
                     val folders = ArrayList<BoxFolder>()
-                    while (rs.next()) {
-                        folders.add(BoxFolder(rs.getString(1), rs.getString(2), rs.getBytes(3)))
+                    while (next()) {
+                        folders.add(BoxFolder(getString(1), getString(2), getBytes(3)))
                     }
                     return folders
                 }
@@ -303,12 +305,11 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     fun insertShare(share: BoxShare) {
         executeStatement({
-            val statement = connection.prepareStatement(
-                    "INSERT INTO shares (ref, recipient, type) VALUES (?, ?, ?)")
-            statement.setString(1, share.ref)
-            statement.setString(2, share.recipient)
-            statement.setString(3, share.type)
-            statement
+            connection.prepareStatement("INSERT INTO shares (ref, recipient, type) VALUES (?, ?, ?)").apply{
+                setString(1, share.ref)
+                setString(2, share.recipient)
+                setString(3, share.type)
+            }
         })
     }
 
@@ -322,18 +323,16 @@ class JdbcDirectoryMetadata(
         } catch (e: Exception) {
             throw QblStorageException(e)
         }
-
     }
 
     @Throws(QblStorageException::class)
     fun deleteShare(share: BoxShare) {
         executeStatement({
-            val statement = connection.prepareStatement(
-                    "DELETE FROM shares WHERE ref = ? AND recipient = ? AND type = ?")
-            statement.setString(1, share.ref)
-            statement.setString(2, share.recipient)
-            statement.setString(3, share.type)
-            statement
+            connection.prepareStatement("DELETE FROM shares WHERE ref = ? AND recipient = ? AND type = ?").apply {
+                setString(1, share.ref)
+                setString(2, share.recipient)
+                setString(3, share.type)
+            }
         })
     }
 
@@ -383,10 +382,7 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     internal fun deleteExternal(external: BoxExternalReference) {
         executeStatement({
-            val st = connection.prepareStatement(
-                    "DELETE FROM externals WHERE name=?")
-            st.setString(1, external.name)
-            st
+            connection.prepareStatement("DELETE FROM externals WHERE name=?").apply{ setString(1, external.name) }
         })
     }
 
@@ -401,20 +397,20 @@ class JdbcDirectoryMetadata(
         try {
             tryWith(connection.prepareStatement(
                     "SELECT prefix, block, name, size, mtime, key, meta, metakey FROM files WHERE name=?"))
-            { statement ->
-                statement.setString(1, name)
-                tryWith(statement.executeQuery()) { rs ->
-                    if (rs.next()) {
+            {
+                setString(1, name)
+                tryWith(executeQuery()) {
+                    if (next()) {
                         var i = 0
                         return BoxFile(
-                                rs.getString(++i),
-                                rs.getString(++i),
-                                rs.getString(++i),
-                                rs.getLong(++i),
-                                rs.getLong(++i) * 1000,
-                                rs.getBytes(++i),
-                                rs.getString(++i),
-                                rs.getBytes(++i))
+                                getString(++i),
+                                getString(++i),
+                                getString(++i),
+                                getLong(++i),
+                                getLong(++i) * 1000,
+                                getBytes(++i),
+                                getString(++i),
+                                getBytes(++i))
                     }
                     return null
                 }
@@ -428,12 +424,11 @@ class JdbcDirectoryMetadata(
     @Throws(QblStorageException::class)
     override fun getFolder(name: String): BoxFolder? {
         try {
-            tryWith(connection.prepareStatement(
-                    "SELECT ref, name, key FROM folders WHERE name=?")) { statement ->
-                statement.setString(1, name)
-                tryWith(statement.executeQuery()) { rs ->
-                    if (rs.next()) {
-                        return BoxFolder(rs.getString(1), rs.getString(2), rs.getBytes(3))
+            tryWith(connection.prepareStatement("SELECT ref, name, key FROM folders WHERE name=?")) {
+                setString(1, name)
+                tryWith(executeQuery()) {
+                    if (next()) {
+                        return BoxFolder(getString(1), getString(2), getBytes(3))
                     }
                     return null
                 }
@@ -460,10 +455,10 @@ class JdbcDirectoryMetadata(
         for (type in 0..2) {
             try {
                 tryWith(connection.prepareStatement(
-                        "SELECT name FROM " + types[type] + " WHERE name=?")) { statement ->
-                    statement.setString(1, name)
-                    tryWith(statement.executeQuery()) { rs ->
-                        if (rs.next()) {
+                        "SELECT name FROM " + types[type] + " WHERE name=?")) {
+                    setString(1, name)
+                    tryWith(executeQuery()) {
+                        if (next()) {
                             return type
                         }
                     }
@@ -559,8 +554,7 @@ class JdbcDirectoryMetadata(
             try {
                 connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
                 connection.autoCommit = true
-                tryWith(connection.createStatement()) { statement ->
-                    statement.execute("PRAGMA journal_mode=MEMORY") }
+                tryWith(connection.createStatement()) {execute("PRAGMA journal_mode=MEMORY") }
             } catch (e: SQLException) {
                 throw QblStorageCorruptMetadata(e)
             }

@@ -12,7 +12,7 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class DirectoryMetadataTest {
+public class JdbcDirectoryMetadataTest {
 
     private JdbcDirectoryMetadata dm;
 

@@ -24,16 +24,16 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
         try {
             tryWith(connection.prepareStatement(
                     "INSERT INTO file (owner, prefix, block, name, size, mtime, key)" +
-                        "VALUES(?, ?, ?, ?, ?, ?, ?)")) { statement ->
+                        "VALUES(?, ?, ?, ?, ?, ?, ?)")) {
                 var i = 0
-                statement.setBytes(++i, owner.key)
-                statement.setString(++i, boxFile.prefix)
-                statement.setString(++i, boxFile.block)
-                statement.setString(++i, boxFile.name)
-                statement.setLong(++i, boxFile.size)
-                statement.setLong(++i, boxFile.mtime)
-                statement.setBytes(++i, boxFile.key)
-                if (statement.executeUpdate() != 1) {
+                setBytes(++i, owner.key)
+                setString(++i, boxFile.prefix)
+                setString(++i, boxFile.block)
+                setString(++i, boxFile.name)
+                setLong(++i, boxFile.size)
+                setLong(++i, boxFile.mtime)
+                setBytes(++i, boxFile.key)
+                if (executeUpdate() != 1) {
                     throw QblStorageException("Failed to insert file")
                 }
 
@@ -48,20 +48,21 @@ class FileMetadata(connection: Connection, path: File) : AbstractMetadata(connec
     val file: BoxExternalFile?
         @Throws(QblStorageException::class)
         get() = try {
-            tryWith(connection.createStatement()) { statement ->
-                val rs = statement.executeQuery("SELECT owner, prefix, block, name, size, mtime, key FROM file LIMIT 1")
-                if (rs.next()) {
-                    var i = 0
-                    val ownerKey = rs.getBytes(++i)
-                    val prefix = rs.getString(++i)
-                    val block = rs.getString(++i)
-                    val name = rs.getString(++i)
-                    val size = rs.getLong(++i)
-                    val mtime = rs.getLong(++i)
-                    val key = rs.getBytes(++i)
-                    return BoxExternalFile(QblECPublicKey(ownerKey), prefix, block, name, size, mtime, key)
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery("SELECT owner, prefix, block, name, size, mtime, key FROM file LIMIT 1")) {
+                    if (next()) {
+                        var i = 0
+                        val ownerKey = getBytes(++i)
+                        val prefix = getString(++i)
+                        val block = getString(++i)
+                        val name = getString(++i)
+                        val size = getLong(++i)
+                        val mtime = getLong(++i)
+                        val key = getBytes(++i)
+                        return BoxExternalFile(QblECPublicKey(ownerKey), prefix, block, name, size, mtime, key)
+                    }
+                    return null
                 }
-                return null
             }
         } catch (e: SQLException) {
             throw QblStorageException(e)
