@@ -128,9 +128,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     @Throws(QblStorageException::class)
     protected abstract fun uploadDirectoryMetadata()
 
-    override fun navigate(target: BoxExternal): BoxNavigation {
-        throw NotImplementedException("Externals are not yet implemented!")
-    }
+    override fun navigate(target: BoxExternal): BoxNavigation = TODO()
 
     @Throws(QblStorageException::class)
     override fun listFiles(): List<BoxFile> {
@@ -143,21 +141,13 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    fun insertShare(share: BoxShare) {
-        dm.insertShare(share)
-        autocommit()
-    }
+    fun insertShare(share: BoxShare): Unit = TODO("implement with change command, old implementation was lossy")
 
     @Throws(QblStorageException::class)
-    fun deleteShare(share: BoxShare) {
-        dm.deleteShare(share)
-        autocommit()
-    }
+    fun deleteShare(share: BoxShare): Unit = TODO("implement with change command, old implementation was lossy")
 
     @Throws(QblStorageException::class)
-    override fun listFolders(): List<BoxFolder> {
-        return dm.listFolders()
-    }
+    override fun listFolders(): List<BoxFolder> = dm.listFolders()
 
     @Throws(QblStorageException::class)
     override fun listExternals(): List<BoxExternal> {
@@ -165,9 +155,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun upload(name: String, file: File): BoxFile {
-        return upload(name, file, null)
-    }
+    override fun upload(name: String, file: File): BoxFile = upload(name, file, null)
 
     @Synchronized @Throws(QblStorageException::class)
     override fun upload(name: String, file: File, listener: ProgressListener?): BoxFile {
@@ -175,31 +163,23 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         if (oldFile != null) {
             throw QblStorageNameConflict("File already exists")
         }
-        return uploadFile(name, file, null, oldFile, listener)
+        return uploadFile(name, file, oldFile, listener)
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun overwrite(name: String, file: File): BoxFile {
-        return overwrite(name, file, null)
-    }
+    override fun overwrite(name: String, file: File): BoxFile = overwrite(name, file, null)
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun overwrite(name: String, file: File, listener: ProgressListener?): BoxFile {
-        val oldFile = dm.getFile(name) ?: throw QblStorageNotFound("Could not find file to overwrite")
-        return uploadFile(name, file, oldFile, oldFile, listener)
-    }
+    override fun overwrite(name: String, file: File, listener: ProgressListener?): BoxFile
+        =  uploadFile(name, file, null, listener)
 
     @Throws(QblStorageException::class)
-    private fun uploadFile(name: String, file: File, oldFile: BoxFile?, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
+    private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val key = cryptoUtils.generateSymmetricKey()
         val block = UUID.randomUUID().toString()
-        var meta: String? = null
-        var metakey: ByteArray? = null
-        if (oldFile != null) {
-            meta = oldFile.meta
-            metakey = oldFile.metakey
-        }
-        val boxFile = BoxFile(prefix, block, name, file.length(), 0L, key.key, meta, metakey)
+        val oldFile = dm.getFile(name)
+
+        val boxFile = BoxFile(prefix, block, name, file.length(), 0L, key.key, oldFile?.meta, oldFile?.metakey)
         try {
             boxFile.mtime = Files.getLastModifiedTime(file.toPath()).toMillis()
         } catch (e: IOException) {
@@ -208,14 +188,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
         uploadEncrypted(file, key, "blocks/" + block, listener)
 
-        val change: UpdateFileChange
-        if (oldFile == null) {
-            change = CreateFileChange(boxFile)
-        } else {
-            change = UpdateFileChange(oldFile, boxFile)
-        }
-        change.execute(dm)
-        changes.add(change)
+        execute(UpdateFileChange(oldFile, boxFile))
 
         try {
             if (boxFile.isShared) {
@@ -460,18 +433,14 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    override fun delete(external: BoxExternal) {
-
-    }
+    override fun delete(external: BoxExternal) = TODO()
 
     override fun setAutocommit(autocommit: Boolean) {
         this.autocommit = autocommit
     }
 
     @Throws(QblStorageException::class)
-    override fun navigate(folderName: String): BoxNavigation {
-        return navigate(getFolder(folderName))
-    }
+    override fun navigate(folderName: String): BoxNavigation = navigate(getFolder(folderName))
 
     @Throws(QblStorageException::class)
     override fun getFolder(name: String): BoxFolder {

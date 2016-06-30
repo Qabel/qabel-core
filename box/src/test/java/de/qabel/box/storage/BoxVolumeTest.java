@@ -253,13 +253,6 @@ public abstract class BoxVolumeTest {
         uploadFile(nav);
     }
 
-    @Test(expected = QblStorageNotFound.class)
-    public void testOverwriteFileNotFound() throws QblStorageException, IOException {
-        BoxNavigation nav = volume.navigate();
-        File file = new File(testFileName);
-        nav.overwrite(DEFAULT_UPLOAD_FILENAME, file);
-    }
-
     @Test
     public void testOverwriteFile() throws QblStorageException, IOException {
         BoxNavigation nav = volume.navigate();

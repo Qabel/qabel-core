@@ -12,6 +12,7 @@ import java.util.*
 class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
                              readBackend: StorageReadBackend, writeBackend: StorageWriteBackend) : AbstractNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
+    private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
 
     @Throws(QblStorageException::class)
     override fun reloadMetadata(): JdbcDirectoryMetadata {
@@ -19,8 +20,8 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
         val rootRef = dm.fileName
 
         try {
-            readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)]).use { download ->
-                val indexDl = download.inputStream
+            readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)]).use {
+                val indexDl = it.inputStream
                 val tmp: File
                 val encrypted = IOUtils.toByteArray(indexDl)
                 val plaintext = cryptoUtils.readBox(keyPair, encrypted)
@@ -31,7 +32,7 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
                 out.write(plaintext.plaintext)
                 out.close()
                 val newDm = JdbcDirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
-                directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), download.mHash)
+                directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), it.mHash)
                 return newDm
             }
         } catch (e: UnmodifiedException) {
@@ -43,7 +44,6 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
         } catch (e: InvalidKeyException) {
             throw QblStorageException(e.message, e)
         }
-
     }
 
     @Throws(QblStorageException::class)
@@ -66,10 +66,4 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
         set(value: IndexNavigation?) {
             super.indexNavigation = value
         }
-
-    companion object {
-
-        @JvmStatic
-        private val logger = LoggerFactory.getLogger(DefaultIndexNavigation::class.java)
-    }
 }
