@@ -294,7 +294,7 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun insertShare(share: BoxShare) = executeStatement({
+    override fun insertShare(share: BoxShare) = executeStatement({
             connection.prepareStatement("INSERT INTO shares (ref, recipient, type) VALUES (?, ?, ?)").apply{
                 setString(1, share.ref)
                 setString(2, share.recipient)
@@ -316,7 +316,7 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun deleteShare(share: BoxShare) = executeStatement({
+    override fun deleteShare(share: BoxShare) = executeStatement({
             connection.prepareStatement("DELETE FROM shares WHERE ref = ? AND recipient = ? AND type = ?").apply {
                 setString(1, share.ref)
                 setString(2, share.recipient)

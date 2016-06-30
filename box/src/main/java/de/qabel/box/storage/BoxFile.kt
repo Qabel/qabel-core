@@ -67,7 +67,7 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
         result = 31 * result + size.hashCode()
         result = 31 * result + mtime.hashCode()
         result = 31 * result + if (key != null) Arrays.hashCode(key) else 0
-        result = 31 * result + if (meta != null) meta!!.hashCode() else 0
+        result = 31 * result + (meta?.hashCode() ?: 0)
         result = 31 * result + if (metakey != null) Arrays.hashCode(metakey) else 0
         return result
     }

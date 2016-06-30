@@ -136,15 +136,13 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    fun listShares(): List<BoxShare> {
-        return dm.listShares()
-    }
+    fun listShares(): List<BoxShare> = dm.listShares()
 
     @Throws(QblStorageException::class)
-    fun insertShare(share: BoxShare): Unit = TODO("implement with change command, old implementation was lossy")
+    fun insertShare(share: BoxShare): Unit = execute(InsertShareChange(share))
 
     @Throws(QblStorageException::class)
-    fun deleteShare(share: BoxShare): Unit = TODO("implement with change command, old implementation was lossy")
+    fun deleteShare(share: BoxShare): Unit = execute(DeleteShareChange(share))
 
     @Throws(QblStorageException::class)
     override fun listFolders(): List<BoxFolder> = dm.listFolders()
@@ -433,7 +431,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(QblStorageException::class)
-    override fun delete(external: BoxExternal) = TODO()
+    override fun delete(external: BoxExternal): Unit = TODO()
 
     override fun setAutocommit(autocommit: Boolean) {
         this.autocommit = autocommit

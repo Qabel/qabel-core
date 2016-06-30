@@ -26,4 +26,10 @@ interface DirectoryMetadata {
 
     @Throws(QblStorageException::class)
     open fun listFiles(): List<BoxFile>
+
+    @Throws(QblStorageException::class)
+    open fun deleteShare(share: BoxShare)
+
+    @Throws(QblStorageException::class)
+    open fun insertShare(share: BoxShare)
 }

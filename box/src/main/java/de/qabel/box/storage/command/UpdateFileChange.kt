@@ -15,60 +15,47 @@ open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: Box
     override fun execute(dm: DirectoryMetadata) {
         var filename = newFile.name
         try {
-            val currentFile = dm.getFile(newFile.name)
-            if (currentFile != null) {
-                if (currentFile.isSame(expectedFile)) {
-                    dm.deleteFile(currentFile)
+            dm.getFile(newFile.name)?.apply {
+                if (isSame(expectedFile)) {
+                    dm.deleteFile(this)
                 }
             }
             dm.insertFile(newFile)
         } catch (e: QblStorageNameConflict) {
-            val currentFile = findCurrentFileOrFolder(dm, filename)
-            deleteObject(currentFile, dm)
-            dm.insertFile(newFile)
-            while (true) {
-                try {
-                    logger.debug("Conflicting " + filename)
-                    filename += "_conflict"
-                    logger.debug("Inserting conflict marked file as " + filename)
-                    currentFile.name = filename
-                    insertObject(currentFile, dm)
-                    break
-                } catch (ignored: QblStorageNameConflict) {
+            with (findCurrentFileOrFolder(dm, filename)) {
+                deleteObject(this, dm)
+                dm.insertFile(newFile)
+                while (true) {
+                    try {
+                        logger.debug("Conflicting " + filename)
+                        filename += "_conflict"
+                        logger.debug("Inserting conflict marked file as " + filename)
+                        this.name = filename
+                        insertObject(this, dm)
+                        break
+                    } catch (ignored: QblStorageNameConflict) {
+                    }
                 }
-
             }
         }
     }
 
-    private fun findCurrentFileOrFolder(dm: DirectoryMetadata, filename: String): BoxObject {
-        var currentFile: BoxObject? = dm.getFile(filename)
-        if (currentFile == null) {
-            currentFile = dm.getFolder(filename)
-        }
-        if (currentFile == null) {
-            throw IllegalStateException("conflicting name is neither file nor folder: " + filename);
-        }
-        return currentFile
-    }
+    private fun findCurrentFileOrFolder(dm: DirectoryMetadata, filename: String)
+        = dm.getFile(filename)
+            ?: dm.getFolder(filename)
+            ?: throw IllegalStateException("conflicting name is neither file nor folder: " + filename);
 
-    private fun insertObject(currentObject: BoxObject, dm: DirectoryMetadata) {
-        if (currentObject is BoxFile) {
-            dm.insertFile(currentObject)
-        } else if (currentObject is BoxFolder) {
-            dm.insertFolder(currentObject)
-        } else {
-            throw NotImplementedError("not implemented for " + currentObject.javaClass)
+    private fun insertObject(currentObject: BoxObject, dm: DirectoryMetadata)
+        = when (currentObject) {
+            is BoxFile -> dm.insertFile(currentObject)
+            is BoxFolder -> dm.insertFolder(currentObject)
+            else -> throw NotImplementedError("not implemented for " + currentObject.javaClass)
         }
-    }
 
-    private fun deleteObject(currentObject: BoxObject, dm: DirectoryMetadata) {
-        if (currentObject is BoxFile) {
-            dm.deleteFile(currentObject)
-        } else if (currentObject is BoxFolder) {
-            dm.deleteFolder(currentObject)
-        } else {
-            throw NotImplementedError("not implemented for " + currentObject.javaClass)
+    private fun deleteObject(currentObject: BoxObject, dm: DirectoryMetadata)
+        = when (currentObject) {
+            is BoxFile -> dm.deleteFile(currentObject)
+            is BoxFolder -> dm.deleteFolder(currentObject)
+            else -> throw NotImplementedError("not implemented for " + currentObject.javaClass)
         }
-    }
 }

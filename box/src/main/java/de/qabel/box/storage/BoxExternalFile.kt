@@ -2,12 +2,20 @@ package de.qabel.box.storage
 
 import de.qabel.core.crypto.QblECPublicKey
 
-class BoxExternalFile (override var owner: QblECPublicKey, prefix: String, block: String, name: String, size: Long, mtime: Long, key: ByteArray)
-: BoxFile(prefix, block, name, size!!, mtime!!, key), BoxExternal {
+class BoxExternalFile(
+    override var owner: QblECPublicKey,
+    prefix: String,
+    block: String,
+    name: String,
+    size: Long,
+    mtime: Long,
+    key: ByteArray)
+: BoxFile(prefix, block, name, size, mtime, key), BoxExternal {
     override var isAccessible: Boolean = true
-    private set
+        private set
 
-    constructor(owner: QblECPublicKey, prefix: String, block: String, name: String, key: ByteArray, isAccessible: Boolean) : this(owner, prefix, block, name, 0L, 0L, key) {
+    constructor(owner: QblECPublicKey, prefix: String, block: String, name: String, key: ByteArray, isAccessible: Boolean)
+    : this(owner, prefix, block, name, 0L, 0L, key) {
         this.isAccessible = isAccessible
     }
 
@@ -15,7 +23,7 @@ class BoxExternalFile (override var owner: QblECPublicKey, prefix: String, block
         if (this === other) {
             return true
         }
-        if (other == null || !(other is BoxExternalFile)) {
+        if (other == null || other !is BoxExternalFile) {
             return false
         }
         if (!super.equals(other)) {

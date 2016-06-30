@@ -4,8 +4,18 @@ import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import java.util.*
 
 class InMemoryDirectoryMetadata : DirectoryMetadata {
+
     val files = HashMap<String, BoxFile>()
     val folders = HashMap<String, BoxFolder>()
+    val shares = HashMap<String, BoxShare>()
+
+    override fun deleteShare(share: BoxShare) {
+        shares.remove(share.ref)
+    }
+
+    override fun insertShare(share: BoxShare) {
+        shares.put(share.ref, share)
+    }
 
     override fun insertFile(file: BoxFile) {
         if (files.containsKey(file.name))

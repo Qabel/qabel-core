@@ -3,7 +3,6 @@ package de.qabel.box.storage.command
 import de.qabel.box.storage.BoxFolder
 import de.qabel.box.storage.DirectoryMetadata
 import de.qabel.box.storage.JdbcDirectoryMetadata
-import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.CryptoUtils
 import org.spongycastle.crypto.params.KeyParameter
 
@@ -24,9 +23,7 @@ class CreateFolderChange(private val name: String, private val deviceId: ByteArr
         }
         for (folder in dm.listFolders()) {
             if (folder.name == name) {
-                val result = ChangeResult(folder)
-                result.isSkipped = true
-                return result
+                return ChangeResult(folder).apply { isSkipped = true }
             }
         }
 
@@ -40,12 +37,11 @@ class CreateFolderChange(private val name: String, private val deviceId: ByteArr
         val folder = BoxFolder(childDM.fileName, name, secretKey.key)
         childDM.commit()
 
-        val folderNav = navigationFactory.fromDirectoryMetadata(childDM, folder)
-        folderNav.setAutocommit(false)
-        folderNav.commit()
+        with(navigationFactory.fromDirectoryMetadata(childDM, folder)) {
+            setAutocommit(false)
+            commit()
+        }
 
-
-        val changeResult = ChangeResult(childDM, folder)
-        return changeResult
+        return ChangeResult(childDM, folder)
     }
 }
