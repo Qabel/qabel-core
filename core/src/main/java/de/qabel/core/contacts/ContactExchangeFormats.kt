@@ -30,7 +30,7 @@ class ContactExchangeFormats {
         private val KEY_CONTACTS = "contacts"
     }
 
-    fun exportToContactsJSON(identity: Identity) : String {
+    fun exportToContactsJSON(identity: Identity): String {
         return exportToContactsJSON(setOf(identity.toContact()));
     }
 
@@ -110,19 +110,21 @@ class ContactExchangeFormats {
     @Throws(QblInvalidFormatException::class)
     fun importFromContactString(contactString: String): Contact {
         val parts = contactString.split(CONTACT_STRING_SEPARATOR);
-        if (parts.size == CONTACT_STRING_LENGTH && parts.first().startsWith(CONTACT_STRING_PREFIX)) {
-            try {
-                return Contact(
-                    parts[1],
-                    parts[2].split(", ").map { url -> DropURL(url) },
-                    QblECPublicKey(Hex.decode(parts[3])))
-            } catch(ex: URISyntaxException) {
-                throw QblInvalidFormatException("Invalid DropURL in contact-string");
-            } catch(ex: QblDropInvalidURL) {
-                throw QblInvalidFormatException("Invalid DropURL contact-string format");
-            }
-        } else {
+        if (parts.size != CONTACT_STRING_LENGTH ||
+            !parts.first().startsWith(CONTACT_STRING_PREFIX)) {
             throw QblInvalidFormatException("Invalid contact-string format");
+        }
+
+        val (ignoredPrefix, alias, dropUrlString, keyString) = parts
+        try {
+            return Contact(
+                alias,
+                dropUrlString.split(", ").map { url -> DropURL(url) },
+                QblECPublicKey(Hex.decode(keyString)))
+        } catch(ex: URISyntaxException) {
+            throw QblInvalidFormatException("Invalid DropURL in contact-string");
+        } catch(ex: QblDropInvalidURL) {
+            throw QblInvalidFormatException("Invalid DropURL contact-string format");
         }
     }
 
