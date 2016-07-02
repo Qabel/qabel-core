@@ -49,11 +49,12 @@ class ContactExchangeFormatsTest {
     }
 
     private fun assertContactEquals(contact1: Contact, contact2: Contact) {
-        assertThat(contact1.alias, Is.`is`(contact2.alias))
-        assertThat(contact1.dropUrls, Is.`is`(contact2.dropUrls))
-        assertThat(contact1.ecPublicKey.readableKeyIdentifier, Is.`is`(contact2.ecPublicKey.readableKeyIdentifier))
-        assertThat(contact1.phone, Is.`is`(contact2.phone))
-        assertThat(contact1.email, Is.`is`(contact2.email))
+        assertThat("Alias doesnt match", contact1.alias.equals(contact2.alias))
+        assertThat("DropUrls dont match", contact1.dropUrls.equals(contact2.dropUrls))
+        assertThat("PubKey doesnt match", contact1.ecPublicKey.readableKeyIdentifier.
+            equals(contact2.ecPublicKey.readableKeyIdentifier))
+        assertThat("Phone doesnt match", contact1.phone?.equals(contact2.phone) ?: contact2.phone == null)
+        assertThat("Email doesnt match", contact1.email?.equals(contact2.email) ?: contact2.email == null)
     }
 
     @Test
