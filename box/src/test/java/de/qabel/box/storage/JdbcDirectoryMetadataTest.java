@@ -12,9 +12,9 @@ import java.util.UUID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class DirectoryMetadataTest {
+public class JdbcDirectoryMetadataTest {
 
-    private DirectoryMetadata dm;
+    private JdbcDirectoryMetadata dm;
 
     @Before
     public void setUp() throws Exception {
@@ -24,7 +24,7 @@ public class DirectoryMetadataTest {
         bb.putLong(uuid.getMostSignificantBits());
         bb.putLong(uuid.getLeastSignificantBits());
 
-        dm = DirectoryMetadata.newDatabase("https://localhost", bb.array(),
+        dm = JdbcDirectoryMetadata.newDatabase("https://localhost", bb.array(),
                 new File(System.getProperty("java.io.tmpdir")));
     }
 

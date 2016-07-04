@@ -253,13 +253,6 @@ public abstract class BoxVolumeTest {
         uploadFile(nav);
     }
 
-    @Test(expected = QblStorageNotFound.class)
-    public void testOverwriteFileNotFound() throws QblStorageException, IOException {
-        BoxNavigation nav = volume.navigate();
-        File file = new File(testFileName);
-        nav.overwrite(DEFAULT_UPLOAD_FILENAME, file);
-    }
-
     @Test
     public void testOverwriteFile() throws QblStorageException, IOException {
         BoxNavigation nav = volume.navigate();
@@ -281,8 +274,8 @@ public abstract class BoxVolumeTest {
             nav2.commit();
             nav.commit();
             assertThat(nav.listFiles().size(), is(2));
-            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME).size, is(0L)); // file2 gets the name
-            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME + "_conflict").size, is(file1.length())); // file1 renamed
+            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME).getSize(), is(0L)); // file2 gets the name
+            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME + "_conflict").getSize(), is(file1.length())); // file1 renamed
         } finally {
             file2.delete();
         }
@@ -312,9 +305,9 @@ public abstract class BoxVolumeTest {
             nav2.commit();
             nav.commit();
             assertThat(nav.listFiles().size(), is(3));
-            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME).size, is(3L)); // file3 gets the name
+            assertThat(nav.getFile(DEFAULT_UPLOAD_FILENAME).getSize(), is(3L)); // file3 gets the name
             assertThat(
-                nav.getFile(DEFAULT_UPLOAD_FILENAME + "_conflict_conflict").size,
+                nav.getFile(DEFAULT_UPLOAD_FILENAME + "_conflict_conflict").getSize(),
                 is(file1.length())
             ); // file1 renamed
         } finally {

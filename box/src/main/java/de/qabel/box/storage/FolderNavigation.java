@@ -22,8 +22,16 @@ public class FolderNavigation extends AbstractNavigation {
 
     private final byte[] key;
 
-    public FolderNavigation(String prefix, DirectoryMetadata dm, QblECKeyPair keyPair, byte[] key, byte[] deviceId,
-                            StorageReadBackend readBackend, StorageWriteBackend writeBackend, IndexNavigation indexNavigation) {
+    public FolderNavigation(
+        String prefix,
+        JdbcDirectoryMetadata dm,
+        QblECKeyPair keyPair,
+        byte[] key,
+        byte[] deviceId,
+        StorageReadBackend readBackend,
+        StorageWriteBackend writeBackend,
+        IndexNavigation indexNavigation
+    ) {
         super(prefix, dm, keyPair, deviceId, readBackend, writeBackend, indexNavigation);
         this.key = key;
     }
@@ -36,7 +44,7 @@ public class FolderNavigation extends AbstractNavigation {
     }
 
     @Override
-    public DirectoryMetadata reloadMetadata() throws QblStorageException {
+    public JdbcDirectoryMetadata reloadMetadata() throws QblStorageException {
         logger.trace("Reloading directory metadata");
         // duplicate of navigate()
         try (StorageDownload download = getReadBackend().download(getDm().getFileName(), getMHash())) {
@@ -45,7 +53,7 @@ public class FolderNavigation extends AbstractNavigation {
             tmp.deleteOnExit();
             KeyParameter key = new KeyParameter(this.key);
             if (getCryptoUtils().decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                DirectoryMetadata newDM = DirectoryMetadata.openDatabase(tmp, getDeviceId(), getDm().getFileName(), getDm().getTempDir());
+                JdbcDirectoryMetadata newDM = JdbcDirectoryMetadata.openDatabase(tmp, getDeviceId(), getDm().getFileName(), getDm().getTempDir());
                 directoryMetadataMHashes.put(Arrays.hashCode(newDM.getVersion()), download.getMHash());
                 return newDM;
             } else {

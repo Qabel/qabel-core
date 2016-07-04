@@ -2,14 +2,10 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-
 import java.io.File
 import java.sql.Connection
-import java.sql.ResultSet
 import java.sql.SQLException
-import java.sql.Statement
 
 abstract class AbstractMetadata(protected val connection: Connection, path: File) {
 
@@ -26,11 +22,10 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     @JvmName("getSpecVersion")
     fun findSpecVersion(): Int? =
         try {
-            tryWith(connection.createStatement()) { statement ->
-                tryWith(statement.executeQuery(
-                        "SELECT version FROM spec_version")) { rs ->
-                    if (rs.next()) {
-                        return rs.getInt(1)
+            tryWith(connection.createStatement()) {
+                tryWith(executeQuery("SELECT version FROM spec_version")) {
+                    if (next()) {
+                        return getInt(1)
                     } else {
                         throw QblStorageCorruptMetadata("No version found!")
                     }
@@ -43,8 +38,7 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     @Throws(SQLException::class, QblStorageException::class)
     protected open fun initDatabase() {
         for (q in initSql) {
-            tryWith(connection.createStatement())
-                { statement -> statement.executeUpdate(q) }
+            tryWith(connection.createStatement()) { executeUpdate(q) }
         }
     }
 
@@ -53,12 +47,12 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     companion object {
         val TYPE_NONE = -1
         @JvmField
-        val logger = LoggerFactory.getLogger(DirectoryMetadata::class.java)
+        val logger = LoggerFactory.getLogger(JdbcDirectoryMetadata::class.java)
         val JDBC_PREFIX = "jdbc:sqlite:"
     }
 }
 
-inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: (T) -> R): R {
+inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: T.() -> R): R {
     try {
         return block(closeable);
     } finally {

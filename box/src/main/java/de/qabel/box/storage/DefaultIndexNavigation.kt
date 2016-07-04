@@ -9,18 +9,19 @@ import java.io.*
 import java.security.InvalidKeyException
 import java.util.*
 
-class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
+class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
                              readBackend: StorageReadBackend, writeBackend: StorageWriteBackend) : AbstractNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
+    private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
 
     @Throws(QblStorageException::class)
-    override fun reloadMetadata(): DirectoryMetadata {
+    override fun reloadMetadata(): JdbcDirectoryMetadata {
         // TODO: duplicate with BoxVoume.navigate()
         val rootRef = dm.fileName
 
         try {
-            readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)]).use { download ->
-                val indexDl = download.inputStream
+            readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)]).use {
+                val indexDl = it.inputStream
                 val tmp: File
                 val encrypted = IOUtils.toByteArray(indexDl)
                 val plaintext = cryptoUtils.readBox(keyPair, encrypted)
@@ -30,8 +31,8 @@ class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: Qbl
                 val out = FileOutputStream(tmp)
                 out.write(plaintext.plaintext)
                 out.close()
-                val newDm = DirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
-                directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), download.mHash)
+                val newDm = JdbcDirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
+                directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), it.mHash)
                 return newDm
             }
         } catch (e: UnmodifiedException) {
@@ -43,7 +44,6 @@ class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: Qbl
         } catch (e: InvalidKeyException) {
             throw QblStorageException(e.message, e)
         }
-
     }
 
     @Throws(QblStorageException::class)
@@ -66,10 +66,4 @@ class DefaultIndexNavigation(prefix: String, dm: DirectoryMetadata, keyPair: Qbl
         set(value: IndexNavigation?) {
             super.indexNavigation = value
         }
-
-    companion object {
-
-        @JvmStatic
-        private val logger = LoggerFactory.getLogger(DefaultIndexNavigation::class.java)
-    }
 }
