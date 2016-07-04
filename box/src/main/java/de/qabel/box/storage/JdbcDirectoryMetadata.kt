@@ -460,31 +460,41 @@ class JdbcDirectoryMetadata(
         private val TYPE_FOLDER = 1
         private val TYPE_EXTERNAL = 2
 
-        private val initSql = arrayOf("CREATE TABLE meta (" +
-                " name VARCHAR(24) PRIMARY KEY," +
-                " value TEXT )", "CREATE TABLE spec_version (" + " version INTEGER PRIMARY KEY )", "CREATE TABLE version (" +
-                " id INTEGER PRIMARY KEY," +
-                " version BLOB NOT NULL," +
-                " time LONG NOT NULL )", "CREATE TABLE shares (" +
-                " ref VARCHAR(255)NOT NULL," +
-                " recipient BLOB NOT NULL," +
-                " type INTEGER NOT NULL )", "CREATE UNIQUE INDEX uniqueShares ON shares(ref, recipient, type)", "CREATE TABLE files (" +
-                " prefix VARCHAR(255)NOT NULL," +
-                " block VARCHAR(255)NOT NULL," +
-                " name VARCHAR(255)NOT NULL PRIMARY KEY," +
-                " size LONG NOT NULL," +
-                " mtime LONG NOT NULL," +
-                " key BLOB NOT NULL," +
-                " meta VARCAHR(255)," +
-                " metakey BLOB)", "CREATE TABLE folders (" +
-                " ref VARCHAR(255)NOT NULL," +
-                " name VARCHAR(255)NOT NULL PRIMARY KEY," +
-                " key BLOB NOT NULL )", "CREATE TABLE externals (" +
-                " is_folder BOOLEAN NOT NULL," +
-                " owner BLOB NOT NULL," +
-                " name VARCHAR(255)NOT NULL PRIMARY KEY," +
-                " key BLOB NOT NULL," +
-                " url TEXT NOT NULL )", "INSERT INTO spec_version (version) VALUES(0)")
+        private val initSql = arrayOf(
+            """CREATE TABLE meta (
+                name VARCHAR(24) PRIMARY KEY,
+                value TEXT )""",
+            "CREATE TABLE spec_version (version INTEGER PRIMARY KEY )",
+            """CREATE TABLE version (
+                id INTEGER PRIMARY KEY,
+                version BLOB NOT NULL,
+                time LONG NOT NULL )""",
+            """CREATE TABLE shares (
+                ref VARCHAR(255)NOT NULL,
+                recipient BLOB NOT NULL,
+                type INTEGER NOT NULL )""",
+            "CREATE UNIQUE INDEX uniqueShares ON shares(ref, recipient, type)",
+            """CREATE TABLE files (
+                prefix VARCHAR(255)NOT NULL,
+                block VARCHAR(255)NOT NULL,
+                name VARCHAR(255)NOT NULL PRIMARY KEY,
+                size LONG NOT NULL," +
+                mtime LONG NOT NULL," +
+                key BLOB NOT NULL," +
+                meta VARCAHR(255)," +
+                metakey BLOB)""",
+            """CREATE TABLE folders (
+                ref VARCHAR(255)NOT NULL,
+                name VARCHAR(255)NOT NULL PRIMARY KEY,
+                key BLOB NOT NULL )""",
+            """CREATE TABLE externals (
+                is_folder BOOLEAN NOT NULL,
+                owner BLOB NOT NULL,
+                name VARCHAR(255)NOT NULL PRIMARY KEY,
+                key BLOB NOT NULL,
+                url TEXT NOT NULL )""",
+            "INSERT INTO spec_version (version) VALUES(0)"
+        )
 
         /**
          * Create a new database and init it with an sql schema and a metadata
