@@ -62,6 +62,7 @@ public class AccountingHTTP {
         StringEntity input = new StringEntity(json);
         input.setContentType("application/json");
         httpPost.setEntity(input);
+        httpPost.setHeader("Accept", "application/json");
         try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
             HttpEntity entity = response.getEntity();
             if (entity == null) {
