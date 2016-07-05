@@ -15,12 +15,18 @@ buildscript {
     }
 }
 
+
+ext.sharedManifest = manifest {
+    attributes 'Implementation-Version': version
+    attributes 'Project': 'Qabel Core'
+    attributes 'Component': 'Core'
+    attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
+}
+
 jar {
-    manifest {
-        attributes 'Implementation-Version': version
-        attributes 'Project': 'Qabel Core'
-        attributes 'Component': 'Core'
-        attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
+    manifest = project.manifest {
+        from sharedManifest
+        attributes 'Implementation-Title': 'Qabel Core - Core Component'
     }
 }
 
@@ -31,6 +37,7 @@ repositories {
 dependencies {
 	testCompile group: 'junit', name: 'junit', version: '4.+'
 	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
 	compile 'com.google.code.gson:gson:2.+'
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
@@ -166,3 +173,18 @@ sourceSets {
 		resources.srcDirs += ['src/resources/config/']
 	}
 }
+
+task testJar(type: Jar) {
+    from(sourceSets.test.output) {
+        include "**"
+    }
+    baseName = 'core-test'
+    manifest {
+        from sharedManifest
+        attributes 'Implementation-Title': 'Qabel Core - Box Component - Test artifact'
+    }
+}
+
+jar.manifest.writeTo("$buildDir/manifest.mf")
+testJar.manifest.writeTo("$buildDir/test-manifest.mf")
+jar.dependsOn(testJar)
