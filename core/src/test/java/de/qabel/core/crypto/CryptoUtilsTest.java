@@ -203,10 +203,28 @@ public class CryptoUtilsTest {
     public void noiseBoxFromGoImplementationWithPadding() throws InvalidCipherTextException, InvalidKeyException {
         CryptoUtils cu = new CryptoUtils();
         String expectedPlainText = "orange submarine";
+        byte[] expectedSenderKey = Hex.decode("2be41e402667281cfe50699fed0b5d73f753392a6dc277126bd0bfb5217dcf33");
         byte[] box = Hex.decode("a63794c4f7033b9c769023f28c12390a7b89296452a4695e35a952625839ae2d9d19715ba2130a6ae49aaf0ea5ab3eacededbb7676724618abb1fe648328086ed253a75d9672540c319114c4891cc6a1356ae7a8f3c9866c704b145efaa0313c9e52f609a4f6c41070ad4741c3ef637e7b7e0a7a7b03a0261607a9");
         byte[] bobKey = Hex.decode("a0c2b2bcb68bbe50b01181bfbcbff28ee00f37e44103d3a591dbae6cd5fb9f6a");
         QblECKeyPair qblBobKey = new QblECKeyPair(bobKey);
         DecryptedPlaintext plaintext = cu.readBox(qblBobKey, box);
         assertEquals(expectedPlainText, new String(plaintext.getPlaintext()));
+        assertArrayEquals(plaintext.getSenderKey().getKey(), expectedSenderKey);
+    }
+
+    @Test
+    public void decryptTest() throws InvalidCipherTextException {
+        // These values were extracted from the internal state of the DH1 phase created by noiseBoxFromGoImplementation()
+        CryptoUtils cu = new CryptoUtils();
+        byte[] key = Hex.decode("120c64583cc9831cedf6b0ffa3cb003c1a3cc057c8f40e3f6fb7f9e376beba43");
+        byte[] nonce = Hex.decode("f5a57de46ff8daee400942c5");
+        byte[] cipherText = Hex.decode("44178f74e77071918e3f2c3e3d2a256916c33a85f409844bbd1b749719b2f2e71e210f763928d856479e7078cb0413e1");
+        byte[] aad = Hex.decode("1def84acf2c1e5ae04bff2a67b0668bb2c9a285e5c5e033f00c227466c8d022b539edb6df8541fb8e56c97c6a8cd061fe1c6c874a374d8501f8a285ed5ec0922");
+        byte[] expectedPlainText = Hex.decode("1f5349c16e430d7685d56437734d9346c3c842e4a873034d489f480a68e2ed25");
+        KeyParameter keyParameter = new KeyParameter(key);
+
+        byte[] plainText = cu.decrypt(keyParameter, nonce, cipherText, aad);
+
+        assertArrayEquals(expectedPlainText, plainText);
     }
 }
