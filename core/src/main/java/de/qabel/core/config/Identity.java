@@ -5,9 +5,8 @@ import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.crypto.QblECPublicKey;
 import de.qabel.core.drop.DropURL;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+
 
 public class Identity extends Entity {
     private static final long serialVersionUID = 3949018763372790094L;
@@ -23,12 +22,24 @@ public class Identity extends Entity {
     @SerializedName("keys")
     private QblECKeyPair primaryKeyPair;
 
+    private List<IdentityObserver> observers = new ArrayList<IdentityObserver>();
+
     public Identity(String alias, Collection<DropURL> drops,
                     QblECKeyPair primaryKeyPair) {
         super(drops);
         setAlias(alias);
         setPrimaryKeyPair(primaryKeyPair);
         prefixes = new ArrayList<>();
+    }
+
+    public void attach(IdentityObserver observer) {
+        observers.add(observer);
+    }
+
+    public void notifyAllObservers() {
+        for (IdentityObserver observer : observers) {
+            observer.update();
+        }
     }
 
     /**
@@ -67,6 +78,7 @@ public class Identity extends Entity {
      */
     public void setAlias(String alias) {
         this.alias = alias;
+        notifyAllObservers();
     }
 
     /**
