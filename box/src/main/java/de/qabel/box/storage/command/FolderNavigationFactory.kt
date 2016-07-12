@@ -1,6 +1,7 @@
 package de.qabel.box.storage.command
 
 import de.qabel.box.storage.*
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
 import de.qabel.core.crypto.QblECKeyPair
 
 class FolderNavigationFactory(

@@ -24,7 +24,7 @@ if [ ! -d qabel-drop ]; then
     git clone https://github.com/Qabel/qabel-drop
 else
     cd qabel-drop
-    git pull origin master
+    git checkout db8a289ad43b1802a80f6c4ec0aeb9a94ce40a5e
     cd ..
 fi
 # qabel-drop

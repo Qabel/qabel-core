@@ -1,5 +1,7 @@
 package de.qabel.box.storage;
 
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata;
+import de.qabel.box.storage.jdbc.JdbcFileMetadata;
 import de.qabel.core.crypto.QblECPublicKey;
 import de.qabel.box.storage.exceptions.QblStorageException;
 
@@ -88,7 +90,7 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     InputStream download(BoxFile file) throws QblStorageException;
 
-    FileMetadata getFileMetadata(BoxFile boxFile) throws IOException, InvalidKeyException, QblStorageException;
+    JdbcFileMetadata getFileMetadata(BoxFile boxFile) throws IOException, InvalidKeyException, QblStorageException;
 
     /**
      * Create a subfolder in the current folder. You should commit

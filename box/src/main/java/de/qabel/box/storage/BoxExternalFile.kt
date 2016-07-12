@@ -9,13 +9,14 @@ class BoxExternalFile(
     name: String,
     size: Long,
     mtime: Long,
-    key: ByteArray)
-: BoxFile(prefix, block, name, size, mtime, key), BoxExternal {
+    key: ByteArray,
+    hashed: Hash? = null)
+: BoxFile(prefix, block, name, size, mtime, key, hashed), BoxExternal {
     override var isAccessible: Boolean = true
         private set
 
-    constructor(owner: QblECPublicKey, prefix: String, block: String, name: String, key: ByteArray, isAccessible: Boolean)
-    : this(owner, prefix, block, name, 0L, 0L, key) {
+    constructor(owner: QblECPublicKey, prefix: String, block: String, name: String, key: ByteArray, isAccessible: Boolean, hashed: Hash? = null)
+    : this(owner, prefix, block, name, 0L, 0L, key, hashed) {
         this.isAccessible = isAccessible
     }
 

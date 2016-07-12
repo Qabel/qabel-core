@@ -5,6 +5,10 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import de.qabel.box.storage.exceptions.QblStorageNotFound
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
+import de.qabel.box.storage.jdbc.JdbcFileMetadata
+import de.qabel.box.storage.jdbc.JdbcFileMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
@@ -54,8 +58,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
                 tmp.deleteOnExit()
                 val key = KeyParameter(target.key)
                 if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                    val dm = JdbcDirectoryMetadata.openDatabase(
-                            tmp, deviceId, target.ref, this.dm.tempDir)
+                    val dm = JdbcDirectoryMetadataFactory(this.dm.tempDir, deviceId).open(tmp, target.ref)
                     val folderNavigation = FolderNavigation(
                             prefix,
                             dm,
@@ -64,7 +67,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
                             deviceId,
                             readBackend,
                             writeBackend,
-                            indexNavigation)
+                            indexNavigation!!)
                     folderNavigation.setAutocommit(autocommit)
                     folderNavigation.setAutocommitDelay(autocommitDelay)
                     return folderNavigation
@@ -175,9 +178,18 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val key = cryptoUtils.generateSymmetricKey()
         val block = UUID.randomUUID().toString()
+
         val oldFile = dm.getFile(name)
 
-        val boxFile = BoxFile(prefix, block, name, file.length(), 0L, key.key, oldFile?.meta, oldFile?.metakey)
+        val boxFile = BoxFile(
+            prefix,
+            block,
+            name,
+            file.length(),
+            0L,
+            key.key,
+            shared = Share.create (oldFile?.meta, oldFile?.metakey)
+        )
         try {
             boxFile.mtime = Files.getLastModifiedTime(file.toPath()).toMillis()
         } catch (e: IOException) {
@@ -189,7 +201,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         execute(UpdateFileChange(oldFile, boxFile))
 
         try {
-            if (boxFile.isShared) {
+            if (boxFile.isShared()) {
                 updateFileMetadata(boxFile)
             }
         } catch (e: IOException) {
@@ -285,13 +297,12 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     @Throws(QblStorageException::class)
     override fun createFileMetadata(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference {
         try {
-            if (!boxFile.isShared) {
+            if (!boxFile.isShared()) {
                 val block = UUID.randomUUID().toString()
-                boxFile.meta = block
                 val key = cryptoUtils.generateSymmetricKey()
-                boxFile.metakey = key.key
+                boxFile.shared = Share.create(block, key.key)
 
-                val fileMetadata = FileMetadata.openNew(owner, boxFile, dm.tempDir)
+                val fileMetadata = JdbcFileMetadataFactory(dm.tempDir).create(owner, boxFile)
                 uploadEncrypted(fileMetadata.path, key, block, null)
 
                 // Overwrite = delete old file, upload new file
@@ -318,10 +329,12 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
         }
         try {
             val out = getMetadataFile(meta, metakey)
-            val fileMetadataOld = FileMetadata.openExisting(out)
-            val fileMetadataNew = FileMetadata.openNew(
+            val fileMetadataFactory = JdbcFileMetadataFactory(dm.tempDir)
+            val fileMetadataOld = fileMetadataFactory.open(out)
+            val fileMetadataNew = fileMetadataFactory.create(
                 fileMetadataOld.file?.owner ?: throw QblStorageException("No owner in old file metadata"),
-                boxFile, dm.tempDir)
+                boxFile
+            )
             uploadEncrypted(fileMetadataNew.path, KeyParameter(metakey), meta)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
@@ -334,7 +347,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
     }
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
-    override fun getFileMetadata(boxFile: BoxFile): FileMetadata {
+    override fun getFileMetadata(boxFile: BoxFile): JdbcFileMetadata {
         val meta = boxFile.meta
         val metakey = boxFile.metakey
         if (meta == null || metakey == null) {
@@ -343,7 +356,7 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
         try {
             val out = getMetadataFile(meta, metakey)
-            return FileMetadata.openExisting(out)
+            return JdbcFileMetadataFactory(dm.tempDir).open(out)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
             throw e
@@ -512,13 +525,12 @@ abstract class AbstractNavigation(private val prefix: String, protected var dm: 
 
         @Throws(QblStorageException::class)
         fun removeFileMetadata(boxFile: BoxFile, writeBackend: StorageWriteBackend, dm: DirectoryMetadata): Boolean {
-            if (!boxFile.isShared) {
+            if (!boxFile.isShared()) {
                 return false
             }
 
             writeBackend.delete(boxFile.meta)
-            boxFile.meta = null
-            boxFile.metakey = null
+            boxFile.shared = null
 
             // Overwrite = delete old file, upload new file
             val oldFile = dm.getFile(boxFile.getName())

@@ -16,7 +16,7 @@ class DeleteFileChange(private val file: BoxFile, private val indexNavigation: I
     override fun execute(dm: DirectoryMetadata) {
         dm.deleteFile(file)
 
-        if (file.isShared) {
+        if (file.isShared()) {
             removeSharesFromIndex()
             removeFileMetadata(dm)
         }

@@ -1,20 +1,15 @@
 package de.qabel.core.repository.sqlite;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import de.qabel.core.repository.RunnableTransaction;
 import de.qabel.core.repository.TransactionManager;
 import de.qabel.core.repository.exception.PersistenceException;
 import de.qabel.core.repository.sqlite.builder.QueryBuilder;
 import de.qabel.core.repository.sqlite.migration.AbstractMigration;
 import de.qabel.core.repository.sqlite.migration.MigrationFailedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.*;
 
 public abstract class AbstractClientDatabase implements ClientDatabase {
     private static final Logger logger = LoggerFactory.getLogger(DesktopClientDatabase.class);
@@ -104,7 +99,7 @@ public abstract class AbstractClientDatabase implements ClientDatabase {
 
     @Override
     public PreparedStatement prepare(String sql) throws SQLException {
-        logger.trace(sql);
+        logger.trace(sql.replaceAll("\\s+", " ").trim());
         return connection.prepareStatement(sql);
     }
 

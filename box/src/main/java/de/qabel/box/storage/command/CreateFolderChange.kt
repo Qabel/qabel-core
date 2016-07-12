@@ -2,7 +2,8 @@ package de.qabel.box.storage.command
 
 import de.qabel.box.storage.BoxFolder
 import de.qabel.box.storage.DirectoryMetadata
-import de.qabel.box.storage.JdbcDirectoryMetadata
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
 import org.spongycastle.crypto.params.KeyParameter
 
@@ -33,7 +34,7 @@ class CreateFolderChange(private val name: String, private val deviceId: ByteArr
     private fun prepareNewDM(dm: JdbcDirectoryMetadata) = (result ?: createAndUploadDM(dm))
 
     private fun createAndUploadDM(dm: JdbcDirectoryMetadata): ChangeResult<BoxFolder> {
-        val childDM = JdbcDirectoryMetadata.newDatabase(null, deviceId, dm.tempDir)
+        val childDM = JdbcDirectoryMetadataFactory(dm.tempDir, deviceId).create()
         val folder = BoxFolder(childDM.fileName, name, secretKey.key)
         childDM.commit()
 

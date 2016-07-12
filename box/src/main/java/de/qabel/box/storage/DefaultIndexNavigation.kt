@@ -1,6 +1,8 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
@@ -31,7 +33,7 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
                 val out = FileOutputStream(tmp)
                 out.write(plaintext.plaintext)
                 out.close()
-                val newDm = JdbcDirectoryMetadata.openDatabase(tmp, deviceId, rootRef, dm.tempDir)
+                val newDm = JdbcDirectoryMetadataFactory(dm.tempDir, deviceId).open(tmp, rootRef)
                 directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), it.mHash)
                 return newDm
             }

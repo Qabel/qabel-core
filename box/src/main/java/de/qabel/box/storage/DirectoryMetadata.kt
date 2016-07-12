@@ -4,16 +4,16 @@ import de.qabel.box.storage.exceptions.QblStorageException
 
 interface DirectoryMetadata {
     @Throws(QblStorageException::class)
-    fun insertFile(file: BoxFile);
+    fun insertFile(file: BoxFile)
 
     @Throws(QblStorageException::class)
-    fun insertFolder(folder: BoxFolder);
+    fun insertFolder(folder: BoxFolder)
 
     @Throws(QblStorageException::class)
-    fun deleteFile(file: BoxFile);
+    fun deleteFile(file: BoxFile)
 
     @Throws(QblStorageException::class)
-    fun deleteFolder(folder: BoxFolder);
+    fun deleteFolder(folder: BoxFolder)
 
     @Throws(QblStorageException::class)
     fun getFile(name: String): BoxFile?
@@ -25,11 +25,11 @@ interface DirectoryMetadata {
     fun listFolders(): List<BoxFolder>
 
     @Throws(QblStorageException::class)
-    open fun listFiles(): List<BoxFile>
+    fun listFiles(): List<BoxFile>
 
     @Throws(QblStorageException::class)
-    open fun deleteShare(share: BoxShare)
+    fun deleteShare(share: BoxShare)
 
     @Throws(QblStorageException::class)
-    open fun insertShare(share: BoxShare)
+    fun insertShare(share: BoxShare)
 }

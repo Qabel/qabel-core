@@ -4,6 +4,7 @@ package de.qabel.box.storage;
 import de.qabel.box.storage.exceptions.QblStorageException;
 import de.qabel.box.storage.exceptions.QblStorageNameConflict;
 import de.qabel.box.storage.exceptions.QblStorageNotFound;
+import de.qabel.box.storage.jdbc.JdbcFileMetadata;
 import de.qabel.core.config.Contact;
 import de.qabel.core.crypto.CryptoUtils;
 import de.qabel.core.crypto.QblECKeyPair;
@@ -498,7 +499,7 @@ public abstract class BoxVolumeTest {
         assertEquals(contact.getKeyIdentifier(), nav2.getSharesOf(boxFile2).get(0).getRecipient());
         assertEquals(updatedBoxFile.getRef(), nav2.getSharesOf(boxFile2).get(0).getRef());
 
-        FileMetadata fm = nav2.getFileMetadata(boxFile);
+        JdbcFileMetadata fm = nav2.getFileMetadata(boxFile);
         BoxExternalFile externalFile = fm.getFile();
         assertEquals("the file metadata have not been updated", updatedBoxFile.getBlock(), externalFile.getBlock());
     }
@@ -545,8 +546,7 @@ public abstract class BoxVolumeTest {
         assertFalse(blockExists(meta));
 
         // share has been removed from index
-        boxFile.setMeta(meta);
-        boxFile.setMetakey(metakey);
+        boxFile.setShared(Share.create(meta, metakey));
         assertTrue(nav.getSharesOf(boxFile).isEmpty());
     }
 
