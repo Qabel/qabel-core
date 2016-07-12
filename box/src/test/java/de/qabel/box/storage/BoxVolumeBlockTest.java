@@ -49,7 +49,7 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
                     new BlockWriteBackend(root, accountingHTTP),
                     keyPair,
                     deviceID,
-                volumeTmpDir,
+                    volumeTmpDir,
                     prefix
             );
             volume2 = new BoxVolume(
@@ -57,7 +57,7 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
                     new BlockWriteBackend(root, accountingHTTP),
                     keyPair,
                     deviceID,
-                volumeTmpDir,
+                    volumeTmpDir,
                     prefix
             );
         } catch (Exception e) {

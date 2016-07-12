@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.meanbean.util.AssertionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.io.IOException;
@@ -160,6 +161,26 @@ public abstract class BoxVolumeTest {
             File file = new File(testFileName);
             assertThat(dl, is(Files.readAllBytes(file.toPath())));
         }
+    }
+
+    @Test
+    public void hashIsCalculatedOnUpload() throws Exception {
+        volume.getConfig().setDefaultHashAlgorithm("SHA-1");
+        IndexNavigation nav = volume.navigate();
+        BoxFile file = uploadFile(nav, "testfile");
+        assertTrue(file.isHashed());
+        assertEquals("a23818f6a36f37ded50028f8fe008b0473cc7416", Hex.toHexString(file.getHashed().getHash()));
+    }
+
+    @Test
+    public void defaultsToBlake2bInDm() throws Exception {
+        uploadFile(volume.navigate(), "testfile");
+        Hash hash = volume2.navigate().getFile("testfile").getHashed();
+        assertEquals(
+            "0f23d0a7f6ed44055ccf2e6cd4e088211659699640bc25de5f99dbfe082410bd632dca3e35925d9dffa20ca9f99ea55c63c1b21591eccde907bd3de275c74147",
+            Hex.toHexString(hash.getHash())
+        );
+        assertEquals("Blake2b", hash.getAlgorithm());
     }
 
     @Test

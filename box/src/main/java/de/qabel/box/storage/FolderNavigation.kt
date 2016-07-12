@@ -4,7 +4,6 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
-import de.qabel.core.crypto.QblECKeyPair
 import org.slf4j.LoggerFactory
 import org.spongycastle.crypto.params.KeyParameter
 import java.io.File
@@ -13,15 +12,13 @@ import java.security.InvalidKeyException
 import java.util.*
 
 class FolderNavigation(
-        prefix: String,
         dm: JdbcDirectoryMetadata,
-        keyPair: QblECKeyPair,
         private val key: ByteArray,
-        deviceId: ByteArray,
-        readBackend: StorageReadBackend,
-        writeBackend: StorageWriteBackend,
-        indexNavigation: IndexNavigation) : AbstractNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend, indexNavigation) {
+        override val indexNavigation: IndexNavigation,
+        volumeConfig: BoxVolumeConfig
+) : AbstractNavigation(dm, volumeConfig) {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
+    private val logger by lazy { LoggerFactory.getLogger(FolderNavigation::class.java) }
 
     @Throws(QblStorageException::class)
     override fun uploadDirectoryMetadata() {
@@ -60,9 +57,4 @@ class FolderNavigation(
     private val mHash: String?
         @Throws(QblStorageException::class)
         get() = directoryMetadataMHashes[Arrays.hashCode(dm.version)]
-
-    companion object {
-
-        private val logger = LoggerFactory.getLogger(FolderNavigation::class.java)
-    }
 }

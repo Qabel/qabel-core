@@ -11,8 +11,8 @@ import java.io.*
 import java.security.InvalidKeyException
 import java.util.*
 
-class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair: QblECKeyPair, deviceId: ByteArray,
-                             readBackend: StorageReadBackend, writeBackend: StorageWriteBackend) : AbstractNavigation(prefix, dm, keyPair, deviceId, readBackend, writeBackend), IndexNavigation {
+class DefaultIndexNavigation(dm: JdbcDirectoryMetadata, val keyPair: QblECKeyPair, volumeConfig: BoxVolumeConfig)
+    : AbstractNavigation(dm, volumeConfig), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
     private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
 
@@ -63,9 +63,5 @@ class DefaultIndexNavigation(prefix: String, dm: JdbcDirectoryMetadata, keyPair:
 
     }
 
-    override var indexNavigation: IndexNavigation?
-        get() = this
-        set(value: IndexNavigation?) {
-            super.indexNavigation = value
-        }
+    override val indexNavigation = this
 }
