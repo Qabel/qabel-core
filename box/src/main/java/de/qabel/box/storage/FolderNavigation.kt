@@ -49,7 +49,6 @@ class FolderNavigation(
         } catch (e: InvalidKeyException) {
             throw QblStorageException(e)
         }
-
     }
 
     private val mHash: String?

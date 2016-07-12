@@ -5,7 +5,9 @@ import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.spongycastle.crypto.InvalidCipherTextException
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.FileInputStream
+import java.io.IOException
 import java.security.InvalidKeyException
 import java.util.*
 
@@ -13,28 +15,20 @@ class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, v
     : AbstractNavigation(dm, volumeConfig), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
     private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
+    private val indexDmDownloader = object : IndexDMDownloader(readBackend, keyPair, tempDir, directoryFactory) {
+        override fun startDownload(rootRef: String)
+            = readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)])
+    }
 
     @Throws(QblStorageException::class)
     override fun reloadMetadata(): DirectoryMetadata {
-        // TODO: duplicate with BoxVoume.navigate()
         val rootRef = dm.fileName
 
         try {
-            readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)]).use {
-                val indexDl = it.inputStream
-                val tmp: File
-                val encrypted = IOUtils.toByteArray(indexDl)
-                val plaintext = cryptoUtils.readBox(keyPair, encrypted)
-                tmp = File.createTempFile("dir", "db4", tempDir)
-                tmp.deleteOnExit()
-                logger.trace("Using $tmp for the metadata file")
-                val out = FileOutputStream(tmp)
-                out.write(plaintext.plaintext)
-                out.close()
-                val newDm = directoryFactory.open(tmp, rootRef)
-                directoryMetadataMHashes.put(Arrays.hashCode(newDm.version), it.mHash)
-                return newDm
-            }
+
+            val download = indexDmDownloader.loadDirectoryMetadata(rootRef)
+            directoryMetadataMHashes.put(Arrays.hashCode(download.dm.version), download.etag)
+            return download.dm
         } catch (e: UnmodifiedException) {
             return dm
         } catch (e: IOException) {

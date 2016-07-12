@@ -9,9 +9,11 @@ import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
-import org.spongycastle.crypto.InvalidCipherTextException
 import org.spongycastle.jce.provider.BouncyCastleProvider
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.InvalidKeyException
 import java.security.MessageDigest
@@ -21,6 +23,14 @@ import java.util.*
 open class BoxVolume(val config: BoxVolumeConfig, private val keyPair: QblECKeyPair) {
     private val logger by lazy { LoggerFactory.getLogger(BoxVolume::class.java) }
     private val cryptoUtils = CryptoUtils()
+    private val indexDmDownloader by lazy {
+        with (config) {
+            object : IndexDMDownloader(readBackend, keyPair, tempDir, directoryFactory) {
+                override fun startDownload(rootRef: String)
+                    = readBackend.download(rootRef)
+            }
+        }
+    }
 
     init {
         try {
@@ -59,29 +69,8 @@ open class BoxVolume(val config: BoxVolumeConfig, private val keyPair: QblECKeyP
      * @throws QblStorageIOFailure        if the temporary files could not be accessed
      */
     @Throws(QblStorageException::class)
-    fun navigate(): IndexNavigation {
-        with(config) {
-            val rootRef = rootRef
-            logger.info("Navigating to " + rootRef)
-            val indexDl = readBackend.download(rootRef).inputStream
-            val tmp: File
-            try {
-                val encrypted = IOUtils.toByteArray(indexDl)
-                val plaintext = cryptoUtils.readBox(keyPair, encrypted)
-                tmp = File.createTempFile("dir", "db3", tempDir)
-                tmp.deleteOnExit()
-                val out = FileOutputStream(tmp)
-                out.write(plaintext.plaintext)
-                out.close()
-            } catch (e: InvalidCipherTextException) {
-                throw QblStorageDecryptionFailed(e)
-            } catch (e: InvalidKeyException) {
-                throw QblStorageDecryptionFailed(e)
-            } catch (e: IOException) {
-                throw QblStorageIOFailure(e)
-            }
-
-            val dm = directoryFactory.open(tmp, rootRef)
+    fun navigate(): IndexNavigation { with(config) {
+            val dm = indexDmDownloader.loadDirectoryMetadata(rootRef).dm
             return DefaultIndexNavigation(dm, keyPair, config)
         }
     }
