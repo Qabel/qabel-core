@@ -495,6 +495,7 @@ public abstract class BoxVolumeTest {
         assertEquals(1, nav2.getSharesOf(boxFile2).size());
         assertEquals(contact.getKeyIdentifier(), nav2.getSharesOf(boxFile2).get(0).getRecipient());
         assertEquals(boxFile.getRef(), nav2.getSharesOf(boxFile2).get(0).getRef());
+        assertEquals(Hex.toHexString(boxFile.getHashed().getHash()), Hex.toHexString(boxFile2.getHashed().getHash()));
     }
 
     @Test
