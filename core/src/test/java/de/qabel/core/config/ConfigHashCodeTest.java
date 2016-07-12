@@ -52,6 +52,7 @@ public class ConfigHashCodeTest {
             .ignoreProperty("alias")
             .ignoreProperty("email")
             .ignoreProperty("phone")
+            .ignoreProperty("observers")
             .ignoreProperty("prefixes")
             .build();
         tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
