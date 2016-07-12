@@ -5,7 +5,6 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageIOFailure
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
-import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
@@ -22,7 +21,6 @@ import java.util.*
 open class BoxVolume(val config: BoxVolumeConfig, private val keyPair: QblECKeyPair) {
     private val logger by lazy { LoggerFactory.getLogger(BoxVolume::class.java) }
     private val cryptoUtils = CryptoUtils()
-    private val directoryFactory by lazy { JdbcDirectoryMetadataFactory(config.tempDir, config.deviceId) }
 
     init {
         try {
@@ -113,7 +111,7 @@ open class BoxVolume(val config: BoxVolumeConfig, private val keyPair: QblECKeyP
      */
     @Throws(QblStorageException::class)
     fun createIndex(root: String) {
-        val dm = directoryFactory.create(root)
+        val dm = config.directoryFactory.create(root)
         try {
             val plaintext = IOUtils.toByteArray(FileInputStream(dm.path))
             val encrypted = cryptoUtils.createBox(keyPair, keyPair.pub, plaintext, 0)

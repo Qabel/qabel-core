@@ -12,6 +12,6 @@ data class BoxVolumeConfig(
     var defaultHashAlgorithm: String,
     val tempDir: File
 ) {
-    val directoryFactory by lazy { JdbcDirectoryMetadataFactory(tempDir, deviceId) }
-    val fileFactory by lazy { JdbcFileMetadataFactory(tempDir) }
+    val directoryFactory: DirectoryMetadataFactory by lazy { JdbcDirectoryMetadataFactory(tempDir, deviceId) }
+    val fileFactory: FileMetadataFactory by lazy { JdbcFileMetadataFactory(tempDir) }
 }

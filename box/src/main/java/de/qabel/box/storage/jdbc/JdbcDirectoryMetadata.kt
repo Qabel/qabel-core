@@ -15,7 +15,7 @@ class JdbcDirectoryMetadata(
     connection: ClientDatabase,
     deviceId: ByteArray,
     path: File,
-    val fileName: String,
+    override val fileName: String,
     var tempDir: File
 ) : AbstractMetadata(connection, path), DirectoryMetadata {
     var deviceId: ByteArray
@@ -114,7 +114,7 @@ class JdbcDirectoryMetadata(
         return md.digest()
     }
 
-    val version: ByteArray
+    override val version: ByteArray
         @Throws(QblStorageException::class)
         get() = try {
             tryWith(connection.prepare("SELECT version FROM version ORDER BY id DESC LIMIT 1")) {
@@ -131,7 +131,7 @@ class JdbcDirectoryMetadata(
         }
 
     @Throws(QblStorageException::class)
-    fun commit() {
+    override fun commit() {
         val oldVersion = version
         val md: MessageDigest
         try {
@@ -300,8 +300,7 @@ class JdbcDirectoryMetadata(
             }
         }
 
-    @Throws(QblStorageException::class)
-    fun listShares(): List<BoxShare> {
+    override fun listShares(): List<BoxShare> {
         val shares = LinkedList<BoxShare>()
         try {
             tryWith(connection.prepare("SELECT ref, recipient, type FROM shares")) {
@@ -348,7 +347,6 @@ class JdbcDirectoryMetadata(
             connection.prepare("DELETE FROM externals WHERE name=?").apply{ setString(1, external.name) }
         }
 
-    @JvmName("listExternals")
     @Throws(QblStorageException::class)
     internal fun listExternals(): List<BoxExternal> = ArrayList()
 

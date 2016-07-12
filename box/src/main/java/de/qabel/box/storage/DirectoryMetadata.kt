@@ -1,6 +1,7 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageException
+import java.io.File
 
 interface DirectoryMetadata {
     @Throws(QblStorageException::class)
@@ -32,4 +33,14 @@ interface DirectoryMetadata {
 
     @Throws(QblStorageException::class)
     fun insertShare(share: BoxShare)
+
+    val version: ByteArray
+
+    @Throws(QblStorageException::class)
+    fun commit()
+
+    fun listShares(): List<BoxShare>
+
+    val path: File
+    val fileName: String
 }

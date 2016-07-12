@@ -1,8 +1,8 @@
 package de.qabel.box.storage
 
-import de.qabel.box.storage.exceptions.QblStorageException
-import de.qabel.core.crypto.QblECPublicKey
+import java.io.File
 
 interface FileMetadata {
     val file: BoxExternalFile?
+    val path: File
 }

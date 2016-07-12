@@ -2,6 +2,7 @@ package de.qabel.box.storage.jdbc
 
 import de.qabel.box.storage.AbstractMetadata
 import de.qabel.box.storage.BoxFile
+import de.qabel.box.storage.FileMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
 import java.io.File
@@ -9,12 +10,11 @@ import java.io.IOException
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class JdbcFileMetadataFactory(val tmpDir: File) {
+class JdbcFileMetadataFactory(val tmpDir: File) : FileMetadataFactory {
     @Throws(QblStorageException::class)
-    fun create(owner: QblECPublicKey, boxFile: BoxFile): JdbcFileMetadata
-        = openNew(owner, boxFile)
+    override fun create(owner: QblECPublicKey, boxFile: BoxFile): JdbcFileMetadata = openNew(owner, boxFile)
 
-    fun open(path: File): JdbcFileMetadata = openExisting(path)
+    override fun open(path: File): JdbcFileMetadata = openExisting(path)
 
     private fun openExisting(path: File): JdbcFileMetadata {
         try {

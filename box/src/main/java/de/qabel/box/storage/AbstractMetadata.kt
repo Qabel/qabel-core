@@ -2,14 +2,15 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
-import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata
 import de.qabel.core.repository.sqlite.ClientDatabase
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.sql.PreparedStatement
 import java.sql.SQLException
 
 abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
+    val logger: Logger by lazy { LoggerFactory.getLogger(AbstractMetadata::class.java) }
 
     /**
      * Path of the metadata file on the local filesystem
@@ -53,7 +54,6 @@ abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
     companion object {
         val TYPE_NONE = -1
         @JvmField
-        val logger = LoggerFactory.getLogger(JdbcDirectoryMetadata::class.java)
         val JDBC_PREFIX = "jdbc:sqlite:"
     }
 }

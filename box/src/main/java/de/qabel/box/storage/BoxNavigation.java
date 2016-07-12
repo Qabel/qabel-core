@@ -1,9 +1,7 @@
 package de.qabel.box.storage;
 
-import de.qabel.box.storage.jdbc.JdbcDirectoryMetadata;
-import de.qabel.box.storage.jdbc.JdbcFileMetadata;
-import de.qabel.core.crypto.QblECPublicKey;
 import de.qabel.box.storage.exceptions.QblStorageException;
+import de.qabel.core.crypto.QblECPublicKey;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,9 +11,9 @@ import java.util.List;
 
 public interface BoxNavigation extends ReadableBoxNavigation {
 
-    JdbcDirectoryMetadata reloadMetadata() throws QblStorageException;
+    DirectoryMetadata reloadMetadata() throws QblStorageException;
 
-    void setMetadata(JdbcDirectoryMetadata dm);
+    void setMetadata(DirectoryMetadata dm);
 
     /**
      * Bumps the version and uploads the metadata file
@@ -90,7 +88,7 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     InputStream download(BoxFile file) throws QblStorageException;
 
-    JdbcFileMetadata getFileMetadata(BoxFile boxFile) throws IOException, InvalidKeyException, QblStorageException;
+    FileMetadata getFileMetadata(BoxFile boxFile) throws IOException, InvalidKeyException, QblStorageException;
 
     /**
      * Create a subfolder in the current folder. You should commit
@@ -133,7 +131,7 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     void setAutocommitDelay(long delay);
 
-    JdbcDirectoryMetadata getMetadata();
+    DirectoryMetadata getMetadata();
 
     /**
      * Creates and uploads a FileMetadata object for a BoxFile. FileMetadata location is written to BoxFile.meta
@@ -170,5 +168,5 @@ public interface BoxNavigation extends ReadableBoxNavigation {
      */
     List<BoxShare> getSharesOf(BoxObject object) throws QblStorageException;
 
-    boolean hasVersionChanged(JdbcDirectoryMetadata dm) throws QblStorageException;
+    boolean hasVersionChanged(DirectoryMetadata dm) throws QblStorageException;
 }

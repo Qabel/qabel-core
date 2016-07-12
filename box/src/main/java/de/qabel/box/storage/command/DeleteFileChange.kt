@@ -5,13 +5,10 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import org.slf4j.LoggerFactory
 
 class DeleteFileChange(private val file: BoxFile, private val indexNavigation: IndexNavigation, private val writeBackend: StorageWriteBackend) : DirectoryMetadataChange<Unit>, Postprocessable {
-    private val logger by lazy {
-        LoggerFactory.getLogger(DeleteFileChange::class.java)
-    }
+    private val logger by lazy { LoggerFactory.getLogger(DeleteFileChange::class.java) }
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend) {
-        writeBackend.deleteBlock(file.block)
-    }
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend)
+        = writeBackend.deleteBlock(file.block)
 
     override fun execute(dm: DirectoryMetadata) {
         dm.deleteFile(file)
@@ -22,7 +19,8 @@ class DeleteFileChange(private val file: BoxFile, private val indexNavigation: I
         }
     }
 
-    private fun removeFileMetadata(dm: DirectoryMetadata) = AbstractNavigation.removeFileMetadata(file, writeBackend, dm)
+    private fun removeFileMetadata(dm: DirectoryMetadata)
+        = AbstractNavigation.removeFileMetadata(file, writeBackend, dm)
 
     private fun removeSharesFromIndex() {
         indexNavigation.getSharesOf(file).forEach { share ->

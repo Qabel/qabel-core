@@ -1,6 +1,7 @@
 package de.qabel.box.storage.jdbc
 
 import de.qabel.box.storage.AbstractMetadata
+import de.qabel.box.storage.DirectoryMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageIOFailure
@@ -11,20 +12,20 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
 
-class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) {
+class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) : DirectoryMetadataFactory {
     /**
      * Create (and init) a new Index DM including a new database file
      *
      * @param root      path to the metadata file
      */
-    fun create(root: String): JdbcDirectoryMetadata {
+    override fun create(root: String): JdbcDirectoryMetadata {
         return newDatabase(root, deviceId, tempDir)
     }
 
     /**
      * Create (and init) a new index Folder DM including a new database file
      */
-    fun create(): JdbcDirectoryMetadata {
+    override fun create(): JdbcDirectoryMetadata {
         return newDatabase(null, deviceId, tempDir)
     }
 
@@ -34,7 +35,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) {
      * @param path      writable location of the metadata file (local file)
      * @param fileName  name of the file on the storage backend (remote ref)
      */
-    fun open(path: File, fileName: String): JdbcDirectoryMetadata {
+    override fun open(path: File, fileName: String): JdbcDirectoryMetadata {
         return openDatabase(path, deviceId, fileName, tempDir)
     }
 
