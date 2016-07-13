@@ -166,9 +166,8 @@ abstract class AbstractNavigation(
 
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
-        val mtime: Long
-        try {
-            mtime = Files.getLastModifiedTime(file.toPath()).toMillis()
+        val mtime = try {
+            Files.getLastModifiedTime(file.toPath()).toMillis()
         } catch (e: IOException) {
             throw IllegalArgumentException("invalid source file " + file.absolutePath)
         }
