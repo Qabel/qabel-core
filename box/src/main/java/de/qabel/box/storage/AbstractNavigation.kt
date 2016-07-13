@@ -43,12 +43,17 @@ abstract class AbstractNavigation(
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
     private var lastAutocommitStart: Long = 0
+    var time: () -> Long = { System.currentTimeMillis() }
 
     abstract val indexNavigation: IndexNavigation
 
     override fun setAutocommitDelay(delay: Long) {
         autocommitDelay = delay
     }
+
+    override var metadata: DirectoryMetadata
+        get() { return dm }
+        set(value) { dm = value }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun navigate(target: BoxFolder): AbstractNavigation {
@@ -74,9 +79,6 @@ abstract class AbstractNavigation(
         }
     }
 
-    @Synchronized override fun setMetadata(dm: DirectoryMetadata) {
-        this.dm = dm
-    }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun commitIfChanged() {
@@ -115,9 +117,8 @@ abstract class AbstractNavigation(
         changes.clear()
     }
 
-    override fun isUnmodified(): Boolean {
-        return changes.isEmpty()
-    }
+    override val isUnmodified: Boolean
+        get() = changes.isEmpty()
 
     @Throws(QblStorageException::class)
     protected abstract fun uploadDirectoryMetadata()
@@ -147,9 +148,6 @@ abstract class AbstractNavigation(
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun upload(name: String, file: File): BoxFile = upload(name, file, null)
-
-    @Synchronized @Throws(QblStorageException::class)
     override fun upload(name: String, file: File, listener: ProgressListener?): BoxFile {
         val oldFile = dm.getFile(name)
         if (oldFile != null) {
@@ -159,7 +157,8 @@ abstract class AbstractNavigation(
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun overwrite(name: String, file: File): BoxFile = overwrite(name, file, null)
+    override fun upload(name: String, file: InputStream, size: Long, listener: ProgressListener?)
+        = uploadStream(file, name, size, time(), listener)
 
     @Synchronized @Throws(QblStorageException::class)
     override fun overwrite(name: String, file: File, listener: ProgressListener?): BoxFile
@@ -167,27 +166,33 @@ abstract class AbstractNavigation(
 
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
+        val mtime = try {
+            Files.getLastModifiedTime(file.toPath()).toMillis()
+        } catch (e: IOException) {
+            throw IllegalArgumentException("invalid source file " + file.absolutePath)
+        }
+
+        return uploadStream(FileInputStream(file), name, file.length(), mtime, listener)
+    }
+
+    private fun AbstractNavigation.uploadStream(fileInput: InputStream, name: String, size: Long, mtime: Long, listener: ProgressListener?): BoxFile {
         val key = cryptoUtils.generateSymmetricKey()
         val block = UUID.randomUUID().toString()
 
         val oldFile = dm.getFile(name)
 
         val boxFile = BoxFile(
-            prefix,
-            block,
+                prefix,
+                block,
             name,
-            file.length(),
-            0L,
-            key.key,
-            shared = Share.create (oldFile?.meta, oldFile?.metakey)
+            size,
+                0L,
+                key.key,
+                shared = Share.create(oldFile?.meta, oldFile?.metakey)
         )
-        try {
-            boxFile.mtime = Files.getLastModifiedTime(file.toPath()).toMillis()
-        } catch (e: IOException) {
-            throw IllegalArgumentException("invalid source file " + file.absolutePath)
-        }
+        boxFile.mtime = mtime
 
-        val uploadResult = uploadEncrypted(file, key, "blocks/" + block, listener)
+        val uploadResult = uploadEncrypted(fileInput, key, "blocks/" + block, listener)
         boxFile.hashed = uploadResult.hash
 
         execute(UpdateFileChange(oldFile, boxFile))
@@ -232,14 +237,20 @@ abstract class AbstractNavigation(
         }, autocommitDelay, TimeUnit.MILLISECONDS)
     }
 
+
+
     @Throws(QblStorageException::class)
-    @JvmOverloads protected fun uploadEncrypted(file: File, key: KeyParameter, block: String, listener: ProgressListener? = null): UploadResult {
+    @JvmOverloads protected fun uploadEncrypted(file: File, key: KeyParameter, block: String, listener: ProgressListener? = null)
+        = uploadEncrypted(FileInputStream(file), key, block, listener)
+
+    @Throws(QblStorageException::class)
+    @JvmOverloads protected fun uploadEncrypted(fileInput: InputStream, key: KeyParameter, block: String, listener: ProgressListener? = null): UploadResult {
         try {
             val hashAlgorithm = defaultHashAlgorithm
             val tempFile = File.createTempFile("upload", "up", tempDir)
             val digest = MessageDigest.getInstance(hashAlgorithm)
             val outputStream = FileOutputStream(tempFile)
-            val inputStream = InputStreamListener(FileInputStream(file)) { bytes, n -> digest.update(bytes, 0, n) }
+            val inputStream = InputStreamListener(fileInput) { bytes, n -> digest.update(bytes, 0, n) }
 
             if (!cryptoUtils.encryptStreamAuthenticatedSymmetric(inputStream, outputStream, key, null)) {
                 throw QblStorageException("Encryption failed")
@@ -263,6 +274,8 @@ abstract class AbstractNavigation(
     }
 
     data class UploadResult(val serverTime: Long, val hash: Hash)
+
+    override fun download(filename: String) = download(getFile(filename))
 
     @Throws(QblStorageException::class)
     override fun download(boxFile: BoxFile) = download(boxFile, null)
@@ -490,8 +503,6 @@ abstract class AbstractNavigation(
         }
         throw IllegalArgumentException("no file named " + name)
     }
-
-    override fun getMetadata(): DirectoryMetadata = dm
 
     @Throws(QblStorageException::class)
     override fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference {
