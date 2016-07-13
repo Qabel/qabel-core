@@ -95,11 +95,11 @@ SCRIPT
 
         if [ ! -d qabel-drop ]; then
             git clone https://github.com/Qabel/qabel-drop
-        else
-            cd qabel-drop
-            git pull origin master
-            cd ..
         fi
+
+        cd qabel-drop
+        git checkout db8a289ad43b1802a80f6c4ec0aeb9a94ce40a5e
+        cd ..
 
         echo -e "\n### STARTING DROP SERVER"
         cd qabel-drop

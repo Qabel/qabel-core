@@ -8,9 +8,7 @@ import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import org.slf4j.LoggerFactory
 
 open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: BoxFile) : DirectoryMetadataChange<Unit> {
-    private val logger by lazy {
-        LoggerFactory.getLogger(UpdateFileChange::class.java)
-    }
+    private val logger by lazy { LoggerFactory.getLogger(UpdateFileChange::class.java) }
 
     override fun execute(dm: DirectoryMetadata) {
         var filename = newFile.name

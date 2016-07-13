@@ -1,13 +1,25 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
+import java.io.File
 import java.util.*
 
 class InMemoryDirectoryMetadata : DirectoryMetadata {
 
+    override val path: File get() = throw UnsupportedOperationException()
+    override val fileName: String get() = throw UnsupportedOperationException()
+
+    override val version = ByteArray(0)
     val files = HashMap<String, BoxFile>()
     val folders = HashMap<String, BoxFolder>()
     val shares = HashMap<String, BoxShare>()
+    var committed = false
+
+    override fun commit() {
+        committed = true
+    }
+
+    override fun listShares(): List<BoxShare> = shares.values.toList()
 
     override fun deleteShare(share: BoxShare) {
         shares.remove(share.ref)

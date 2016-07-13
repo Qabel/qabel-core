@@ -2,12 +2,15 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.core.repository.sqlite.ClientDatabase
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.sql.Connection
+import java.sql.PreparedStatement
 import java.sql.SQLException
 
-abstract class AbstractMetadata(protected val connection: Connection, path: File) {
+abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
+    val logger: Logger by lazy { LoggerFactory.getLogger(AbstractMetadata::class.java) }
 
     /**
      * Path of the metadata file on the local filesystem
@@ -22,8 +25,8 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
     @JvmName("getSpecVersion")
     fun findSpecVersion(): Int? =
         try {
-            tryWith(connection.createStatement()) {
-                tryWith(executeQuery("SELECT version FROM spec_version")) {
+            tryWith(connection.prepare("SELECT version FROM spec_version")) {
+                tryWith(executeQuery()) {
                     if (next()) {
                         return getInt(1)
                     } else {
@@ -35,26 +38,29 @@ abstract class AbstractMetadata(protected val connection: Connection, path: File
             throw QblStorageException(e)
         }
 
-    @Throws(SQLException::class, QblStorageException::class)
-    protected open fun initDatabase() {
-        for (q in initSql) {
-            tryWith(connection.createStatement()) { executeUpdate(q) }
+    @Throws(QblStorageException::class)
+    protected fun executeStatement(statementCallable: () -> PreparedStatement) {
+        try {
+            tryWith(statementCallable()) {
+                if (executeUpdate() != 1) {
+                    throw QblStorageException("Failed to execute statement")
+                }
+            }
+        } catch (e: Exception) {
+            throw QblStorageException(e)
         }
     }
-
-    protected abstract val initSql: Array<String>
 
     companion object {
         val TYPE_NONE = -1
         @JvmField
-        val logger = LoggerFactory.getLogger(JdbcDirectoryMetadata::class.java)
         val JDBC_PREFIX = "jdbc:sqlite:"
     }
 }
 
 inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: T.() -> R): R {
     try {
-        return block(closeable);
+        return block(closeable)
     } finally {
         closeable.close()
     }

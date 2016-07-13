@@ -2,22 +2,22 @@ package de.qabel.box.storage
 
 import java.util.*
 
-open class BoxFile (val prefix: String, val block: String, name: String, override val size: Long, mtime: Long, key: ByteArray) : BoxObject(name), BoxFileState {
+open class BoxFile (
+    val prefix: String,
+    val block: String,
+    name: String,
+    override val size: Long,
+    mtime: Long,
+    key: ByteArray,
+    var hashed: Hash? = null,
+    var shared: Share? = null
+) : BoxObject(name), BoxFileState {
     init {
-        this.key = key;
+        this.key = key
     }
-    var meta: String? = null
-        set(meta) {
-            field = meta
-            setChanged()
-            notifyObservers()
-        }
-    var metakey: ByteArray? = null
-        set(metakey) {
-            field = metakey
-            setChanged()
-            notifyObservers()
-        }
+
+    val meta: String? get() = shared?.meta
+    val metakey: ByteArray? get () = shared?.metaKey
 
     override var mtime: Long = mtime
         set (mtime) {
@@ -30,7 +30,7 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
         if (this === other) {
             return true
         }
-        if (other == null || !(other is BoxFile)) {
+        if (other == null || other !is BoxFile) {
             return false
         }
 
@@ -42,7 +42,7 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
         if (block != boxFile.block) {
             return false
         }
-        if (if (name != null) name != boxFile.name else boxFile.name != null) {
+        if (name != boxFile.name) {
             return false
         }
         if (size != boxFile.size) {
@@ -72,24 +72,10 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
         return result
     }
 
-    constructor(prefix: String, block: String, name: String, size: Long, mtime: Long, key: ByteArray, meta: String?, metaKey: ByteArray?) : this(prefix, block, name, size, mtime, key) {
-        this.meta = meta
-        metakey = metaKey
-    }
-
     @Throws(CloneNotSupportedException::class)
     protected fun clone(): BoxFile {
-        return BoxFile(prefix, block, name, size, mtime, key, meta, metakey)
+        return BoxFile(prefix, block, name, size, mtime, key, hashed, shared)
     }
-
-    /**
-     * Get if BoxFile is shared. Tests only if meta and metakey is not null, not if a share has been
-     * successfully send to another user.
-
-     * @return True if BoxFile might be shared.
-     */
-    val isShared: Boolean
-        get() = meta != null && metakey != null
 
     override fun getRef(): String? {
         return meta
@@ -98,4 +84,11 @@ open class BoxFile (val prefix: String, val block: String, name: String, overrid
     fun isSame(expectedFile: BoxFile?): Boolean {
         return expectedFile?.block == block
     }
+
+    fun setHash(hash: ByteArray, algorithm: String) {
+        hashed = Hash.create(hash, algorithm)
+    }
+
+    fun isShared() = shared != null
+    fun isHashed() = hashed != null
 }

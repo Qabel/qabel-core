@@ -4,7 +4,7 @@ import de.qabel.core.exceptions.QblException;
 
 public class QblStorageException extends QblException {
     public QblStorageException(Throwable e) {
-        super(e.getMessage());
+        super(e.getMessage(), e);
     }
 
     public QblStorageException(String s) {
