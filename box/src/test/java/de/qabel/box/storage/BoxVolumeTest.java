@@ -8,6 +8,7 @@ import de.qabel.core.config.Contact;
 import de.qabel.core.crypto.CryptoUtils;
 import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.DropURL;
+import kotlin.jvm.functions.Function0;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongycastle.util.encoders.Hex;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +34,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 
 public abstract class BoxVolumeTest {
@@ -138,6 +142,28 @@ public abstract class BoxVolumeTest {
         BoxFile boxFile = uploadFile(nav);
         nav.delete(boxFile);
         nav.download(boxFile);
+    }
+
+    @Test
+    public void uploadsStreams() throws Exception {
+        InputStream in = new ByteArrayInputStream("testContent".getBytes());
+        Long size = 11L;
+
+        DefaultIndexNavigation nav = volume.navigate();
+        nav.setTime(new Function0<Long>() { @Override public Long invoke() { return 1234567890L; }}); // imagine lambda
+        BoxFile file = nav.upload("streamedFile", in, size);
+        InputStream out = volume2.navigate().download("streamedFile");
+
+        assertEquals((Long)11L, file.getSize());
+        assertEquals((Long)1234567890L, file.getMtime());
+        assertEquals("testContent", new String(IOUtils.toByteArray(out)));
+    }
+
+    @Test
+    public void hasUsefulDefaultTimeProvider() throws Exception {
+        BoxFile file = volume.navigate().upload("a", new ByteArrayInputStream("x".getBytes()), 1L);
+        assertThat(System.currentTimeMillis() - file.getMtime(), lessThan(10000L));
+        assertThat(System.currentTimeMillis() - file.getMtime(), greaterThanOrEqualTo(0L));
     }
 
     private BoxFile uploadFile(BoxNavigation nav) throws QblStorageException, IOException {

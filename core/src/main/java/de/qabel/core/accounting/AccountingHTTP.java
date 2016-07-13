@@ -111,15 +111,27 @@ public class AccountingHTTP {
             throw new RuntimeException("Url building failed", e);
         }
         HttpGet httpGet = new HttpGet(uri);
+        httpGet.setHeader("Accept", "application/json");
         authorize(httpGet);
         try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode >= 400) {
+                throw new IllegalStateException(
+                    "Server responded with " + statusCode + ": " + response.getStatusLine().getReasonPhrase()
+                );
+            }
             HttpEntity entity = response.getEntity();
             if (entity == null) {
                 throw new IOException("No answer from login");
             }
             String responseString = EntityUtils.toString(entity);
-            prefixes = new ArrayList<>(Arrays.asList(gson.fromJson(responseString, PrefixListDto.class).prefixes));
-            profile.setPrefixes(prefixes);
+            try {
+                PrefixListDto parsedDto = gson.fromJson(responseString, PrefixListDto.class);
+                prefixes = new ArrayList<>(Arrays.asList(parsedDto.prefixes));
+                profile.setPrefixes(prefixes);
+            } catch (JsonSyntaxException e) {
+                throw new IllegalStateException("non-json response from server: " + responseString, e);
+            }
         }
     }
 
