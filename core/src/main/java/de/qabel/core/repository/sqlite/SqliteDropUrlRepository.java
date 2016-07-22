@@ -1,13 +1,17 @@
 package de.qabel.core.repository.sqlite;
 
+import de.qabel.core.StringUtils;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Entity;
 import de.qabel.core.drop.DropURL;
+import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.repository.exception.PersistenceException;
 
+import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
+import java.util.*;
 
 public class SqliteDropUrlRepository extends AbstractSqliteRepository<DropURL> {
     public static final String TABLE_NAME = "drop_url";
@@ -64,6 +68,32 @@ public class SqliteDropUrlRepository extends AbstractSqliteRepository<DropURL> {
                 dropStatement.setString(2, url.toString());
                 dropStatement.execute();
             }
+        }
+    }
+
+    public Map<Integer, List<DropURL>> findDropUrls(List<Integer> contactIds) throws PersistenceException {
+        try {
+            Map<Integer, List<DropURL>> contactDropUrlMap = new HashMap<>();
+            try (PreparedStatement statement = database.prepare(
+                "SELECT contact_id, url " +
+                    "FROM " + TABLE_NAME + " urls " +
+                    "WHERE contact_id IN (" + StringUtils.join(",", contactIds) + ")"
+            )) {
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        int id = results.getInt(1);
+                        List<DropURL> identityKeys = contactDropUrlMap.get(id);
+                        if (identityKeys == null) {
+                            identityKeys = new LinkedList<>();
+                            contactDropUrlMap.put(id, identityKeys);
+                        }
+                        identityKeys.add(new DropURL(results.getString(2)));
+                    }
+                }
+            }
+            return contactDropUrlMap;
+        } catch (SQLException | QblDropInvalidURL | URISyntaxException e) {
+            throw new PersistenceException("Error loading dropUrls for contacts", e);
         }
     }
 }

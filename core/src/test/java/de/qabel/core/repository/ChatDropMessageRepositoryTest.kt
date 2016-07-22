@@ -33,7 +33,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
 
     override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): ChatDropMessageRepository {
         identityRepo = SqliteIdentityRepository(clientDatabase, em)
-        contactRepo = SqliteContactRepository(clientDatabase, em)
+        contactRepo = SqliteContactRepository(clientDatabase, em, identityRepo)
         dropRepo = SqliteChatDropMessageRepository(clientDatabase, em)
 
         identityRepo.save(identity)

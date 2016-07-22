@@ -6,7 +6,7 @@ public class StringUtils {
     public static String join(String separator, String[] parts) {
         return org.apache.commons.lang3.StringUtils.join(parts, separator);
     }
-    public static String join(String separator, List<String> parts) {
+    public static <T> String join(String separator, List<T> parts) {
         return org.apache.commons.lang3.StringUtils.join(parts, separator);
     }
 }
