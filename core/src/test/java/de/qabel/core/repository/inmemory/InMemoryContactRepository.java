@@ -17,7 +17,7 @@ public class InMemoryContactRepository implements ContactRepository {
     @Override
     public void save(Contact contact, Identity identity) throws PersistenceException {
         Contacts contacts = find(identity);
-        if(contacts == null){
+        if (contacts == null) {
             contacts = new Contacts(identity);
         }
         try {
@@ -46,13 +46,25 @@ public class InMemoryContactRepository implements ContactRepository {
     }
 
     @Override
+    public Contact find(Integer id) throws PersistenceException, EntityNotFoundException {
+        for (Contacts contacts : contactsMap.values()) {
+            for (Contact c : contacts.getContacts()) {
+                if (c.getId() == id) {
+                    return c;
+                }
+            }
+        }
+        throw new EntityNotFoundException("Contact not found for id " + id);
+    }
+
+    @Override
     public Contacts find(Identity identity) {
         Contacts contacts = contactsMap.get(identity.getKeyIdentifier());
-        if(contacts == null){
+        if (contacts == null) {
             contacts = new Contacts(identity);
             contactsMap.put(identity.getKeyIdentifier(), contacts);
         }
-        return  contactsMap.get(identity.getKeyIdentifier());
+        return contactsMap.get(identity.getKeyIdentifier());
     }
 
 

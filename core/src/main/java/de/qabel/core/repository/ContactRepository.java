@@ -8,6 +8,8 @@ import de.qabel.core.repository.exception.PersistenceException;
 
 public interface ContactRepository {
 
+    Contact find(Integer id) throws PersistenceException, EntityNotFoundException;
+
     Contacts find(Identity identity) throws PersistenceException;
 
     void save(Contact contact, Identity identity) throws PersistenceException;

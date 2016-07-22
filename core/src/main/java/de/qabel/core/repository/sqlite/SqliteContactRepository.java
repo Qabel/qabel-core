@@ -37,6 +37,7 @@ public class SqliteContactRepository extends AbstractSqliteRepository<Contact> i
         this.dropUrlRepository = dropUrlRepository;
     }
 
+    @Override
     public Contact find(Integer id) throws PersistenceException, EntityNotFoundException {
         return findBy("id=?", id);
     }
