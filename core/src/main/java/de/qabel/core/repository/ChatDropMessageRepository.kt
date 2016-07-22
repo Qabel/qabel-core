@@ -7,4 +7,6 @@ interface ChatDropMessageRepository : BaseRepository<ChatDropMessage> {
 
     fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage>
 
+    open fun findNew(identityId: Int): List<ChatDropMessage>
+    open fun findLatest(identityId: Int): List<ChatDropMessage>
 }

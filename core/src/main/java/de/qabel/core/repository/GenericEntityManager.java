@@ -36,6 +36,11 @@ public abstract class GenericEntityManager<I, H> {
         return (T)entities.get(entityType).get(id);
     }
 
+
+    public <T> void remove(Class<T> entityType, Integer id){
+        entities.get(entityType).remove(id);
+    }
+
     public void clear() {
         entities.clear();
     }

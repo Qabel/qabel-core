@@ -23,9 +23,9 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
     lateinit var identityRepo: IdentityRepository
     lateinit var contactRepo: ContactRepository
 
-    val identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identity").build()
-    val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test".toByteArray()));
-    val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test".toByteArray()));
+    val identityA = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
+    val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()));
+    val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()));
 
     val now = System.currentTimeMillis()
 
@@ -36,12 +36,12 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
         contactRepo = SqliteContactRepository(clientDatabase, em, identityRepo)
         dropRepo = SqliteChatDropMessageRepository(clientDatabase, em)
 
-        identityRepo.save(identity)
-        contactRepo.save(contactA, identity)
-        contactRepo.save(contactB, identity)
+        identityRepo.save(identityA)
+        contactRepo.save(contactA, identityA)
+        contactRepo.save(contactB, identityA)
 
         message = ChatDropMessage(0, contactA.id,
-            identity.id,
+            identityA.id,
             Direction.INCOMING,
             Status.READ,
             MessageType.BOX_MESSAGE,
@@ -54,7 +54,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
 
     @Test
     fun testFindById() {
-        dropRepo.persist(message, identity.id)
+        dropRepo.persist(message)
         val storedMessage = dropRepo.findById(message.id)
         assertMessageEquals(message, storedMessage)
     }
@@ -62,23 +62,23 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
     @Test
     fun testFindByContact() {
         val messages = listOf(message, message.copy(payload = createTextPayload("BLUBB BLUBB")))
-        messages.forEach { dropRepo.persist(it, identity.id) }
+        messages.forEach { dropRepo.persist(it) }
 
-        val stored = dropRepo.findByContact(contactA.id, identity.id)
+        val stored = dropRepo.findByContact(contactA.id, identityA.id)
         assertThat(stored, hasSize(2))
         assertThat(stored, containsInAnyOrder(messages[0], messages[1]))
     }
 
     @Test
     fun testPersist() {
-        dropRepo.persist(message, identity.id)
+        dropRepo.persist(message)
         val storedMessage = dropRepo.findById(message.id)
         assertMessageEquals(message, storedMessage)
     }
 
     @Test
     fun testUpdate() {
-        dropRepo.persist(message, identity.id)
+        dropRepo.persist(message)
 
         message.payload = createTextPayload("barfoo")
         dropRepo.update(message)
@@ -89,10 +89,37 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
 
     @Test(expected = EntityNotFoundException::class)
     fun testDelete() {
-        dropRepo.persist(message, identity.id)
+        dropRepo.persist(message)
 
         dropRepo.delete(message.id)
         dropRepo.findById(message.id)
+    }
+
+    @Test
+    fun testFindLatest() {
+        val msgA = message.copy(createdOn = System.currentTimeMillis() + 1000, payload = createTextPayload("A"));
+        val msgB = message.copy(contactId = contactB.id, createdOn = System.currentTimeMillis() + 100, payload = createTextPayload("B"))
+        dropRepo.persist(msgA)
+        dropRepo.persist(msgB)
+        dropRepo.persist(message)
+        dropRepo.persist(message.copy(contactId = contactB.id))
+
+        val result = dropRepo.findLatest(identityA.id)
+        assertThat(result, hasSize(2))
+        assertThat(result, contains(msgA, msgB))
+    }
+
+    @Test
+    fun testFindNew() {
+        val msgA = message.copy(status = Status.NEW)
+        val msgB = message.copy(status = Status.NEW, contactId = contactB.id)
+        dropRepo.persist(msgA)
+        dropRepo.persist(msgB)
+        dropRepo.persist(message)
+
+        val result = dropRepo.findNew(identityA.id)
+        assertThat(result, hasSize(2))
+        assertThat(result, containsInAnyOrder(msgA, msgB))
     }
 
     fun assertMessageEquals(expected: ChatDropMessage, current: ChatDropMessage) {

@@ -3,11 +3,12 @@ package de.qabel.core.repository.framework
 class QueryBuilder {
 
     companion object {
-        private const val EQ = "="
-        private const val GT = ">"
-        private const val GTE = ">="
-        private const val LT = "<"
-        private const val LTE = "<="
+        private const val EQUALS = "="
+    }
+
+    enum class Direction(val sql: String) {
+        ASCENDING("ASC"),
+        DESCENDING("DESC")
     }
 
     private val select = StringBuilder()
@@ -16,7 +17,6 @@ class QueryBuilder {
     private val where = StringBuilder()
     private val orderBy = StringBuilder()
     private val groupBy = StringBuilder()
-    private val having = StringBuilder()
     val params = mutableListOf<Any>()
 
     fun select(field: Field) {
@@ -75,20 +75,12 @@ class QueryBuilder {
     }
 
     fun whereAndEquals(field: Field, value: Any) {
-        appendWhere(field.exp(), EQ, "?", " AND ")
+        appendWhere(field.exp(), EQUALS, "?", " AND ")
         params.add(value)
     }
 
     fun whereAndNull(field: Field) {
         appendWhere(field.exp(), " IS NULL ", "", " AND ");
-    }
-
-    fun beginAndCondition() {
-        where.append("AND (")
-    }
-
-    fun endCondition() {
-        where.append(")")
     }
 
     private fun appendWhere(field: String, condition: String, valuePlaceholder: String, concatenation: String) {
@@ -106,26 +98,16 @@ class QueryBuilder {
         where.append(sql)
     }
 
-    fun orderBy(field: String, direction: String = "") {
+    fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
         if (orderBy.isEmpty()) {
             orderBy.append("ORDER BY ")
         } else {
             orderBy.append(", ")
         }
         orderBy.append(field)
-        if (!direction.isEmpty()) {
-            orderBy.append(" ")
-            orderBy.append(direction)
-        }
+        orderBy.append(" ")
+        orderBy.append(direction.sql)
     }
-
-    fun queryString(): String = select.toString() + " " +
-        from.toString() + " " +
-        (if (!joins.isEmpty()) joins.toString() else "") + " " +
-        (if (!where.isEmpty()) where.toString() else "") + " " +
-        (if (!orderBy.isEmpty()) orderBy.toString() else "") + " " +
-        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
-        (if (!having.isEmpty()) having.toString() else "")
 
     fun groupBy(field: DBField) {
         if (groupBy.isEmpty()) {
@@ -136,18 +118,12 @@ class QueryBuilder {
         groupBy.append(field.exp())
     }
 
-    fun havingMaxAnd(field: DBField) {
-        havingAnd("MAX(" + field.exp() + ")")
-    }
-
-    fun havingAnd(sql: String) {
-        if (having.isEmpty()) {
-            having.append("HAVING ")
-        } else {
-            having.append(" AND ")
-        }
-        having.append(sql)
-    }
+    fun queryString(): String = select.toString() + " " +
+        from.toString() + " " +
+        (if (!joins.isEmpty()) joins.toString() else "") + " " +
+        (if (!where.isEmpty()) where.toString() else "") + " " +
+        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
+        (if (!orderBy.isEmpty()) orderBy.toString() else "")
 
 }
 

@@ -12,7 +12,7 @@ data class ChatDropMessage(override var id: Int,
                            override val createdOn: Long) : BaseEntity {
 
     enum class Status(val type: Int) {
-        NEW(0), READ(1), PENDING(2), SENT (3);
+        NEW(0), READ(1), PENDING(2), SENT(3);
     }
 
     enum class MessageType(val type: String) {

@@ -232,7 +232,6 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val contacts = repo.findWithIdentities();
         var index = 0;
         for (contact in contacts) {
-            System.out.println(contact.first.alias)
             val storedDto = storedContacts[index];
             assertThat(storedDto.first.alias, Matchers.equalTo(contact.first.alias));
             assertThat(storedDto.second, hasSize(contact.second.size));

@@ -5,7 +5,6 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 import de.qabel.core.repository.sqlite.ClientDatabase
-import de.qabel.core.repository.sqlite.Hydrator
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -18,9 +17,12 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     internal val updateStatement = QblStatements.createUpdate(relation)
     internal val deleteStatement = QblStatements.createDelete(relation)
 
-    fun persist(model: T, identityId: Int) {
+    open fun createEntityQuery(): QueryBuilder {
+        return QblStatements.createEntityQuery(relation)
+    }
+
+    fun persist(model: T) {
         client.prepare(insertStatement).use {
-            it.setInt(1, identityId)
             relation.applyValues(1, it, model)
             it.execute()
             it.generatedKeys.use {
@@ -44,8 +46,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         client.prepare(deleteStatement).use {
             it.setInt(1, id)
             it.execute()
-            //TODO No remove method in EntityManager
-            entityManager.clear()
+            entityManager.remove(relation.ENTITY_CLASS, id)
         }
     }
 

@@ -2,7 +2,6 @@ package de.qabel.core.repository.sqlite.schemas
 
 import de.qabel.core.chat.ChatDropMessage
 import de.qabel.core.chat.ChatDropMessage.*
-import de.qabel.core.repository.framework.CustomField
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
 import java.sql.PreparedStatement
@@ -26,15 +25,15 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
 
     val CREATED_ON = DBField("created_on", TABLE_NAME, TABLE_ALIAS);
 
-    override val ENTITY_FIELDS = listOf(IDENTITY_ID, CONTACT_ID, DIRECTION, STATUS,
+    override val ENTITY_FIELDS = listOf(CONTACT_ID, IDENTITY_ID, DIRECTION, STATUS,
         PAYLOAD_TYPE, PAYLOAD, CREATED_ON)
 
     override val ENTITY_CLASS: Class<ChatDropMessage> = ChatDropMessage::class.java
 
     override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage) {
         var i = startIndex;
-        statement.setInt(i++, model.identityId)
         statement.setInt(i++, model.contactId)
+        statement.setInt(i++, model.identityId)
         statement.setInt(i++, model.direction.type)
         statement.setInt(i++, model.status.type)
         statement.setString(i++, model.type.type)
@@ -55,8 +54,8 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
     }
 
     fun <X : Enum<X>, S : Any> toEnum(enum: Array<X>, value: S, extract: (enum: X) -> S) =
-            enum.find {
-                extract(it).equals(value)
-            } ?: throw RuntimeException("Invalid enum value found")
+        enum.find {
+            extract(it).equals(value)
+        } ?: throw RuntimeException("Invalid enum value found")
 
 }
