@@ -1,29 +1,24 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
-import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
+import de.qabel.core.config.factory.DropUrlGenerator
+import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.extensions.toContact
+import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
 import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository
-import de.qabel.core.config.factory.DefaultContactFactory
-import de.qabel.core.config.factory.DropUrlGenerator
-import de.qabel.core.config.factory.IdentityBuilder
-import de.qabel.core.extensions.toContact
-import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.sqlite.hydrator.ContactHydrator
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import org.hamcrest.Matchers
-import org.hamcrest.Matchers.*
-import org.junit.Test
-
-import java.util.*
-
+import org.hamcrest.Matchers.hasSize
 import org.junit.Assert
 import org.junit.Assert.*
+import org.junit.Test
+import java.util.*
 
 class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRepository>() {
 
