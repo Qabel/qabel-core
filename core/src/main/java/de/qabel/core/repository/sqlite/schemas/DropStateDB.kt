@@ -25,8 +25,9 @@ object DropStateDB : DBRelation<DropState> {
         statement.setString(i, model.eTag)
     }
 
-    override fun hydrateOne(resultSet: ResultSet) = DropState(resultSet.getInt(ID.alias()),
-        resultSet.getString(DROP.alias()),
-        resultSet.getString(E_TAG.alias()))
+    override fun hydrateOne(resultSet: ResultSet) =
+        DropState(resultSet.getString(DROP.alias()),
+            resultSet.getString(E_TAG.alias()),
+            resultSet.getInt(ID.alias()))
 
 }

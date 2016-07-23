@@ -1,6 +1,5 @@
 package de.qabel.core.repository;
 
-import de.qabel.core.repository.EntityManager;
 import de.qabel.core.repository.exception.EntityNotFoundException;
 import de.qabel.core.repository.sqlite.ClientDatabase;
 import de.qabel.core.repository.sqlite.SqliteDropStateRepository;
@@ -12,7 +11,7 @@ public class SqliteDropStateRepositoryTest extends AbstractSqliteRepositoryTest<
 
     @Override
     protected SqliteDropStateRepository createRepo(ClientDatabase clientDatabase, EntityManager em) throws Exception {
-        return new SqliteDropStateRepository(clientDatabase);
+        return new SqliteDropStateRepository(clientDatabase, em);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -25,4 +24,14 @@ public class SqliteDropStateRepositoryTest extends AbstractSqliteRepositoryTest<
         repo.setDropState("drop", "state");
         assertEquals("state", repo.getDropState("drop"));
     }
+
+    @Test
+    public void replaceSavedDrops() throws Exception {
+        repo.setDropState("drop", "state");
+        assertEquals("state", repo.getDropState("drop"));
+        repo.setDropState("drop", "state2");
+        assertEquals("state2", repo.getDropState("drop"));
+    }
+
+
 }
