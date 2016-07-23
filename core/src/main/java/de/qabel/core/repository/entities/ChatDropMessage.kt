@@ -1,4 +1,4 @@
-package de.qabel.core.chat
+package de.qabel.core.repository.entities
 
 import de.qabel.core.repository.framework.BaseEntity
 
@@ -9,7 +9,7 @@ data class ChatDropMessage(override var id: Int,
                            val status: Status,
                            val type: MessageType,
                            var payload: String,
-                           override val createdOn: Long) : BaseEntity {
+                           val createdOn: Long) : BaseEntity {
 
     enum class Status(val type: Int) {
         NEW(0), READ(1), PENDING(2), SENT(3);

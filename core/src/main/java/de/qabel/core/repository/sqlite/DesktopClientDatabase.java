@@ -22,7 +22,8 @@ public class DesktopClientDatabase extends AbstractClientDatabase {
             new Migration1460367035Entity(connection),
             new Migration1460367040DropMessage(connection),
             new Migration1460987825PreventDuplicateContacts(connection),
-            new Migration1460997040ChatDropMessage(connection)
+            new Migration1460997040ChatDropMessage(connection),
+            new Migration1460997041RenameDropState(connection)
         };
     }
 

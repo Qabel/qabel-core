@@ -1,7 +1,7 @@
 package de.qabel.core.repository
 
-import de.qabel.core.chat.ChatDropMessage
-import de.qabel.core.chat.ChatDropMessage.*
+import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.config.Contact
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder

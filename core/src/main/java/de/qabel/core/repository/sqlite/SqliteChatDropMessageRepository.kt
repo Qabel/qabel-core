@@ -1,11 +1,10 @@
 package de.qabel.core.repository.sqlite
 
-import de.qabel.core.chat.ChatDropMessage
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
+import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.framework.BaseRepositoryImpl
 import de.qabel.core.repository.framework.QueryBuilder
-import de.qabel.core.repository.sqlite.hydrator.DropMessageHydrator
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
@@ -14,7 +13,7 @@ import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
 
 class SqliteChatDropMessageRepository(val database: ClientDatabase,
                                       entityManager: EntityManager) :
-    BaseRepositoryImpl<ChatDropMessage>(ChatDropMessageDB, DropMessageHydrator(entityManager), database, entityManager),
+    BaseRepositoryImpl<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> {

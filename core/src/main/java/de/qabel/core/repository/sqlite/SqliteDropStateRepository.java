@@ -19,7 +19,7 @@ public class SqliteDropStateRepository implements DropStateRepository {
     @Override
     public String getDropState(String drop) throws EntityNotFoundException, PersistenceException {
         try (PreparedStatement statement = database.prepare(
-            "SELECT `last_request_stamp` FROM " + TABLE_NAME + " WHERE `drop` = ? LIMIT 1"
+            "SELECT e_tag FROM " + TABLE_NAME + " WHERE drop_id = ? LIMIT 1"
         )) {
             statement.setString(1, drop);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -37,7 +37,7 @@ public class SqliteDropStateRepository implements DropStateRepository {
     @Override
     public void setDropState(String drop, String state) throws PersistenceException {
         try (PreparedStatement statement = database.prepare(
-            "INSERT INTO " + TABLE_NAME + " (`drop`, `last_request_stamp`) VALUES (?, ?)"
+            "INSERT INTO " + TABLE_NAME + " (drop_id, e_tag) VALUES (?, ?)"
         )) {
             statement.setString(1, drop);
             statement.setString(2, state);
