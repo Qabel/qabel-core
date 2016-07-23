@@ -27,11 +27,8 @@ class SqliteDropStateRepositoryV2(database: ClientDatabase,
     }
 
     override fun setDropState(dropId: String, state: String) {
-        val dropState = findByDropId(dropId, false) ?: DropState(0, dropId, state)
-        if (dropState.id == 0) {
-            persist(dropState)
-        } else {
-            update(dropState)
+        (findByDropId(dropId, false) ?: DropState(0, dropId, state)).let {
+            persist(it)
         }
     }
 
