@@ -5,24 +5,24 @@ import de.qabel.core.config.SyncSettingItem;
 import java.util.ArrayList;
 
 public class AccountingProfile extends SyncSettingItem {
-    private Integer quota;
+    private long quota;
     private ArrayList<String> prefixes;
 
     public AccountingProfile() {
         prefixes = new ArrayList<>();
     }
 
-    public AccountingProfile(int quota, String prefix) {
+    public AccountingProfile(long quota, String prefix) {
         this.quota = quota;
         prefixes = new ArrayList<>();
         prefixes.add(prefix);
     }
 
-    public Integer getQuota() {
+    public long getQuota() {
         return quota;
     }
 
-    public void setQuota(int quota) {
+    public void setQuota(long quota) {
         this.quota = quota;
     }
 

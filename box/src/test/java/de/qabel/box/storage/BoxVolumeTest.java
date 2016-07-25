@@ -149,7 +149,7 @@ public abstract class BoxVolumeTest {
         InputStream in = new ByteArrayInputStream("testContent".getBytes());
         Long size = 11L;
 
-        DefaultIndexNavigation nav = volume.navigate();
+        DefaultIndexNavigation nav = (DefaultIndexNavigation) volume.navigate();
         nav.setTime(new Function0<Long>() { @Override public Long invoke() { return 1234567890L; }}); // imagine lambda
         BoxFile file = nav.upload("streamedFile", in, size);
         InputStream out = volume2.navigate().download("streamedFile");

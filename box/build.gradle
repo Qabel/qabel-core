@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: "kotlin"
 
 sourceCompatibility = 1.7
-version = '0.7.0'
+version = '0.12.0'
 group = 'de.qabel.box'
 
 ext.sharedManifest = manifest {

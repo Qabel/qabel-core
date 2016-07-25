@@ -1,5 +1,6 @@
 package de.qabel.core.accounting;
 
+import com.sun.org.apache.xpath.internal.operations.Quo;
 import de.qabel.core.config.AccountingServer;
 import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;
@@ -21,31 +22,52 @@ import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
 
-public class AccountingHTTPTest {
+public class BoxHttpClientTest {
 
     public AccountingServer server;
-    private AccountingHTTP accountingHTTP;
+    private BoxClient boxClient;
     private AccountingProfile profile;
     private TestAccountingServerBuilder serverBuilder;
+
+    @Test
+    public void testGetQuota() throws IOException, QblInvalidCredentials {
+        String responseContent = "{\"quota\": 2147483648, \"size\": 15460}";
+        CloseableHttpClientStub httpClient = stubClient("GET", "http://localhost:9697/api/v0/quota/", 200, responseContent);
+        boxClient = new BoxHttpClient(server, profile, httpClient);
+
+        QuotaState expectedQuota = new QuotaState(2147483648L, 15460);
+
+        QuotaState quotaState = boxClient.getQuotaState();
+
+        assertEquals(expectedQuota.getQuota(), quotaState.getQuota());
+        assertEquals(expectedQuota.getSize(), quotaState.getSize());
+    }
+
+    @Test
+    public void testQuotaDescription() {
+        QuotaState quota = new QuotaState(2147483648L, 1073741824L);
+        String expected = "1 GB free / 2 GB";
+        assertEquals(expected, quota.toString());
+    }
 
     @Before
     public void setServer() throws URISyntaxException, IOException, QblInvalidCredentials {
         serverBuilder = new TestAccountingServerBuilder();
         server = serverBuilder.build();
         profile = new AccountingProfile();
-        accountingHTTP = new AccountingHTTP(server, profile);
-        accountingHTTP.login();
-        accountingHTTP.createPrefix();
+        boxClient = new BoxHttpClient(server, profile);
+        boxClient.login();
+        boxClient.createPrefix();
     }
 
     @Test(expected = RuntimeException.class)
     public void testIllegalResource() {
-        accountingHTTP.buildUri("foo/");
+        boxClient.buildUri("foo/");
     }
 
     @Test
     public void testBuildUrl() throws URISyntaxException {
-        URI url = accountingHTTP.buildUri("foobar").build();
+        URI url = boxClient.buildUri("foobar").build();
         assertThat(url.toString(), endsWith("foobar/"));
         assertThat(url.toString(), startsWith(server.getUri().toString()));
 
@@ -60,25 +82,20 @@ public class AccountingHTTPTest {
     public void testLoginFailed() throws IOException, QblInvalidCredentials {
         server.setAuthToken(null);
         server.setPassword("foobar");
-        accountingHTTP.login();
-    }
-
-    @Test
-    public void testGetQuota() throws IOException, QblInvalidCredentials {
-        assertEquals(100, accountingHTTP.getQuota());
+        boxClient.login();
     }
 
     @Test
     public void testAutologin() throws IOException, QblInvalidCredentials {
         server.setAuthToken(null);
-        accountingHTTP.getQuota();
+        boxClient.getQuotaState();
         assertNotNull(server.getAuthToken());
     }
 
     @Test
     public void testGetPrefix() throws IOException, QblInvalidCredentials {
-        assertNotNull(accountingHTTP.getPrefixes());
-        assertNotEquals(accountingHTTP.getPrefixes().size(), 0);
+        assertNotNull(boxClient.getPrefixes());
+        assertNotEquals(boxClient.getPrefixes().size(), 0);
     }
 
     @Rule
@@ -91,7 +108,7 @@ public class AccountingHTTPTest {
 
         String responseContent = "{\"email\": [\"Enter a valid email address.\"]}";
         CloseableHttpClientStub client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 400, responseContent);
-        AccountingHTTP http = new AccountingHTTP(server, profile, client);
+        BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("mymail");
     }
 
@@ -101,7 +118,7 @@ public class AccountingHTTPTest {
         CloseableHttpClientStub client = new CloseableHttpClientStub();
         CloseableHttpResponseStub response = createResponseFromString(200, responseContent);
         client.addResponse("POST", "http://localhost:9696/api/v0/auth/password/reset/", response);
-        AccountingHTTP http = new AccountingHTTP(server, profile, client);
+        BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("valid.email@example.org");
 
         assertEquals("{\"email\":\"" + "valid.email@example.org" + "\"}", client.getBody());
@@ -112,7 +129,7 @@ public class AccountingHTTPTest {
     public void resetPasswordConvertsFormatExceptions() throws Exception {
         String responseContent = "invalid json";
         CloseableHttpClientStub client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 200, responseContent);
-        AccountingHTTP http = new AccountingHTTP(server, profile, client);
+        BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("mymail");
     }
 
@@ -122,9 +139,9 @@ public class AccountingHTTPTest {
 
         String name = "testUser" + rand.nextInt(10000);
         server = serverBuilder.user(name).build();
-        accountingHTTP = new AccountingHTTP(server, profile);
-        accountingHTTP.createBoxAccount(name + "@example.com");
-        accountingHTTP.login();
+        boxClient = new BoxHttpClient(server, profile);
+        boxClient.createBoxAccount(name + "@example.com");
+        boxClient.login();
         assertNotNull("Auth token not set after login", server.getAuthToken());
     }
 
@@ -132,10 +149,10 @@ public class AccountingHTTPTest {
     public void createBoxAccountEMailNotCorrect() throws Exception {
 
         server = serverBuilder.user("testUser").build();
-        accountingHTTP = new AccountingHTTP(server, profile);
+        boxClient = new BoxHttpClient(server, profile);
         Map map = null;
         try {
-            accountingHTTP.createBoxAccount("testUser");
+            boxClient.createBoxAccount("testUser");
             fail("No Exception thrown");
         } catch (QblCreateAccountFailException e) {
             map = e.getMap();
@@ -148,10 +165,10 @@ public class AccountingHTTPTest {
     public void createBoxAccountPsToShort() throws Exception {
 
         server = serverBuilder.user("testUser").pass("12345").build();
-        accountingHTTP = new AccountingHTTP(server, profile);
+        boxClient = new BoxHttpClient(server, profile);
         Map map = null;
         try {
-            accountingHTTP.createBoxAccount("testUser");
+            boxClient.createBoxAccount("testUser");
             fail("No Exception thrown");
         } catch (QblCreateAccountFailException e) {
             map = e.getMap();
@@ -164,10 +181,10 @@ public class AccountingHTTPTest {
     public void createBoxAccountUsernameAlreadyInUse() throws Exception {
 
         server = serverBuilder.user("testuser").build();
-        accountingHTTP = new AccountingHTTP(server, profile);
+        boxClient = new BoxHttpClient(server, profile);
         Map map = null;
         try {
-            accountingHTTP.createBoxAccount("testUser");
+            boxClient.createBoxAccount("testUser");
             fail("No Exception thrown");
         } catch (QblCreateAccountFailException e) {
             map = e.getMap();
@@ -180,10 +197,10 @@ public class AccountingHTTPTest {
     public void createBoxAccountEmailAlreadyInUse() throws Exception {
 
         server = serverBuilder.user("testuser").build();
-        accountingHTTP = new AccountingHTTP(server, profile);
+        boxClient = new BoxHttpClient(server, profile);
         Map map = null;
         try {
-            accountingHTTP.createBoxAccount("testuser");
+            boxClient.createBoxAccount("testuser");
             fail("No Exception thrown");
         } catch (QblCreateAccountFailException e) {
             map = e.getMap();

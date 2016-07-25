@@ -2,7 +2,7 @@ package de.qabel.box.storage
 
 import java.util.*
 
-open class BoxFile (
+open class BoxFile(
     val prefix: String,
     val block: String,
     name: String,
@@ -12,6 +12,15 @@ open class BoxFile (
     var hashed: Hash? = null,
     var shared: Share? = null
 ) : BoxObject(name), BoxFileState {
+
+    constructor (prefix: String,
+                 block: String,
+                 name: String,
+                 size: Long,
+                 mtime: Long,
+                 key: ByteArray) : this(prefix, block, name, size, mtime, key, null, null)
+
+
     init {
         this.key = key
     }
