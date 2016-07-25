@@ -2,7 +2,7 @@ package de.qabel.core.accounting;
 
 import org.apache.commons.io.FileUtils;
 
-class QuotaState {
+public class QuotaState {
     private long quota;
     private long size;
 
