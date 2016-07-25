@@ -1,5 +1,6 @@
 package de.qabel.core.repository.sqlite.schemas
 
+import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.framework.DBField
@@ -41,9 +42,12 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         statement.setTimestamp(i, Timestamp(model.createdOn))
     }
 
-    override fun hydrateOne(resultSet: ResultSet): ChatDropMessage {
-        return ChatDropMessage(
-            resultSet.getInt(ID.alias()),
+    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): ChatDropMessage {
+        val id = resultSet.getInt(ID.alias())
+        if (entityManager.contains(ENTITY_CLASS, id)) {
+            return entityManager.get(ENTITY_CLASS, id)
+        }
+        return ChatDropMessage(id,
             resultSet.getInt(CONTACT_ID.alias()),
             resultSet.getInt(IDENTITY_ID.alias()),
             toEnum(Direction.values(), resultSet.getInt(DIRECTION.alias()), { it.type }),

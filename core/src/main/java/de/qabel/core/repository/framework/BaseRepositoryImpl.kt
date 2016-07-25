@@ -66,7 +66,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     internal fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
         return executeQuery(queryBuilder, { it ->
             if (it.next()) {
-                hydrator.hydrateOne(it)
+                hydrator.hydrateOne(it, entityManager)
             } else throw EntityNotFoundException("Cannot find single result")
         })
     }
@@ -79,7 +79,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         return executeQuery(queryBuilder, { it ->
             val results = mutableListOf<X>()
             while (it.next()) {
-                results.add(hydrator.hydrateOne(it))
+                results.add(hydrator.hydrateOne(it, entityManager))
             }
             results
         })

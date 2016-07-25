@@ -1,7 +1,6 @@
 package de.qabel.core.repository.framework
 
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 
 
 interface DBRelation<T : BaseEntity> : ResultAdapter<T> {
@@ -18,6 +17,3 @@ interface DBRelation<T : BaseEntity> : ResultAdapter<T> {
 
 }
 
-interface ResultAdapter<T> {
-    fun hydrateOne(resultSet: ResultSet): T
-}
