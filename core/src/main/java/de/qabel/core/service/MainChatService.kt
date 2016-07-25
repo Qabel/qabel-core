@@ -17,7 +17,7 @@ class MainChatService(val dropConnector: DropConnector,
                       val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
                       val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
 
-    fun sendMessage(message: ChatDropMessage) {
+    override fun sendMessage(message: ChatDropMessage) {
         val sender = identityRepository.find(message.identityId)
         val receiver = contactRepository.find(message.contactId)
 
@@ -29,7 +29,7 @@ class MainChatService(val dropConnector: DropConnector,
         chatDropMessageRepository.update(message)
     }
 
-    fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
+    override fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
         val identities = identityRepository.findAll()
         val resultMap = DefaultHashMap<Identity, MutableList<ChatDropMessage>>({ mutableListOf() })
         identities.entities.forEach { identity ->
