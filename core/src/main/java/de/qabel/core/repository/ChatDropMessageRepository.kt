@@ -9,4 +9,7 @@ interface ChatDropMessageRepository : BaseRepository<ChatDropMessage> {
 
     open fun findNew(identityId: Int): List<ChatDropMessage>
     open fun findLatest(identityId: Int): List<ChatDropMessage>
+
+    fun exists(chatDropMessage : ChatDropMessage): Boolean
+
 }

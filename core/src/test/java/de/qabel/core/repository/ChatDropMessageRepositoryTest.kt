@@ -127,7 +127,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
         assertThat(current.contactId, equalTo(expected.contactId))
         assertThat(current.direction, equalTo(expected.direction))
         assertThat(current.status, equalTo(expected.status))
-        assertThat(current.type, equalTo(expected.type))
+        assertThat(current.messageType, equalTo(expected.messageType))
         assertThat(current.payload, equalTo(expected.payload))
         assertThat(current.createdOn, equalTo(expected.createdOn))
     }

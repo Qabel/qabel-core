@@ -5,8 +5,8 @@ import de.qabel.core.repository.framework.BaseEntity
 data class ChatDropMessage(val contactId: Int,
                            val identityId: Int,
                            val direction: Direction,
-                           val status: Status,
-                           val type: MessageType,
+                           var status: Status,
+                           val messageType: MessageType,
                            val payload: String,
                            val createdOn: Long,
                            override var id: Int = 0) : BaseEntity {

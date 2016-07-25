@@ -1,5 +1,6 @@
 package de.qabel.core.repository.sqlite
 
+import de.qabel.core.drop.DropURL
 import de.qabel.core.repository.DropStateRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.DropState
@@ -31,6 +32,14 @@ class SqliteDropStateRepository(database: ClientDatabase,
             it.eTag = state
             update(it)
         } ?: DropState(dropId, state).let { persist(it) }
+
+    override fun getDropState(dropUrl: DropURL): DropState {
+        return findByDropId(dropUrl.toString(), false) ?: DropState(dropUrl.toString())
+    }
+
+    override fun setDropState(dropState: DropState) {
+        if (dropState.id == 0) persist(dropState) else update(dropState)
+    }
 
 }
 

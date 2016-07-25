@@ -3,6 +3,7 @@ package de.qabel.core.repository.sqlite
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepositoryImpl
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
@@ -42,6 +43,16 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
         queryBuilder.groupBy(ChatDropMessageDB.CONTACT_ID)
 
         return getResultList(queryBuilder)
+    }
+
+    override fun exists(chatDropMessage: ChatDropMessage): Boolean {
+        val queryBuilder = createEntityQuery()
+        queryBuilder.whereAndEquals(ChatDropMessageDB.IDENTITY_ID, chatDropMessage.identityId)
+        queryBuilder.whereAndEquals(ChatDropMessageDB.CONTACT_ID, chatDropMessage.identityId)
+        queryBuilder.whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
+        queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
+        queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD_TYPE, chatDropMessage.messageType.type)
+        return try { getSingleResult<ChatDropMessageDB>(queryBuilder); true } catch(ex : EntityNotFoundException) { false }
     }
 
 }

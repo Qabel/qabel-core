@@ -15,6 +15,8 @@ class InMemoryContactRepository : ContactRepository {
     val contacts: MutableMap<String, Contact> = mutableMapOf()
     val identityMapping: DefaultHashMap<Identity, MutableSet<String>> = DefaultHashMap({ key -> HashSet() })
 
+    override fun find(id: Int?): Contact = contacts.values.find({ it.id == id }) ?: throw EntityNotFoundException("Contact not found")
+
     override fun find(identity: Identity): Contacts {
         val identityContacts = identityMapping.getOrDefault(identity);
         val resultContacts = Contacts(identity);
@@ -25,6 +27,7 @@ class InMemoryContactRepository : ContactRepository {
     }
 
     override fun save(contact: Contact, identity: Identity) {
+        contact.id = contacts.size + 1
         contacts.put(contact.keyIdentifier, contact)
         identityMapping.getOrDefault(identity).add(contact.keyIdentifier);
     }

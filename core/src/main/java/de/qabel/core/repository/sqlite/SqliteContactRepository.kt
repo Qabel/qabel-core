@@ -31,7 +31,7 @@ class SqliteContactRepository(database: ClientDatabase,
         SqliteDropUrlRepository(database, DropURLHydrator())), ContactDB.TABLE_NAME), ContactRepository {
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
-    internal fun find(id: Int?): Contact {
+    override fun find(id: Int?): Contact {
         return findBy("id=?", id)
     }
 
