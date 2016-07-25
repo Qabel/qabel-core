@@ -11,8 +11,6 @@ class DefaultHashMap<K,V>(private val valueFactory: (K) -> V) : HashMap<K, V>() 
         return super.get(key)
     }
 
-    fun getOrDefault(key: K): V {
-        return get(key)!!;
-    }
+    fun getOrDefault(key: K): V = get(key)!!
 
 }
