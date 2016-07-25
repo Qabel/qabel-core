@@ -1,12 +1,12 @@
 package de.qabel.core.repository
 
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.config.Contact
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteChatDropMessageRepository
@@ -40,7 +40,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
         contactRepo.save(contactA, identityA)
         contactRepo.save(contactB, identityA)
 
-        message = ChatDropMessage(0, contactA.id,
+        message = ChatDropMessage(contactA.id,
             identityA.id,
             Direction.INCOMING,
             Status.READ,
@@ -80,7 +80,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
     fun testUpdate() {
         dropRepo.persist(message)
 
-        message.payload = createTextPayload("barfoo")
+        message = message.copy(payload =  createTextPayload("barfoo"))
         dropRepo.update(message)
 
         val storedMessage = dropRepo.findById(message.id)

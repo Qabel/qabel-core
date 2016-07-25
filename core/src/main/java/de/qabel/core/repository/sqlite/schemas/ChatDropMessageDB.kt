@@ -47,14 +47,14 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         if (entityManager.contains(ENTITY_CLASS, id)) {
             return entityManager.get(ENTITY_CLASS, id)
         }
-        return ChatDropMessage(id,
-            resultSet.getInt(CONTACT_ID.alias()),
+        return ChatDropMessage(resultSet.getInt(CONTACT_ID.alias()),
             resultSet.getInt(IDENTITY_ID.alias()),
             toEnum(Direction.values(), resultSet.getInt(DIRECTION.alias()), { it.type }),
             toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),
-            resultSet.getLong(CREATED_ON.alias()));
+            resultSet.getLong(CREATED_ON.alias()),
+            id);
     }
 
     fun <X : Enum<X>, S : Any> toEnum(enum: Array<X>, value: S, extract: (enum: X) -> S) =

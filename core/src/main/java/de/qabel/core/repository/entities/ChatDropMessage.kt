@@ -2,14 +2,14 @@ package de.qabel.core.repository.entities
 
 import de.qabel.core.repository.framework.BaseEntity
 
-data class ChatDropMessage(override var id: Int,
-                           val contactId: Int,
-                           var identityId: Int,
+data class ChatDropMessage(val contactId: Int,
+                           val identityId: Int,
                            val direction: Direction,
                            val status: Status,
                            val type: MessageType,
-                           var payload: String,
-                           val createdOn: Long) : BaseEntity {
+                           val payload: String,
+                           val createdOn: Long,
+                           override var id: Int = 0) : BaseEntity {
 
     enum class Status(val type: Int) {
         NEW(0), READ(1), PENDING(2), SENT(3);
