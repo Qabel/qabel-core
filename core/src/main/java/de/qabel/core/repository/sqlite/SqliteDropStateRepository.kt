@@ -27,6 +27,10 @@ class SqliteDropStateRepository(database: ClientDatabase,
     }
 
     override fun setDropState(dropId: String, state: String) =
-        DropState(dropId, state).let { persist(it) }
+        findByDropId(dropId, false)?.let {
+            it.eTag = state
+            update(it)
+        } ?: DropState(dropId, state).let { persist(it) }
+
 }
 
