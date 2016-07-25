@@ -4,29 +4,28 @@ package de.qabel.core.repository.framework
 object QblStatements {
 
     fun <T : BaseEntity> createInsert(relation: DBRelation<T>) =
-            StringBuilder("INSERT INTO ")
-                    .append(relation.TABLE_NAME)
-                    .append("(")
-                    .append(relation.ENTITY_FIELDS.joinToString { it.name })
-                    .append(") VALUES (")
-                    .append(relation.ENTITY_FIELDS.joinToString { "?" })
-                    .append(")").toString()
+        "INSERT INTO " +
+            relation.TABLE_NAME +
+            "(" +
+            relation.ENTITY_FIELDS.joinToString { it.name } +
+            ") VALUES (" +
+            relation.ENTITY_FIELDS.joinToString { "?" } +
+            ")"
 
     fun <T : BaseEntity> createUpdate(relation: DBRelation<T>) =
-            StringBuilder("UPDATE ")
-                    .append(relation.TABLE_NAME)
-                    .append(" SET ")
-                    .append(relation.ENTITY_FIELDS.joinToString { it.name + "=?" })
-                    .append(" WHERE ")
-                    .append(relation.ID.name)
-                    .append("=?").toString()
+        "UPDATE " +
+            relation.TABLE_NAME +
+            " SET " +
+            relation.ENTITY_FIELDS.joinToString { it.name + "=?" } +
+            " WHERE " +
+            relation.ID.name +
+            "=?"
 
     fun <T : BaseEntity> createDelete(relation: DBRelation<T>) =
-            StringBuilder("DELETE FROM ")
-                    .append(relation.TABLE_NAME)
-                    .append(" WHERE ")
-                    .append(relation.ID.name)
-                    .append("=?").toString()
+        "DELETE FROM " + relation.TABLE_NAME +
+            " WHERE " +
+            relation.ID.name +
+            "=?"
 
     fun <T : BaseEntity> createEntityQuery(relation: DBRelation<T>): QueryBuilder {
         val query = QueryBuilder();
