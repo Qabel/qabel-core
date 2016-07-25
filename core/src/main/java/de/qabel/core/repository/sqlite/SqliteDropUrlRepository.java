@@ -6,6 +6,8 @@ import de.qabel.core.config.Entity;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.repository.exception.PersistenceException;
+import de.qabel.core.util.CheckedFunction;
+import de.qabel.core.util.LazyHashMap;
 
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
@@ -73,7 +75,7 @@ public class SqliteDropUrlRepository extends AbstractSqliteRepository<DropURL> {
 
     public Map<Integer, List<DropURL>> findDropUrls(List<Integer> contactIds) throws PersistenceException {
         try {
-            Map<Integer, List<DropURL>> contactDropUrlMap = new HashMap<>();
+            LazyHashMap<Integer, List<DropURL>> contactDropUrlMap = new LazyHashMap<>();
             try (PreparedStatement statement = database.prepare(
                 "SELECT contact_id, url " +
                     "FROM " + TABLE_NAME + " urls " +
@@ -82,12 +84,13 @@ public class SqliteDropUrlRepository extends AbstractSqliteRepository<DropURL> {
                 try (ResultSet results = statement.executeQuery()) {
                     while (results.next()) {
                         int id = results.getInt(1);
-                        List<DropURL> identityKeys = contactDropUrlMap.get(id);
-                        if (identityKeys == null) {
-                            identityKeys = new LinkedList<>();
-                            contactDropUrlMap.put(id, identityKeys);
-                        }
-                        identityKeys.add(new DropURL(results.getString(2)));
+                        List<DropURL> dropURLList = contactDropUrlMap.getOrDefault(id, new CheckedFunction<Integer, List<DropURL>>() {
+                            @Override
+                            public List<DropURL> apply(Integer integer) throws Exception {
+                                return new LinkedList<>();
+                            }
+                        });
+                        dropURLList.add(new DropURL(results.getString(2)));
                     }
                 }
             }
