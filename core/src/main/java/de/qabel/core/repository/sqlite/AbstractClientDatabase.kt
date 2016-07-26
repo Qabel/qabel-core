@@ -32,16 +32,10 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
 
     @Throws(MigrationException::class)
     override fun migrate(toVersion: Long, fromVersion: Long) {
-        for (migration in getMigrations(connection)) {
-            if (migration.version <= fromVersion) {
-                continue
-            }
-            if (migration.version > toVersion) {
-                break
-            }
-
-            migrate(migration)
-        }
+        getMigrations(connection)
+            .filter { it.version in fromVersion..toVersion}
+            .sortedBy { it.version }
+            .forEach { migrate(it) }
     }
 
     @Throws(MigrationException::class)
@@ -62,10 +56,10 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
     @Throws(SQLException::class)
     fun tableExists(tableName: String): Boolean {
         connection.prepareStatement(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?").use { statement ->
-            statement.setString(1, tableName)
-            statement.execute()
-            statement.getResultSet().use({ rs ->
+                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?").use {
+            it.setString(1, tableName)
+            it.execute()
+            it.resultSet.use({ rs ->
                 rs.next()
                 return rs.getInt(1) > 0
             })
@@ -93,6 +87,6 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(DesktopClientDatabase::class.java)
+        private val logger = LoggerFactory.getLogger(AbstractClientDatabase::class.java)
     }
 }

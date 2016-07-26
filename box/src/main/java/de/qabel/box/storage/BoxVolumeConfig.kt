@@ -11,11 +11,11 @@ class BoxVolumeConfig(
     val writeBackend: StorageWriteBackend,
     var defaultHashAlgorithm: String,
     val tempDir: File,
-    val directoryMetadataFactoryFactory: (BoxVolumeConfig) -> DirectoryMetadataFactory =
-        {with (it) { JdbcDirectoryMetadataFactory(tempDir, deviceId) }},
-    val fileMetadataFactoryFactory: (BoxVolumeConfig) -> FileMetadataFactory =
-        {with (it) { JdbcFileMetadataFactory(tempDir) }}
+    val directoryMetadataFactoryFactory: (File, ByteArray) -> DirectoryMetadataFactory =
+        { tempDir, deviceId -> JdbcDirectoryMetadataFactory(tempDir, deviceId) },
+    val fileMetadataFactoryFactory: (File) -> FileMetadataFactory =
+        { JdbcFileMetadataFactory(it) }
 ) {
-    val directoryFactory: DirectoryMetadataFactory by lazy { directoryMetadataFactoryFactory(this) }
-    val fileFactory: FileMetadataFactory by lazy { fileMetadataFactoryFactory(this) }
+    val directoryFactory: DirectoryMetadataFactory by lazy { directoryMetadataFactoryFactory(tempDir, deviceId) }
+    val fileFactory: FileMetadataFactory by lazy { fileMetadataFactoryFactory(tempDir) }
 }

@@ -26,9 +26,7 @@ interface ClientDatabase {
     /**
      * migrate from fromVersion to toVersion
      * @param toVersion version of the migration to begin with
-     * *
      * @param fromVersion version of the last migration to execute
-     * *
      * @throws MigrationException
      */
     @Throws(MigrationException::class)
