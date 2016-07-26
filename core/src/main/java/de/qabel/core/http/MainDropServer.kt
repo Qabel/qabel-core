@@ -4,6 +4,8 @@ import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblDropInvalidURL
 import de.qabel.core.http.DropServerHttp.*
 import org.apache.commons.io.IOUtils
+import org.apache.http.client.methods.HttpGet
+import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.RequestBuilder
 import org.apache.http.entity.ByteArrayEntity
 import org.apache.http.entity.ContentType
@@ -16,10 +18,9 @@ class MainDropServer : DropServerHttp {
 
     override fun sendBytes(uri: URI, messageBytes: ByteArray) {
         HttpClients.createDefault().use {
-            val request = RequestBuilder.post(uri)
-                .addHeader(QblHeaders.AUTHORIZATION, DropServerHttp.DEFAULT_AUTH_TOKEN)
-                .setEntity(ByteArrayEntity(messageBytes, ContentType.APPLICATION_OCTET_STREAM))
-                .build()
+            val request = HttpPost(uri);
+            request.addHeader(QblHeaders.AUTHORIZATION, DropServerHttp.DEFAULT_AUTH_TOKEN)
+            request.entity = ByteArrayEntity(messageBytes, ContentType.APPLICATION_OCTET_STREAM)
             it.execute(request).use {
                 when (it.statusLine.statusCode) {
                     QblStatusCodes.OK -> Unit
@@ -33,11 +34,11 @@ class MainDropServer : DropServerHttp {
 
     override fun receiveMessageBytes(uri: URI, eTag: String): Triple<Int, String, Collection<ByteArray>> {
         HttpClients.createDefault().use {
-            it.execute(RequestBuilder.get(uri).apply {
+            it.execute(HttpGet(uri).apply {
                 if (!eTag.isEmpty()) {
                     addHeader(QblHeaders.X_QABEL_LATEST, eTag)
                 }
-            }.build()).use { response ->
+            }).use { response ->
                 val statusCode = response.statusLine.statusCode
                 val messages: List<ByteArray> = when (statusCode) {
                     QblStatusCodes.OK -> {
