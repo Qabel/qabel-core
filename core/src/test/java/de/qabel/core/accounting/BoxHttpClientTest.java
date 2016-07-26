@@ -1,6 +1,5 @@
 package de.qabel.core.accounting;
 
-import com.sun.org.apache.xpath.internal.operations.Quo;
 import de.qabel.core.config.AccountingServer;
 import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;

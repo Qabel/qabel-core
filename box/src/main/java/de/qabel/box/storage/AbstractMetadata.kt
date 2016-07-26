@@ -3,6 +3,7 @@ package de.qabel.box.storage
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.tryWith
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -58,10 +59,3 @@ abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
     }
 }
 
-inline fun <T:AutoCloseable,R> tryWith(closeable: T, block: T.() -> R): R {
-    try {
-        return block(closeable)
-    } finally {
-        closeable.close()
-    }
-}

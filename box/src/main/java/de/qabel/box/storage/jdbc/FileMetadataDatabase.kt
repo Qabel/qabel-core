@@ -1,13 +1,16 @@
 package de.qabel.box.storage.jdbc
 
-import de.qabel.box.storage.jdbc.migration.FMMigration1468173861Init
-import de.qabel.box.storage.jdbc.migration.FMMigration1468248484Hash
+import de.qabel.box.storage.DatabaseMigrationProvider
+import de.qabel.box.storage.jdbc.migration.FileMetadataMigrations
 import de.qabel.core.repository.sqlite.AbstractClientDatabase
+import de.qabel.core.repository.sqlite.PragmaVersionAdapter
+import de.qabel.core.repository.sqlite.VersionAdapter
 import java.sql.Connection
 
-class FileMetadataDatabase(connection: Connection) : AbstractClientDatabase(connection) {
-    override fun getMigrations(connection: Connection) = arrayOf(
-        FMMigration1468173861Init(connection),
-        FMMigration1468248484Hash(connection)
-    )
+class FileMetadataDatabase(
+    connection: Connection,
+    versionAdapter: VersionAdapter = PragmaVersionAdapter(connection)):
+    AbstractClientDatabase(connection), DatabaseMigrationProvider by FileMetadataMigrations() {
+
+    override var version by versionAdapter
 }

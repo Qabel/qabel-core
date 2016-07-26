@@ -1,7 +1,5 @@
 package de.qabel.core.http;
 
-import de.qabel.core.http.DropHTTP;
-import de.qabel.core.http.HTTPResult;
 import org.junit.Before;
 import org.junit.Test;
 
