@@ -5,6 +5,7 @@ import de.qabel.core.config.Identity
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepositoryImpl
 import de.qabel.core.repository.framework.QueryBuilder
@@ -23,7 +24,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> {
         val queryBuilder = createEntityQuery()
         queryBuilder.whereAndEquals(CONTACT_ID, contactId)
-        queryBuilder.whereAndEquals(ChatDropMessageDB.IDENTITY_ID, identityId)
+        queryBuilder.whereAndEquals(IDENTITY_ID, identityId)
         queryBuilder.orderBy(ChatDropMessageDB.CREATED_ON.exp())
         return getResultList(queryBuilder)
     }
@@ -31,7 +32,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     override fun findNew(identityId: Int): List<ChatDropMessage> {
         val queryBuilder = createEntityQuery()
         queryBuilder.whereAndEquals(IDENTITY_ID, identityId)
-        queryBuilder.whereAndEquals(STATUS, ChatDropMessage.Status.NEW.type)
+        queryBuilder.whereAndEquals(STATUS, Status.NEW.type)
         return getResultList(queryBuilder)
     }
 
@@ -50,7 +51,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
 
     override fun exists(chatDropMessage: ChatDropMessage): Boolean {
         val queryBuilder = createEntityQuery()
-        queryBuilder.whereAndEquals(ChatDropMessageDB.IDENTITY_ID, chatDropMessage.identityId)
+        queryBuilder.whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
         queryBuilder.whereAndEquals(ChatDropMessageDB.CONTACT_ID, chatDropMessage.identityId)
         queryBuilder.whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
         queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
@@ -69,8 +70,8 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
             " AND " + IDENTITY_ID.name + "=?" +
             " AND " + CONTACT_ID.name + "=?"
         executeStatement(statement, {
-            it.setInt(1, ChatDropMessage.Status.READ.type)
-            it.setInt(2, ChatDropMessage.Direction.INCOMING.type)
+            it.setInt(1, Status.READ.type)
+            it.setInt(2, Direction.INCOMING.type)
             it.setInt(3, identity.id)
             it.setInt(4, contact.id)
         })
