@@ -315,8 +315,7 @@ class SqliteContactRepository(database: ClientDatabase,
 
         return contacts.map { contact ->
             contactsDropUrls[contact.id]?.forEach { dropUrl -> contact.addDrop(dropUrl) }
-            Pair(contact,
-                contactIdentityKeys.mapEntities(contact.id, identities))
+            Pair(contact, contactIdentityKeys.mapEntities(contact.id, identities))
         }
     }
 }

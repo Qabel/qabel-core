@@ -50,7 +50,7 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
         return dropRepo
     }
 
-    private fun createTextPayload(text: String) = "{\"msg\": \"$text\"}"
+    private fun createTextPayload(text: String) = MessagePayload.TextMessage(text)
 
     @Test
     fun testFindById() {

@@ -1,4 +1,4 @@
-package de.qabel.core.http
+package de.qabel.core.service
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -6,12 +6,13 @@ import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.toContact
+import de.qabel.core.http.MainDropConnector
+import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
 import de.qabel.core.repository.inmemory.InMemoryIdentityRepository
-import de.qabel.core.service.MainChatService
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.assertThat
@@ -73,7 +74,8 @@ class ChatServiceTest {
         assertThat(result.values.first(), hasSize(1))
         val received = result.values.first().first();
         assertThat(received.contactId, equalTo(identityA.id))
-        assertThat(received.payload, equalTo(message.payload))
+        assertThat(ChatDropMessage.MessagePayload.encode(received.messageType, received.payload),
+            equalTo(ChatDropMessage.MessagePayload.encode(message.messageType, message.payload)))
         assertThat(received.messageType, equalTo(message.messageType))
         assertThat(received.status, equalTo(ChatDropMessage.Status.NEW))
     }

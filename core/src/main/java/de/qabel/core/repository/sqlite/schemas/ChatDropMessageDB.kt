@@ -38,7 +38,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         statement.setInt(i++, model.direction.type)
         statement.setInt(i++, model.status.type)
         statement.setString(i++, model.messageType.type)
-        statement.setString(i++, model.payload)
+        statement.setString(i++, MessagePayload.encode(model.messageType, model.payload))
         statement.setTimestamp(i, Timestamp(model.createdOn))
     }
 

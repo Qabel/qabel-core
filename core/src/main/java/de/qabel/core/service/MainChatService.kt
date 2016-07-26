@@ -65,6 +65,7 @@ class MainChatService(val dropConnector: DropConnector,
             Status.NEW, type, dropMessage.dropPayload, dropMessage.creationDate.time)
     }
 
-    fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage = DropMessage(identity, payload, messageType.type)
+    fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
+        DropMessage(identity, MessagePayload.encode(messageType, payload), messageType.type)
 
 }

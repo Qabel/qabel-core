@@ -49,7 +49,7 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
                 chatDropMessage.contactId == it.contactId &&
                 chatDropMessage.identityId == it.identityId &&
                 chatDropMessage.messageType == it.messageType &&
-                chatDropMessage.payload == it.payload
+                chatDropMessage.payload.toString() == it.payload.toString()
         }
     }
 
