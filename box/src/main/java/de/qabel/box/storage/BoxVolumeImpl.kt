@@ -57,7 +57,7 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
     )
 
     @Throws(ClassNotFoundException::class)
-    internal open fun loadDriver() {
+    protected open fun loadDriver() {
         logger.info("Loading PC sqlite driver")
         Class.forName("org.sqlite.JDBC")
     }
