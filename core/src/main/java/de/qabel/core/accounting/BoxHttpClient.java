@@ -25,27 +25,27 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class AccountingHTTP {
-
-    private static final Logger logger = LoggerFactory.getLogger(AccountingHTTP.class.getName());
-    public static final String EMAIL_KEY = "email";
+public class BoxHttpClient implements BoxClient {
+    private static final String EMAIL_KEY = "email";
+    private static final Logger logger = LoggerFactory.getLogger(BoxHttpClient.class.getName());
 
     private AccountingServer server;
     private final CloseableHttpClient httpclient;
     private Gson gson;
     private AccountingProfile profile;
 
-    public AccountingHTTP(AccountingServer server, AccountingProfile profile) {
+    public BoxHttpClient(AccountingServer server, AccountingProfile profile) {
         this(server, profile, HttpClients.createMinimal());
     }
 
-    public AccountingHTTP(AccountingServer server, AccountingProfile profile, CloseableHttpClient httpclient) {
+    BoxHttpClient(AccountingServer server, AccountingProfile profile, CloseableHttpClient httpclient) {
         this.server = server;
         this.profile = profile;
         this.httpclient = httpclient;
         gson = new Gson();
     }
 
+    @Override
     public void login() throws IOException, QblInvalidCredentials {
         URI uri;
         try {
@@ -86,11 +86,42 @@ public class AccountingHTTP {
         }
     }
 
-    public int getQuota() throws IOException, QblInvalidCredentials {
+    public QuotaState getQuotaState() throws IOException, QblInvalidCredentials {
         getAuthToken();
-        return 100;    //TODO implement when servers support it
+        URI uri;
+        try {
+            uri = buildBlockUri("api/v0/quota").build();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("Url building failed", e);
+        }
+
+        HttpGet httpGet = new HttpGet(uri);
+        httpGet.setHeader("Accept", "application/json");
+        authorize(httpGet);
+
+        try (CloseableHttpResponse response = httpclient.execute(httpGet)) {
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode >= 400) {
+                throw new IllegalStateException(
+                    "Server responded with " + statusCode + ": " + response.getStatusLine().getReasonPhrase()
+                );
+            }
+            HttpEntity entity = response.getEntity();
+            if (entity == null) {
+                throw new IOException("No answer from quotaState");
+            }
+            String responseString = EntityUtils.toString(entity);
+            try {
+                QuotaState quotaState = gson.fromJson(responseString, QuotaState.class);
+                profile.setQuota(quotaState.getQuota());
+                return quotaState;
+            } catch (JsonSyntaxException e) {
+                throw new IllegalStateException("non-json response from server: " + responseString, e);
+            }
+        }
     }
 
+    @Override
     public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
         request.addHeader("Authorization", "Token " + getAuthToken());
     }
@@ -102,6 +133,7 @@ public class AccountingHTTP {
         return server.getAuthToken();
     }
 
+    @Override
     public void updatePrefixes() throws IOException, QblInvalidCredentials {
         ArrayList<String> prefixes;
         URI uri;
@@ -135,6 +167,7 @@ public class AccountingHTTP {
         }
     }
 
+    @Override
     public void createPrefix() throws IOException, QblInvalidCredentials {
         URI uri;
         try {
@@ -171,6 +204,7 @@ public class AccountingHTTP {
         return buildResourceUri(resource, server.getBlockUri());
     }
 
+    @Override
     public ArrayList<String> getPrefixes() throws IOException, QblInvalidCredentials {
         ArrayList<String> prefixes = profile.getPrefixes();
         if (prefixes.size() == 0) {
@@ -184,6 +218,7 @@ public class AccountingHTTP {
         return profile;
     }
 
+    @Override
     public void resetPassword(String email) throws IOException {
         URI uri;
         try {
@@ -230,6 +265,7 @@ public class AccountingHTTP {
         }
     }
 
+    @Override
     public void createBoxAccount(String email) throws IOException, QblCreateAccountFailException {
         URI uri;
 

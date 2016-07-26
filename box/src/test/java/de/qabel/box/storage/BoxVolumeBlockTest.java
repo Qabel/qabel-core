@@ -2,7 +2,8 @@ package de.qabel.box.storage;
 
 import de.qabel.box.http.BlockReadBackend;
 import de.qabel.box.http.BlockWriteBackend;
-import de.qabel.core.accounting.AccountingHTTP;
+import de.qabel.core.accounting.BoxClient;
+import de.qabel.core.accounting.BoxHttpClient;
 import de.qabel.core.accounting.AccountingProfile;
 import de.qabel.core.config.AccountingServer;
 import de.qabel.core.crypto.QblECKeyPair;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class BoxVolumeBlockTest extends BoxVolumeTest {
     private BlockReadBackend readBackend;
-    private static AccountingHTTP accountingHTTP;
+    private static BoxClient accountingHTTP;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -29,7 +30,7 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
     protected void setUpVolume() {
         try {
             AccountingServer server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"), "testuser", "testuser");
-            accountingHTTP = new AccountingHTTP(server, new AccountingProfile());
+            accountingHTTP = new BoxHttpClient(server, new AccountingProfile());
             QblECKeyPair keyPair = new QblECKeyPair();
 
             List<String> prefixes = accountingHTTP.getPrefixes();
@@ -44,7 +45,7 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
             readBackend = new BlockReadBackend(root, accountingHTTP);
 
 
-            volume = new BoxVolume(
+            volume = new BoxVolumeImpl(
                     readBackend,
                     new BlockWriteBackend(root, accountingHTTP),
                     keyPair,
@@ -52,7 +53,7 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
                     volumeTmpDir,
                     prefix
             );
-            volume2 = new BoxVolume(
+            volume2 = new BoxVolumeImpl(
                     new BlockReadBackend(root, accountingHTTP),
                     new BlockWriteBackend(root, accountingHTTP),
                     keyPair,

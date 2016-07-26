@@ -4,6 +4,7 @@ import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.tryWith
 import java.io.File
 import java.sql.SQLException
 

@@ -3,6 +3,7 @@ package de.qabel.box.storage.jdbc
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.*
 import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.tryWith
 import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
 import java.io.File
@@ -13,28 +14,12 @@ import java.util.*
 
 class JdbcDirectoryMetadata(
     connection: ClientDatabase,
-    deviceId: ByteArray,
+    var deviceId: ByteArray,
     path: File,
-    override val fileName: String,
-    var tempDir: File
+    override val fileName: String
 ) : AbstractMetadata(connection, path), DirectoryMetadata {
-    var deviceId: ByteArray
     var dmRoot: String? = null
 
-    constructor(
-        connection: ClientDatabase,
-        dmRoot: String,
-        deviceId: ByteArray,
-        path: File,
-        fileName: String,
-        tempDir: File
-    ) : this(connection, deviceId, path, fileName, tempDir) {
-        this.dmRoot = dmRoot
-    }
-
-    init {
-        this.deviceId = deviceId
-    }
 
     @Throws(SQLException::class) fun insertRoot(root: String) {
         tryWith(connection.prepare("INSERT OR REPLACE INTO meta (name, value) VALUES ('root', ?)")) {
@@ -180,14 +165,14 @@ class JdbcDirectoryMetadata(
                     while (next()) {
                         var i = 0
                         files.add(BoxFile(
-                                getString(++i),
-                                getString(++i),
-                                getString(++i),
-                                getLong(++i),
-                                getLong(++i) * 1000,
-                                getBytes(++i),
-                                Hash.create(getBytes(++i), getString(++i)),
-                                Share.create(getString(++i), getBytes(++i))
+                            getString(++i),
+                            getString(++i),
+                            getString(++i),
+                            getLong(++i),
+                            getLong(++i) * 1000,
+                            getBytes(++i),
+                            Hash.create(getBytes(++i), getString(++i)),
+                            Share.create(getString(++i), getBytes(++i))
                         ))
                     }
                     return files
@@ -354,7 +339,7 @@ class JdbcDirectoryMetadata(
     override fun getFile(name: String): BoxFile? {
         try {
             tryWith(connection.prepare(
-                    """SELECT
+                """SELECT
                             prefix,
                             block,
                             name,
@@ -373,14 +358,14 @@ class JdbcDirectoryMetadata(
                     if (next()) {
                         var i = 0
                         return BoxFile(
-                                prefix = getString(++i),
-                                block = getString(++i),
-                                name = getString(++i),
-                                size = getLong(++i),
-                                mtime = getLong(++i) * 1000,
-                                key = getBytes(++i),
-                                hashed = Hash.create(getBytes(++i), getString(++i)),
-                                shared = Share.create(getString(++i), getBytes(++i))
+                            prefix = getString(++i),
+                            block = getString(++i),
+                            name = getString(++i),
+                            size = getLong(++i),
+                            mtime = getLong(++i) * 1000,
+                            key = getBytes(++i),
+                            hashed = Hash.create(getBytes(++i), getString(++i)),
+                            shared = Share.create(getString(++i), getBytes(++i))
                         )
                     }
                     return null
@@ -422,7 +407,7 @@ class JdbcDirectoryMetadata(
         for (type in 0..2) {
             try {
                 tryWith(connection.prepare(
-                        "SELECT name FROM " + types[type] + " WHERE name=?")) {
+                    "SELECT name FROM " + types[type] + " WHERE name=?")) {
                     setString(1, name)
                     tryWith(executeQuery()) {
                         if (next()) {

@@ -5,14 +5,19 @@ import de.qabel.box.storage.DirectoryMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageIOFailure
-import de.qabel.box.storage.tryWith
+import de.qabel.core.repository.sqlite.tryWith
 import java.io.File
 import java.io.IOException
+import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
 
-class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) : DirectoryMetadataFactory {
+class JdbcDirectoryMetadataFactory(val tempDir: File,
+                                   val deviceId: ByteArray,
+                                   private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase =
+                                       { DirectoryMetadataDatabase(it) }
+                                   ) : DirectoryMetadataFactory {
     /**
      * Create (and init) a new Index DM including a new database file
      *
@@ -56,10 +61,10 @@ class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) :
         try {
             val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
             connection.autoCommit = true
-            tryWith(connection.createStatement()) {execute("PRAGMA journal_mode=MEMORY") }
-            val db = DirectoryMetadataDatabase(connection)
+            tryWith(connection.createStatement()) { execute("PRAGMA journal_mode=MEMORY") }
+            val db = dataBaseFactory(connection)
             db.migrate()
-            return JdbcDirectoryMetadata(db, deviceId, path, fileName, tempDir)
+            return JdbcDirectoryMetadata(db, deviceId, path, fileName)
         } catch (e: SQLException) {
             throw QblStorageCorruptMetadata(e)
         }
@@ -99,7 +104,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File, val deviceId: ByteArray) :
     fun initDatabase(dm: JdbcDirectoryMetadata) {
         tryWith(dm.connection.prepare("INSERT INTO version (version, time) VALUES (?, ?)")) {
             setBytes(1, dm.initVersion())
-            setLong(2, java.lang.System.currentTimeMillis())
+            setLong(2, System.currentTimeMillis())
             executeUpdate()
         }
         dm.replaceLastChangedBy()
