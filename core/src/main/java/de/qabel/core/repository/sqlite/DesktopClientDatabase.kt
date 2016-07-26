@@ -6,7 +6,7 @@ import de.qabel.core.repository.sqlite.migration.*
 
 class DesktopClientDatabase(connection: Connection) : AbstractClientDatabase(connection) {
 
-    override var version by DefaultVersionAdapter(connection)
+    override var version by PrragmaVersionAdapter(connection)
 
     override fun getMigrations(connection: Connection): Array<AbstractMigration> {
         return arrayOf(Migration1460367000CreateIdentitiy(connection),

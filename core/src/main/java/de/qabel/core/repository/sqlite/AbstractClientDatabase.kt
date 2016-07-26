@@ -33,7 +33,7 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
     @Throws(MigrationException::class)
     override fun migrate(toVersion: Long, fromVersion: Long) {
         getMigrations(connection)
-            .filter { it.version in fromVersion..toVersion}
+            .filter { it.version > fromVersion && it.version <= toVersion }
             .sortedBy { it.version }
             .forEach { migrate(it) }
     }
