@@ -20,7 +20,7 @@ class MainDropServer : DropServerHttp {
         HttpClients.createDefault().use {
             val request = HttpPost(uri);
             request.addHeader(QblHeaders.AUTHORIZATION, DropServerHttp.DEFAULT_AUTH_TOKEN)
-            request.entity = ByteArrayEntity(messageBytes, ContentType.APPLICATION_OCTET_STREAM)
+            request.entity = ByteArrayEntity(messageBytes).apply { setContentType(ContentType.APPLICATION_OCTET_STREAM.toString()) }
             it.execute(request).use {
                 when (it.statusLine.statusCode) {
                     QblStatusCodes.OK -> Unit
