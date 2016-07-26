@@ -3,7 +3,7 @@ package de.qabel.core.repository.sqlite
 import java.sql.Connection
 import kotlin.reflect.KProperty
 
-class PrragmaVersionAdapter(private val connection: Connection):
+class PragmaVersionAdapter(private val connection: Connection):
     VersionAdapter {
 
     override fun getValue(thisRef: Any, property: KProperty<*>): Long {
