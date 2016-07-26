@@ -30,14 +30,14 @@ class MainDropConnector(val dropServer: DropServerHttp) : DropConnector {
             val binaryFormatVersion = byteMessage[0]
             val binaryMessage: AbstractBinaryDropMessage? = when (binaryFormatVersion) {
                 0.toByte() -> {
-                    var m: BinaryDropMessageV0? = null
-                    try {
-                        m = BinaryDropMessageV0(byteMessage);
+                    val m: BinaryDropMessageV0? = try {
+                        BinaryDropMessageV0(byteMessage);
                     } catch (e: QblVersionMismatchException) {
                         throw RuntimeException("Version mismatch should not happen", e);
                     } catch (e: QblDropInvalidMessageSizeException) {
                         // Invalid message uploads may happen with malicious intent
                         // or by broken clients. Skip.
+                        null
                     }
                     m
                 }
