@@ -32,5 +32,5 @@ interface ContactRepository {
     @Throws(PersistenceException::class)
     fun findWithIdentities(searchString: String = ""): Collection<Pair<Contact, List<Identity>>>
 
-    @Throws open fun find(id: Int?): Contact
+    @Throws fun find(id: Int): Contact
 }
