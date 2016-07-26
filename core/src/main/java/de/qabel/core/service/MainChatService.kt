@@ -13,7 +13,7 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.util.DefaultHashMap
 
 
-class MainChatService(val dropConnector: DropConnector,
+open class MainChatService(val dropConnector: DropConnector,
                       val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
                       val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
 
@@ -23,7 +23,6 @@ class MainChatService(val dropConnector: DropConnector,
 
         val dropMessage = message.toDropMessage(sender);
         chatDropMessageRepository.persist(message)
-        //TODO Send to all dropUrls?
         dropConnector.sendDropMessage(sender, receiver, dropMessage, receiver.dropUrls.first())
         message.status = Status.SENT
         chatDropMessageRepository.update(message)
