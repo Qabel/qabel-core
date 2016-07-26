@@ -1,5 +1,7 @@
 package de.qabel.core.repository
 
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Identity
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.framework.BaseRepository
 
@@ -12,4 +14,5 @@ interface ChatDropMessageRepository : BaseRepository<ChatDropMessage> {
 
     fun exists(chatDropMessage : ChatDropMessage): Boolean
 
+    open fun markAsRead(contact: Contact, identity: Identity)
 }

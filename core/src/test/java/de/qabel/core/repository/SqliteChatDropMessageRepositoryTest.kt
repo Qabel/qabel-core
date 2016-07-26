@@ -17,7 +17,7 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 import java.util.*
 
-class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessageRepository>() {
+class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessageRepository>() {
 
     lateinit var dropRepo: ChatDropMessageRepository
     lateinit var identityRepo: IdentityRepository
@@ -120,6 +120,21 @@ class ChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessa
         val result = dropRepo.findNew(identityA.id)
         assertThat(result, hasSize(2))
         assertThat(result, containsInAnyOrder(msgA, msgB))
+    }
+
+    @Test
+    fun testMarkAsRead(){
+        val msgA = message.copy(status = Status.NEW)
+        val msgB = message.copy(status = Status.NEW)
+        dropRepo.persist(msgA)
+        dropRepo.persist(msgB)
+        dropRepo.persist(message)
+
+        assertThat(dropRepo.findNew(identityA.id), hasSize(2))
+
+        dropRepo.markAsRead(contactA, identityA)
+
+
     }
 
     fun assertMessageEquals(expected: ChatDropMessage, current: ChatDropMessage) {

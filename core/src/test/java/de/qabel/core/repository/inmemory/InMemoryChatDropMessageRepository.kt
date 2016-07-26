@@ -1,5 +1,7 @@
 package de.qabel.core.repository.inmemory
 
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Identity
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.exception.EntityNotFoundException
@@ -22,6 +24,12 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
     override fun delete(id: Int) {
         findById(id).let { messages.remove(it) }
+    }
+
+    override fun markAsRead(contact: Contact, identity: Identity) {
+        messages.filter { it.contactId == contact.id && it.identityId == identity.id && it.status == ChatDropMessage.Status.NEW }.forEach {
+            it.status = ChatDropMessage.Status.READ
+        }
     }
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =

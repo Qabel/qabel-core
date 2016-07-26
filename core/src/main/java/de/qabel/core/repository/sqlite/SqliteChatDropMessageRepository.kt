@@ -1,5 +1,7 @@
 package de.qabel.core.repository.sqlite
 
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Identity
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.ChatDropMessage
@@ -9,6 +11,7 @@ import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
+import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.DIRECTION
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
 
@@ -52,7 +55,25 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
         queryBuilder.whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
         queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
         queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD_TYPE, chatDropMessage.messageType.type)
-        return try { getSingleResult<ChatDropMessageDB>(queryBuilder); true } catch(ex : EntityNotFoundException) { false }
+        return try {
+            getSingleResult<ChatDropMessageDB>(queryBuilder); true
+        } catch(ex: EntityNotFoundException) {
+            false
+        }
+    }
+
+    override fun markAsRead(contact: Contact, identity: Identity) {
+        val statement = "UPDATE " + relation.TABLE_NAME +
+            " SET " + STATUS.name + "=?" +
+            " WHERE " + DIRECTION.name + "=?" +
+            " AND " + IDENTITY_ID.name + "=?" +
+            " AND " + CONTACT_ID.name + "=?"
+        executeStatement(statement, {
+            it.setInt(1, ChatDropMessage.Status.READ.type)
+            it.setInt(2, ChatDropMessage.Direction.INCOMING.type)
+            it.setInt(3, identity.id)
+            it.setInt(4, contact.id)
+        })
     }
 
 }

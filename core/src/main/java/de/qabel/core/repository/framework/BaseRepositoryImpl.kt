@@ -5,6 +5,7 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 import de.qabel.core.repository.sqlite.ClientDatabase
+import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
 
@@ -21,23 +22,30 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     }
 
     fun persist(model: T) {
-        client.prepare(insertStatement).use {
+        executeStatement(insertStatement, {
             relation.applyValues(1, it, model)
-            it.execute()
+        }, {
             it.generatedKeys.use {
                 it.next()
                 model.id = it.getInt(1)
             }
             entityManager.put(model.javaClass, model, model.id)
-        }
+        })
     }
 
     fun update(model: T) {
-        client.prepare(updateStatement).use {
+        executeStatement(updateStatement, {
             it.setInt(1, model.id)
-            relation.applyValues(1, it, model)
-            it.execute()
+        }, {
             entityManager.put(model.javaClass, model, model.id)
+        })
+    }
+
+    internal fun executeStatement(sqlStatement: String, prepare: (PreparedStatement) -> Unit, postExecute: (PreparedStatement) -> Unit = {}) {
+        client.prepare(sqlStatement).use {
+            prepare(it)
+            it.execute()
+            postExecute(it)
         }
     }
 
