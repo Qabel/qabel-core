@@ -14,8 +14,8 @@ import de.qabel.core.util.DefaultHashMap
 
 
 open class MainChatService(val dropConnector: DropConnector,
-                      val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
-                      val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
+                           val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
+                           val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
 
     override fun sendMessage(message: ChatDropMessage) {
         val sender = identityRepository.find(message.identityId)
@@ -38,7 +38,7 @@ open class MainChatService(val dropConnector: DropConnector,
                 val dropResult = dropConnector.receiveDropMessages(identity, dropUrl, dropState)
 
                 dropResult.dropMessages.forEach {
-                    iMessages.add(createChatDropMessage(identity, it))
+                    createChatDropMessage(identity, it)?.let { iMessages.add(it) }
                 }
             }
             iMessages.forEach {
@@ -51,11 +51,12 @@ open class MainChatService(val dropConnector: DropConnector,
         return resultMap
     }
 
-    private fun createChatDropMessage(identity: Identity, dropMessage: DropMessage): ChatDropMessage {
+    private fun createChatDropMessage(identity: Identity, dropMessage: DropMessage): ChatDropMessage? {
         val contactId = try {
             contactRepository.findByKeyId(dropMessage.senderKeyId).id
         } catch (ex: EntityNotFoundException) {
-            0
+            //XXX Unknown senders currenly ignored
+            return null
         }
         val type = if (dropMessage.dropPayload.equals(MessageType.SHARE_NOTIFICATION))
             MessageType.SHARE_NOTIFICATION else MessageType.BOX_MESSAGE
