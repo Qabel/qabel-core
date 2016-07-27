@@ -23,39 +23,39 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> {
         val queryBuilder = createEntityQuery()
-        queryBuilder.whereAndEquals(CONTACT_ID, contactId)
-        queryBuilder.whereAndEquals(IDENTITY_ID, identityId)
-        queryBuilder.orderBy(ChatDropMessageDB.CREATED_ON.exp())
+        .whereAndEquals(CONTACT_ID, contactId)
+        .whereAndEquals(IDENTITY_ID, identityId)
+        .orderBy(ChatDropMessageDB.CREATED_ON.exp())
         return getResultList(queryBuilder)
     }
 
     override fun findNew(identityId: Int): List<ChatDropMessage> {
         val queryBuilder = createEntityQuery()
-        queryBuilder.whereAndEquals(IDENTITY_ID, identityId)
-        queryBuilder.whereAndEquals(STATUS, Status.NEW.type)
+        .whereAndEquals(IDENTITY_ID, identityId)
+        .whereAndEquals(STATUS, Status.NEW.type)
         return getResultList(queryBuilder)
     }
 
     override fun findLatest(identityId: Int): List<ChatDropMessage> {
         val queryBuilder = createEntityQuery()
-        queryBuilder.whereAndEquals(IDENTITY_ID, identityId)
+        .whereAndEquals(IDENTITY_ID, identityId)
 
         //filter newest messages by join
-        queryBuilder.leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())
-        queryBuilder.appendWhere(" AND cdm2.id IS NULL")
-        queryBuilder.orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
-        queryBuilder.groupBy(ChatDropMessageDB.CONTACT_ID)
+        .leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())
+        .appendWhere(" AND cdm2.id IS NULL")
+        .orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
+        .groupBy(ChatDropMessageDB.CONTACT_ID)
 
         return getResultList(queryBuilder)
     }
 
     override fun exists(chatDropMessage: ChatDropMessage): Boolean {
         val queryBuilder = createEntityQuery()
-        queryBuilder.whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
-        queryBuilder.whereAndEquals(ChatDropMessageDB.CONTACT_ID, chatDropMessage.identityId)
-        queryBuilder.whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
-        queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
-        queryBuilder.whereAndEquals(ChatDropMessageDB.PAYLOAD_TYPE, chatDropMessage.messageType.type)
+        .whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
+        .whereAndEquals(ChatDropMessageDB.CONTACT_ID, chatDropMessage.identityId)
+        .whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
+        .whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
+        .whereAndEquals(ChatDropMessageDB.PAYLOAD_TYPE, chatDropMessage.messageType.type)
         return try {
             getSingleResult<ChatDropMessageDB>(queryBuilder); true
         } catch(ex: EntityNotFoundException) {

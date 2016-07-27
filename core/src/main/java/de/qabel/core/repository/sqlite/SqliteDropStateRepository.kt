@@ -12,30 +12,31 @@ class SqliteDropStateRepository(database: ClientDatabase,
                                 entityManager: EntityManager) :
     BaseRepositoryImpl<DropState>(DropStateDB, database, entityManager), DropStateRepository {
 
-    override fun getDropState(dropId: String) = findByDropId(dropId, true)!!.eTag
+    override fun getDropState(dropId: String) = findByDropId(dropId).eTag
 
-    private fun findByDropId(dropId: String, forceNotNull: Boolean): DropState? {
-        try {
-            val query = createEntityQuery()
-            query.whereAndEquals(DropStateDB.DROP, dropId);
-            return getSingleResult(query)
-        } catch(ex: EntityNotFoundException) {
-            if (forceNotNull) {
-                throw ex;
+    private fun findByDropId(dropId: String): DropState =
+        createEntityQuery()
+            .whereAndEquals(DropStateDB.DROP, dropId)
+            .let {
+                return getSingleResult(it)
             }
-            return null;
+
+    override fun setDropState(dropId: String, state: String): Unit =
+        try {
+            findByDropId(dropId).let {
+                it.eTag = state
+                update(it)
+            }
+        } catch(ex: EntityNotFoundException) {
+            DropState(dropId, state).let { persist(it) }
         }
-    }
 
-    override fun setDropState(dropId: String, state: String) =
-        findByDropId(dropId, false)?.let {
-            it.eTag = state
-            update(it)
-        } ?: DropState(dropId, state).let { persist(it) }
-
-    override fun getDropState(dropUrl: DropURL): DropState {
-        return findByDropId(dropUrl.toString(), false) ?: DropState(dropUrl.toString())
-    }
+    override fun getDropState(dropUrl: DropURL): DropState =
+        try {
+            findByDropId(dropUrl.toString())
+        } catch(ex: EntityNotFoundException) {
+            DropState(dropUrl.toString())
+        }
 
     override fun setDropState(dropState: DropState) {
         if (dropState.id == 0) persist(dropState) else update(dropState)

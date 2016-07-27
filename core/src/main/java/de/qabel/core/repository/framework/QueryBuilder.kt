@@ -19,26 +19,21 @@ class QueryBuilder {
     private val groupBy = StringBuilder()
     val params = mutableListOf<Any>()
 
-    fun select(field: Field) {
-        select(field.select())
-    }
+    fun select(field: Field) = select(field.select())
+    fun select(fields: List<Field> ) = fields.forEach { select(it) }
+    fun select(vararg fields: Field) = select(fields.toList())
 
-    fun select(fields: List<Field>) {
-        for (field in fields) {
-            select(field)
-        }
-    }
-
-    fun select(text: String) {
+    fun select(text: String ) : QueryBuilder {
         if (select.isEmpty()) {
             select.append("SELECT ")
         } else {
             select.append(", ")
         }
         select.append(text)
+        return this
     }
 
-    fun from(table: String, alias: String) {
+    fun from(table: String, alias: String ) : QueryBuilder {
         if (from.isEmpty()) {
             from.append("FROM ")
         } else {
@@ -47,23 +42,26 @@ class QueryBuilder {
         from.append(table)
         from.append(" ")
         from.append(alias)
+        return this
     }
 
     fun innerJoin(table: String, tableAlias: String,
-                  joinField: String, targetField: String) {
+                  joinField: String, targetField: String ) : QueryBuilder {
         joins.append("INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
+        return this
     }
 
     fun leftJoin(table: String, tableAlias: String,
-                 joinField: String, targetField: String) {
+                 joinField: String, targetField: String ) : QueryBuilder {
         joins.append("LEFT ")
         appendJoin(table, tableAlias, joinField, targetField)
+        return this
     }
 
 
     private fun appendJoin(table: String, tableAlias: String,
-                           joinField: String, targetField: String) {
+                           joinField: String, targetField: String ) : QueryBuilder {
         joins.append("JOIN ")
         joins.append(table)
         joins.append(" ")
@@ -72,18 +70,21 @@ class QueryBuilder {
         joins.append(joinField)
         joins.append("=")
         joins.append(targetField)
+        return this
     }
 
-    fun whereAndEquals(field: Field, value: Any) {
+    fun whereAndEquals(field: Field, value: Any ) : QueryBuilder {
         appendWhere(field.exp(), EQUALS, "?", " AND ")
         params.add(value)
+        return this
     }
 
-    fun whereAndNull(field: Field) {
-        appendWhere(field.exp(), " IS NULL ", "", " AND ");
+    fun whereAndNull(field: Field ) : QueryBuilder {
+        appendWhere(field.exp(), " IS NULL ", "", " AND ")
+        return this
     }
 
-    private fun appendWhere(field: String, condition: String, valuePlaceholder: String, concatenation: String) {
+    private fun appendWhere(field: String, condition: String, valuePlaceholder: String, concatenation: String ) : QueryBuilder {
         if (where.isEmpty()) {
             where.append("WHERE ")
         } else if (!where.last().toString().equals("(")) {
@@ -92,13 +93,15 @@ class QueryBuilder {
         where.append(field)
         where.append(condition)
         where.append(valuePlaceholder)
+        return this
     }
 
-    fun appendWhere(sql: String) {
+    fun appendWhere(sql: String ) : QueryBuilder {
         where.append(sql)
+        return this
     }
 
-    fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
+    fun orderBy(field: String, direction: Direction = Direction.ASCENDING ) : QueryBuilder {
         if (orderBy.isEmpty()) {
             orderBy.append("ORDER BY ")
         } else {
@@ -107,15 +110,17 @@ class QueryBuilder {
         orderBy.append(field)
         orderBy.append(" ")
         orderBy.append(direction.sql)
+        return this
     }
 
-    fun groupBy(field: DBField) {
+    fun groupBy(field: DBField ) : QueryBuilder {
         if (groupBy.isEmpty()) {
             groupBy.append("GROUP BY ")
         } else {
             groupBy.append(", ")
         }
         groupBy.append(field.exp())
+        return this;
     }
 
     fun queryString(): String = select.toString() + " " +
