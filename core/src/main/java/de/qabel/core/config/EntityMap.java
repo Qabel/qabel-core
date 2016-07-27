@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @see Entity
  */
-abstract class EntityMap<T extends Entity> extends Persistable implements EntityObservable {
+public abstract class EntityMap<T extends Entity> extends Persistable implements EntityObservable {
     private static final long serialVersionUID = -4541440187172822588L;
     private final Map<String, T> entities = Collections.synchronizedMap(new HashMap<String, T>());
     private transient CopyOnWriteArrayList<EntityObserver> observerList = new CopyOnWriteArrayList<>();
