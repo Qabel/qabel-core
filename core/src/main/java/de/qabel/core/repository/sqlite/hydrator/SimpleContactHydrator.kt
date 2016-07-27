@@ -30,7 +30,6 @@ class SimpleContactHydrator(private val entityManager: EntityManager) : Abstract
         contact.phone = phone
         contact.email = email
 
-        recognize(contact)
         return contact
     }
 
