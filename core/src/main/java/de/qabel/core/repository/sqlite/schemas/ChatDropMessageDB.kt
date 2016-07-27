@@ -35,7 +35,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         var i = startIndex;
         statement.setInt(i++, model.contactId)
         statement.setInt(i++, model.identityId)
-        statement.setInt(i++, model.direction.type)
+        statement.setByte(i++, model.direction.type)
         statement.setInt(i++, model.status.type)
         statement.setString(i++, model.messageType.type)
         statement.setString(i++, MessagePayload.encode(model.messageType, model.payload))
@@ -49,7 +49,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         }
         return ChatDropMessage(resultSet.getInt(CONTACT_ID.alias()),
             resultSet.getInt(IDENTITY_ID.alias()),
-            toEnum(Direction.values(), resultSet.getInt(DIRECTION.alias()), { it.type }),
+            toEnum(Direction.values(), resultSet.getByte(DIRECTION.alias()), { it.type }),
             toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),

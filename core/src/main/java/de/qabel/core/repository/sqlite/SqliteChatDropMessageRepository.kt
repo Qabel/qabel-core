@@ -5,7 +5,8 @@ import de.qabel.core.config.Identity
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.core.repository.entities.ChatDropMessage.Direction
+import de.qabel.core.repository.entities.ChatDropMessage.Status
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepositoryImpl
 import de.qabel.core.repository.framework.QueryBuilder
@@ -71,7 +72,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
             " AND " + CONTACT_ID.name + "=?"
         executeStatement(statement, {
             it.setInt(1, Status.READ.type)
-            it.setInt(2, Direction.INCOMING.type)
+            it.setByte(2, Direction.INCOMING.type)
             it.setInt(3, identity.id)
             it.setInt(4, contact.id)
         })
