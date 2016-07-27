@@ -15,6 +15,8 @@ import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.DIRECTION
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
+import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
+import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
 
 class SqliteChatDropMessageRepository(val database: ClientDatabase,
@@ -22,47 +24,48 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     BaseRepositoryImpl<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
 
-    override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> {
-        val queryBuilder = createEntityQuery()
-        .whereAndEquals(CONTACT_ID, contactId)
-        .whereAndEquals(IDENTITY_ID, identityId)
-        .orderBy(ChatDropMessageDB.CREATED_ON.exp())
-        return getResultList(queryBuilder)
-    }
-
-    override fun findNew(identityId: Int): List<ChatDropMessage> {
-        val queryBuilder = createEntityQuery()
-        .whereAndEquals(IDENTITY_ID, identityId)
-        .whereAndEquals(STATUS, Status.NEW.type)
-        return getResultList(queryBuilder)
-    }
-
-    override fun findLatest(identityId: Int): List<ChatDropMessage> {
-        val queryBuilder = createEntityQuery()
-        .whereAndEquals(IDENTITY_ID, identityId)
-
-        //filter newest messages by join
-        .leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())
-        .appendWhere(" AND cdm2.id IS NULL")
-        .orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
-        .groupBy(ChatDropMessageDB.CONTACT_ID)
-
-        return getResultList(queryBuilder)
-    }
-
-    override fun exists(chatDropMessage: ChatDropMessage): Boolean {
-        val queryBuilder = createEntityQuery()
-        .whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
-        .whereAndEquals(ChatDropMessageDB.CONTACT_ID, chatDropMessage.identityId)
-        .whereAndEquals(ChatDropMessageDB.DIRECTION, chatDropMessage.direction.type)
-        .whereAndEquals(ChatDropMessageDB.PAYLOAD, chatDropMessage.payload)
-        .whereAndEquals(ChatDropMessageDB.PAYLOAD_TYPE, chatDropMessage.messageType.type)
-        return try {
-            getSingleResult<ChatDropMessageDB>(queryBuilder); true
-        } catch(ex: EntityNotFoundException) {
-            false
+    override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
+        with(createEntityQuery()) {
+            whereAndEquals(CONTACT_ID, contactId)
+            whereAndEquals(IDENTITY_ID, identityId)
+            orderBy(ChatDropMessageDB.CREATED_ON.exp())
+            return getResultList(this)
         }
-    }
+
+    override fun findNew(identityId: Int): List<ChatDropMessage> =
+        with(createEntityQuery()) {
+            whereAndEquals(IDENTITY_ID, identityId)
+            whereAndEquals(STATUS, Status.NEW.type)
+            return getResultList(this)
+        }
+
+
+    override fun findLatest(identityId: Int): List<ChatDropMessage> =
+        with(createEntityQuery()) {
+            whereAndEquals(IDENTITY_ID, identityId)
+
+            //filter newest messages by join
+            leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())
+            where(" AND cdm2.id IS NULL")
+            orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
+            groupBy(CONTACT_ID)
+
+            return getResultList(this)
+        }
+
+    override fun exists(chatDropMessage: ChatDropMessage): Boolean =
+        with(createEntityQuery()) {
+            whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
+            whereAndEquals(CONTACT_ID, chatDropMessage.identityId)
+            whereAndEquals(DIRECTION, chatDropMessage.direction.type)
+            whereAndEquals(PAYLOAD, chatDropMessage.payload)
+            whereAndEquals(PAYLOAD_TYPE, chatDropMessage.messageType.type)
+            return try {
+                getSingleResult<ChatDropMessageDB>(this); true
+            } catch(ex: EntityNotFoundException) {
+                false
+            }
+        }
 
     override fun markAsRead(contact: Contact, identity: Identity) {
         val statement = "UPDATE " + relation.TABLE_NAME +

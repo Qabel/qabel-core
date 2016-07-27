@@ -23,17 +23,16 @@ class QueryBuilder {
     fun select(fields: List<Field> ) = fields.forEach { select(it) }
     fun select(vararg fields: Field) = select(fields.toList())
 
-    fun select(text: String ) : QueryBuilder {
+    fun select(text: String ) {
         if (select.isEmpty()) {
             select.append("SELECT ")
         } else {
             select.append(", ")
         }
         select.append(text)
-        return this
     }
 
-    fun from(table: String, alias: String ) : QueryBuilder {
+    fun from(table: String, alias: String ) {
         if (from.isEmpty()) {
             from.append("FROM ")
         } else {
@@ -42,26 +41,23 @@ class QueryBuilder {
         from.append(table)
         from.append(" ")
         from.append(alias)
-        return this
     }
 
     fun innerJoin(table: String, tableAlias: String,
-                  joinField: String, targetField: String ) : QueryBuilder {
+                  joinField: String, targetField: String ) {
         joins.append("INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
-        return this
     }
 
     fun leftJoin(table: String, tableAlias: String,
-                 joinField: String, targetField: String ) : QueryBuilder {
+                 joinField: String, targetField: String ) {
         joins.append("LEFT ")
         appendJoin(table, tableAlias, joinField, targetField)
-        return this
     }
 
 
     private fun appendJoin(table: String, tableAlias: String,
-                           joinField: String, targetField: String ) : QueryBuilder {
+                           joinField: String, targetField: String ) {
         joins.append("JOIN ")
         joins.append(table)
         joins.append(" ")
@@ -70,21 +66,18 @@ class QueryBuilder {
         joins.append(joinField)
         joins.append("=")
         joins.append(targetField)
-        return this
     }
 
-    fun whereAndEquals(field: Field, value: Any ) : QueryBuilder {
-        appendWhere(field.exp(), EQUALS, "?", " AND ")
+    fun whereAndEquals(field: Field, value: Any ) {
+        where(field.exp(), EQUALS, "?", " AND ")
         params.add(value)
-        return this
     }
 
-    fun whereAndNull(field: Field ) : QueryBuilder {
-        appendWhere(field.exp(), " IS NULL ", "", " AND ")
-        return this
+    fun whereAndNull(field: Field ) {
+        where(field.exp(), " IS NULL ", "", " AND ")
     }
 
-    private fun appendWhere(field: String, condition: String, valuePlaceholder: String, concatenation: String ) : QueryBuilder {
+    private fun where(field: String, condition: String, valuePlaceholder: String, concatenation: String ) {
         if (where.isEmpty()) {
             where.append("WHERE ")
         } else if (!where.last().toString().equals("(")) {
@@ -93,15 +86,11 @@ class QueryBuilder {
         where.append(field)
         where.append(condition)
         where.append(valuePlaceholder)
-        return this
     }
 
-    fun appendWhere(sql: String ) : QueryBuilder {
-        where.append(sql)
-        return this
-    }
+    fun where(sql: String ) = where.append(sql)
 
-    fun orderBy(field: String, direction: Direction = Direction.ASCENDING ) : QueryBuilder {
+    fun orderBy(field: String, direction: Direction = Direction.ASCENDING ) {
         if (orderBy.isEmpty()) {
             orderBy.append("ORDER BY ")
         } else {
@@ -110,17 +99,15 @@ class QueryBuilder {
         orderBy.append(field)
         orderBy.append(" ")
         orderBy.append(direction.sql)
-        return this
     }
 
-    fun groupBy(field: DBField ) : QueryBuilder {
+    fun groupBy(field: DBField ) {
         if (groupBy.isEmpty()) {
             groupBy.append("GROUP BY ")
         } else {
             groupBy.append(", ")
         }
         groupBy.append(field.exp())
-        return this;
     }
 
     fun queryString(): String = select.toString() + " " +

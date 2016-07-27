@@ -15,11 +15,10 @@ class SqliteDropStateRepository(database: ClientDatabase,
     override fun getDropState(dropId: String) = findByDropId(dropId).eTag
 
     private fun findByDropId(dropId: String): DropState =
-        createEntityQuery()
-            .whereAndEquals(DropStateDB.DROP, dropId)
-            .let {
-                return getSingleResult(it)
-            }
+        with(createEntityQuery()) {
+            whereAndEquals(DropStateDB.DROP, dropId)
+            return getSingleResult(this)
+        }
 
     override fun setDropState(dropId: String, state: String): Unit =
         try {
