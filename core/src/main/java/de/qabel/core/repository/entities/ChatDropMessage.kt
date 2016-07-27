@@ -33,7 +33,7 @@ data class ChatDropMessage(val contactId: Int,
         BOX_MESSAGE("box_message")
     }
 
-    enum class Direction(val type: Int) {
+    enum class Direction(val type: Byte) {
         INCOMING(0), OUTGOING(1)
     }
 
