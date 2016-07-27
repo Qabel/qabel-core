@@ -53,14 +53,14 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         client.prepare(deleteStatement).use {
             it.setInt(1, id)
             it.execute()
-            entityManager.remove(relation.ENTITY_CLASS, id)
         }
     }
 
     fun findById(id: Int): T {
-        if (entityManager.contains(relation.ENTITY_CLASS, id)) {
+        //TODO Cant use entityManager as Cache
+      /*  if (entityManager.contains(relation.ENTITY_CLASS, id)) {
             return entityManager.get(relation.ENTITY_CLASS, id);
-        }
+        }*/
 
         val query = QblStatements.createEntityQuery(relation)
         query.whereAndEquals(relation.ID, id)
