@@ -134,7 +134,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
         dropRepo.markAsRead(contactA, identityA)
 
-
+        assertThat(dropRepo.findNew(identityA.id), hasSize(0))
     }
 
     fun assertMessageEquals(expected: ChatDropMessage, current: ChatDropMessage) {
