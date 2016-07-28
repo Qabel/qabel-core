@@ -3,11 +3,9 @@ package de.qabel.core.crypto;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import de.qabel.core.drop.DropMessage;
-import de.qabel.core.drop.DropSerializer;
+import de.qabel.core.drop.*;
 import de.qabel.core.config.Contact;
 import de.qabel.core.config.Identity;
-import de.qabel.core.drop.DropDeserializer;
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException;
 import de.qabel.core.exceptions.QblDropPayloadSizeException;
 import de.qabel.core.exceptions.QblSpoofedSenderException;
@@ -60,8 +58,7 @@ public abstract class AbstractBinaryDropMessage {
     abstract int getPayloadSize();
 
     private static byte[] serializeMessage(DropMessage dropMessage) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(DropMessage.class,
-            new DropSerializer()).create();
+        Gson gson = DropMessageGson.INSTANCE.create();
         return gson.toJson(dropMessage).getBytes();
     }
 
@@ -73,8 +70,7 @@ public abstract class AbstractBinaryDropMessage {
      * occurred.
      */
     private static DropMessage deserialize(String plainJson) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(DropMessage.class,
-            new DropDeserializer()).create();
+        Gson gson = DropMessageGson.INSTANCE.create();
         try {
             return gson.fromJson(plainJson, DropMessage.class);
         } catch (JsonSyntaxException e) {

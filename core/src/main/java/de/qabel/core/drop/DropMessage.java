@@ -1,6 +1,7 @@
 package de.qabel.core.drop;
 
 import de.qabel.core.config.Entity;
+import de.qabel.core.config.Identity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -27,24 +28,30 @@ public class DropMessage implements Serializable {
     private String dropPayload;
     private String dropPayloadType;
 
+    private DropMessageMetadata dropMessageMetadata;
+
     public DropMessage(Entity sender, String dropPayload, String dropPayloadType) {
         this.sender = sender;
         this.dropPayload = dropPayload;
         this.dropPayloadType = dropPayloadType;
         created = new Date();
         acknowledgeId = NOACK;
+        if(sender instanceof Identity){
+            dropMessageMetadata = new DropMessageMetadata((Identity)sender);
+        }
     }
 
     /**
      * Constructor used for deserialization.
      * registerSender has to be called to complete creation.
      */
-    DropMessage(String senderKeyId, String dropPayload, String dropPayloadType, Date created, String acknowledgeId) {
+    DropMessage(String senderKeyId, String dropPayload, String dropPayloadType, Date created, String acknowledgeId, DropMessageMetadata dropMessageMetadata) {
         this.senderKeyId = senderKeyId;
         this.dropPayload = dropPayload;
         this.dropPayloadType = dropPayloadType;
         this.created = created;
         this.acknowledgeId = acknowledgeId;
+        this.dropMessageMetadata = dropMessageMetadata;
     }
 
     public static int getVersion() {
@@ -107,5 +114,9 @@ public class DropMessage implements Serializable {
 
     private static String generateAcknowledgeId() {
         return UUID.randomUUID().toString();
+    }
+
+    public DropMessageMetadata getDropMessageMetadata() {
+        return dropMessageMetadata;
     }
 }
