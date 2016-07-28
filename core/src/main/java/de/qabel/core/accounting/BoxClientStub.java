@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class BoxClientStub implements BoxClient {
 
-    QuotaState quotaState;
+    public QuotaState quotaState = new QuotaState(1000000000L, 300000000L);
 
     @Override
     public void login() throws IOException, QblInvalidCredentials {
@@ -22,9 +22,6 @@ public class BoxClientStub implements BoxClient {
         return quotaState;
     }
 
-    public void setQuotaState(QuotaState quotaState) {
-        this.quotaState = quotaState;
-    }
 
     @Override
     public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
