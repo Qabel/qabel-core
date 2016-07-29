@@ -29,8 +29,8 @@ class DropMessageMetaDataSerializer : JsonSerializer<DropMessageMetadata>, JsonD
             DropMessageMetadata(get(ALIAS).asString,
                 context.deserialize(get(PUBLIC_KEY), QblECPublicKey::class.java),
                 context.deserialize(get(DROP_URL), DropURL::class.java),
-                get(PHONE)?.asString ?: "",
-                get(EMAIL)?.asString ?: "")
+                get(EMAIL)?.asString ?: "",
+                get(PHONE)?.asString ?: "")
         }
 
 }

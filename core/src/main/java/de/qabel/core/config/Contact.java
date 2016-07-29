@@ -14,6 +14,7 @@ public class Contact extends Entity {
 
     private String phone;
 
+    //Internal nick given by user. Do not export anywhere!
     private String nickName;
 
     private QblECPublicKey ecPublicKey;

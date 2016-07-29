@@ -1,7 +1,9 @@
 package de.qabel.core.service
 
+import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.drop.DropMessage
+import de.qabel.core.drop.DropMessageMetadata
 import de.qabel.core.http.DropConnector
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.ContactRepository
@@ -22,6 +24,16 @@ open class MainChatService(val dropConnector: DropConnector,
         val receiver = contactRepository.find(message.contactId)
 
         val dropMessage = message.toDropMessage(sender);
+
+        var email = ""
+        var phone = ""
+        if (receiver.status != Contact.ContactStatus.UNKNOWN) {
+            email = sender.email ?: ""
+            phone = sender.phone ?: ""
+        }
+        dropMessage.dropMessageMetadata =
+            DropMessageMetadata(sender.alias, sender.ecPublicKey, sender.dropUrls.first(), email, phone)
+
         chatDropMessageRepository.persist(message)
         dropConnector.sendDropMessage(sender, receiver, dropMessage, receiver.dropUrls.first())
         message.status = Status.SENT
@@ -38,7 +50,10 @@ open class MainChatService(val dropConnector: DropConnector,
                 val dropResult = dropConnector.receiveDropMessages(identity, dropUrl, dropState)
 
                 dropResult.dropMessages.forEach {
-                    createChatDropMessage(identity, it)?.let { iMessages.add(it) }
+                    val contact = getMessageContact(it, identity)
+                    contact?.apply {
+                        createChatDropMessage(identity, this, it)?.let { iMessages.add(it) }
+                    }
                 }
             }
             iMessages.forEach {
@@ -51,17 +66,24 @@ open class MainChatService(val dropConnector: DropConnector,
         return resultMap
     }
 
-    private fun createChatDropMessage(identity: Identity, dropMessage: DropMessage): ChatDropMessage? {
-        val contactId = try {
-            contactRepository.findByKeyId(dropMessage.senderKeyId).id
-        } catch (ex: EntityNotFoundException) {
-            //XXX Unknown senders currenly ignored
-            return null
-        }
+    private fun getMessageContact(dropMessage: DropMessage, identity: Identity): Contact? = try {
+        val contact = contactRepository.findByKeyId(dropMessage.senderKeyId)
+        if (contact.isIgnored) null else contact
+    } catch (ex: EntityNotFoundException) {
+        //If DropMessageMetadata is given, we create a new unknown contact
+        dropMessage.dropMessageMetadata?.let {
+            val contact = it.toContact()
+            contact.status = Contact.ContactStatus.UNKNOWN
+            contactRepository.save(contact, identity)
+            contact
+        } ?: null
+    }
+
+    private fun createChatDropMessage(identity: Identity, contact: Contact, dropMessage: DropMessage): ChatDropMessage? {
         val type = if (dropMessage.dropPayload.equals(MessageType.SHARE_NOTIFICATION))
             MessageType.SHARE_NOTIFICATION else MessageType.BOX_MESSAGE
 
-        return ChatDropMessage(contactId, identity.id, Direction.INCOMING,
+        return ChatDropMessage(contact.id, identity.id, Direction.INCOMING,
             Status.NEW, type, dropMessage.dropPayload, dropMessage.creationDate.time)
     }
 

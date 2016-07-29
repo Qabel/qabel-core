@@ -4,6 +4,7 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
+import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.toContact
 import de.qabel.core.http.MainDropConnector
@@ -22,7 +23,6 @@ import org.junit.Test
 class ChatServiceTest {
 
     val dropGenerator = DropUrlGenerator("http://localhost:5000")
-    val dropUrl = DropURL("http://192.168.50.42:5000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl")
     lateinit var identityA: Identity
     lateinit var contactA: Contact
     lateinit var identityB: Identity
@@ -41,7 +41,7 @@ class ChatServiceTest {
     fun setUp() {
         identityA = Identity("IdentityA", listOf(dropGenerator.generateUrl()), QblECKeyPair())
         contactA = identityA.toContact()
-        identityB = Identity("IdentityB", listOf(dropUrl), QblECKeyPair())
+        identityB = Identity("IdentityB", listOf(dropGenerator.generateUrl()), QblECKeyPair())
         contactB = identityB.toContact()
 
         identityRepository.save(identityA)
@@ -97,5 +97,35 @@ class ChatServiceTest {
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
         assertThat(result.values.first(), hasSize(2))
+    }
+
+    @Test
+    fun testReceiveMessageFromUnknown() {
+        val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
+            email = "some@one.zz"
+            phone = "0190666666"
+        }
+        identityRepository.save(someone)
+        val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
+        chatService.sendMessage(message)
+
+        //Remove Identity
+        identityRepository.delete(someone)
+
+        val result = chatService.refreshMessages()
+
+        assertThat(result.keys, hasSize(1))
+        assertThat(result.keys.first(), equalTo(identityA))
+        assertThat(result[identityA], hasSize(1))
+
+        val dropMessage = result[identityA]!!.first();
+        val unknownContact = contactRepository.find(dropMessage.contactId)
+
+        assertThat(unknownContact.status, equalTo(Contact.ContactStatus.UNKNOWN))
+        assertThat(unknownContact.keyIdentifier, equalTo(someone.keyIdentifier))
+        assertThat(unknownContact.dropUrls, equalTo(someone.dropUrls))
+        assertThat(unknownContact.alias, equalTo(someone.alias))
+        assertThat(unknownContact.email, equalTo(someone.email))
+        assertThat(unknownContact.phone, equalTo(someone.phone))
     }
 }
