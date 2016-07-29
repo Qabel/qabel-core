@@ -28,6 +28,9 @@ public class ConfigHashCodeTest {
             .ignoreProperty("alias")
             .ignoreProperty("email")
             .ignoreProperty("phone")
+            .ignoreProperty("status")
+            .ignoreProperty("ignored")
+            .ignoreProperty("nickName")
             .build();
         tester.testHashCodeMethod(new ContactEquivalentTestFactory(), config);
     }

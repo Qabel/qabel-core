@@ -24,7 +24,7 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
 
     override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): SqliteDropUrlRepository? {
         val identityRepo = SqliteIdentityRepository(clientDatabase, em)
-        contactRepo = SqliteContactRepository(clientDatabase, em, identityRepo)
+        contactRepo = SqliteContactRepository(clientDatabase, em, SqliteDropUrlRepository(clientDatabase), identityRepo)
         identityRepo.save(identityA)
         contactRepo.save(contactA, identityA)
         contactRepo.save(contactB, identityA)

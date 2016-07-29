@@ -7,6 +7,7 @@ import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.toContact
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
@@ -50,9 +51,8 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val dropUrlRepository = SqliteDropUrlRepository(clientDatabase, DropURLHydrator())
         return SqliteContactRepository(
             clientDatabase,
-            em,
-            identityRepository,
-            dropUrlRepository)
+            em, dropUrlRepository,
+            identityRepository)
     }
 
     @Test(expected = EntityNotFoundException::class)
@@ -197,14 +197,12 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertSame(contact, loaded)
     }
 
-    @Test
+    @Test(expected = EntityExistsException::class)
     fun addsRelationshipIfContactIsAlreadyPresent() {
         repo.save(contact, identity)
 
         val newImport = Contact(contact.alias, contact.dropUrls, contact.ecPublicKey)
         repo.save(newImport, otherIdentity)
-        repo.findByKeyId(otherIdentity, contact.keyIdentifier)
-        repo.findByKeyId(identity, contact.keyIdentifier)
     }
 
     @Test

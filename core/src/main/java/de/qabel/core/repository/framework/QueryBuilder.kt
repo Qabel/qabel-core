@@ -4,6 +4,8 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
+
+        private const val WILD_CARD = "%";
     }
 
     enum class Direction(val sql: String) {
@@ -20,10 +22,10 @@ class QueryBuilder {
     val params = mutableListOf<Any>()
 
     fun select(field: Field) = select(field.select())
-    fun select(fields: List<Field> ) = fields.forEach { select(it) }
+    fun select(fields: List<Field>) = fields.forEach { select(it) }
     fun select(vararg fields: Field) = select(fields.toList())
 
-    fun select(text: String ) {
+    fun select(text: String) {
         if (select.isEmpty()) {
             select.append("SELECT ")
         } else {
@@ -32,7 +34,7 @@ class QueryBuilder {
         select.append(text)
     }
 
-    fun from(table: String, alias: String ) {
+    fun from(table: String, alias: String) {
         if (from.isEmpty()) {
             from.append("FROM ")
         } else {
@@ -44,20 +46,20 @@ class QueryBuilder {
     }
 
     fun innerJoin(table: String, tableAlias: String,
-                  joinField: String, targetField: String ) {
+                  joinField: String, targetField: String) {
         joins.append("INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 
     fun leftJoin(table: String, tableAlias: String,
-                 joinField: String, targetField: String ) {
+                 joinField: String, targetField: String) {
         joins.append("LEFT ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 
 
     private fun appendJoin(table: String, tableAlias: String,
-                           joinField: String, targetField: String ) {
+                           joinField: String, targetField: String) {
         joins.append("JOIN ")
         joins.append(table)
         joins.append(" ")
@@ -68,29 +70,60 @@ class QueryBuilder {
         joins.append(targetField)
     }
 
-    fun whereAndEquals(field: Field, value: Any ) {
+    fun whereAndEquals(field: Field, value: Any) {
         where(field.exp(), EQUALS, "?", " AND ")
         params.add(value)
     }
 
-    fun whereAndNull(field: Field ) {
+    fun whereAndNull(field: Field) {
         where(field.exp(), " IS NULL ", "", " AND ")
     }
 
-    private fun where(field: String, condition: String, valuePlaceholder: String, concatenation: String ) {
+    fun whereAndIn(field: Field, values: List<Any>) {
+        startWhere(" AND ")
+        where.append(field.exp())
+        where.append(" IN (")
+        values.forEachIndexed { i, value ->
+            if (i > 0) where.append(",")
+            where.append("?")
+            params.add(value)
+        }
+        where.append(")")
+    }
+
+    fun whereAndLowerEquals(text: String, vararg fields: DBField) {
+        val processedText = text.toLowerCase().plus(WILD_CARD)
+        startWhere(" AND ")
+        where.append("(")
+        fields.forEachIndexed { i, dbField ->
+            where.append("LOWER(" + dbField.exp() + ") LIKE ? ")
+            params.add(processedText)
+            if (fields.last() != dbField) {
+                where.append("OR ")
+            }
+        }
+        where.append(")")
+    }
+
+    private fun startWhere(concatenation: String) {
         if (where.isEmpty()) {
             where.append("WHERE ")
         } else if (!where.last().toString().equals("(")) {
             where.append(concatenation)
         }
+    }
+
+
+    private fun where(field: String, condition: String, valuePlaceholder: String, concatenation: String) {
+        startWhere(concatenation);
         where.append(field)
         where.append(condition)
         where.append(valuePlaceholder)
     }
 
-    fun where(sql: String ) = where.append(sql)
+    fun where(sql: String) = where.append(sql)
 
-    fun orderBy(field: String, direction: Direction = Direction.ASCENDING ) {
+    fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
         if (orderBy.isEmpty()) {
             orderBy.append("ORDER BY ")
         } else {
@@ -101,7 +134,7 @@ class QueryBuilder {
         orderBy.append(direction.sql)
     }
 
-    fun groupBy(field: DBField ) {
+    fun groupBy(field: DBField) {
         if (groupBy.isEmpty()) {
             groupBy.append("GROUP BY ")
         } else {

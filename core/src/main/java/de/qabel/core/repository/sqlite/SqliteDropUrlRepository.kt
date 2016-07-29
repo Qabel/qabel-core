@@ -8,12 +8,13 @@ import de.qabel.core.exceptions.QblDropInvalidURL
 import de.qabel.core.extensions.use
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.exception.PersistenceException
+import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.util.DefaultHashMap
 import java.net.URISyntaxException
 import java.sql.SQLException
 import java.util.*
 
-class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropURL>) :
+class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropURL> = DropURLHydrator()) :
     AbstractSqliteRepository<DropURL>(database, hydrator, SqliteDropUrlRepository.TABLE_NAME), DropUrlRepository {
 
     companion object {
