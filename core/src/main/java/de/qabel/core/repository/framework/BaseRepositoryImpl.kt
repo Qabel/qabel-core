@@ -58,9 +58,9 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
 
     fun findById(id: Int): T {
         //TODO Cant use entityManager as Cache
-      /*  if (entityManager.contains(relation.ENTITY_CLASS, id)) {
-            return entityManager.get(relation.ENTITY_CLASS, id);
-        }*/
+        /*  if (entityManager.contains(relation.ENTITY_CLASS, id)) {
+              return entityManager.get(relation.ENTITY_CLASS, id);
+          }*/
 
         val query = QblStatements.createEntityQuery(relation)
         query.whereAndEquals(relation.ID, id)
@@ -105,6 +105,41 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             })
         } catch (e: SQLException) {
             throw PersistenceException("query failed " + e.message + ")", e)
+        }
+    }
+
+    internal fun <T> findManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, resultAdapter: ResultAdapter<T>): List<T> {
+        with(QueryBuilder()) {
+            select(targetField)
+            from(sourceField.table, sourceField.tableAlias)
+            whereAndEquals(sourceField, sourceValue)
+            return getResultList(this, resultAdapter)
+        }
+    }
+
+    internal fun saveManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+        StringBuilder("INSERT INTO " + sourceField.table + "(" + sourceField.name + ", " + targetField.name + ") VALUES ").apply {
+            values.forEach { append("(?,?),") }
+            executeStatement(toString().removeSuffix(","), { statement ->
+                var i = 1
+                values.forEach {
+                    statement.setInt(i++, sourceValue)
+                    statement.setObject(i++, it)
+                }
+            })
+        }
+    }
+
+    internal fun dropManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+        StringBuilder("DELETE FROM " + sourceField.table + " WHERE " + sourceField.name + "=? AND " + targetField.name + " IN (").apply {
+            values.forEach { append("?,") }
+            executeStatement(toString().removeSuffix(",") + ")", { statement ->
+                var i = 1
+                statement.setInt(i++, sourceValue)
+                values.forEach {
+                    statement.setObject(i++, it)
+                }
+            })
         }
     }
 }
