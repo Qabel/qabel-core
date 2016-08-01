@@ -51,16 +51,11 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         it.setInt(1, id)
     })
 
-    fun findById(id: Int): T {
-        //TODO Cant use entityManager as Cache
-        /*  if (entityManager.contains(relation.ENTITY_CLASS, id)) {
-              return entityManager.get(relation.ENTITY_CLASS, id);
-          }*/
-
-        val query = QblStatements.createEntityQuery(relation)
-        query.whereAndEquals(relation.ID, id)
-        return getSingleResult(query)
-    }
+    fun findById(id: Int): T =
+        with(createEntityQuery()) {
+            whereAndEquals(relation.ID, id)
+            return getSingleResult(this)
+        }
 
     //TODO kotlin currently require this cast, but its not really required
     internal fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
