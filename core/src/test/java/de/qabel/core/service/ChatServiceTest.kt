@@ -4,8 +4,6 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
-import de.qabel.core.crypto.QblECPublicKey
-import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.toContact
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
@@ -14,8 +12,7 @@ import de.qabel.core.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
 import de.qabel.core.repository.inmemory.InMemoryIdentityRepository
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -127,5 +124,25 @@ class ChatServiceTest {
         assertThat(unknownContact.alias, equalTo(someone.alias))
         assertThat(unknownContact.email, equalTo(someone.email))
         assertThat(unknownContact.phone, equalTo(someone.phone))
+    }
+
+    @Test
+    fun testReceiveMessageFromIgnored() {
+        val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
+            email = "some@one.zz"
+            phone = "0190666666"
+        }
+        identityRepository.save(someone)
+        val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
+        chatService.sendMessage(message)
+
+        //Update contact with ignoredFlag and add to target identity
+        val someOnesContact = someone.toContact()
+        someOnesContact.isIgnored = true;
+        contactRepository.save(someOnesContact, identityA)
+
+        val result = chatService.refreshMessages()
+
+        assertThat(result.size, `is`(0))
     }
 }
