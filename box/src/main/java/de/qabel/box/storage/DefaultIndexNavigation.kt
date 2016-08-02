@@ -16,8 +16,9 @@ class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, v
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
     private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
     private val indexDmDownloader = object : IndexDMDownloader(readBackend, keyPair, tempDir, directoryFactory) {
-        override fun startDownload(rootRef: String)
-            = readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)])
+        override fun startDownload(rootRef: String): StorageDownload {
+            return readBackend.download(rootRef, directoryMetadataMHashes[Arrays.hashCode(dm.version)])
+        }
     }
 
     @Throws(QblStorageException::class)
@@ -25,7 +26,6 @@ class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, v
         val rootRef = dm.fileName
 
         try {
-
             val download = indexDmDownloader.loadDirectoryMetadata(rootRef)
             directoryMetadataMHashes.put(Arrays.hashCode(download.dm.version), download.etag)
             return download.dm

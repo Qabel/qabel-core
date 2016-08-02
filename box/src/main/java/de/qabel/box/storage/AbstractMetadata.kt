@@ -43,8 +43,9 @@ abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
     protected fun executeStatement(statementCallable: () -> PreparedStatement) {
         try {
             tryWith(statementCallable()) {
-                if (executeUpdate() != 1) {
-                    throw QblStorageException("Failed to execute statement")
+                val changedLines = executeUpdate()
+                if (changedLines != 1) {
+                    throw QblStorageException("Failed to execute statement, changedLines $changedLines != 1")
                 }
             }
         } catch (e: Exception) {
