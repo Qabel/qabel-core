@@ -52,7 +52,7 @@ open class MainChatService(val dropConnector: DropConnector,
                 dropResult.dropMessages.forEach {
                     val contact = getMessageContact(it, identity)
                     contact?.apply {
-                        createChatDropMessage(identity, this, it)?.let { iMessages.add(it) }
+                        iMessages.add(createChatDropMessage(identity, this, it))
                     }
                 }
             }
@@ -79,7 +79,7 @@ open class MainChatService(val dropConnector: DropConnector,
         } ?: null
     }
 
-    private fun createChatDropMessage(identity: Identity, contact: Contact, dropMessage: DropMessage): ChatDropMessage? {
+    private fun createChatDropMessage(identity: Identity, contact: Contact, dropMessage: DropMessage): ChatDropMessage {
         val type = if (dropMessage.dropPayload.equals(MessageType.SHARE_NOTIFICATION))
             MessageType.SHARE_NOTIFICATION else MessageType.BOX_MESSAGE
 
