@@ -55,7 +55,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),
-            resultSet.getLong(CREATED_ON.alias()),
+            resultSet.getTimestamp(CREATED_ON.alias()).time,
             id);
     }
 

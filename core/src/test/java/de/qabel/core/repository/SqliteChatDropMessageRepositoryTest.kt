@@ -54,6 +54,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         dropRepo.persist(message)
         val storedMessage = dropRepo.findById(message.id)
         assertMessageEquals(message, storedMessage)
+        assertThat(message.createdOn, equalTo(now))
     }
 
     @Test
