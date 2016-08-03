@@ -148,6 +148,8 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         update(contact)
         removeIdentityConnections(contact)
-        addIdentityConnections(contact, activeIdentities)
+        if(activeIdentities.size > 0){
+            addIdentityConnections(contact, activeIdentities)
+        }
     }
 }
