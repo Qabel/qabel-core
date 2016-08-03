@@ -33,4 +33,7 @@ interface ContactRepository {
     fun findWithIdentities(searchString: String = ""): Collection<Pair<Contact, List<Identity>>>
 
     @Throws fun find(id: Int): Contact
+
+    fun update(contact: Contact, activeIdentities: List<Identity>)
+
 }

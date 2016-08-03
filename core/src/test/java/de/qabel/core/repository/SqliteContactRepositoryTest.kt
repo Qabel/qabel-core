@@ -14,8 +14,7 @@ import de.qabel.core.repository.sqlite.SqliteContactRepository
 import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
@@ -231,7 +230,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         var index = 0;
         for (contact in contacts) {
             val storedDto = storedContacts[index];
-            assertThat(storedDto.first.alias, Matchers.equalTo(contact.first.alias));
+            assertThat(storedDto.first.alias, equalTo(contact.first.alias));
             assertThat(storedDto.second, hasSize(contact.second.size));
             index++;
         }
@@ -248,8 +247,19 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val contacts = repo.findWithIdentities(filter);
         Assert.assertEquals(1, contacts.size)
         val fooContact = contacts.iterator().next();
-        assertThat(otherContact.alias, Matchers.equalTo(fooContact.first.alias));
-        assertThat(1, Matchers.equalTo(fooContact.second.size));
+        assertThat(otherContact.alias, equalTo(fooContact.first.alias));
+        assertThat(1, equalTo(fooContact.second.size));
+    }
+
+    @Test
+    fun testUpdate() {
+        repo.save(contact, identity)
+        contact.nickName = "testNick"
+        repo.update(contact, listOf(identity, otherIdentity))
+
+        val result = repo.findContactWithIdentities(contact.keyIdentifier)
+        assertThat(result.first.nickName, equalTo("testNick"))
+        assertThat(result.second, containsInAnyOrder(identity, otherIdentity))
     }
 
 }

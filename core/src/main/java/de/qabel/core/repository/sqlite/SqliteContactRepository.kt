@@ -61,8 +61,15 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     private fun addIdentityConnection(contact: Contact, identity: Identity) =
         saveManyToMany(IdentityContacts.IDENTITY_ID, identity.id, IdentityContacts.CONTACT_ID, contact.id)
 
+    private fun addIdentityConnections(contact: Contact, identities: List<Identity>) =
+        saveManyToMany(IdentityContacts.CONTACT_ID, contact.id, IdentityContacts.IDENTITY_ID,
+            *identities.map { it.id }.toTypedArray())
+
     private fun removeIdentityConnection(contact: Contact, identity: Identity) =
         dropManyToMany(IdentityContacts.IDENTITY_ID, identity.id, IdentityContacts.CONTACT_ID, contact.id)
+
+    private fun removeIdentityConnections(contact: Contact) =
+        dropAllManyToMany(IdentityContacts.CONTACT_ID, contact.id)
 
     private fun getIdentityConnections(contact: Contact) =
         findManyToMany(IdentityContacts.CONTACT_ID, contact.id, IdentityContacts.IDENTITY_ID, IntResultAdapter())
@@ -137,4 +144,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     }
 
     override fun find(id: Int): Contact = findById(id)
+
+    override fun update(contact: Contact, activeIdentities: List<Identity>) {
+        update(contact)
+        removeIdentityConnections(contact)
+        addIdentityConnections(contact, activeIdentities)
+    }
 }
