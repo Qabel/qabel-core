@@ -17,11 +17,9 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     internal val updateStatement = QblStatements.createUpdate(relation)
     internal val deleteStatement = QblStatements.createDelete(relation)
 
-    open fun createEntityQuery(): QueryBuilder {
-        return QblStatements.createEntityQuery(relation)
-    }
+    open fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
 
-    fun persist(model: T) {
+    fun persist(model: T) =
         executeStatement(insertStatement, {
             relation.applyValues(1, it, model)
         }, {
@@ -31,15 +29,15 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             }
             entityManager.put(model.javaClass, model, model.id)
         })
-    }
 
-    fun update(model: T) {
+    fun update(model: T) =
         executeStatement(updateStatement, {
-            it.setInt(1, model.id)
+            val i = relation.applyValues(1, it, model)
+            it.setInt(i, model.id)
         }, {
             entityManager.put(model.javaClass, model, model.id)
         })
-    }
+
 
     internal fun executeStatement(sqlStatement: String, prepare: (PreparedStatement) -> Unit, postExecute: (PreparedStatement) -> Unit = {}) {
         client.prepare(sqlStatement).use {
@@ -49,23 +47,15 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    fun delete(id: Int) {
-        client.prepare(deleteStatement).use {
-            it.setInt(1, id)
-            it.execute()
+    fun delete(id: Int) = executeStatement(deleteStatement, {
+        it.setInt(1, id)
+    })
+
+    fun findById(id: Int): T =
+        with(createEntityQuery()) {
+            whereAndEquals(relation.ID, id)
+            return getSingleResult(this)
         }
-    }
-
-    fun findById(id: Int): T {
-        //TODO Cant use entityManager as Cache
-      /*  if (entityManager.contains(relation.ENTITY_CLASS, id)) {
-            return entityManager.get(relation.ENTITY_CLASS, id);
-        }*/
-
-        val query = QblStatements.createEntityQuery(relation)
-        query.whereAndEquals(relation.ID, id)
-        return getSingleResult(query)
-    }
 
     //TODO kotlin currently require this cast, but its not really required
     internal fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
@@ -105,6 +95,57 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             })
         } catch (e: SQLException) {
             throw PersistenceException("query failed " + e.message + ")", e)
+        }
+    }
+
+    internal fun <T> findManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, resultAdapter: ResultAdapter<T>): List<T> {
+        with(QueryBuilder()) {
+            select(targetField)
+            from(sourceField.table, sourceField.tableAlias)
+            whereAndEquals(sourceField, sourceValue)
+            return getResultList(this, resultAdapter)
+        }
+    }
+
+    internal fun <T> findManyToMany(sourceField: DBField, targetField: DBField, resultAdapter: ResultAdapter<T>, sourceValues: List<Int>): List<T> =
+        with(QueryBuilder()) {
+            select(sourceField, targetField)
+            from(sourceField.table, sourceField.tableAlias)
+            whereAndIn(sourceField, sourceValues)
+            return getResultList(this, resultAdapter)
+        }
+
+    internal fun saveManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+        StringBuilder("INSERT OR IGNORE INTO ${sourceField.table} (${sourceField.name},${targetField.name}) VALUES ").apply {
+            values.forEach { append("(?,?),") }
+            executeStatement(toString().removeSuffix(","), { statement ->
+                var i = 1
+                values.forEach {
+                    statement.setInt(i++, sourceValue)
+                    statement.setObject(i++, it)
+                }
+            })
+        }
+    }
+
+    internal fun dropManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+        StringBuilder("DELETE FROM ${sourceField.table} WHERE ${sourceField.name}=? AND ${targetField.name} IN (").apply {
+            values.forEach { append("?,") }
+            executeStatement(toString().removeSuffix(",") + ")", { statement ->
+                var i = 1
+                statement.setInt(i++, sourceValue)
+                values.forEach {
+                    statement.setObject(i++, it)
+                }
+            })
+        }
+    }
+
+    internal fun dropAllManyToMany(sourceField: DBField, sourceValue: Int) {
+        ("DELETE FROM ${sourceField.table} WHERE ${sourceField.name}=?").let {
+            executeStatement(it, { statement ->
+                statement.setInt(1, sourceValue)
+            })
         }
     }
 }

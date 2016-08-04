@@ -27,10 +27,13 @@ interface ContactRepository {
     fun exists(contact: Contact): Boolean
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
-    fun findContactWithIdentities(key: String): Pair<Contact, List<Identity>>
+    fun findContactWithIdentities(keyId: String): Pair<Contact, List<Identity>>
 
     @Throws(PersistenceException::class)
     fun findWithIdentities(searchString: String = ""): Collection<Pair<Contact, List<Identity>>>
 
     @Throws fun find(id: Int): Contact
+
+    fun update(contact: Contact, activeIdentities: List<Identity>)
+
 }

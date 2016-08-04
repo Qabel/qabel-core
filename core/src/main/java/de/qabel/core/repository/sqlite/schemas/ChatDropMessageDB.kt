@@ -31,16 +31,18 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
 
     override val ENTITY_CLASS: Class<ChatDropMessage> = ChatDropMessage::class.java
 
-    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage) {
-        var i = startIndex;
-        statement.setInt(i++, model.contactId)
-        statement.setInt(i++, model.identityId)
-        statement.setByte(i++, model.direction.type)
-        statement.setInt(i++, model.status.type)
-        statement.setString(i++, model.messageType.type)
-        statement.setString(i++, MessagePayload.encode(model.messageType, model.payload))
-        statement.setTimestamp(i, Timestamp(model.createdOn))
-    }
+    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage) : Int =
+        with(statement) {
+            var i = startIndex;
+            setInt(i++, model.contactId)
+            setInt(i++, model.identityId)
+            setByte(i++, model.direction.type)
+            setInt(i++, model.status.type)
+            setString(i++, model.messageType.type)
+            setString(i++, MessagePayload.encode(model.messageType, model.payload))
+            setTimestamp(i++, Timestamp(model.createdOn))
+            return i;
+        }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): ChatDropMessage {
         val id = resultSet.getInt(ID.alias())
@@ -53,7 +55,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),
-            resultSet.getLong(CREATED_ON.alias()),
+            resultSet.getTimestamp(CREATED_ON.alias()).time,
             id);
     }
 

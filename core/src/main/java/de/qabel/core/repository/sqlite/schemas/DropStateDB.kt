@@ -20,11 +20,13 @@ object DropStateDB : DBRelation<DropState> {
 
     override val ENTITY_CLASS: Class<DropState> = DropState::class.java
 
-    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: DropState) {
-        var i = startIndex
-        statement.setString(i++, model.drop)
-        statement.setString(i, model.eTag)
-    }
+    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: DropState) : Int =
+        with(statement) {
+            var i = startIndex
+            statement.setString(i++, model.drop)
+            statement.setString(i++, model.eTag)
+            return i;
+        }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropState {
         val id = resultSet.getInt(ID.alias());

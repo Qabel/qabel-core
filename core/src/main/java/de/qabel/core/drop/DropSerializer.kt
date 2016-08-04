@@ -26,8 +26,8 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
             add(PAYLOAD, context.serialize(src.dropPayload))
             add(PAYLOAD_TYPE, context.serialize(src.dropPayloadType))
 
-            if (src.sender is Identity) {
-                add(META_DATA, context.serialize(DropMessageMetadata(src.sender as Identity)))
+            src.dropMessageMetadata?.let {
+                add(META_DATA, context.serialize(it))
             }
         }
 

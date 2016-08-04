@@ -17,7 +17,7 @@ class SqliteDropStateRepository(database: ClientDatabase,
     private fun findByDropId(dropId: String): DropState =
         with(createEntityQuery()) {
             whereAndEquals(DropStateDB.DROP, dropId)
-            return getSingleResult(this)
+            return getSingleResult<DropState>(this)
         }
 
     override fun setDropState(dropId: String, state: String): Unit =

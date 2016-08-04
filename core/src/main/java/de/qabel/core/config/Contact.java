@@ -14,7 +14,45 @@ public class Contact extends Entity {
 
     private String phone;
 
+    //Internal nick given by user. Do not export anywhere!
+    private String nickName;
+
     private QblECPublicKey ecPublicKey;
+
+    private ContactStatus status = ContactStatus.NORMAL;
+
+    private boolean ignored = false;
+
+    public enum ContactStatus {
+        UNKNOWN(0), NORMAL(1), VERIFIED(2);
+
+        public int status;
+        ContactStatus(int status){ this.status = status; }
+    }
+
+    public ContactStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ContactStatus status) {
+        this.status = status;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public boolean isIgnored() {
+        return ignored;
+    }
+
+    public void setIgnored(boolean ignored) {
+        this.ignored = ignored;
+    }
 
     /**
      * Returns the primary public key of the contact

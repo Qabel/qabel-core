@@ -1,11 +1,13 @@
 package de.qabel.core.config;
 
+import de.qabel.core.repository.framework.BaseEntity;
+
 import java.util.Date;
 
 /**
  * Class SyncSettingItem: Class to store common setting for synced item
  */
-public class SyncSettingItem extends Persistable {
+public class SyncSettingItem extends Persistable implements BaseEntity {
     private static final long serialVersionUID = -923043585748841729L;
 
     private int id;

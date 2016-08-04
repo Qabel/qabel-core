@@ -6,14 +6,14 @@ import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
 import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
-import org.hamcrest.Matchers
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
@@ -49,9 +49,8 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val dropUrlRepository = SqliteDropUrlRepository(clientDatabase, DropURLHydrator())
         return SqliteContactRepository(
             clientDatabase,
-            em,
-            identityRepository,
-            dropUrlRepository)
+            em, dropUrlRepository,
+            identityRepository)
     }
 
     @Test(expected = EntityNotFoundException::class)
@@ -196,14 +195,12 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertSame(contact, loaded)
     }
 
-    @Test
+    @Test(expected = EntityExistsException::class)
     fun addsRelationshipIfContactIsAlreadyPresent() {
         repo.save(contact, identity)
 
         val newImport = Contact(contact.alias, contact.dropUrls, contact.ecPublicKey)
         repo.save(newImport, otherIdentity)
-        repo.findByKeyId(otherIdentity, contact.keyIdentifier)
-        repo.findByKeyId(identity, contact.keyIdentifier)
     }
 
     @Test
@@ -232,7 +229,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         var index = 0;
         for (contact in contacts) {
             val storedDto = storedContacts[index];
-            assertThat(storedDto.first.alias, Matchers.equalTo(contact.first.alias));
+            assertThat(storedDto.first.alias, equalTo(contact.first.alias));
             assertThat(storedDto.second, hasSize(contact.second.size));
             index++;
         }
@@ -249,8 +246,19 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val contacts = repo.findWithIdentities(filter);
         Assert.assertEquals(1, contacts.size)
         val fooContact = contacts.iterator().next();
-        assertThat(otherContact.alias, Matchers.equalTo(fooContact.first.alias));
-        assertThat(1, Matchers.equalTo(fooContact.second.size));
+        assertThat(otherContact.alias, equalTo(fooContact.first.alias));
+        assertThat(1, equalTo(fooContact.second.size));
+    }
+
+    @Test
+    fun testUpdate() {
+        repo.save(contact, identity)
+        contact.nickName = "testNick"
+        repo.update(contact, listOf(identity, otherIdentity))
+
+        val result = repo.findContactWithIdentities(contact.keyIdentifier)
+        assertThat(result.first.nickName, equalTo("testNick"))
+        assertThat(result.second, containsInAnyOrder(identity, otherIdentity))
     }
 
 }

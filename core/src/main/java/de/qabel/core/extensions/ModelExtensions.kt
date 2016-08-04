@@ -8,3 +8,5 @@ fun <T : Entity> Map<Int, List<String>>.mapEntities(key: Int, entities: EntityMa
 
 fun <T : Entity> List<T>.contains(keyIdentifier: String) : Boolean =
     any { entity -> entity.keyIdentifier.equals(keyIdentifier) }
+
+fun <T  : Entity> Set<T>.findById(id : Int) = find { it.id == id }

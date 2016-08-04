@@ -6,13 +6,16 @@ import de.qabel.core.config.Entity
 import de.qabel.core.drop.DropURL
 import de.qabel.core.exceptions.QblDropInvalidURL
 import de.qabel.core.extensions.use
+import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.exception.PersistenceException
+import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.util.DefaultHashMap
 import java.net.URISyntaxException
 import java.sql.SQLException
 import java.util.*
 
-class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropURL>) : AbstractSqliteRepository<DropURL>(database, hydrator, SqliteDropUrlRepository.TABLE_NAME) {
+class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropURL> = DropURLHydrator()) :
+    AbstractSqliteRepository<DropURL>(database, hydrator, SqliteDropUrlRepository.TABLE_NAME), DropUrlRepository {
 
     companion object {
         val TABLE_NAME = "drop_url"
@@ -24,8 +27,7 @@ class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropU
         return findAll("contact_id=?", contactId)
     }
 
-    @Throws(PersistenceException::class)
-    fun findAll(contact: Contact): Collection<DropURL> {
+    override fun findAll(contact: Contact): Collection<DropURL> {
         return findAll(contact.id)
     }
 
@@ -65,8 +67,7 @@ class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropU
         }
     }
 
-    @Throws(PersistenceException::class)
-    fun findDropUrls(contactIds: List<Int>): Map<Int, List<DropURL>> {
+    override fun findDropUrls(contactIds: List<Int>): Map<Int, List<DropURL>> {
         try {
             val contactDropUrlMap = DefaultHashMap<Int, MutableList<DropURL>>({ LinkedList<DropURL>() })
             database.prepare(

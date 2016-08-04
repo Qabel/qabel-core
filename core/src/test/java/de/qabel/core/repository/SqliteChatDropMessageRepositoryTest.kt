@@ -8,10 +8,7 @@ import de.qabel.core.drop.DropURL
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.sqlite.ClientDatabase
-import de.qabel.core.repository.sqlite.SqliteChatDropMessageRepository
-import de.qabel.core.repository.sqlite.SqliteContactRepository
-import de.qabel.core.repository.sqlite.SqliteIdentityRepository
+import de.qabel.core.repository.sqlite.*
 import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -33,7 +30,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
     override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): ChatDropMessageRepository {
         identityRepo = SqliteIdentityRepository(clientDatabase, em)
-        contactRepo = SqliteContactRepository(clientDatabase, em, identityRepo)
+        contactRepo = SqliteContactRepository(clientDatabase, em, SqliteDropUrlRepository(clientDatabase), identityRepo)
         dropRepo = SqliteChatDropMessageRepository(clientDatabase, em)
 
         identityRepo.save(identityA)
@@ -57,6 +54,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         dropRepo.persist(message)
         val storedMessage = dropRepo.findById(message.id)
         assertMessageEquals(message, storedMessage)
+        assertThat(message.createdOn, equalTo(now))
     }
 
     @Test

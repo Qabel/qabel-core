@@ -186,6 +186,9 @@ public class ConfigEqualsTest {
             .overrideFactory("ecPublicKey", new QblECPublicKeyTestFactory())
             .ignoreProperty("email")
             .ignoreProperty("phone")
+            .ignoreProperty("nickName")
+            .ignoreProperty("status")
+            .ignoreProperty("ignored")
             .build();
         tester.testEqualsMethod(new ContactEquivalentTestFactory(), config);
     }

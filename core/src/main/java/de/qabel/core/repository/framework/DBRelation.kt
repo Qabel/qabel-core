@@ -13,7 +13,7 @@ interface DBRelation<T : BaseEntity> : ResultAdapter<T> {
 
     val ENTITY_CLASS: Class<T>
 
-    fun applyValues(startIndex: Int, statement: PreparedStatement, model: T)
+    fun applyValues(startIndex: Int, statement: PreparedStatement, model: T) : Int
 
 }
 
