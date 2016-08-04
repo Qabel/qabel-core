@@ -1,10 +1,13 @@
 package de.qabel.core.http
 
 import de.qabel.core.config.Contact
+import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.AbstractBinaryDropMessage
 import de.qabel.core.crypto.BinaryDropMessageV0
+import de.qabel.core.drop.DefaultDropParser
 import de.qabel.core.drop.DropMessage
+import de.qabel.core.drop.DropParser
 import de.qabel.core.drop.DropURL
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblSpoofedSenderException
@@ -13,7 +16,9 @@ import de.qabel.core.http.DropServerHttp.DropServerResponse
 import de.qabel.core.repository.entities.DropState
 import org.slf4j.LoggerFactory
 
-class MainDropConnector(val dropServer: DropServerHttp) : DropConnector {
+class MainDropConnector(val dropServer: DropServerHttp):
+    DropConnector,
+    DropParser by DefaultDropParser() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(MainDropConnector::class.java)
@@ -31,36 +36,24 @@ class MainDropConnector(val dropServer: DropServerHttp) : DropConnector {
         if (!dropResult.second.isEmpty()) {
             dropState.eTag = dropResult.second
         }
-        val dropMessages = mutableListOf<DropMessage>()
-        for (byteMessage in dropResult.third) {
-            val binaryFormatVersion = byteMessage[0]
-            val binaryMessage: AbstractBinaryDropMessage? = when (binaryFormatVersion) {
-                0.toByte() -> {
-                    val m: BinaryDropMessageV0? = try {
-                        BinaryDropMessageV0(byteMessage);
-                    } catch (e: QblVersionMismatchException) {
-                        logger.warn("Received DropMessage with version mismatch")
-                        throw RuntimeException("Version mismatch should not happen", e);
-                    } catch (e: QblDropInvalidMessageSizeException) {
-                        // Invalid message uploads may happen with malicious intent
-                        // or by broken clients. Skip.
-                        logger.warn("Received DropMessage with invalid size")
-                        null
-                    }
-                    m
-                }
-                else -> {
-                    logger.warn("Received DropMessage with unknown binary version")
-                    null
-                }
-            }
+        val receivers = Identities().apply { put(identity) }
+        val messages = dropResult.third.map { byteMessage ->
             try {
-                binaryMessage?.disassembleMessage(identity)?.let { dropMessages.add(it) }
+                parse(byteMessage, receivers)
+            } catch (e: QblVersionMismatchException) {
+                logger.warn("Received DropMessage with version mismatch")
+                throw RuntimeException("Version mismatch should not happen", e);
+            } catch (e: QblDropInvalidMessageSizeException) {
+                // Invalid message uploads may happen with malicious intent
+                // or by broken clients. Skip.
+                logger.warn("Received DropMessage with invalid size")
+                null
             } catch(ex: QblSpoofedSenderException) {
                 logger.warn("QblSpoofedSenderException while disassembling message")
+                null
             }
-        }
-        return DropServerResponse(dropResult.component1(), dropState, dropMessages)
+        }.filterNotNull()
+        return DropServerResponse(dropResult.component1(), dropState, messages)
     }
 
 }
