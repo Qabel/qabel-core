@@ -35,6 +35,7 @@ import java.util.concurrent.Callable;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.*;
 
@@ -231,15 +232,15 @@ public abstract class BoxVolumeTest {
         BoxNavigation nav = volume.navigate();
         nav.setAutocommit(true);
         nav.setAutocommitDelay(1000);
-        nav.createFolder("a");
+        BoxFile file = uploadFile(nav, "testfile");
 
         BoxNavigation nav2 = volume2.navigate();
-        assertFalse(nav2.hasFolder("a"));
+        assertFalse(nav2.hasFile("testfile"));
         waitUntil(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 BoxNavigation nav3 = volume2.navigate();
-                return nav3.hasFolder("a");
+                return nav3.hasFile("testfile");
             }
         }, 2000L);
     }
@@ -258,6 +259,13 @@ public abstract class BoxVolumeTest {
             e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+
+    @Test
+    public void simpleDeleteFolder() throws Exception {
+        BoxNavigation nav = volume.navigate();
+        BoxFolder boxFolder = nav.createFolder("newfolder");
+        nav.delete(boxFolder);
     }
 
     @Test
@@ -373,6 +381,7 @@ public abstract class BoxVolumeTest {
 
         nav2.commit();
         nav.commit();
+        nav.refresh();
         assertThat(nav.listFolders().size(), is(2));
     }
 
@@ -595,6 +604,43 @@ public abstract class BoxVolumeTest {
         // share has been removed from index
         boxFile.setShared(Share.create(meta, metakey));
         assertTrue(nav.getSharesOf(boxFile).isEmpty());
+    }
+
+    @Test
+    public void folderConflictsArePreventedByPessimisticCommits() throws Exception {
+        // set up navs that would be autocommitted after they have content (and thus overwrite each other)
+        BoxNavigation nav1 = setupConflictNav1();
+        BoxNavigation nav2 = setupConflictNav2();
+        nav1.setAutocommit(true);
+        nav1.setAutocommitDelay(2000L);
+        nav2.setAutocommit(true);
+        nav2.setAutocommitDelay(2000L);
+
+        // add conflicting folders simultaneously
+        BoxFolder folder1 = nav1.createFolder("folder");
+        BoxFolder folder2 = nav2.createFolder("folder");
+        BoxNavigation subnav1 = nav1.navigate(folder1);
+        BoxNavigation subnav2 = nav2.navigate(folder2);
+
+        // add content simultaneously
+        File file = new File(testFileName);
+        subnav1.upload("file1", file);
+        subnav2.upload("file2", file);
+
+        // make sure they commit (and conflict) now
+        nav1.commit();
+        subnav1.commit();
+        nav2.commit();
+        subnav2.commit();
+
+        // test the conflict result
+        BoxNavigation nav = volume.navigate();
+        nav.setMetadata(nav.reloadMetadata());
+        assertThat(nav.listFolders(), hasSize(1));
+        BoxNavigation subnav = nav.navigate(folder1);
+        assertTrue(subnav.hasFile("file1"));
+        assertTrue(subnav.hasFile("file2"));
+        assertThat(subnav.listFiles(), hasSize(2));
     }
 
     protected boolean blockExists(String meta) throws QblStorageException {
