@@ -79,7 +79,6 @@ abstract class AbstractNavigation(
         }
     }
 
-
     @Synchronized @Throws(QblStorageException::class)
     override fun commitIfChanged() {
         if (isUnmodified) {
@@ -103,7 +102,7 @@ abstract class AbstractNavigation(
         }
 
         // the remote version has changed from the _old_ version
-        if (updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
+        if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
             logger.info("Conflicting version")
             // ignore our local directory metadata
             // all changes that are not inserted in the new dm are _lost_!
@@ -115,6 +114,11 @@ abstract class AbstractNavigation(
         changes.postprocess(dm, writeBackend)
 
         changes.clear()
+    }
+
+    @Synchronized @Throws(QblStorageException::class)
+    override fun refresh() {
+        dm = reloadMetadata().apply { changes.execute(this) }
     }
 
     override val isUnmodified: Boolean
@@ -392,17 +396,20 @@ abstract class AbstractNavigation(
         }
     }
 
-
     @Synchronized @Throws(QblStorageException::class)
-    override fun createFolder(name: String): BoxFolder
-        = execute(CreateFolderChange(name, folderNavigationFactory, directoryFactory)).boxObject
+    override fun createFolder(name: String): BoxFolder {
+        execute(CreateFolderChange(name, folderNavigationFactory, directoryFactory))
+        commit()
+        refresh()
+        return getFolder(name)
+    }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun delete(file: BoxFile) = execute(DeleteFileChange(file, indexNavigation, writeBackend))
 
     @Synchronized @Throws(QblStorageException::class)
     override fun unshare(boxObject: BoxObject) {
-        indexNavigation.getSharesOf(boxObject)?.forEach { share ->
+        indexNavigation.getSharesOf(boxObject).forEach { share ->
             try {
                 indexNavigation.deleteShare(share)
             } catch (e: QblStorageException) {

@@ -1,13 +1,11 @@
 package de.qabel.core.contacts
 
 import de.qabel.core.config.Contact
-import de.qabel.core.config.ContactExportImport
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.exceptions.QblDropInvalidURL
 import de.qabel.core.exceptions.QblInvalidFormatException
-import de.qabel.core.extensions.toContact
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject

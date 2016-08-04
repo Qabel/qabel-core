@@ -26,7 +26,7 @@ class InMemoryDropStateRepository : DropStateRepository {
     }
 
     override fun getDropState(dropUrl: DropURL): DropState {
-        return states.getOrDefault(dropUrl, DropState(dropUrl.toString(), ""))
+        return states.getOrElse(dropUrl.toString(), { DropState(dropUrl.toString(), "") })
     }
 
     override fun setDropState(dropState: DropState) {

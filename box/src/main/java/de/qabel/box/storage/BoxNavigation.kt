@@ -10,6 +10,10 @@ import java.security.InvalidKeyException
 
 interface BoxNavigation : ReadableBoxNavigation {
 
+    /**
+     *  Fetches and returns the remote metadata file.
+     *  Does not update the internal metadata.
+     */
     @Throws(QblStorageException::class)
     fun reloadMetadata(): DirectoryMetadata
 
@@ -22,6 +26,13 @@ interface BoxNavigation : ReadableBoxNavigation {
      */
     @Throws(QblStorageException::class)
     fun commit()
+
+    /**
+     * Fetch the remote metadata, update the internal metadata with the newly fetched and apply pending changes to it.
+     * This is like a rebase to remote.
+     */
+    @Throws(QblStorageException::class)
+    fun refresh()
 
     /**
      * commits the DM if it has been changed (uploads or deletes)

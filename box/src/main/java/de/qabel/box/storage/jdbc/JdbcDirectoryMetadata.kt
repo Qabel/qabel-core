@@ -96,6 +96,7 @@ class JdbcDirectoryMetadata(
 
         md.update(byteArrayOf(0, 0))
         md.update(deviceId)
+        md.update(UUID.randomUUID().toString().toByteArray())
         return md.digest()
     }
 
@@ -127,7 +128,7 @@ class JdbcDirectoryMetadata(
 
         md.update(byteArrayOf(0, 1))
         md.update(oldVersion)
-        md.update(deviceId)
+        md.update(UUID.randomUUID().toString().toByteArray())
         try {
             tryWith(connection.prepare("INSERT INTO version (version, time) VALUES (?, ?)")) {
                 setBytes(1, md.digest())
@@ -245,9 +246,13 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    override fun deleteFolder(folder: BoxFolder) = executeStatement {
-            connection.prepare("DELETE FROM folders WHERE name=?").apply{setString(1, folder.name)}
+    override fun deleteFolder(folder: BoxFolder) = try {
+        executeStatement {
+            connection.prepare("DELETE FROM folders WHERE name=?").apply { setString(1, folder.name) }
         }
+    } catch (e: QblStorageException) {
+        throw QblStorageException("failed to delete folder " + folder.name, e)
+    }
 
     @Throws(QblStorageException::class)
     override fun listFolders(): List<BoxFolder> {

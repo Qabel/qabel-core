@@ -42,6 +42,13 @@ public class Identity extends Entity {
         }
     }
 
+    public Contact toContact() {
+        Contact contact = new Contact(alias, getDropUrls(), getEcPublicKey());
+        contact.setEmail(email);
+        contact.setPhone(phone);
+        return contact;
+    }
+
     /**
      * Returns the list of prefixes of the identity
      *
