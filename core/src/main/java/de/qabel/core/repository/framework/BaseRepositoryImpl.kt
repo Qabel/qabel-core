@@ -116,7 +116,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         }
 
     internal fun saveManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
-        StringBuilder("INSERT OR IGNORE INTO " + sourceField.table + "(" + sourceField.name + ", " + targetField.name + ") VALUES ").apply {
+        StringBuilder("INSERT OR IGNORE INTO $sourceField.table ($sourceField.name,$targetField.name) VALUES ").apply {
             values.forEach { append("(?,?),") }
             executeStatement(toString().removeSuffix(","), { statement ->
                 var i = 1
@@ -129,7 +129,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     }
 
     internal fun dropManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
-        StringBuilder("DELETE FROM " + sourceField.table + " WHERE " + sourceField.name + "=? AND " + targetField.name + " IN (").apply {
+        StringBuilder("DELETE FROM $sourceField.table WHERE $sourceField.name=? AND $targetField.name IN (").apply {
             values.forEach { append("?,") }
             executeStatement(toString().removeSuffix(",") + ")", { statement ->
                 var i = 1
@@ -142,7 +142,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     }
 
     internal fun dropAllManyToMany(sourceField: DBField, sourceValue: Int) {
-        ("DELETE FROM " + sourceField.table + " WHERE " + sourceField.name + "=?").let {
+        ("DELETE FROM $sourceField.table WHERE $sourceField.name=?").let {
             executeStatement(it, { statement ->
                 statement.setInt(1, sourceValue)
             })
