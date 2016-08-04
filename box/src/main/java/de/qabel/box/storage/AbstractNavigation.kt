@@ -398,7 +398,7 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun createFolder(name: String): BoxFolder {
-        execute(CreateFolderChange(name, folderNavigationFactory, directoryFactory)).boxObject
+        execute(CreateFolderChange(name, folderNavigationFactory, directoryFactory))
         commit()
         refresh()
         return getFolder(name)
@@ -409,7 +409,7 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun unshare(boxObject: BoxObject) {
-        indexNavigation.getSharesOf(boxObject)?.forEach { share ->
+        indexNavigation.getSharesOf(boxObject).forEach { share ->
             try {
                 indexNavigation.deleteShare(share)
             } catch (e: QblStorageException) {

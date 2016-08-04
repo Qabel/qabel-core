@@ -128,7 +128,6 @@ class JdbcDirectoryMetadata(
 
         md.update(byteArrayOf(0, 1))
         md.update(oldVersion)
-        md.update(deviceId)
         md.update(UUID.randomUUID().toString().toByteArray())
         try {
             tryWith(connection.prepare("INSERT INTO version (version, time) VALUES (?, ?)")) {
