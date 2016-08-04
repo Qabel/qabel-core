@@ -3,7 +3,6 @@ package de.qabel.core.http
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
-import de.qabel.core.crypto.AbstractBinaryDropMessage
 import de.qabel.core.crypto.BinaryDropMessageV0
 import de.qabel.core.drop.DefaultDropParser
 import de.qabel.core.drop.DropMessage
@@ -39,7 +38,7 @@ class MainDropConnector(val dropServer: DropServerHttp):
         val receivers = Identities().apply { put(identity) }
         val messages = dropResult.third.map { byteMessage ->
             try {
-                parse(byteMessage, receivers)
+                parse(byteMessage, receivers).second
             } catch (e: QblVersionMismatchException) {
                 logger.warn("Received DropMessage with version mismatch")
                 throw RuntimeException("Version mismatch should not happen", e);
