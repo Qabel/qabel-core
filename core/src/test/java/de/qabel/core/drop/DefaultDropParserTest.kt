@@ -17,7 +17,8 @@ class DefaultDropParserTest {
         val msg = BinaryDropMessageV0(dropMessage)
             .assembleMessageFor(receiver.toContact(), sender)
         val parser = DefaultDropParser()
-        val parsedMessage = parser.parse(msg, Identities().apply { put(receiver) })
+        val (identity, parsedMessage) = parser.parse(msg, Identities().apply { put(receiver) })
+        assertEquals(identity.keyIdentifier, receiver.keyIdentifier)
         assertEquals(dropMessage.senderKeyId, parsedMessage.senderKeyId)
         assertEquals(dropMessage.dropPayload, parsedMessage.dropPayload)
     }
