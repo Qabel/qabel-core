@@ -8,11 +8,11 @@ import org.meanbean.lang.Factory;
  * Creates distinct instances of class Identity
  * Attention: For testing purposes only
  */
-class IdentityTestFactory implements Factory<Identity> {
+public class IdentityTestFactory implements Factory<Identity> {
     DropUrlListTestFactory urlListFactory;
     QblEcPairTestFactory qpkpFactory;
 
-    IdentityTestFactory() {
+    public IdentityTestFactory() {
         urlListFactory = new DropUrlListTestFactory();
         qpkpFactory = new QblEcPairTestFactory();
     }

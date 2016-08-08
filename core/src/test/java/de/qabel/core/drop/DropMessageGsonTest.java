@@ -20,10 +20,19 @@ public class DropMessageGsonTest {
     public static final String TEST_MESSAGE = "baz";
     public static final String TEST_MESSAGE_TYPE = "test_message";
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = JsonSyntaxException.class)
     public void invalidJsonDeserializeTest() {
         // 'time' got a wrong value
         String json = "{\"version\":1,\"time\":\"asdf\",\"sender\":\"foo\",\"acknowledgeID\":\"1234\",\"model\":\"DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
+
+        Gson gson = DropMessageGson.INSTANCE.create();
+
+        gson.fromJson(json, DropMessage.class);
+    }
+
+    @Test(expected = JsonSyntaxException.class)
+    public void missingAcknowledgeId() {
+        String json = "{\"version\":1,\"time\":\"asdf\",\"sender\":\"foo\",\"model\":\"DropMessageGsonTest$TestMessage\",\"data\":\"{\\\"content\\\":\\\"bar\\\"}\"}";
 
         Gson gson = DropMessageGson.INSTANCE.create();
 

@@ -32,6 +32,7 @@ public class DropMessage implements Serializable {
 
     public DropMessage(Entity sender, String dropPayload, String dropPayloadType) {
         this.sender = sender;
+        this.senderKeyId = sender.getKeyIdentifier();
         this.dropPayload = dropPayload;
         this.dropPayloadType = dropPayloadType;
         created = new Date();

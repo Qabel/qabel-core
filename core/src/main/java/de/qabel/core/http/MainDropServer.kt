@@ -48,7 +48,7 @@ class MainDropServer : DropServerHttp {
                         val stream = MimeTokenStream()
                         stream.parseHeadless(inputStream, it.contentType)
                         val messages = mutableListOf<ByteArray>()
-                        var state = stream.state;
+                        var state = stream.state
                         while (state != EntityState.T_END_OF_STREAM) {
                             if (state == EntityState.T_BODY) {
                                 val bytes = IOUtils.toByteArray(stream.inputStream)
@@ -64,10 +64,8 @@ class MainDropServer : DropServerHttp {
                 QblStatusCodes.INVALID -> throw QblDropInvalidURL()
                 else -> throw RuntimeException("Received unknown statusCode")
             }
-            var responseETag = ""
-            if (!it.getHeaderField(QblHeaders.X_QABEL_LATEST).isEmpty()) {
-                responseETag = it.getHeaderField(QblHeaders.X_QABEL_LATEST)
-            }
+            val responseETag = it.getHeaderField(QblHeaders.X_QABEL_LATEST) ?: ""
+
             Triple(statusCode, responseETag, messages)
         }
 
