@@ -16,8 +16,9 @@ import de.qabel.core.repository.entities.DropState
 import org.slf4j.LoggerFactory
 
 class MainDropConnector(val dropServer: DropServerHttp):
-    DropConnector,
-    DropParser by DefaultDropParser() {
+    DropConnector {
+
+    private val parser = DefaultDropParser()
 
     companion object {
         private val logger = LoggerFactory.getLogger(MainDropConnector::class.java)
@@ -31,14 +32,14 @@ class MainDropConnector(val dropServer: DropServerHttp):
     }
 
     override fun receiveDropMessages(identity: Identity, dropUrl: DropURL, dropState: DropState): DropServerResponse<DropMessage> {
-        val dropResult = dropServer.receiveMessageBytes(dropUrl.uri, dropState.eTag)
-        if (!dropResult.second.isEmpty()) {
-            dropState.eTag = dropResult.second
+        val (status, eTag, byteMessages) = dropServer.receiveMessageBytes(dropUrl.uri, dropState.eTag)
+        if (!eTag.isEmpty()) {
+            dropState.eTag = eTag
         }
         val receivers = Identities().apply { put(identity) }
-        val messages = dropResult.third.map { byteMessage ->
+        val messages = byteMessages.map { byteMessage ->
             try {
-                parse(byteMessage, receivers).second
+                parser.parse(byteMessage, receivers).second
             } catch (e: QblVersionMismatchException) {
                 logger.warn("Received DropMessage with version mismatch")
                 throw RuntimeException("Version mismatch should not happen", e);
@@ -52,7 +53,7 @@ class MainDropConnector(val dropServer: DropServerHttp):
                 null
             }
         }.filterNotNull()
-        return DropServerResponse(dropResult.component1(), dropState, messages)
+        return DropServerResponse(status, dropState, messages)
     }
 
 }
