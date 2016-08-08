@@ -2,6 +2,7 @@ package de.qabel.core.crypto;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import de.qabel.core.drop.*;
 import de.qabel.core.config.Contact;
@@ -73,7 +74,7 @@ public abstract class AbstractBinaryDropMessage {
         Gson gson = DropMessageGson.INSTANCE.create();
         try {
             return gson.fromJson(plainJson, DropMessage.class);
-        } catch (JsonSyntaxException e) {
+        } catch (JsonParseException e) {
             logger.debug("Deserialization failed due to invalid json syntax", e);
             return null;
         }

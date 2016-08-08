@@ -33,15 +33,15 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
 
     override fun deserialize(json: JsonElement, type: Type,
                              context: JsonDeserializationContext): DropMessage =
-        json.asJsonObject.let {
-            val version = it.get(VERSION).asInt
+        json.asJsonObject?.let {
+            val version = it.get(VERSION)?.asInt ?: throw JsonSyntaxException("version missing")
             if (version != DropMessage.getVersion()) {
                 throw JsonParseException("Unexpected version: " + version)
             }
-            val time = it.get(TIME_STAMP).asLong
-            val sender = it.get(SENDER).asString
-            val dropPayload = it.get(PAYLOAD).asString
-            val dropPayloadType = it.get(PAYLOAD_TYPE).asString
+            val time = it.get(TIME_STAMP)?.asLong ?: throw JsonSyntaxException("time is not a long")
+            val sender = it.get(SENDER)?.asString ?: throw JsonSyntaxException("sender not defined")
+            val dropPayload = it.get(PAYLOAD)?.asString ?: throw JsonSyntaxException("payload not defined")
+            val dropPayloadType = it.get(PAYLOAD_TYPE)?.asString ?: throw JsonSyntaxException("payload type not defined")
 
             var dropMessageMetadata: DropMessageMetadata? = null
             if (it.has(META_DATA)) {
@@ -50,5 +50,5 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
             }
 
             DropMessage(sender, dropPayload, dropPayloadType, Date(time), DropMessage.NOACK, dropMessageMetadata)
-        }
+        } ?: throw JsonSyntaxException("Not a json object")
 }
