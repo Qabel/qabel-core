@@ -32,7 +32,13 @@ inline fun <T> T.letApply(block: (T) -> Unit): T {
 }
 
 private fun <T> JsonObject.getOrThrow(key: String, conversion: (el: JsonElement) -> T): T = try {
-    get(key).let(conversion) ?: throw JsonSyntaxException("Missing property " + key)
+    get(key).let {
+        if (it == null) {
+            throw JsonSyntaxException("Missing property " + key)
+        } else {
+            conversion(it)
+        }
+    }
 } catch(ex: ClassCastException) {
     throw JsonSyntaxException("Value has a wrong type")
 } catch(ex: IllegalStateException) {

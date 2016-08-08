@@ -6,9 +6,9 @@ import de.qabel.core.config.Identity
 import de.qabel.core.crypto.BinaryDropMessageV0
 import de.qabel.core.drop.DefaultDropParser
 import de.qabel.core.drop.DropMessage
-import de.qabel.core.drop.DropParser
 import de.qabel.core.drop.DropURL
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
+import de.qabel.core.exceptions.QblException
 import de.qabel.core.exceptions.QblSpoofedSenderException
 import de.qabel.core.exceptions.QblVersionMismatchException
 import de.qabel.core.http.DropServerHttp.DropServerResponse
@@ -42,7 +42,7 @@ class MainDropConnector(val dropServer: DropServerHttp):
                 parser.parse(byteMessage, receivers).second
             } catch (e: QblVersionMismatchException) {
                 logger.warn("Received DropMessage with version mismatch")
-                throw RuntimeException("Version mismatch should not happen", e);
+                null
             } catch (e: QblDropInvalidMessageSizeException) {
                 // Invalid message uploads may happen with malicious intent
                 // or by broken clients. Skip.
@@ -50,6 +50,9 @@ class MainDropConnector(val dropServer: DropServerHttp):
                 null
             } catch(ex: QblSpoofedSenderException) {
                 logger.warn("QblSpoofedSenderException while disassembling message")
+                null
+            } catch (ex: QblException) {
+                logger.warn("Another QblException while parsing the message", ex)
                 null
             }
         }.filterNotNull()
