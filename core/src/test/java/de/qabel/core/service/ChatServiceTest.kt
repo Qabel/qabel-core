@@ -8,6 +8,7 @@ import de.qabel.core.drop.DropURL
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
@@ -30,9 +31,10 @@ class ChatServiceTest {
     val identityRepository = InMemoryIdentityRepository()
     val contactRepository = InMemoryContactRepository()
     val chatDropRepo = InMemoryChatDropMessageRepository()
+    val dropStateRepo = InMemoryDropStateRepository()
     val chatService = MainChatService(MainDropConnector(MockDropServer()),
         identityRepository, contactRepository,
-        chatDropRepo, InMemoryDropStateRepository())
+        chatDropRepo, dropStateRepo)
 
     @Before
     fun setUp() {
@@ -89,11 +91,17 @@ class ChatServiceTest {
         chatDropRepo.persist(stored)
         messages.forEach { chatService.sendMessage(it) }
 
+        val currentETag = ""
+        dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
+
         val result = chatService.refreshMessages()
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
         assertThat(result.values.first(), hasSize(2))
+
+        val newDropState = dropStateRepo.getDropState(identityB.dropUrls.first())
+        assertThat(newDropState.eTag, not(currentETag))
     }
 
     @Test

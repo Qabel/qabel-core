@@ -55,6 +55,7 @@ open class MainChatService(val dropConnector: DropConnector,
                         iMessages.add(createChatDropMessage(identity, this, it))
                     }
                 }
+                dropStateRepository.setDropState(dropResult.dropState)
             }
             iMessages.forEach {
                 if (!chatDropMessageRepository.exists(it)) {
