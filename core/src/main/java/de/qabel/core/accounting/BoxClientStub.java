@@ -13,29 +13,61 @@ public class BoxClientStub implements BoxClient {
 
     public QuotaState quotaState = new QuotaState(1000000000L, 300000000L);
 
+    public IOException ioException;
+    public QblInvalidCredentials qblInvalidCredentials;
+    public QblCreateAccountFailException qblCreateAccountFailException;
+
     @Override
     public void login() throws IOException, QblInvalidCredentials {
-
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
     }
 
+    @Override
     public QuotaState getQuotaState() throws IOException, QblInvalidCredentials {
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
         return quotaState;
     }
 
 
     @Override
     public void authorize(HttpRequest request) throws IOException, QblInvalidCredentials {
-
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
     }
 
     @Override
     public void updatePrefixes() throws IOException, QblInvalidCredentials {
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
 
     }
 
     @Override
     public void createPrefix() throws IOException, QblInvalidCredentials {
-
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
     }
 
     public URIBuilder buildUri(String resource) {
@@ -49,6 +81,12 @@ public class BoxClientStub implements BoxClient {
 
     @Override
     public ArrayList<String> getPrefixes() throws IOException, QblInvalidCredentials {
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblInvalidCredentials != null) {
+            throw qblInvalidCredentials;
+        }
         return null;
     }
 
@@ -63,6 +101,11 @@ public class BoxClientStub implements BoxClient {
 
     @Override
     public void createBoxAccount(String email) throws IOException, QblCreateAccountFailException {
-
+        if (ioException != null) {
+            throw ioException;
+        }
+        if (qblCreateAccountFailException != null) {
+            throw qblCreateAccountFailException;
+        }
     }
 }

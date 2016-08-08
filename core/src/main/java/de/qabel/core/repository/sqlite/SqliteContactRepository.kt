@@ -27,6 +27,9 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
     BaseRepositoryImpl<Contact>(contactRelation, db, em), ContactRepository {
 
+    constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
+                identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
+
     override fun find(identity: Identity): Contacts =
         with(createEntityQuery()) {
             joinIdentityContacts(this)
