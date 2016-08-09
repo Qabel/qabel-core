@@ -56,9 +56,10 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     override fun exists(chatDropMessage: ChatDropMessage): Boolean =
         with(createEntityQuery()) {
             whereAndEquals(IDENTITY_ID, chatDropMessage.identityId)
-            whereAndEquals(CONTACT_ID, chatDropMessage.identityId)
+            whereAndEquals(CONTACT_ID, chatDropMessage.contactId)
+            whereAndEquals(CREATED_ON, chatDropMessage.createdOn)
             whereAndEquals(DIRECTION, chatDropMessage.direction.type)
-            whereAndEquals(PAYLOAD, chatDropMessage.payload)
+            whereAndEquals(PAYLOAD, chatDropMessage.payload.toString())
             whereAndEquals(PAYLOAD_TYPE, chatDropMessage.messageType.type)
             return try {
                 getSingleResult<ChatDropMessageDB>(this); true
