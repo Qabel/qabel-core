@@ -10,7 +10,7 @@ import de.qabel.core.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.*
 import org.hamcrest.Matchers.*
-import org.junit.Assert.assertThat
+import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
 
@@ -133,6 +133,14 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         dropRepo.markAsRead(contactA, identityA)
 
         assertThat(dropRepo.findNew(identityA.id), hasSize(0))
+    }
+
+    @Test
+    fun testExists(){
+        dropRepo.persist(message)
+        assertTrue(dropRepo.exists(message))
+        dropRepo.delete(message.id)
+        assertFalse(dropRepo.exists(message))
     }
 
     fun assertMessageEquals(expected: ChatDropMessage, current: ChatDropMessage) {
