@@ -101,6 +101,11 @@ class ChatServiceTest {
 
         val newDropState = dropStateRepo.getDropState(identityB.dropUrls.first())
         assertThat(newDropState.eTag, not(currentETag))
+
+        //reset dropstate and receive again
+        dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
+        val result2 = chatService.refreshMessages()
+        assertThat(result2.keys, hasSize(0))
     }
 
     @Test
@@ -159,6 +164,19 @@ class ChatServiceTest {
 
         val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result, hasSize(3))
+    }
+
+    @Test
+    fun testHandleDuplicateMessages() {
+        val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
+            createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+
+        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result, hasSize(3))
+        //test duplicate handling
+        val result2 = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result2, hasSize(0))
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
