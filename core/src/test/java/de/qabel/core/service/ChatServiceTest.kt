@@ -28,12 +28,12 @@ class ChatServiceTest {
 
     private fun createTextPayload(text: String) = "{\"msg\": \"$text\"}"
 
-    val dropConnector = MainDropConnector(MockDropServer())
     val identityRepository = InMemoryIdentityRepository()
     val contactRepository = InMemoryContactRepository()
     val chatDropRepo = InMemoryChatDropMessageRepository()
     val dropStateRepo = InMemoryDropStateRepository()
-    val chatService = MainChatService(identityRepository, contactRepository, chatDropRepo, dropStateRepo)
+    val chatService = MainChatService(MainDropConnector(MockDropServer()), identityRepository,
+        contactRepository, chatDropRepo, dropStateRepo)
 
     @Before
     fun setUp() {
@@ -61,11 +61,11 @@ class ChatServiceTest {
     fun testSend() {
         val message = createMessage(identityA, contactB, "Blub blub")
 
-        chatService.sendMessage(dropConnector, message)
+        chatService.sendMessage(message)
 
         assertThat(message.status, equalTo(ChatDropMessage.Status.SENT))
 
-        val result = chatService.refreshMessages(dropConnector)
+        val result = chatService.refreshMessages()
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
@@ -88,11 +88,11 @@ class ChatServiceTest {
             direction = ChatDropMessage.Direction.INCOMING, status = ChatDropMessage.Status.NEW)
 
         chatDropRepo.persist(stored)
-        messages.forEach { chatService.sendMessage(dropConnector, it) }
+        messages.forEach { chatService.sendMessage(it) }
 
         val currentETag = ""
         dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
-        val result = chatService.refreshMessages(dropConnector)
+        val result = chatService.refreshMessages()
 
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
@@ -111,12 +111,12 @@ class ChatServiceTest {
         }
         identityRepository.save(someone)
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        chatService.sendMessage(dropConnector, message)
+        chatService.sendMessage(message)
 
         //Remove Identity
         identityRepository.delete(someone)
 
-        val result = chatService.refreshMessages(dropConnector)
+        val result = chatService.refreshMessages()
 
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first(), equalTo(identityA))

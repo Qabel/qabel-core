@@ -17,14 +17,14 @@ import de.qabel.core.util.DefaultHashMap
 import org.slf4j.LoggerFactory
 
 
-open class MainChatService(val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
+open class MainChatService(val dropConnector: DropConnector, val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
                            val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
 
     companion object {
         private val logger = LoggerFactory.getLogger(MainChatService::class.java)
     }
 
-    override fun sendMessage(dropConnector: DropConnector, message: ChatDropMessage) {
+    override fun sendMessage(message: ChatDropMessage) {
         val sender = identityRepository.find(message.identityId)
         val receiver = contactRepository.find(message.contactId)
 
@@ -47,7 +47,7 @@ open class MainChatService(val identityRepository: IdentityRepository, val conta
         chatDropMessageRepository.update(message)
     }
 
-    override fun refreshMessages(dropConnector: DropConnector): Map<Identity, List<ChatDropMessage>> {
+    override fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
         val resultMap = DefaultHashMap<Identity, MutableList<ChatDropMessage>>({ mutableListOf() })
         identityRepository.findAll().entities.forEach { identity ->
             identity.dropUrls.forEach { dropUrl ->
