@@ -18,7 +18,7 @@ unsigned char expectedpk[32] = {
 ,0xeb,0xa4,0xa9,0x8e,0xaa,0x9b,0x4e,0x6a
 };
 
-main()
+int main()
 {
   int i;
   crypto_scalarmult_base(alicepk,alicesk);
