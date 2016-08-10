@@ -129,7 +129,7 @@ public class Identity extends Entity {
     /**
      * Sets the primary key pair of the identity.
      *
-     * @param key Primary Key pair of the identity.
+     * @param key Primary key pair of the identity.
      */
     public void setPrimaryKeyPair(QblECKeyPair key) {
         primaryKeyPair = key;
@@ -147,6 +147,14 @@ public class Identity extends Entity {
     @Override
     public QblECPublicKey getEcPublicKey() {
         return getPrimaryKeyPair().getPub();
+    }
+
+    /**
+     * Returns the drop URL that should be used for the HELLO protocol, i.e.
+     * made public and exported to qabel-index.
+     */
+    public DropURL getHelloDropUrl() {
+        return (new ArrayList<>(getDropUrls())).get(0);
     }
 
     @Override
