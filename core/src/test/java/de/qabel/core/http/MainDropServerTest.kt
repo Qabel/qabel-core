@@ -1,9 +1,9 @@
 package de.qabel.core.http
 
+import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblDropInvalidURL
-import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -23,29 +23,47 @@ class MainDropServerTest {
 
     @Before
     fun setUp() {
-        workingUri = URI(
-            "http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl")
+        val dropGenerator = DropUrlGenerator("http://localhost:5000")
+        workingUri = dropGenerator.generateUrl().uri
         tooShortUri = URI("http://localhost:5000/IAmTooShort")
-        notExistingUri = URI("http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl")
-        shouldContainMessagesUri = URI("http://localhost:5000/abcdefghijklmnopqrstuvshouldContainMessages")
-        shouldContainNoNewMessagesSinceDateUri = URI("http://localhost:5000/xbcdefghshouldContainNoNewMessagesSinceDate")
+        notExistingUri = dropGenerator.generateUrl().uri
+        shouldContainMessagesUri = dropGenerator.generateUrl().uri
+        shouldContainNoNewMessagesSinceDateUri = dropGenerator.generateUrl().uri
 
         //prepare dropserver content for tests.
         dropServer = MainDropServer()
         dropServer.sendBytes(shouldContainMessagesUri, "shouldContainMessagesTestMessage".toByteArray())
         dropServer.sendBytes(shouldContainNoNewMessagesSinceDateUri, "shouldContainNoNewMessagesSinceDate".toByteArray())
+        postedAt = System.currentTimeMillis()
     }
 
     // POST 200
     @Test
-    @Throws(Exception::class)
-    fun postMessageOk() {
-        // Given
-        val message = "Test"
-        // When
-        dropServer.sendBytes(workingUri, message.toByteArray())
-        postedAt = System.currentTimeMillis()
-        assertTrue(dropServer.receiveMessageBytes(workingUri, "").third.contains(message.toByteArray()))
+    fun sendMessage() {
+        val message = "Test".toByteArray()
+        dropServer.sendBytes(workingUri, message)
+        val result = dropServer.receiveMessageBytes(workingUri, "")
+        assertThat(result.third.find { it.arrayEquals(message) }, notNullValue())
+    }
+
+    @Test
+    fun testByteArrayEquals() {
+        val a = "TEST".toByteArray()
+        val b = "TEST".toByteArray()
+        assertTrue(a.arrayEquals(b))
+        assertFalse(a.equals(b))
+    }
+
+    fun ByteArray.arrayEquals(other: ByteArray): Boolean {
+        if (size != other.size) {
+            return false
+        }
+        for (i in 0 until size) {
+            if (this[i] != other[i]) {
+                return false
+            }
+        }
+        return true
     }
 
     // POST 400
@@ -56,7 +74,7 @@ class MainDropServerTest {
 
     // POST 413
     @Test(expected = QblDropInvalidMessageSizeException::class)
-    fun postMessageTooBig() {
+    fun testMessageToBig() {
         val chars = CharArray(2574) // one byte more than the server accepts
         Arrays.fill(chars, 'a')
         dropServer.sendBytes(workingUri,
@@ -65,23 +83,21 @@ class MainDropServerTest {
 
     // GET 200
     @Test
-    fun getRequestShouldGetCompleteDrop() {
-        val result = dropServer.receiveMessageBytes(workingUri, "")
-        assertThat(result.third, hasSize(0))
+    fun testCompleteDrop() {
+        val result = dropServer.receiveMessageBytes(shouldContainMessagesUri, "")
         assertThat(result.first, equalTo(200))
         assertNotEquals(result.second, "")
     }
 
     // GET 400
     @Test(expected = QblDropInvalidURL::class)
-    fun getRequestWithInvalidOrMissingDropIdShouldBe400() {
+    fun testShortInvalidURI() {
         dropServer.receiveMessageBytes(tooShortUri, "")
     }
 
     // GET 204
     @Test
-    @Throws(Exception::class)
-    fun getRequestForEmptyDropShouldBe204() {
+    fun testEmptyDrop() {
         val result = dropServer.receiveMessageBytes(notExistingUri, "")
         assertThat(result.third, hasSize(0))
         assertEquals(204, result.first)
@@ -90,34 +106,11 @@ class MainDropServerTest {
     // GET 200 SINCE
     @Test
     @Throws(Exception::class)
-    fun getRequestShouldEntriesSinceDate() {
+    fun testReceiveMessage() {
         // When
         val result = dropServer.receiveMessageBytes(shouldContainMessagesUri, "")
-        println(result)
-        // assertThat(result.third, has)
         assertEquals(200, result.first)
-    }
-
-    // GET 304 SINCE
-    @Test
-    @Throws(Exception::class)
-    fun getRequestWithSinceDateShouldBe304() {
-        val eTag = (postedAt + 1000L).toString()
-        val result = dropServer.receiveMessageBytes(shouldContainNoNewMessagesSinceDateUri, "")
-        assertEquals(304, result.first)
-        assertThat(result.third, hasSize(0))
-        assertNotEquals(eTag, result.second)
-    }
-
-    // GET 204 SINCE
-    @Test
-    fun getRequestWithSinceDateForEmptyDropShouldBe204() {
-        val current = System.currentTimeMillis().toString();
-        val result = dropServer.receiveMessageBytes(notExistingUri, current)
-        // Then
-        assertEquals(204, result.first)
-        assertNotEquals(current, result.second)
-        assertThat(result.third, hasSize(0))
+        assertTrue(result.third.size > 0)
     }
 
 }
