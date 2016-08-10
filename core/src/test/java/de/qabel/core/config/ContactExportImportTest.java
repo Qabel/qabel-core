@@ -54,8 +54,8 @@ public class ContactExportImportTest {
     @Test
     public void testExportImportContact() throws QblDropInvalidURL, JSONException, URISyntaxException {
 
-        String contactJSON = ContactExportImport.exportContact(contact1);
-        Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
+        String contactJSON = ContactExportImport.INSTANCE.exportContact(contact1);
+        Contact importedContact1 = ContactExportImport.INSTANCE.parseContactForIdentity(contactJSON);
         contactEquals(contact1, importedContact1);
     }
 
@@ -64,17 +64,17 @@ public class ContactExportImportTest {
 
         contact1.setEmail("test@example.com");
         contact1.setPhone("+491111111");
-        String contactJSON = ContactExportImport.exportContact(contact1);
-        Contact importedContact1 = ContactExportImport.parseContactForIdentity(contactJSON);
+        String contactJSON = ContactExportImport.INSTANCE.exportContact(contact1);
+        Contact importedContact1 = ContactExportImport.INSTANCE.parseContactForIdentity(contactJSON);
         contactEquals(contact1, importedContact1);
     }
 
     @Test
     public void testExportImportContacts() throws JSONException, URISyntaxException, QblDropInvalidURL {
 
-        String contactsJSON = ContactExportImport.exportContacts(contacts);
+        String contactsJSON = ContactExportImport.INSTANCE.exportContacts(contacts);
 
-        Contacts importedContacts = ContactExportImport.parseContactsForIdentity(identity, contactsJSON);
+        Contacts importedContacts = ContactExportImport.INSTANCE.parseContactsForIdentity(identity, contactsJSON);
 
         assertThat(importedContacts.getContacts().size(), is(2));
         Contact importedContact1 = importedContacts.getByKeyIdentifier(contact1.getKeyIdentifier());
@@ -96,9 +96,9 @@ public class ContactExportImportTest {
     @Test
     public void testImportExportedContactFromIdentity() throws URISyntaxException, QblDropInvalidURL, JSONException {
 
-        String json = ContactExportImport.exportIdentityAsContact(identity);
+        String json = ContactExportImport.INSTANCE.exportIdentityAsContact(identity);
         // Normally a contact wouldn't be imported for the belonging identity, but it doesn't matter for the test.
-        Contact contact = ContactExportImport.parseContactForIdentity(json);
+        Contact contact = ContactExportImport.INSTANCE.parseContactForIdentity(json);
 
         assertThat(identity.getAlias(), is(contact.getAlias()));
         assertThat(identity.getDropUrls(), is(contact.getDropUrls()));

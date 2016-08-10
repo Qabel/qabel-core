@@ -27,9 +27,9 @@ public class IdentityExportImportTest {
         identity.getPrefixes().add("prefix1");
         identity.getPrefixes().add("prefix2");
 
-        String exportedIdentity = IdentityExportImport.exportIdentity(identity);
+        String exportedIdentity = IdentityExportImport.INSTANCE.exportIdentity(identity);
 
-        Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
+        Identity importedIdentity = IdentityExportImport.INSTANCE.parseIdentity(exportedIdentity);
 
         assertEquals(identity.getId(), importedIdentity.getId());
         assertEquals(identity.getEmail(), importedIdentity.getEmail());
@@ -49,9 +49,9 @@ public class IdentityExportImportTest {
 
         Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
 
-        String exportedIdentity = IdentityExportImport.exportIdentity(identity);
+        String exportedIdentity = IdentityExportImport.INSTANCE.exportIdentity(identity);
 
-        Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
+        Identity importedIdentity = IdentityExportImport.INSTANCE.parseIdentity(exportedIdentity);
 
         assertEquals(identity.getId(), importedIdentity.getId());
         assertEquals(identity.getEmail(), importedIdentity.getEmail());

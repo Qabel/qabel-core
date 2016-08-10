@@ -16,7 +16,7 @@ public class DropIdGenerationTest {
     public void testAdjustable() {
         DropIdGenerator generator = new AdjustableDropIdGenerator();
         String id = generator.generateDropId();
-        assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
+        assertEquals(DropIdGenerator.Companion.getDROP_ID_LENGTH(), id.length());
     }
 
     @Test
@@ -24,30 +24,30 @@ public class DropIdGenerationTest {
         exception.expect(IllegalArgumentException.class);
         DropIdGenerator generator = new AdjustableDropIdGenerator(0);
         String id = generator.generateDropId();
-        assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
+        assertEquals(DropIdGenerator.Companion.getDROP_ID_LENGTH(), id.length());
     }
 
     @Test
     public void testAdjustableTooManyBits() {
         exception.expect(IllegalArgumentException.class);
         DropIdGenerator generator = new AdjustableDropIdGenerator(
-            DropIdGenerator.DROP_ID_LENGTH_BYTE * 8 + 1);
+            DropIdGenerator.Companion.getDROP_ID_LENGTH_BYTE() * 8 + 1);
         String id = generator.generateDropId();
-        assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
+        assertEquals(DropIdGenerator.Companion.getDROP_ID_LENGTH(), id.length());
     }
 
     @Test
     public void testAdjustableJustRightLow() {
         DropIdGenerator generator = new AdjustableDropIdGenerator(1);
         String id = generator.generateDropId();
-        assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
+        assertEquals(DropIdGenerator.Companion.getDROP_ID_LENGTH(), id.length());
     }
 
     @Test
     public void testAdjustableJustRightHigh() {
         DropIdGenerator generator = new AdjustableDropIdGenerator(
-            DropIdGenerator.DROP_ID_LENGTH_BYTE * 8);
+            DropIdGenerator.Companion.getDROP_ID_LENGTH_BYTE() * 8);
         String id = generator.generateDropId();
-        assertEquals(DropIdGenerator.DROP_ID_LENGTH, id.length());
+        assertEquals(DropIdGenerator.Companion.getDROP_ID_LENGTH(), id.length());
     }
 }

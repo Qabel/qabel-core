@@ -293,7 +293,7 @@ abstract class AbstractNavigation(
                     listener.setSize(download.size)
                     content = ProgressInputStream(content, listener)
                 }
-                val key = KeyParameter(boxFile.getKey())
+                val key = KeyParameter(boxFile.key)
                 val temp = File.createTempFile("upload", "down", tempDir)
                 temp.deleteOnExit()
                 if (!cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(content, temp, key)) {
@@ -321,14 +321,14 @@ abstract class AbstractNavigation(
                 uploadEncrypted(fileMetadata.path, key, block, null)
 
                 // Overwrite = delete old file, upload new file
-                val oldFile = dm.getFile(boxFile.getName())
+                val oldFile = dm.getFile(boxFile.name)
                 if (oldFile != null) {
                     dm.deleteFile(oldFile)
                 }
                 dm.insertFile(boxFile)
                 autocommit()
             }
-            return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
+            return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.name, owner, boxFile.metakey)
         } catch (e: QblStorageException) {
             throw QblStorageException("Could not create or upload FileMetadata", e)
         }
@@ -438,11 +438,11 @@ abstract class AbstractNavigation(
     override fun delete(folder: BoxFolder) {
         val folderNav = navigate(folder)
         for (file in folderNav.listFiles()) {
-            logger.info("Deleting file " + file.getName())
+            logger.info("Deleting file " + file.name)
             folderNav.delete(file)
         }
         for (subFolder in folderNav.listFolders()) {
-            logger.info("Deleting folder " + folder.getName())
+            logger.info("Deleting folder " + folder.name)
             folderNav.delete(subFolder)
         }
         folderNav.commit()
@@ -504,7 +504,7 @@ abstract class AbstractNavigation(
     override fun getFile(name: String): BoxFile {
         val files = listFiles()
         for (file in files) {
-            if (file.getName() == name) {
+            if (file.name == name) {
                 return file
             }
         }
@@ -545,7 +545,7 @@ abstract class AbstractNavigation(
             boxFile.shared = null
 
             // Overwrite = delete old file, upload new file
-            val oldFile = dm.getFile(boxFile.getName())
+            val oldFile = dm.getFile(boxFile.name)
             if (oldFile != null) {
                 dm.deleteFile(oldFile)
             }

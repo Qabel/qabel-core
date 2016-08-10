@@ -28,15 +28,15 @@ public class DesktopClientDatabaseTest extends AbstractSqliteTest {
 
     @Test
     public void migratesVersion() throws Exception {
-        database.migrateTo(Migration1460367000CreateIdentitiy.VERSION);
-        assertEquals(Migration1460367000CreateIdentitiy.VERSION, database.getVersion());
+        database.migrateTo(Migration1460367000CreateIdentitiy.Companion.getVERSION());
+        assertEquals(Migration1460367000CreateIdentitiy.Companion.getVERSION(), database.getVersion());
         assertTrue("migration was not executed", database.tableExists("identity"));
     }
 
     @Test
     public void ignoresExecutedMigrations() throws Exception {
-        database.migrateTo(Migration1460367000CreateIdentitiy.VERSION);
-        database.migrateTo(Migration1460367000CreateIdentitiy.VERSION);
+        database.migrateTo(Migration1460367000CreateIdentitiy.Companion.getVERSION());
+        database.migrateTo(Migration1460367000CreateIdentitiy.Companion.getVERSION());
     }
 
     @Test

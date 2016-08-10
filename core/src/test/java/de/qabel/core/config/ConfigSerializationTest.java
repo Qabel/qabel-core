@@ -51,7 +51,7 @@ public class ConfigSerializationTest {
         contacts.put(new Contact("alias", null, key.getPub()));
         syncedSettings.getContacts().add(contacts);
 
-        SyncedSettings deserializedSyncedSettings = SyncedSettings.fromJson(syncedSettings.toJson());
+        SyncedSettings deserializedSyncedSettings = SyncedSettings.Companion.fromJson(syncedSettings.toJson());
         assertEquals(syncedSettings.toJson(), deserializedSyncedSettings.toJson());
 
         assertEquals(deserializedSyncedSettings, syncedSettings);
@@ -61,7 +61,7 @@ public class ConfigSerializationTest {
     public void localSettingsTest() throws IOException {
         LocalSettings localSettings = new LocalSettings(10, new Date(System.currentTimeMillis()));
 
-        LocalSettings deserializedLocalSettings = LocalSettings.fromJson(localSettings.toJson());
+        LocalSettings deserializedLocalSettings = LocalSettings.Companion.fromJson(localSettings.toJson());
 
         assertEquals(deserializedLocalSettings, localSettings);
     }

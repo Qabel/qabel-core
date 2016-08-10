@@ -24,7 +24,7 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
 
     override fun serialize(src: DropMessage, typeOfSrc: Type, context: JsonSerializationContext): JsonElement =
         JsonObject().apply {
-            addProperty(VERSION, DropMessage.getVersion())
+            addProperty(VERSION, DropMessage.version)
             addProperty(TIME_STAMP, src.creationDate.time)
             addProperty(SENDER, src.sender.keyIdentifier)
             add(PAYLOAD, context.serialize(src.dropPayload))
@@ -39,7 +39,7 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
                              context: JsonDeserializationContext): DropMessage =
         with(json.safeObject()) {
             val version = getInt(VERSION)
-            if (version != DropMessage.getVersion()) {
+            if (version != DropMessage.version) {
                 throw JsonParseException("Unexpected version: " + version)
             }
             val time = getLong(TIME_STAMP)

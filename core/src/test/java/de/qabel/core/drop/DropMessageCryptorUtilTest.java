@@ -31,10 +31,10 @@ public class DropMessageCryptorUtilTest {
 
         Contact recipientContact = new Contact(RECIPIENT_CONTACT, null, recipientKey.getPub());
 
-        byte[] encryptedDropMessage = DropMessageCryptorUtil
+        byte[] encryptedDropMessage = DropMessageCryptorUtil.INSTANCE
             .createEncryptedDropMessage(DROP_MESSAGE_PAYLOAD, DROP_MESSAGE_PAYLOAD_TYPE, senderIdentity, recipientContact);
 
-        DropMessage decryptedDropMessage = DropMessageCryptorUtil
+        DropMessage decryptedDropMessage = DropMessageCryptorUtil.INSTANCE
             .decryptDropMessage(recipient, encryptedDropMessage);
 
         assertEquals(DROP_MESSAGE_PAYLOAD, decryptedDropMessage.getDropPayload());

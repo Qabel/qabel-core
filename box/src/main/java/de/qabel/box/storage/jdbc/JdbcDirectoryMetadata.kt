@@ -186,9 +186,9 @@ class JdbcDirectoryMetadata(
 
     @Throws(QblStorageException::class)
     override fun insertFile(file: BoxFile) {
-        val type = isA(file.getName())
+        val type = isA(file.name)
         if (type != TYPE_NONE) {
-            throw QblStorageNameConflict(file.getName())
+            throw QblStorageNameConflict(file.name)
         }
         try {
             executeStatement {
@@ -219,7 +219,7 @@ class JdbcDirectoryMetadata(
     override fun deleteFile(file: BoxFile) {
         try {
             tryWith(connection.prepare("DELETE FROM files WHERE name=?")) {
-                setString(1, file.getName())
+                setString(1, file.name)
                 if (executeUpdate() != 1) {
                     throw QblStorageException("Failed to delete file: Not found")
                 }
@@ -232,15 +232,15 @@ class JdbcDirectoryMetadata(
 
     @Throws(QblStorageException::class)
     override fun insertFolder(folder: BoxFolder) {
-        val type = isA(folder.getName())
+        val type = isA(folder.name)
         if (type != TYPE_NONE) {
-            throw QblStorageNameConflict(folder.getName())
+            throw QblStorageNameConflict(folder.name)
         }
         executeStatement {
             connection.prepare("INSERT INTO folders (ref, name, key) VALUES(?, ?, ?)").apply {
-                setString(1, folder.getRef())
-                setString(2, folder.getName())
-                setBytes(3, folder.getKey())
+                setString(1, folder.ref)
+                setString(2, folder.name)
+                setBytes(3, folder.key)
             }
         }
     }
