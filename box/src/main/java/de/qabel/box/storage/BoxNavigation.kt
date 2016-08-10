@@ -246,10 +246,10 @@ interface BoxNavigation : ReadableBoxNavigation {
      * *
      * @param file     file to share
      * *
-     * @param receiver KeyId of the receivers (Contact) public key
+     * @param recipient KeyId of the recipients (Contact) public key
      */
     @Throws(QblStorageException::class)
-    fun share(owner: QblECPublicKey, file: BoxFile, receiver: String): BoxExternalReference
+    fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference
 
     /**
      * List all created (and not yet deleted) shares for the given BoxObject
