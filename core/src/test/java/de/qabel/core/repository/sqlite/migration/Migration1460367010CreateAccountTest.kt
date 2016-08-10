@@ -19,27 +19,8 @@ class Migration1460367010CreateAccountTest : AbstractMigrationTest() {
         assertEquals(1, insert("p", "u", "a").toLong())
     }
 
-    @Throws(SQLException::class)
     fun insert(provider: String?, user: String?, auth: String?): Int {
         return insertAccount(provider!!, user!!, auth!!, connection)
-    }
-
-    @Test(expected = SQLException::class)
-    @Throws(Exception::class)
-    fun failsWithoutProvider() {
-        insert(null, "u", "a")
-    }
-
-    @Test(expected = SQLException::class)
-    @Throws(Exception::class)
-    fun failsWithoutUser() {
-        insert("p", null, "a")
-    }
-
-    @Test(expected = SQLException::class)
-    @Throws(Exception::class)
-    fun failsWithoutAuth() {
-        insert("p", "u", null)
     }
 
     @Test(expected = SQLException::class)

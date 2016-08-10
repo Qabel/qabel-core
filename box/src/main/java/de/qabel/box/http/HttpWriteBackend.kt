@@ -18,7 +18,6 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
     @Throws(QblStorageException::class)
     override fun upload(name: String, content: InputStream): Long {
-        AbstractHttpStorageBackend.logger.trace("Uploading " + name)
         val httpPost: HttpPost
         try {
             val uri = root.resolve(name)
@@ -44,7 +43,6 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
     @Throws(QblStorageException::class)
     override fun delete(name: String) {
-        AbstractHttpStorageBackend.logger.trace("Deleting " + name)
         val uri: URI
         val response: CloseableHttpResponse
 

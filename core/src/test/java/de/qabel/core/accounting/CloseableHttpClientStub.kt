@@ -23,7 +23,7 @@ class CloseableHttpClientStub : CloseableHttpClient() {
         private set
 
     @Throws(IOException::class)
-    override fun doExecute(target: HttpHost, request: HttpRequest, context: HttpContext): CloseableHttpResponse {
+    override fun doExecute(target: HttpHost, request: HttpRequest, context: HttpContext?): CloseableHttpResponse {
         if (request is HttpEntityEnclosingRequest) {
             val contentStream = request.entity.content
             body = IOUtils.toString(contentStream)

@@ -3,8 +3,7 @@ package de.qabel.box.storage
 import java.util.Observable
 
 abstract class BoxObject(var name: String) : Observable(), Comparable<BoxObject> {
-    var key: ByteArray? = null
-        protected set
+    abstract var key: ByteArray
 
     override fun compareTo(another: BoxObject): Int {
         if (this is BoxFile && another is BoxFile) {

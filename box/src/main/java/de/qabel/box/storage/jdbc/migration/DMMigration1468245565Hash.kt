@@ -4,7 +4,7 @@ import de.qabel.core.repository.sqlite.migration.AbstractMigration
 import java.sql.Connection
 
 class DMMigration1468245565Hash(connection: Connection) : AbstractMigration(connection) {
-    override fun getVersion() = 1468245565L
+    override val version = 1468245565L
 
     override fun up() {
         execute("ALTER TABLE files ADD COLUMN hash BLOB")

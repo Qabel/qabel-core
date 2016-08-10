@@ -6,13 +6,13 @@ abstract class QblException : Exception {
     constructor() {
     }
 
-    constructor(msg: String) : super(msg) {
+    constructor(msg: String?) : super(msg) {
     }
 
     constructor(e: Throwable) : super(e) {
     }
 
-    constructor(msg: String, e: Throwable) : super(msg, e) {
+    constructor(msg: String?, e: Throwable) : super(msg, e) {
     }
 
     companion object {

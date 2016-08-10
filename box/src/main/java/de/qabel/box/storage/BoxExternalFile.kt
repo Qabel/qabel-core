@@ -9,7 +9,7 @@ class BoxExternalFile(
     name: String,
     size: Long,
     mtime: Long,
-    key: ByteArray,
+    override var key: ByteArray,
     hashed: Hash? = null)
 : BoxFile(prefix, block, name, size, mtime, key, hashed), BoxExternal {
     override var isAccessible: Boolean = true

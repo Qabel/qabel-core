@@ -6,9 +6,9 @@ open class QblStorageException : QblException {
     constructor(e: Throwable) : super(e.message, e) {
     }
 
-    constructor(s: String) : super(s) {
+    constructor(s: String?) : super(s) {
     }
 
-    constructor(s: String, e: Exception) : super(s, e) {
+    constructor(s: String?, e: Exception) : super(s, e) {
     }
 }

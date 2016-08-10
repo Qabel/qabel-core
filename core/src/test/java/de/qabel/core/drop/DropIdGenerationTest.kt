@@ -9,7 +9,7 @@ import org.junit.rules.ExpectedException
 import org.junit.Assert.assertEquals
 
 class DropIdGenerationTest {
-    @Rule
+    @get:Rule
     var exception = ExpectedException.none()
 
     @Test

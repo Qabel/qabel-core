@@ -28,7 +28,6 @@ class BoxHttpClientTest {
     private var serverBuilder: TestAccountingServerBuilder? = null
 
     @Test
-    @Throws(IOException::class, QblInvalidCredentials::class)
     fun testGetQuota() {
         val responseContent = "{\"quota\": 2147483648, \"size\": 15460}"
         val httpClient = stubClient("GET", "http://localhost:9697/api/v0/quota/", 200, responseContent)
@@ -50,7 +49,6 @@ class BoxHttpClientTest {
     }
 
     @Before
-    @Throws(URISyntaxException::class, IOException::class, QblInvalidCredentials::class)
     fun setServer() {
         serverBuilder = TestAccountingServerBuilder()
         server = serverBuilder!!.build()
@@ -66,7 +64,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(URISyntaxException::class)
     fun testBuildUrl() {
         val url = boxClient!!.buildUri("foobar").build()
         assertThat(url.toString(), endsWith("foobar/"))
@@ -80,7 +77,6 @@ class BoxHttpClientTest {
     }
 
     @Test(expected = QblInvalidCredentials::class)
-    @Throws(IOException::class, QblInvalidCredentials::class)
     fun testLoginFailed() {
         server.authToken = null
         server.password = "foobar"
@@ -88,7 +84,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(IOException::class, QblInvalidCredentials::class)
     fun testAutologin() {
         server.authToken = null
         boxClient!!.quotaState
@@ -96,17 +91,15 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(IOException::class, QblInvalidCredentials::class)
     fun testGetPrefix() {
         assertNotNull(boxClient!!.prefixes)
         assertNotEquals(boxClient!!.prefixes.size.toLong(), 0)
     }
 
-    @Rule
+    @get:Rule
     var expectedEx = ExpectedException.none()
 
     @Test
-    @Throws(Exception::class)
     fun resetPasswordThrowsIllegalArgumentExceptionOnInvalidMail() {
         expectedEx.expectMessage("Enter a valid email address.")
         expectedEx.expect(IllegalArgumentException::class.java)
@@ -118,7 +111,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun resetsPassword() {
         val responseContent = "{\"success\":\"Password reset e-mail has been sent.\"}"
         val client = CloseableHttpClientStub()
@@ -132,7 +124,6 @@ class BoxHttpClientTest {
     }
 
     @Test(expected = IOException::class)
-    @Throws(Exception::class)
     fun resetPasswordConvertsFormatExceptions() {
         val responseContent = "invalid json"
         val client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 200, responseContent)
@@ -141,7 +132,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createBoxAccount() {
         val rand = Random()
 
@@ -154,7 +144,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createBoxAccountEMailNotCorrect() {
 
         server = serverBuilder!!.user("testUser").build()
@@ -172,7 +161,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createBoxAccountPsToShort() {
 
         server = serverBuilder!!.user("testUser").pass("12345").build()
@@ -190,7 +178,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createBoxAccountUsernameAlreadyInUse() {
 
         server = serverBuilder!!.user("testuser").build()
@@ -208,7 +195,6 @@ class BoxHttpClientTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createBoxAccountEmailAlreadyInUse() {
 
         server = serverBuilder!!.user("testuser").build()

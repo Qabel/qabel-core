@@ -4,7 +4,7 @@ import de.qabel.core.repository.sqlite.migration.AbstractMigration
 import java.sql.Connection
 
 class FMMigration1468173861Init(connection: Connection) : AbstractMigration(connection) {
-    override fun getVersion() = 1468173861L
+    override val version = 1468173861L
 
     override fun up() {
         execute("CREATE TABLE spec_version ( version INTEGER PRIMARY KEY )")

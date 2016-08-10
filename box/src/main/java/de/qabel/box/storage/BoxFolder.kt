@@ -2,15 +2,7 @@ package de.qabel.box.storage
 
 import java.util.Arrays
 
-open class BoxFolder(ref: String, name: String, key: ByteArray) : BoxObject(name) {
-    override var ref: String? = null
-        protected set
-
-    init {
-        this.key = key
-        this.ref = ref
-    }
-
+open class BoxFolder(override val ref: String, name: String, override var key: ByteArray) : BoxObject(name) {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) {

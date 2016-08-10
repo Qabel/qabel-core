@@ -17,7 +17,7 @@ class DropURLTest {
         DropURL("http://www.foo.org/1234567890123456789012345678901234567890123")
     }
 
-    @Rule
+    @get:Rule
     var exception = ExpectedException.none()
 
     @Test

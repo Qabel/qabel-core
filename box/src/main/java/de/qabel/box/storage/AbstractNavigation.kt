@@ -328,7 +328,8 @@ abstract class AbstractNavigation(
                 dm.insertFile(boxFile)
                 autocommit()
             }
-            return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.name, owner, boxFile.metakey)
+            val meta = boxFile.meta ?: throw QblStorageException("No BoxFile.meta set")
+            return BoxExternalReference(false, readBackend.getUrl(meta), boxFile.name, owner, boxFile.metakey)
         } catch (e: QblStorageException) {
             throw QblStorageException("Could not create or upload FileMetadata", e)
         }
@@ -514,7 +515,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     override fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference {
         val ref = createFileMetadata(owner, file)
-        val share = BoxShare(file.meta, recipient)
+        val share = BoxShare(file.meta ?: throw QblStorageException("No BoxFile.meta set"), recipient)
         indexNavigation.insertShare(share)
         return ref
     }
@@ -540,8 +541,9 @@ abstract class AbstractNavigation(
             if (!boxFile.isShared()) {
                 return false
             }
-
-            writeBackend.delete(boxFile.meta)
+            boxFile.meta?.let {
+                writeBackend.delete(it)
+            }
             boxFile.shared = null
 
             // Overwrite = delete old file, upload new file

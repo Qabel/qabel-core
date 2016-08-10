@@ -4,7 +4,7 @@ import de.qabel.core.repository.sqlite.migration.AbstractMigration
 import java.sql.Connection
 
 class DMMigration1467796453Init(connection : Connection) : AbstractMigration(connection) {
-    override fun getVersion() = 1467796453L
+    override val version = 1467796453L
 
     override fun up() {
         execute("""CREATE TABLE meta (

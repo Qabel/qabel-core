@@ -4,7 +4,7 @@ import de.qabel.core.crypto.QblECPublicKey
 
 import java.util.Arrays
 
-class BoxExternalReference(var isFolder: Boolean, var url: String?, var name: String, var owner: QblECPublicKey?, var key: ByteArray?) {
+class BoxExternalReference(var isFolder: Boolean, var url: String?, var name: String, var owner: QblECPublicKey, var key: ByteArray?) {
 
     override fun equals(o: Any?): Boolean {
         if (this === o) {

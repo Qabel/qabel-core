@@ -3,15 +3,16 @@ package de.qabel.box.storage
 import de.qabel.core.crypto.QblECPublicKey
 
 class BoxExternalFolder : BoxFolder, BoxExternal {
-    override var owner: QblECPublicKey? = null
+    lateinit override var owner: QblECPublicKey
     override val isAccessible: Boolean
 
     constructor(ref: String, name: String, key: ByteArray, isAccessible: Boolean) : super(ref, name, key) {
+        this.isAccessible = isAccessible
     }
 
     constructor(ref: String, name: String, owner: QblECPublicKey, key: ByteArray) : super(ref, name, key) {
         this.owner = owner
-        isAccessible = true
+        this.isAccessible = true
     }
 
     override fun equals(o: Any?): Boolean {
