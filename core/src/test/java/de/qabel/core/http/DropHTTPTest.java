@@ -57,8 +57,6 @@ public class DropHTTPTest {
         // Then
         assertEquals(200, result.getResponseCode());
         assertTrue(result.isOk());
-
-        assertTrue(dHTTP.receiveMessages(workingUri).getData().contains(message.getBytes()));
     }
 
     // POST 400
