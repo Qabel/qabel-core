@@ -12,7 +12,7 @@ class SqliteDropStateRepository(database: ClientDatabase,
                                 entityManager: EntityManager) :
     BaseRepositoryImpl<DropState>(DropStateDB, database, entityManager), DropStateRepository {
 
-    override fun getDropState(dropId: String) = findByDropId(dropId).eTag
+    override fun getDropState(drop: String) = findByDropId(drop).eTag
 
     private fun findByDropId(dropId: String): DropState =
         with(createEntityQuery()) {
@@ -20,14 +20,14 @@ class SqliteDropStateRepository(database: ClientDatabase,
             return getSingleResult<DropState>(this)
         }
 
-    override fun setDropState(dropId: String, state: String): Unit =
+    override fun setDropState(drop: String, state: String): Unit =
         try {
-            findByDropId(dropId).let {
+            findByDropId(drop).let {
                 it.eTag = state
                 update(it)
             }
         } catch(ex: EntityNotFoundException) {
-            DropState(dropId, state).let { persist(it) }
+            DropState(drop, state).let { persist(it) }
         }
 
     override fun getDropState(dropUrl: DropURL): DropState =

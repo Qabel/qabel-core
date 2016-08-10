@@ -4,7 +4,6 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
-import de.qabel.core.drop.DropURL
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage

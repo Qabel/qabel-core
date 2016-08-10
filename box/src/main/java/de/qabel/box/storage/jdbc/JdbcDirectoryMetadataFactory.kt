@@ -41,7 +41,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
      * @param fileName  name of the file on the storage backend (remote ref)
      */
     override fun open(path: File, fileName: String): JdbcDirectoryMetadata {
-        return openDatabase(path, deviceId, fileName, tempDir)
+        return openDatabase(path, deviceId, fileName)
     }
 
 
@@ -53,11 +53,9 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
      * @param deviceId 16 random bytes that identify the current device
      * *
      * @param fileName name of the file on the storage backend
-     * *
-     * @param tempDir  writable temp directory
      */
     @Throws(QblStorageException::class)
-    private fun openDatabase(path: File, deviceId: ByteArray, fileName: String, tempDir: File): JdbcDirectoryMetadata {
+    private fun openDatabase(path: File, deviceId: ByteArray, fileName: String): JdbcDirectoryMetadata {
         try {
             val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
             connection.autoCommit = true
@@ -89,7 +87,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
             throw QblStorageIOFailure(e)
         }
 
-        val dm = openDatabase(path, deviceId, UUID.randomUUID().toString(), tempDir)
+        val dm = openDatabase(path, deviceId, UUID.randomUUID().toString())
         try {
             initDatabase(dm)
             if (root != null) { dm.insertRoot(root) }

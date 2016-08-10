@@ -282,18 +282,18 @@ abstract class AbstractNavigation(
     override fun download(filename: String) = download(getFile(filename))
 
     @Throws(QblStorageException::class)
-    override fun download(boxFile: BoxFile) = download(boxFile, null)
+    override fun download(file: BoxFile) = download(file, null)
 
     @Throws(QblStorageException::class)
-    override fun download(boxFile: BoxFile, listener: ProgressListener?): InputStream {
+    override fun download(file: BoxFile, listener: ProgressListener?): InputStream {
         try {
-            readBackend.download("blocks/" + boxFile.block).use { download ->
+            readBackend.download("blocks/" + file.block).use { download ->
                 var content = download.inputStream
                 if (listener != null) {
                     listener.setSize(download.size)
                     content = ProgressInputStream(content, listener)
                 }
-                val key = KeyParameter(boxFile.key)
+                val key = KeyParameter(file.key)
                 val temp = File.createTempFile("upload", "down", tempDir)
                 temp.deleteOnExit()
                 if (!cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(content, temp, key)) {
@@ -521,8 +521,8 @@ abstract class AbstractNavigation(
     }
 
     @Throws(QblStorageException::class)
-    override fun getSharesOf(boxObject: BoxObject): List<BoxShare> {
-        return indexNavigation.listShares()?.filter({ share -> share.ref == boxObject.ref })?.toList()
+    override fun getSharesOf(`object`: BoxObject): List<BoxShare> {
+        return indexNavigation.listShares()?.filter({ share -> share.ref == `object`.ref })?.toList()
          ?: throw QblStorageException("No index navigation")
     }
 
