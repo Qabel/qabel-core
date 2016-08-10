@@ -1,5 +1,6 @@
 package de.qabel.core.drop;
 
+import com.google.gson.annotations.JsonAdapter;
 import de.qabel.core.exceptions.QblDropInvalidURL;
 import de.qabel.core.config.DropServer;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import java.net.URISyntaxException;
 /**
  * Class DropURL represents a URL fully identifying a drop.
  */
+@JsonAdapter(DropURLTypeAdapter.class)
 public class DropURL implements Serializable {
     private static final long serialVersionUID = 8103657475203731210L;
 
