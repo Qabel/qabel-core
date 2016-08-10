@@ -4,6 +4,7 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
+import de.qabel.core.drop.DropMessage
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage
@@ -27,13 +28,12 @@ class ChatServiceTest {
 
     private fun createTextPayload(text: String) = "{\"msg\": \"$text\"}"
 
+    val dropConnector = MainDropConnector(MockDropServer())
     val identityRepository = InMemoryIdentityRepository()
     val contactRepository = InMemoryContactRepository()
     val chatDropRepo = InMemoryChatDropMessageRepository()
     val dropStateRepo = InMemoryDropStateRepository()
-    val chatService = MainChatService(MainDropConnector(MockDropServer()),
-        identityRepository, contactRepository,
-        chatDropRepo, dropStateRepo)
+    val chatService = MainChatService(identityRepository, contactRepository, chatDropRepo, dropStateRepo)
 
     @Before
     fun setUp() {
@@ -61,11 +61,11 @@ class ChatServiceTest {
     fun testSend() {
         val message = createMessage(identityA, contactB, "Blub blub")
 
-        chatService.sendMessage(message)
+        chatService.sendMessage(dropConnector, message)
 
         assertThat(message.status, equalTo(ChatDropMessage.Status.SENT))
 
-        val result = chatService.refreshMessages()
+        val result = chatService.refreshMessages(dropConnector)
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
@@ -88,12 +88,12 @@ class ChatServiceTest {
             direction = ChatDropMessage.Direction.INCOMING, status = ChatDropMessage.Status.NEW)
 
         chatDropRepo.persist(stored)
-        messages.forEach { chatService.sendMessage(it) }
+        messages.forEach { chatService.sendMessage(dropConnector, it) }
 
         val currentETag = ""
         dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
+        val result = chatService.refreshMessages(dropConnector)
 
-        val result = chatService.refreshMessages()
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
@@ -111,12 +111,12 @@ class ChatServiceTest {
         }
         identityRepository.save(someone)
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        chatService.sendMessage(message)
+        chatService.sendMessage(dropConnector, message)
 
         //Remove Identity
         identityRepository.delete(someone)
 
-        val result = chatService.refreshMessages()
+        val result = chatService.refreshMessages(dropConnector)
 
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first(), equalTo(identityA))
@@ -134,22 +134,34 @@ class ChatServiceTest {
     }
 
     @Test
-    fun testReceiveMessageFromIgnored() {
+    fun testHandleMessageFromIgnored() {
         val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
             email = "some@one.zz"
             phone = "0190666666"
         }
-        identityRepository.save(someone)
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        chatService.sendMessage(message)
-
         //Update contact with ignoredFlag and add to target identity
         val someOnesContact = someone.toContact()
         someOnesContact.isIgnored = true;
         contactRepository.save(someOnesContact, identityA)
 
-        val result = chatService.refreshMessages()
+        val result = chatService.handleDropUpdate(identityA, dropStateRepo.getDropState(identityA.helloDropUrl),
+            listOf(message.toDropMessage(someone)))
 
         assertThat(result.size, `is`(0))
     }
+
+    @Test
+    fun testHandleMessages() {
+        val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
+            createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+
+        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result, hasSize(3))
+    }
+
+    fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
+        DropMessage(identity, ChatDropMessage.MessagePayload.encode(messageType, payload), messageType.type)
+
 }

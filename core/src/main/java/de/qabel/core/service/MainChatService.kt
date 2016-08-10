@@ -5,27 +5,26 @@ import de.qabel.core.config.Identity
 import de.qabel.core.drop.DropMessage
 import de.qabel.core.drop.DropMessageMetadata
 import de.qabel.core.http.DropConnector
-import de.qabel.core.http.MainDropConnector
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropStateRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.util.DefaultHashMap
 import org.slf4j.LoggerFactory
 
 
-open class MainChatService(val dropConnector: DropConnector,
-                           val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
+open class MainChatService(val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
                            val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository) : ChatService {
 
     companion object {
         private val logger = LoggerFactory.getLogger(MainChatService::class.java)
     }
 
-    override fun sendMessage(message: ChatDropMessage) {
+    override fun sendMessage(dropConnector: DropConnector, message: ChatDropMessage) {
         val sender = identityRepository.find(message.identityId)
         val receiver = contactRepository.find(message.contactId)
 
@@ -37,10 +36,10 @@ open class MainChatService(val dropConnector: DropConnector,
             email = sender.email ?: ""
             phone = sender.phone ?: ""
         }
-        dropMessage.dropMessageMetadata =
-            DropMessageMetadata(sender.alias, sender.ecPublicKey, sender.dropUrls.first(), email, phone)
+        dropMessage.dropMessageMetadata = DropMessageMetadata(sender.alias, sender.ecPublicKey,
+            sender.dropUrls.first(), email, phone)
 
-        logger.info("Send DropMessage")
+        logger.info("Send DropMessage...")
         chatDropMessageRepository.persist(message)
         dropConnector.sendDropMessage(sender, receiver, dropMessage, receiver.dropUrls.first())
         logger.info("DropMessage sent")
@@ -48,38 +47,41 @@ open class MainChatService(val dropConnector: DropConnector,
         chatDropMessageRepository.update(message)
     }
 
-    override fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
-        val identities = identityRepository.findAll()
+    override fun refreshMessages(dropConnector: DropConnector): Map<Identity, List<ChatDropMessage>> {
         val resultMap = DefaultHashMap<Identity, MutableList<ChatDropMessage>>({ mutableListOf() })
-        identities.entities.forEach { identity ->
-            val iMessages = mutableListOf<ChatDropMessage>()
+        identityRepository.findAll().entities.forEach { identity ->
             identity.dropUrls.forEach { dropUrl ->
                 val dropState = dropStateRepository.getDropState(dropUrl)
                 logger.info("Fetching DropMessages from {} with eTag {}", dropState.drop, dropState.eTag)
                 try {
                     val dropResult = dropConnector.receiveDropMessages(identity, dropUrl, dropState)
-
-                    dropResult.dropMessages.forEach {
-                        val contact = getMessageContact(it, identity)
-                        contact?.apply {
-                            iMessages.add(createChatDropMessage(identity, this, it))
-                        }
-                    }
-                    dropStateRepository.setDropState(dropResult.dropState)
-                    logger.info("Received DropMessages ({}) from {} with eTag {}", dropResult.dropMessages.size,
-                        dropState.drop, dropState.eTag)
+                    val newMessages = handleDropUpdate(identity, dropResult.dropState, dropResult.dropMessages)
+                    resultMap.getOrDefault(identity).addAll(newMessages)
                 } catch(ex: Throwable) {
                     logger.warn("Cannot receive messages from {}", dropState.drop)
                 }
             }
-            iMessages.forEach {
-                if (!chatDropMessageRepository.exists(it)) {
-                    chatDropMessageRepository.persist(it)
-                    resultMap.getOrDefault(identity).add(it)
+        }
+        return resultMap.filter { !it.value.isEmpty() }
+    }
+
+    override fun handleDropUpdate(identity: Identity, dropState: DropState, messages: List<DropMessage>): List<ChatDropMessage> {
+        val resultList = mutableListOf<ChatDropMessage>()
+        messages.forEach {
+            getMessageContact(it, identity)?.apply {
+                val message = createChatDropMessage(identity, this, it)
+                if (!chatDropMessageRepository.exists(message)) {
+                    chatDropMessageRepository.persist(message)
+                    resultList.add(createChatDropMessage(identity, this, it))
+                } else {
+                    logger.debug("Ignoring duplicated msg to " + identity.keyIdentifier)
                 }
             }
         }
-        return resultMap
+        dropStateRepository.setDropState(dropState)
+        logger.info("Handle DropMessages ({}) from {} with eTag {}", messages.size,
+            dropState.drop, dropState.eTag)
+        return resultList
     }
 
     private fun getMessageContact(dropMessage: DropMessage, identity: Identity): Contact? = try {
