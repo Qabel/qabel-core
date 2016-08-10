@@ -50,7 +50,7 @@ class LocalSettings
         private set
 
     init {
-        pollInterval = pollInterval
+        this.pollInterval = pollInterval
         setdropLastUpdate(dropLastUpdate)
     }
 

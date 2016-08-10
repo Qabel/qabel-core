@@ -15,6 +15,8 @@ interface BoxClient {
     fun login()
 
     val quotaState: QuotaState
+       @Throws(IOException::class, QblInvalidCredentials::class)
+       get
 
     @Throws(IOException::class, QblInvalidCredentials::class)
     fun authorize(request: HttpRequest)
@@ -30,8 +32,12 @@ interface BoxClient {
     fun buildBlockUri(resource: String): URIBuilder
 
     val prefixes: ArrayList<String>
+        @Throws(IOException::class, QblInvalidCredentials::class)
+        get
 
     val profile: AccountingProfile
+        @Throws(IOException::class, QblInvalidCredentials::class)
+        get
 
     @Throws(IOException::class)
     fun resetPassword(email: String)

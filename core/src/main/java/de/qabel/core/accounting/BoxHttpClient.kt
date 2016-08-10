@@ -58,12 +58,12 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
             val entity = response.entity ?: throw IOException("No answer from login")
             val responseString = EntityUtils.toString(entity)
             try {
-                val answer = gson.fromJson<HashMap<*, *>>(responseString, HashMap<*, *>::class.java!!)
+                val answer = gson.fromJson<HashMap<*, *>>(responseString, HashMap::class.java)
                 if (answer.containsKey("key")) {
                     server.authToken = answer["key"] as String
                 } else if (answer.containsKey("non_field_errors")) {
-                    val errors = answer["non_field_errors"] as ArrayList<String>
-                    throw QblInvalidCredentials(errors[0])
+                    val errors = answer["non_field_errors"] as ArrayList<*>
+                    throw QblInvalidCredentials(errors[0] as? String ?: "")
                 } else {
                     throw IOException("Illegal response from accounting server")
                 }
@@ -118,7 +118,7 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
             if (server.authToken == null) {
                 login()
             }
-            return server.authToken
+            return server.authToken ?: throw QblInvalidCredentials("No auth token set")
         }
 
     @Throws(IOException::class, QblInvalidCredentials::class)
@@ -166,7 +166,8 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
         httpclient.execute(httpPost).use { response ->
             val entity = response.entity ?: throw IOException("No answer from login")
             val responseString = EntityUtils.toString(entity)
-            profile.addPrefix(gson.fromJson(responseString, PrefixDto::class.java).prefix)
+            val prefix = gson.fromJson(responseString, PrefixDto::class.java).prefix
+            profile.addPrefix(prefix ?: throw IOException("No prefix in response"))
         }
     }
 
@@ -190,11 +191,11 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
         @Throws(IOException::class, QblInvalidCredentials::class)
         get() {
             var prefixes = profile.prefixes
-            if (prefixes.size == 0) {
+            if (prefixes?.size == 0) {
                 updatePrefixes()
                 prefixes = profile.prefixes
             }
-            return prefixes
+            return prefixes ?: throw IOException("No prefix found")
         }
 
     @Throws(IOException::class)
@@ -224,12 +225,12 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
             val entity = response.entity ?: throw IOException("No answer received on reset password request")
             val responseString = EntityUtils.toString(entity)
             try {
-                val answer = gson.fromJson<HashMap<*, *>>(responseString, HashMap<*, *>::class.java!!)
+                val answer = gson.fromJson<HashMap<*, *>>(responseString, HashMap::class.java)
                 var message = "failed to reset password"
                 if (response.statusLine.statusCode >= 300) {
                     if (response.statusLine.statusCode < 500) {
                         if (answer.containsKey(EMAIL_KEY)) {
-                            message = (answer[EMAIL_KEY] as ArrayList<String>)[0]
+                            message = (answer[EMAIL_KEY] as ArrayList<*>)[0] as String
                         }
                         throw IllegalArgumentException(message)
                     } else {
@@ -280,7 +281,7 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
         httpclient.execute(httpPost).use { response ->
             if (response.statusLine.statusCode >= 400 && response.statusLine.statusCode < 500) {
                 val exceptionJson = IOUtils.toString(response.entity.content)
-                val map = gson.fromJson<HashMap<*, *>>(exceptionJson, HashMap<*, *>::class.java!!)
+                val map = gson.fromJson<HashMap<*, *>>(exceptionJson, HashMap::class.java)
                 throw QblCreateAccountFailException(map)
             }
 

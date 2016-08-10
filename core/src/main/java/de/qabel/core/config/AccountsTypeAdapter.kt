@@ -14,7 +14,7 @@ class AccountsTypeAdapter : TypeAdapter<Accounts>() {
     override fun write(out: JsonWriter, value: Accounts) {
         out.beginArray()
         val gson = Gson()
-        val set = value.accounts
+        val set = value.getAccounts()
         val adapter = gson.getAdapter(Account::class.java)
         for (account in set) {
             adapter.write(out, account)

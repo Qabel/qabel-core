@@ -11,101 +11,63 @@ import java.util.ArrayList
 
 class BoxClientStub : BoxClient {
 
-    var quotaState = QuotaState(1000000000L, 300000000L)
+    private var fixedQuotaState = QuotaState(1000000000L, 300000000L)
 
     var ioException: IOException? = null
     var qblInvalidCredentials: QblInvalidCredentials? = null
     var qblCreateAccountFailException: QblCreateAccountFailException? = null
 
-    @Throws(IOException::class, QblInvalidCredentials::class)
-    override fun login() {
-        if (ioException != null) {
-            throw ioException
+    private fun maybeThrow() {
+        ioException?.let {
+            throw it
         }
-        if (qblInvalidCredentials != null) {
-            throw qblInvalidCredentials
-        }
-    }
-
-    @Throws(IOException::class, QblInvalidCredentials::class)
-    override fun getQuotaState(): QuotaState {
-        if (ioException != null) {
-            throw ioException
-        }
-        if (qblInvalidCredentials != null) {
-            throw qblInvalidCredentials
-        }
-        return quotaState
-    }
-
-
-    @Throws(IOException::class, QblInvalidCredentials::class)
-    override fun authorize(request: HttpRequest) {
-        if (ioException != null) {
-            throw ioException
-        }
-        if (qblInvalidCredentials != null) {
-            throw qblInvalidCredentials
+        qblInvalidCredentials?.let{
+            throw it
         }
     }
 
     @Throws(IOException::class, QblInvalidCredentials::class)
-    override fun updatePrefixes() {
-        if (ioException != null) {
-            throw ioException
-        }
-        if (qblInvalidCredentials != null) {
-            throw qblInvalidCredentials
-        }
+    override fun login() = maybeThrow()
 
-    }
-
-    @Throws(IOException::class, QblInvalidCredentials::class)
-    override fun createPrefix() {
-        if (ioException != null) {
-            throw ioException
-        }
-        if (qblInvalidCredentials != null) {
-            throw qblInvalidCredentials
-        }
-    }
-
-    override fun buildUri(resource: String): URIBuilder? {
-        return null
-    }
-
-
-    override fun buildBlockUri(resource: String): URIBuilder? {
-        return null
-    }
-
-    override val prefixes: ArrayList<String>?
+    override val quotaState: QuotaState
         @Throws(IOException::class, QblInvalidCredentials::class)
         get() {
-            if (ioException != null) {
-                throw ioException
-            }
-            if (qblInvalidCredentials != null) {
-                throw qblInvalidCredentials
-            }
-            return null
+            maybeThrow()
+            return fixedQuotaState
         }
 
-    override val profile: AccountingProfile?
-        get() = null
+    @Throws(IOException::class, QblInvalidCredentials::class)
+    override fun authorize(request: HttpRequest) = maybeThrow()
+
+    @Throws(IOException::class, QblInvalidCredentials::class)
+    override fun updatePrefixes() = maybeThrow()
+
+    @Throws(IOException::class, QblInvalidCredentials::class)
+    override fun createPrefix() = maybeThrow()
+
+    override fun buildUri(resource: String): URIBuilder = TODO()
+
+
+    override fun buildBlockUri(resource: String): URIBuilder = TODO()
+
+    override val prefixes: ArrayList<String>
+        @Throws(IOException::class, QblInvalidCredentials::class)
+        get() {
+            maybeThrow()
+            return ArrayList()
+        }
+
+    override val profile: AccountingProfile
+        get() = TODO()
 
     @Throws(IOException::class)
-    override fun resetPassword(email: String) {
-
-    }
+    override fun resetPassword(email: String) = maybeThrow()
 
     @Throws(IOException::class, QblCreateAccountFailException::class)
     override fun createBoxAccount(email: String) {
-        if (ioException != null) {
-            throw ioException
-        }
-        if (qblCreateAccountFailException != null) {
-            throw qblCreateAccountFailException
+        maybeThrow()
+        qblCreateAccountFailException?.let {
+            throw it
         }
     }
 }

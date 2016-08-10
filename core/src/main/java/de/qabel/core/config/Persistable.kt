@@ -8,23 +8,6 @@ import java.util.UUID
  * have to be persistable.
  */
 abstract class Persistable : Serializable {
+    val persistenceID: String by lazy { UUID.randomUUID().toString() }
 
-    private val persistenceID: UUID
-
-    init {
-        persistenceID = genPersistenceID()
-    }
-
-    fun getPersistenceID(): String {
-        return persistenceID.toString()
-    }
-
-    /**
-     * Generated a random UUID for persistent storage.
-
-     * @return Unique UUID
-     */
-    private fun genPersistenceID(): UUID {
-        return UUID.randomUUID()
-    }
 }

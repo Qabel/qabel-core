@@ -10,17 +10,17 @@ import java.util.UUID
 class DropMessage : Serializable {
 
 
-    var creationDate: Date? = null
+    var creationDate: Date
         private set
-    var acknowledgeID: String? = null
+    var acknowledgeID: String
         private set
     var sender: Entity? = null
         private set
-    var senderKeyId: String? = null
+    var senderKeyId: String
         private set
-    var dropPayload: String? = null
+    var dropPayload: String
         private set
-    var dropPayloadType: String? = null
+    var dropPayloadType: String
         private set
 
     var dropMessageMetadata: DropMessageMetadata? = null
@@ -38,7 +38,8 @@ class DropMessage : Serializable {
      * Constructor used for deserialization.
      * registerSender has to be called to complete creation.
      */
-    internal constructor(senderKeyId: String, dropPayload: String, dropPayloadType: String, created: Date, acknowledgeId: String, dropMessageMetadata: DropMessageMetadata) {
+    internal constructor(senderKeyId: String, dropPayload: String, dropPayloadType: String, created: Date,
+                         acknowledgeId: String, dropMessageMetadata: DropMessageMetadata?) {
         this.senderKeyId = senderKeyId
         this.dropPayload = dropPayload
         this.dropPayloadType = dropPayloadType

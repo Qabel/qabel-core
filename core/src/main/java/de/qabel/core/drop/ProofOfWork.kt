@@ -91,7 +91,8 @@ class ProofOfWork
         private fun enoughZeros(hash: ByteArray, leadingZeros: Int): Boolean {
             for (i in 0..leadingZeros - 1) {
                 //check whether i-th bit is zero
-                if (hash[i / 8] shr i % 8 and 1 != 0) {
+                val byte = hash[i / 8]
+                if (byte.toInt() shr i % 8 and 1 != 0) {
                     return false
                 }
             }

@@ -10,17 +10,19 @@ import java.util.concurrent.CopyOnWriteArrayList
  * @see Entity
  */
 abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
-    private val entities = Collections.synchronizedMap(HashMap<String, T>())
-    @Transient private var observerList: CopyOnWriteArrayList<EntityObserver>? = CopyOnWriteArrayList()
+    private val privateEntities = Collections.synchronizedMap(HashMap<String, T>())
+    private val observerList: CopyOnWriteArrayList<EntityObserver> by lazy {
+        CopyOnWriteArrayList<EntityObserver>()
+    }
 
     /**
      * Returns unmodifiable set of contained contacts
 
      * @return Set
      */
-    @Synchronized fun getEntities(): Set<T> {
-        return Collections.unmodifiableSet(HashSet(entities.values))
-    }
+    val entities: Set<T>
+        @Synchronized
+        get() = Collections.unmodifiableSet(HashSet(privateEntities.values))
 
     /**
      * Inserts new Entity into the map associated to its key identifier.
@@ -30,7 +32,8 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * @return old Entity associated to the same key identifier or null if no such old Entity was present.
      */
     @Synchronized fun put(entity: T): T {
-        val result = entities.put(entity.keyIdentifier, entity)
+        val result = privateEntities.put(entity.keyIdentifier, entity)
+            ?: throw IllegalStateException("Could not insert entity")
         notifyObservers()
         return result
     }
@@ -54,7 +57,8 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * @return old Entity associated to the given key identifier, or null if there was no such Entity
      */
     @Synchronized fun remove(keyIdentifier: String): T {
-        val result = entities.remove(keyIdentifier)
+        val result = privateEntities.remove(keyIdentifier)
+            ?: throw IllegalStateException("Could not remove entity")
         notifyObservers()
         return result
     }
@@ -65,7 +69,7 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * @return entity to which the key identifier is mapped or null if there is no mapping for this key identifier
      */
     @Synchronized fun getByKeyIdentifier(keyIdentifier: String): T {
-        return entities[keyIdentifier]
+        return privateEntities[keyIdentifier] ?: throw IllegalArgumentException("Entity not found")
     }
 
     /**
@@ -74,13 +78,13 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * @return true if a mapping for the key identifier exists
      */
     @Synchronized operator fun contains(entity: T): Boolean {
-        return entities.containsKey(entity.keyIdentifier)
+        return privateEntities.containsKey(entity.keyIdentifier)
     }
 
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + entities.hashCode()
+        result = prime * result + privateEntities.hashCode()
         return result
     }
 
@@ -95,32 +99,22 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
             return false
         }
         val other = obj as EntityMap<T>?
-        return entities == other!!.entities
+        return privateEntities == other!!.privateEntities
     }
 
     override fun addObserver(observer: EntityObserver) {
-        getObserverList().add(observer)
+        observerList.add(observer)
     }
 
 
     override fun removeObserver(observer: EntityObserver) {
-        getObserverList().remove(observer)
+        observerList.remove(observer)
     }
 
     private fun notifyObservers() {
-        val observers = getObserverList()
-
-
-        for (e in observers) {
+        for (e in observerList) {
             e.update()
         }
-    }
-
-    private fun getObserverList(): CopyOnWriteArrayList<EntityObserver> {
-        if (observerList == null) {
-            observerList = CopyOnWriteArrayList<EntityObserver>()
-        }
-        return observerList
     }
 
     companion object {

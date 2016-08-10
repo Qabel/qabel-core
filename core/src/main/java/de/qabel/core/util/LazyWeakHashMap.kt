@@ -13,7 +13,7 @@ class LazyWeakHashMap<K, V> : WeakHashMap<K, V>(), LazyMap<K, V> {
                 }
 
             }
-            return get(key)
+            return get(key) as V
         }
     }
 }

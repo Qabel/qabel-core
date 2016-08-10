@@ -49,13 +49,18 @@ class Contact : Entity {
     /**
      * Sets the primary public key of the contacts
      */
-    override var ecPublicKey: QblECPublicKey? = null
+    override var ecPublicKey: QblECPublicKey
+        get() = publicKeyField ?: throw IllegalStateException("no public key set")
+        set(value) {publicKeyField = value}
+
+    private var publicKeyField: QblECPublicKey? = null
+
 
     var status = ContactStatus.NORMAL
 
     var isIgnored = false
 
-    enum class ContactStatus private constructor(var status: Int) {
+    enum class ContactStatus constructor(var status: Int) {
         UNKNOWN(0), NORMAL(1), VERIFIED(2)
     }
 
@@ -63,7 +68,7 @@ class Contact : Entity {
      * Creates an instance of Contact and sets the contactOwner and contactOwnerKeyId
      */
     constructor(alias: String, dropUrls: Collection<DropURL>, pubKey: QblECPublicKey) : super(dropUrls) {
-        ecPublicKey = pubKey
+        publicKeyField = pubKey
         this.alias = alias
     }
 

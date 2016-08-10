@@ -50,7 +50,7 @@ class DropURL : Serializable {
         val dropId = generator.generateDropId()
 
         try {
-            uri = URI(server.uri + "/" + dropId)
+            uri = URI(server.uri.toString() + "/" + dropId)
         } catch (e: URISyntaxException) {
             logger.error("Failed to create drop url.", e)
             // should not happen - cannot recover from this

@@ -13,7 +13,7 @@ class LazyHashMap<K, V> : HashMap<K, V>(), LazyMap<K, V> {
                 }
 
             }
-            return get(key)
+            return get(key) as V
         }
     }
 }

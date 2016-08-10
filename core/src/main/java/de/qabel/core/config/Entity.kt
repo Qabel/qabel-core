@@ -11,13 +11,13 @@ import java.util.HashSet
  */
 abstract class Entity(drops: Collection<DropURL>?) : SyncSettingItem() {
 
-    private val dropUrls: MutableSet<DropURL>?
+    private val privateDropUrls: MutableSet<DropURL>
 
     init {
         if (drops != null) {
-            dropUrls = HashSet(drops)
+            privateDropUrls = HashSet(drops)
         } else {
-            dropUrls = HashSet<DropURL>()
+            privateDropUrls = HashSet<DropURL>()
         }
     }
 
@@ -31,18 +31,18 @@ abstract class Entity(drops: Collection<DropURL>?) : SyncSettingItem() {
     val keyIdentifier: String
         get() = ecPublicKey.readableKeyIdentifier
 
-    fun getDropUrls(): Set<DropURL> {
-        return Collections.unmodifiableSet(dropUrls!!)
-    }
+    val dropUrls: Set<DropURL>
+        get() = privateDropUrls.toSet()
+
 
     fun addDrop(drop: DropURL) {
-        dropUrls!!.add(drop)
+        privateDropUrls.add(drop)
     }
 
     override fun hashCode(): Int {
         val prime = 31
         var result = super.hashCode()
-        result = prime * result + if (dropUrls == null) 0 else dropUrls.hashCode()
+        result = prime * result + privateDropUrls.hashCode()
         return result
     }
 
@@ -57,7 +57,7 @@ abstract class Entity(drops: Collection<DropURL>?) : SyncSettingItem() {
             return false
         }
         val other = obj as Entity?
-        return dropUrls == other!!.dropUrls
+        return privateDropUrls == other!!.privateDropUrls
     }
 
     companion object {

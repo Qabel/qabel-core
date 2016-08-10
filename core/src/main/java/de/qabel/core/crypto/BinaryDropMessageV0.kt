@@ -18,7 +18,7 @@ import java.util.Arrays
  * Drop message in binary transport format version 0
  */
 class BinaryDropMessageV0 : AbstractBinaryDropMessage {
-    private val binaryMessage: ByteArray
+    lateinit private var binaryMessage: ByteArray
 
     @Throws(QblDropPayloadSizeException::class)
     constructor(dropMessage: DropMessage) : super(dropMessage) {

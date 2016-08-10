@@ -7,7 +7,7 @@ class EntityManager : GenericEntityManager<Int, HasId>() {
         put(entityType, entity, entity.id)
     }
 
-    override fun getId(entity: HasId): Int? {
+    override fun getId(entity: HasId): Int {
         return entity.id
     }
 }

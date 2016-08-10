@@ -47,6 +47,6 @@ object DropMessageCryptorUtil {
     @Throws(QblDropInvalidMessageSizeException::class, QblVersionMismatchException::class, QblSpoofedSenderException::class)
     fun decryptDropMessage(identity: Identity, encryptedDropMessage: ByteArray): DropMessage {
         val binaryMessage = BinaryDropMessageV0(encryptedDropMessage)
-        return binaryMessage.disassembleMessage(identity)
+        return binaryMessage.disassembleMessage(identity)!!
     }
 }

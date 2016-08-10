@@ -20,7 +20,7 @@ import java.util.Date
 class DropHTTP {
 
     fun send(uri: URI, message: ByteArray): HTTPResult<*> {
-        val result = HTTPResult<*>()
+        val result = HTTPResult<ByteArray>()
         val conn = setupConnection(uri) as HttpURLConnection
         conn.doOutput = true // indicates POST method
         conn.doInput = true
@@ -92,7 +92,7 @@ class DropHTTP {
 
     @Throws(IOException::class)
     @JvmOverloads fun head(uri: URI, sinceDate: Long = 0): HTTPResult<*> {
-        val result = HTTPResult<*>()
+        val result = HTTPResult<ByteArray>()
         val conn = setupConnection(uri) as HttpURLConnection
         conn.ifModifiedSince = sinceDate
         try {
@@ -105,15 +105,5 @@ class DropHTTP {
         return result
     }
 
-    private fun setupConnection(uri: URI): URLConnection {
-        var conn: URLConnection? = null
-        try {
-            conn = uri.toURL().openConnection()
-        } catch (e: IOException) {
-            // TODO Auto-generated catch block
-            e.printStackTrace()
-        }
-
-        return conn
-    }
+    private fun setupConnection(uri: URI): URLConnection = uri.toURL().openConnection()
 }

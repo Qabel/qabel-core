@@ -37,15 +37,15 @@ object IdentityExportImport {
             jsonObject.put(KEY_ALIAS, identity.alias)
             jsonObject.put(KEY_EMAIL, identity.email)
             jsonObject.put(KEY_PHONE, identity.phone)
-            jsonObject.put(KEY_PRIVATE_KEY, Hex.toHexString(identity.primaryKeyPair.privateKey))
+            jsonObject.put(KEY_PRIVATE_KEY, Hex.toHexString(identity.primaryKeyPair?.privateKey))
             val jsonPrefixes = JSONArray()
-            for (prefix in identity.prefixes) {
-                jsonPrefixes.put(prefix)
+            identity.prefixes?.forEach {
+                jsonPrefixes.put(it)
             }
             jsonObject.put(KEY_PREFIXES, jsonPrefixes)
             jsonObject.put(KEY_PUBLIC_KEY, Hex.toHexString(identity.ecPublicKey.key))
 
-            for (dropURL in identity.dropUrls) {
+            for (dropURL in identity.getDropUrls()) {
                 jsonDropUrls.put(dropURL)
             }
             jsonObject.put(KEY_DROP_URLS, jsonDropUrls)

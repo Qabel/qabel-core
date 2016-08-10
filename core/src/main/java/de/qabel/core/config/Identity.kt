@@ -6,25 +6,20 @@ import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 
 import java.util.*
+import kotlin.properties.Delegates
 
 
 class Identity(alias: String, drops: Collection<DropURL>,
                primaryKeyPair: QblECKeyPair) : Entity(drops) {
 
     /**
-     * Returns the alias name of the identity.
-
-     * @return alias
-     */
-    /**
      * Sets the alias address of the identity.
      * The alias is mutable, thus has no influence on the hashCode evaluation.
 
      * @param alias the alias of the identity
      */
-    var alias: String? = null
-        set(alias) {
-            field = alias
+    var alias: String by Delegates.observable(alias) {
+        property, old, new ->
             notifyAllObservers()
         }
 
@@ -65,7 +60,7 @@ class Identity(alias: String, drops: Collection<DropURL>,
 
      * @param prefixes the prefixes of the identity
      */
-    var prefixes: List<String>? = null
+    var prefixes: MutableList<String> = mutableListOf()
 
     /**
      * Returns the primary key pair of the identity.
@@ -78,15 +73,14 @@ class Identity(alias: String, drops: Collection<DropURL>,
      * @param key Primary Key pair of the identity.
      */
     @SerializedName("keys")
-    var primaryKeyPair: QblECKeyPair? = null
-
-    private val observers = ArrayList<IdentityObserver>()
+    var primaryKeyPair: QblECKeyPair
 
     init {
-        alias = alias
-        primaryKeyPair = primaryKeyPair
+        this.primaryKeyPair = primaryKeyPair
         prefixes = ArrayList<String>()
     }
+
+    private val observers = ArrayList<IdentityObserver>()
 
     fun attach(observer: IdentityObserver) {
         observers.add(observer)
@@ -99,14 +93,14 @@ class Identity(alias: String, drops: Collection<DropURL>,
     }
 
     fun toContact(): Contact {
-        val contact = Contact(this.alias, dropUrls, ecPublicKey)
+        val contact = Contact(this.alias!!, dropUrls, ecPublicKey)
         contact.email = email
         contact.phone = phone
         return contact
     }
 
     override val ecPublicKey: QblECPublicKey
-        get() = primaryKeyPair.pub
+        get() = primaryKeyPair!!.pub
 
     override fun hashCode(): Int {
         val prime = 31

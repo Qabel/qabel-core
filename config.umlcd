@@ -14,7 +14,7 @@
     <nameVisual xmi:id="_yyoXQSIyEeSa1ZGIFJfw4w" text="">
       <visualProperties xmi:id="_zOd-tCIyEeSa1ZGIFJfw4w" position="-8.0,-13.0"/>
     </nameVisual>
-    <sourceRole xmi:id="_yyoXQiIyEeSa1ZGIFJfw4w" aggregationKind="NONE" name="accounts" navigable="true">
+    <sourceRole xmi:id="_yyoXQiIyEeSa1ZGIFJfw4w" aggregationKind="NONE" name="internalAccounts" navigable="true">
       <modelElement href="core.uml#_4KaJsyIxEeSa1ZGIFJfw4w"/>
       <visualProperties xmi:id="_zOd-syIyEeSa1ZGIFJfw4w" position="2.0,5.0"/>
       <visibility xmi:id="_yyoXQyIyEeSa1ZGIFJfw4w" label="+"/>
@@ -42,7 +42,7 @@
       <visibility xmi:id="_yyo-UyIyEeSa1ZGIFJfw4w" label="+"/>
       <cardinality xmi:id="_yyo-VCIyEeSa1ZGIFJfw4w" label="0..1" max="1"/>
     </sourceRole>
-    <targetRole xmi:id="_yyo-VSIyEeSa1ZGIFJfw4w" aggregationKind="NONE" name="accounts" navigable="true">
+    <targetRole xmi:id="_yyo-VSIyEeSa1ZGIFJfw4w" aggregationKind="NONE" name="internalAccounts" navigable="true">
       <modelElement href="core.uml#_4KawxiIxEeSa1ZGIFJfw4w"/>
       <visualProperties xmi:id="_zOiQIyIyEeSa1ZGIFJfw4w" position="-78.0,10.0"/>
       <visibility xmi:id="_yyo-ViIyEeSa1ZGIFJfw4w" label="+"/>
@@ -562,7 +562,7 @@
     <modelElement href="core.uml#_4I_0cSIxEeSa1ZGIFJfw4w"/>
     <visualProperties xmi:id="_yyzWYSIyEeSa1ZGIFJfw4w" position="1347.0,316.0" size="-1.0,-1.0"/>
     <visibility xmi:id="_yyzWYiIyEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="_yyzWYyIyEeSa1ZGIFJfw4w" name="accounts">
+    <attributes xmi:id="_yyzWYyIyEeSa1ZGIFJfw4w" name="internalAccounts">
       <modelElement href="core.uml#_4KawxiIxEeSa1ZGIFJfw4w"/>
       <visibility xmi:id="_yyzWZCIyEeSa1ZGIFJfw4w" label="+"/>
       <cardinality xmi:id="_yyzWZSIyEeSa1ZGIFJfw4w" label="0..1" max="1"/>
@@ -777,7 +777,7 @@
     <modelElement href="core.uml#_4IoBACIxEeSa1ZGIFJfw4w"/>
     <visualProperties xmi:id="_yyoXSSIyEeSa1ZGIFJfw4w" position="1696.0,605.0" size="207.0,-1.0"/>
     <visibility xmi:id="_yyoXSiIyEeSa1ZGIFJfw4w" label="+"/>
-    <attributes xmi:id="_yyoXSyIyEeSa1ZGIFJfw4w" name="accounts">
+    <attributes xmi:id="_yyoXSyIyEeSa1ZGIFJfw4w" name="internalAccounts">
       <modelElement href="core.uml#_4KaJsyIxEeSa1ZGIFJfw4w"/>
       <visibility xmi:id="_yyoXTCIyEeSa1ZGIFJfw4w" label="+"/>
       <cardinality xmi:id="_yyoXTSIyEeSa1ZGIFJfw4w" label="0..1" max="1"/>

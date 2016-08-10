@@ -61,9 +61,9 @@ class DropServer : SyncSettingItem {
      * *
      * @param active Status flag of the DropServer.
      */
-    constructor(uri: URI, auth: String, active: Boolean) {
-        uri = uri
-        auth = auth
+    constructor(uri: URI, auth: String?, active: Boolean) {
+        this.uri = uri
+        this.auth = auth
         isActive = active
     }
 

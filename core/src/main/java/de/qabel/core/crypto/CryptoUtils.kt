@@ -95,7 +95,6 @@ class CryptoUtils {
         val cipherText = DataOutputStream(outputStream)
         val tempIn = ByteArray(SYMM_GCM_READ_SIZE_BYTE)
         val tempOut = ByteArray(SYMM_GCM_READ_SIZE_BYTE)
-        var usedBytes: Int
 
         if (nonce == null || nonce.size != SYMM_NONCE_SIZE_BYTE) {
             nonce = getRandomBytes(SYMM_NONCE_SIZE_BYTE)
@@ -111,12 +110,18 @@ class CryptoUtils {
 
         try {
             cipherText.write(nonce)
-            while ((usedBytes = inputStream.read(tempIn)) > 0) {
-                usedBytes = gcmCipher.processBytes(tempIn, 0, usedBytes, tempOut, 0)
-                cipherText.write(tempOut, 0, usedBytes)
+            while (true) {
+                val readBytes = inputStream.read(tempIn)
+                if (readBytes <= 0) {
+                    break
+                }
+                gcmCipher.processBytes(tempIn, 0, readBytes, tempOut, 0).let {
+                    cipherText.write(tempOut, 0, it)
+                }
             }
-            usedBytes = gcmCipher.doFinal(tempOut, 0)
-            cipherText.write(tempOut, 0, usedBytes)
+            gcmCipher.doFinal(tempOut, 0).let {
+                cipherText.write(tempOut, 0, it)
+            }
             inputStream.close()
         } catch (e: InvalidCipherTextException) {
             // Should not happen
@@ -152,7 +157,6 @@ class CryptoUtils {
         val tempIn = ByteArray(SYMM_GCM_READ_SIZE_BYTE)
         val tempOut = ByteArray(SYMM_GCM_READ_SIZE_BYTE)
         val bufferedInput = BufferedInputStream(inputStream)
-        var usedBytes: Int
 
         try {
             bufferedInput.read(nonce)
@@ -170,18 +174,23 @@ class CryptoUtils {
 
         val fileOutput = FileOutputStream(file)
         try {
-            while ((usedBytes = bufferedInput.read(tempIn, 0,
-                    SYMM_GCM_READ_SIZE_BYTE)) > 0) {
+            while (true) {
+                val usedBytes = bufferedInput.read(tempIn, 0, SYMM_GCM_READ_SIZE_BYTE)
+                if (usedBytes <= 0) {
+                    break
+                }
                 /*
 				 * reading from a buffered input stream ensures that enough bytes
 				 * are read to fulfill the block cipher min. length requirements.
 				 */
-                usedBytes = gcmCipher.processBytes(tempIn, 0, usedBytes, tempOut, 0)
-                fileOutput.write(tempOut, 0, usedBytes)
+                gcmCipher.processBytes(tempIn, 0, usedBytes, tempOut, 0).let {
+                    fileOutput.write(tempOut, 0, it)
+                }
             }
             try {
-                usedBytes = gcmCipher.doFinal(tempOut, 0)
-                fileOutput.write(tempOut, 0, usedBytes)
+                gcmCipher.doFinal(tempOut, 0).let {
+                    fileOutput.write(tempOut, 0, it)
+                }
             } catch (e: InvalidCipherTextException) {
                 logger.error("Decryption: Either cipher text is too short or authentication tag is invalid!", e)
                 // truncate file to avoid leakage of incomplete or unauthenticated data
@@ -314,7 +323,7 @@ class CryptoUtils {
             key1.read(cv1)
             key1.read(symmKey1)
             key1.read(nonce1)
-            info[info.size - 1] += 0x01.toByte()
+            info[info.size - 1] = (info.last().toInt() + 0x01).toByte()
 
             // header = eph_key.pub || ENCRYPT(cc1, sender_key.pub, target_pubkey || eph_key.pub)
             authtext.write(targetPubKey.key)
@@ -412,7 +421,7 @@ class CryptoUtils {
 
             // second kdf
             val dh2 = targetKey.ECDH(senderKey)
-            info[info.size - 1] += 0x01.toByte()
+            info[info.size - 1] = (info.last().toInt() + 0x01).toByte()
             key2 = ByteArrayInputStream(kdf(dh2, cv1, info, CV_LEN_BYTE + SYMM_KEY_LEN_BYTE + NONCE_LEN_BYTE)!!)
             if (key2.skip(CV_LEN_BYTE.toLong()) != CV_LEN_BYTE.toLong()) {
                 throw InvalidCipherTextException("Invalid cv2 length!")
@@ -510,7 +519,7 @@ class CryptoUtils {
         private val AES_KEY_SIZE_BYTE = 32
         private val AES_KEY_SIZE_BIT = AES_KEY_SIZE_BYTE * 8
 
-        private val SUITE_NAME = "Noise255/AES256-GCM\0\0\0\0\0".toByteArray()
+        private val SUITE_NAME = "Noise255/AES256-GCM".toByteArray() + byteArrayOf(0,0,0,0,0)
         private val H_LEN = 64
         private val CV_LEN_BYTE = 48
         private val SYMM_KEY_LEN_BYTE = 32

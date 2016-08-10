@@ -26,7 +26,7 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
         JsonObject().apply {
             addProperty(VERSION, DropMessage.version)
             addProperty(TIME_STAMP, src.creationDate.time)
-            addProperty(SENDER, src.sender.keyIdentifier)
+            addProperty(SENDER, src.sender?.keyIdentifier ?: throw IllegalArgumentException("No sender set"))
             add(PAYLOAD, context.serialize(src.dropPayload))
             add(PAYLOAD_TYPE, context.serialize(src.dropPayloadType))
 

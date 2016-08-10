@@ -21,7 +21,7 @@ import java.util.Arrays
  */
 abstract class AbstractBinaryDropMessage {
 
-    private val plainPayload: ByteArray
+    lateinit private var plainPayload: ByteArray
 
     @Throws(QblDropPayloadSizeException::class)
     constructor(dropMessage: DropMessage) {

@@ -8,7 +8,7 @@ import java.util.LinkedList
 
 class IdentityBuilder(private val dropUrlGenerator: DropUrlGenerator) {
 
-    private var alias: String? = null
+    private var alias: String = ""
     private var keyPair: QblECKeyPair? = null
     private val dropUrls = LinkedList<DropURL>()
 
@@ -29,13 +29,15 @@ class IdentityBuilder(private val dropUrlGenerator: DropUrlGenerator) {
     }
 
     fun build(): Identity {
-        if (dropUrls == null || dropUrls.isEmpty()) {
+        if (dropUrls.isEmpty()) {
             dropAt(dropUrlGenerator.generateUrl())
         }
-        if (keyPair == null) {
-            keyPair = QblECKeyPair()
-        }
+        val key = keyPair ?:
+            QblECKeyPair().let {
+                keyPair = it
+                it
+            }
 
-        return Identity(alias, dropUrls, keyPair)
+        return Identity(alias, dropUrls, key)
     }
 }

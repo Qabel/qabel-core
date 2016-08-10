@@ -3,19 +3,19 @@ package de.qabel.core.config
 import java.util.*
 
 /**
- * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts
+ * https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#internalAccounts
  */
 class Accounts {
 
-    private val accounts = HashMap<String, Account>()
+    private val internalAccounts = HashMap<String, Account>()
 
     /**
-     * Returns unmodifiable set of contained accounts
+     * Returns unmodifiable set of contained internalAccounts
 
      * @return Set
      */
     fun getAccounts(): Set<Account> {
-        return Collections.unmodifiableSet(HashSet(accounts.values))
+        return Collections.unmodifiableSet(HashSet(internalAccounts.values))
     }
 
     /**
@@ -26,24 +26,24 @@ class Accounts {
      * @return True if newly added, false if updated
      */
     fun put(account: Account): Boolean {
-        return accounts.put(account.persistenceID, account) == null
+        return internalAccounts.put(account.persistenceID, account) == null
     }
 
     /**
-     * Removes account from list of accounts
+     * Removes account from list of internalAccounts
 
      * @param account Account to be removed.
      * *
      * @return true if account was contained in list, false if not
      */
     fun remove(account: Account): Boolean {
-        return accounts.remove(account.persistenceID) != null
+        return internalAccounts.remove(account.persistenceID) != null
     }
 
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + if (accounts == null) 0 else accounts.hashCode()
+        result = prime * result + if (internalAccounts == null) 0 else internalAccounts.hashCode()
         return result
     }
 
@@ -58,11 +58,11 @@ class Accounts {
             return false
         }
         val other = obj as Accounts?
-        if (accounts == null) {
-            if (other!!.accounts != null) {
+        if (internalAccounts == null) {
+            if (other!!.internalAccounts != null) {
                 return false
             }
-        } else if (accounts != other!!.accounts) {
+        } else if (internalAccounts != other!!.internalAccounts) {
             return false
         }
         return true
