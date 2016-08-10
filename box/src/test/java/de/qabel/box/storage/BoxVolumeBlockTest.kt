@@ -13,11 +13,7 @@ import java.io.IOException
 import java.net.URI
 
 class BoxVolumeBlockTest : BoxVolumeTest() {
-    private var readBackend: BlockReadBackend? = null
-
-    override fun getReadBackend(): StorageReadBackend {
-        return readBackend
-    }
+    override lateinit var readBackend: BlockReadBackend
 
     override fun setUpVolume() {
         try {
@@ -62,7 +58,7 @@ class BoxVolumeBlockTest : BoxVolumeTest() {
     }
 
     companion object {
-        private var accountingHTTP: BoxClient? = null
+        lateinit var accountingHTTP: BoxClient
 
         @BeforeClass
         @Throws(Exception::class)

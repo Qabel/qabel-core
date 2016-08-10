@@ -14,7 +14,7 @@ interface StorageReadBackend : AuthenticatedDownloader {
      * Download a file from the storage if it was modified (new version / etag / ...)
      */
     @Throws(QblStorageException::class, UnmodifiedException::class)
-    override fun download(name: String, ifModifiedVersion: String): StorageDownload
+    override fun download(name: String, ifModifiedVersion: String?): StorageDownload
 
     fun getUrl(meta: String): String
 }

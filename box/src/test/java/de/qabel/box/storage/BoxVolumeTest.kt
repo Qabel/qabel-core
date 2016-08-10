@@ -42,14 +42,14 @@ abstract class BoxVolumeTest {
 
     protected var volume: BoxVolume? = null
     protected var volume2: BoxVolume? = null
-    protected var deviceID: ByteArray
-    protected var deviceID2: ByteArray
-    protected var keyPair: QblECKeyPair
+    lateinit protected var deviceID: ByteArray
+    lateinit protected var deviceID2: ByteArray
+    lateinit protected var keyPair: QblECKeyPair
     protected val bucket = "qabel"
     protected var prefix = UUID.randomUUID().toString()
     private val testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
-    protected var contact: Contact
-    protected var volumeTmpDir: File
+    lateinit protected var contact: Contact
+    lateinit protected var volumeTmpDir: File
 
     @Before
     @Throws(IOException::class, QblStorageException::class)
@@ -344,7 +344,7 @@ abstract class BoxVolumeTest {
     }
 
     @Throws(IOException::class)
-    private fun tmpFileWithSize(size: Long?): File {
+    private fun tmpFileWithSize(size: Long): File {
         val file = Files.createTempFile("qbltmp", ".deleteme")
         val content = StringBuffer()
         for (i in 0..size - 1) {
@@ -670,7 +670,8 @@ abstract class BoxVolumeTest {
     }
 
     @Throws(QblStorageException::class)
-    protected fun blockExists(meta: String): Boolean {
+    protected fun blockExists(meta: String?): Boolean {
+        meta ?: return false
         try {
             readBackend.download(meta)
             return true

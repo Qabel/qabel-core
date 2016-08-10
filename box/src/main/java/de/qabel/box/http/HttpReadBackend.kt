@@ -30,10 +30,10 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageReadBackend
     }
 
     @Throws(QblStorageException::class, UnmodifiedException::class)
-    override fun download(name: String, ifModifiedVersion: String): StorageDownload {
+    override fun download(name: String, ifModifiedVersion: String?): StorageDownload {
         val uri = root.resolve(name)
         val httpGet = HttpGet(uri)
-        if (ifModifiedVersion.isNotEmpty()) {
+        if (ifModifiedVersion != null && ifModifiedVersion.isNotEmpty()) {
             httpGet.addHeader(HttpHeaders.IF_NONE_MATCH, ifModifiedVersion)
         }
         prepareRequest(httpGet)

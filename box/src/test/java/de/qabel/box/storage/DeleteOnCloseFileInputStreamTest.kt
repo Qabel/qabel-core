@@ -13,40 +13,40 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 
 class DeleteOnCloseFileInputStreamTest {
-    private var file: File? = null
+    lateinit private var file: File
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
         file = File.createTempFile("test", "file")
-        file!!.createNewFile()
-        Files.write(file!!.toPath(), "content".toByteArray())
+        file.createNewFile()
+        Files.write(file.toPath(), "content".toByteArray())
     }
 
     @Test
     @Throws(Exception::class)
     fun deletesFileOnClose() {
         DeleteOnCloseFileInputStream(file).close()
-        assertFalse("file was not deleted", file!!.exists())
+        assertFalse("file was not deleted", file.exists())
     }
 
     @Test
     @Throws(Exception::class)
     fun deletesFileByNameOnClose() {
-        DeleteOnCloseFileInputStream(file!!.absolutePath).close()
-        assertFalse("file was not deleted", file!!.exists())
+        DeleteOnCloseFileInputStream(file.absolutePath).close()
+        assertFalse("file was not deleted", file.exists())
     }
 
     @Test
     @Throws(Exception::class)
     fun canBeConsumedAsNormal() {
-        var content: String
+        var content: String = ""
         DeleteOnCloseFileInputStream(file).use { `in` ->
             val writer = StringWriter()
             IOUtils.copy(`in`, writer)
             content = writer.toString()
         }
         assertEquals("content", content)
-        assertFalse("file was not deleted", file!!.exists())
+        assertFalse("file was not deleted", file.exists())
     }
 }

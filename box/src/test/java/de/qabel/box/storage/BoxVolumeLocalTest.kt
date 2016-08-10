@@ -9,23 +9,21 @@ import java.nio.file.Path
 
 class BoxVolumeLocalTest : BoxVolumeTest() {
 
-    private var tempFolder: Path? = null
-    private var readBackend: LocalReadBackend? = null
+    lateinit override var readBackend: StorageReadBackend
 
-    override fun getReadBackend(): StorageReadBackend {
-        return readBackend
-    }
+    private var tempFolder: Path? = null
 
     @Throws(IOException::class)
     public override fun setUpVolume() {
-        tempFolder = Files.createTempDirectory("")
+        val temp = createTempDir().toPath()
+        tempFolder = temp
 
-        readBackend = LocalReadBackend(tempFolder)
-        volume = BoxVolumeImpl(readBackend!!,
-                LocalWriteBackend(tempFolder),
+        readBackend = LocalReadBackend(temp)
+        volume = BoxVolumeImpl(readBackend,
+                LocalWriteBackend(temp),
                 keyPair, deviceID, File(System.getProperty("java.io.tmpdir")), "")
-        volume2 = BoxVolumeImpl(LocalReadBackend(tempFolder),
-                LocalWriteBackend(tempFolder),
+        volume2 = BoxVolumeImpl(LocalReadBackend(temp),
+                LocalWriteBackend(temp),
                 keyPair, deviceID2, File(System.getProperty("java.io.tmpdir")), "")
     }
 

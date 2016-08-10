@@ -17,16 +17,16 @@ import org.junit.Assert.fail
 
 class LocalBackendTest {
 
-    private var bytes: ByteArray? = null
-    private var testFile: String? = null
-    private var readBackend: StorageReadBackend? = null
-    private var writeBackend: StorageWriteBackend? = null
-    private var temp: Path? = null
+    lateinit private var bytes: ByteArray
+    lateinit private var testFile: String
+    lateinit private var readBackend: StorageReadBackend
+    lateinit private var writeBackend: StorageWriteBackend
+    lateinit private var temp: Path
 
     @Before
     @Throws(IOException::class)
     fun setupTestBackend() {
-        temp = Files.createTempDirectory(null)
+        temp = createTempDir().toPath()
         val tempFile = Files.createTempFile(temp, null, null)
         bytes = byteArrayOf(1, 2, 3, 4)
         Files.write(tempFile, bytes)
@@ -39,25 +39,25 @@ class LocalBackendTest {
     @After
     @Throws(Exception::class)
     fun tearDown() {
-        FileUtils.deleteDirectory(temp!!.toFile())
+        FileUtils.deleteDirectory(temp.toFile())
     }
 
     @Test
     @Throws(QblStorageException::class, IOException::class)
     fun testReadTempFile() {
-        assertArrayEquals(bytes, IOUtils.toByteArray(readBackend!!.download(testFile).inputStream))
+        assertArrayEquals(bytes, IOUtils.toByteArray(readBackend.download(testFile).inputStream))
     }
 
     @Test
     @Throws(QblStorageException::class, IOException::class)
     fun testWriteTempFile() {
-        val newBytes = bytes!!.clone()
+        val newBytes = bytes.clone()
         newBytes[0] = 0
-        writeBackend!!.upload(testFile, ByteArrayInputStream(newBytes))
-        assertArrayEquals(newBytes, IOUtils.toByteArray(readBackend!!.download(testFile).inputStream))
-        writeBackend!!.delete(testFile)
+        writeBackend.upload(testFile, ByteArrayInputStream(newBytes))
+        assertArrayEquals(newBytes, IOUtils.toByteArray(readBackend.download(testFile).inputStream))
+        writeBackend.delete(testFile)
         try {
-            readBackend!!.download(testFile)
+            readBackend.download(testFile)
             fail("Read should have failed, file is deleted")
         } catch (e: QblStorageException) {
 
