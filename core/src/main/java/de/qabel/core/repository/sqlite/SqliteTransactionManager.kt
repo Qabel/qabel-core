@@ -43,7 +43,7 @@ class SqliteTransactionManager(private val connection: Connection) : Transaction
             return result
         } catch (e: Exception) {
             transaction.rollback()
-            throw TransactionException(e.message, e)
+            throw TransactionException(e.message ?: "", e)
         }
 
     }
@@ -56,7 +56,7 @@ class SqliteTransactionManager(private val connection: Connection) : Transaction
             transaction.commit()
         } catch (e: Exception) {
             transaction.rollback()
-            throw TransactionException(e.message, e)
+            throw TransactionException(e.message ?: "", e)
         }
 
     }

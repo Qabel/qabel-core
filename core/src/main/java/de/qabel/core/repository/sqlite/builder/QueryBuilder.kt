@@ -16,7 +16,7 @@ class QueryBuilder(private val clientDatabase: ClientDatabase, private val type:
         SELECT, UPDATE
     }
 
-    private var fields: Array<String>? = null
+    private var fields: Array<out String> = emptyArray()
     private val joins = LinkedList<String>()
     private var conditions = ""
     private val updates = LinkedList<String>()
@@ -77,7 +77,7 @@ class QueryBuilder(private val clientDatabase: ClientDatabase, private val type:
             val query = StringBuilder(type.toString()).append(" ")
             when (type) {
                 QueryBuilder.TYPE.SELECT -> {
-                    query.append(StringUtils.join(",", fields)).append(" ")
+                    query.append(fields.joinToString(", ")).append(" ")
                     query.append("FROM ").append(table).append(" ").append(tableAlias).append(" ")
                     for (j in joins) {
                         query.append("JOIN ").append(j).append(" ")

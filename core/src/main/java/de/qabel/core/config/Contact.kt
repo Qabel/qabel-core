@@ -10,7 +10,7 @@ class Contact : Entity {
 
      * @return alias
      */
-    var alias: String? = null
+    var alias: String = ""
 
     /**
      * Returns the email address of the identity.

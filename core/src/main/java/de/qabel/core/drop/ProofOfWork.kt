@@ -31,8 +31,8 @@ class ProofOfWork
         get() = Base64.toBase64String(pow)
 
     companion object {
-        internal val longLength = java.lang.Long.SIZE / java.lang.Byte.SIZE
-        internal val hashLength = 256 / 8 //SHA-256
+        val longLength = java.lang.Long.SIZE / java.lang.Byte.SIZE
+        val hashLength = 256 / 8 //SHA-256
 
         /**
          * Calculates the PoW for given parameters
@@ -132,7 +132,7 @@ class ProofOfWork
             }
         }
 
-        internal fun toByteArray(number: Long): ByteArray {
+        fun toByteArray(number: Long): ByteArray {
             return ByteBuffer.allocate(longLength).putLong(number).array()
         }
     }

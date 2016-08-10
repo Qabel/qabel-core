@@ -43,7 +43,9 @@ class SqliteAccountRepository(database: ClientDatabase, hydrator: Hydrator<Accou
     @Throws(PersistenceException::class)
     override fun save(account: Account) {
         try {
-            val loaded = findBy("`provider` = ? AND `user` = ?", account.provider, account.user)
+            val loaded = findBy("`provider` = ? AND `user` = ?",
+                account.provider ?: throw IllegalArgumentException("no provider"),
+                account.user ?: throw IllegalArgumentException("no user"))
 
             try {
                 database.prepare(

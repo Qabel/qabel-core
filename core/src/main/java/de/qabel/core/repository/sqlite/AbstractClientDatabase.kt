@@ -1,5 +1,6 @@
 package de.qabel.core.repository.sqlite
 
+import de.qabel.core.repository.RunnableTransaction
 import de.qabel.core.repository.TransactionManager
 import de.qabel.core.repository.exception.PersistenceException
 import de.qabel.core.repository.sqlite.builder.QueryBuilder
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
+import java.util.concurrent.Callable
 
 abstract class AbstractClientDatabase(protected val connection: Connection): ClientDatabase {
     var transactionManager: TransactionManager
@@ -41,14 +43,17 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
     @Throws(MigrationException::class)
     fun migrate(migration: AbstractMigration) {
         try {
-            transactionManager.transactional {
-                logger.info("Migrating " + migration.javaClass.simpleName)
-                migration.up()
-                this@AbstractClientDatabase.version = migration.version
-                logger.info("ClientDatabase now on version " + this@AbstractClientDatabase.version)
+            val action = object: RunnableTransaction {
+                override fun run() {
+                    logger.info("Migrating " + migration.javaClass.simpleName)
+                    migration.up()
+                    this@AbstractClientDatabase.version = migration.version
+                    logger.info("ClientDatabase now on version " + this@AbstractClientDatabase.version)
+                }
             }
+            transactionManager.transactional(action)
         } catch (e: PersistenceException) {
-            throw MigrationFailedException(migration, e.message, e)
+            throw MigrationFailedException(migration, e.message!!, e)
         }
 
     }

@@ -45,7 +45,7 @@ object IdentityExportImport {
             jsonObject.put(KEY_PREFIXES, jsonPrefixes)
             jsonObject.put(KEY_PUBLIC_KEY, Hex.toHexString(identity.ecPublicKey.key))
 
-            for (dropURL in identity.getDropUrls()) {
+            for (dropURL in identity.dropUrls) {
                 jsonDropUrls.put(dropURL)
             }
             jsonObject.put(KEY_DROP_URLS, jsonDropUrls)

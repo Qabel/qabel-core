@@ -31,9 +31,9 @@ class Account
     var auth: String? = null
 
     init {
-        provider = provider
-        user = user
-        auth = auth
+        this.provider = provider
+        this.user = user
+        this.auth = auth
     }
 
     override fun hashCode(): Int {

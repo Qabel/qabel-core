@@ -47,8 +47,8 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
 
         val httpPost = HttpPost(uri)
         val params = HashMap<String, String>()
-        params.put("username", server.username)
-        params.put("password", server.password)
+        params.put("username", server.username ?: throw IllegalArgumentException("No username"))
+        params.put("password", server.password ?: throw IllegalArgumentException("No password"))
         val json = gson.toJson(params)
         val input = StringEntity(json)
         input.setContentType("application/json")
@@ -172,7 +172,7 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
     }
 
     override fun buildUri(resource: String): URIBuilder {
-        return buildResourceUri(resource, server.uri)
+        return buildResourceUri(resource, server.uri ?: throw IllegalArgumentException("No Uri"))
     }
 
     private fun buildResourceUri(resource: String, server: URI): URIBuilder {
@@ -263,9 +263,9 @@ class BoxHttpClient internal constructor(private val server: AccountingServer, o
         val httpPost = HttpPost(uri)
         val params = HashMap<String, String>()
         params.put("email", email)
-        params.put("username", server.username)
-        params.put("password1", server.password)
-        params.put("password2", server.password)
+        params.put("username", server.username ?: throw IllegalArgumentException("No username"))
+        params.put("password1", server.password ?: throw IllegalArgumentException("No password"))
+        params.put("password2", server.password ?: throw IllegalArgumentException("No password"))
         val json = gson.toJson(params)
         val input: StringEntity
 

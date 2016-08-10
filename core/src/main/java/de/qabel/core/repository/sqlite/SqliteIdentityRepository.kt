@@ -34,7 +34,7 @@ class SqliteIdentityRepository(
             SqlitePrefixRepository(database)) {
     }
 
-    protected override val queryPrefix: String
+    override val queryPrefix: String
         get() = "SELECT " + StringUtils.join(",", hydrator.getFields("i", "c")) + " " +
                 "FROM " + TABLE_NAME + " i " +
                 "JOIN contact c ON (i.contact_id = c.id) "

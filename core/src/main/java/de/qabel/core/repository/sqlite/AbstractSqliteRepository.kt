@@ -10,7 +10,7 @@ import de.qabel.core.repository.exception.PersistenceException
 
 abstract class AbstractSqliteRepository<T>(protected var database: ClientDatabase, protected var hydrator: Hydrator<T>, protected var tableName: String) {
 
-    protected val queryPrefix: String
+    open protected val queryPrefix: String
         get() = StringBuilder("SELECT ").append(StringUtils.join(", ", hydrator.getFields("t"))).append(" FROM ").append(tableName).append(" t ").toString()
 
     @Throws(EntityNotFoundException::class, PersistenceException::class)
@@ -20,7 +20,7 @@ abstract class AbstractSqliteRepository<T>(protected var database: ClientDatabas
     }
 
     @Throws(EntityNotFoundException::class, PersistenceException::class)
-    protected fun findByQuery(query: String, params: Array<Any>): T {
+    protected fun findByQuery(query: String, params: Array<out Any>): T {
         try {
             database.prepare(query).use { statement ->
                 for (i in params.indices) {

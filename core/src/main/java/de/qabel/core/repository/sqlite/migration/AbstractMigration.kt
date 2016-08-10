@@ -1,5 +1,6 @@
 package de.qabel.core.repository.sqlite.migration
 
+import de.qabel.core.repository.sqlite.use
 import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException

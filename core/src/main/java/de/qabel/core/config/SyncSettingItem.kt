@@ -102,7 +102,7 @@ open class SyncSettingItem : Persistable(), BaseEntity {
             return false
         }
 
-        other = obj as SyncSettingItem?
+        other = obj as SyncSettingItem
 
         if (created != other.created) {
             return false

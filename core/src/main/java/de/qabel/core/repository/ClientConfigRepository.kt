@@ -11,5 +11,5 @@ interface ClientConfigRepository {
     operator fun contains(key: String): Boolean
 
     @Throws(PersistenceException::class)
-    fun save(key: String, value: String)
+    fun save(key: String, value: String?)
 }
