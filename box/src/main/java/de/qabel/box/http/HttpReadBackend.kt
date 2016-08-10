@@ -22,7 +22,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageReadBackend
     @Throws(QblStorageException::class)
     override fun download(name: String): StorageDownload {
         try {
-            return download(name, null)
+            return download(name, "")
         } catch (e: UnmodifiedException) {
             throw IllegalStateException(e)
         }
@@ -30,11 +30,10 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageReadBackend
     }
 
     @Throws(QblStorageException::class, UnmodifiedException::class)
-    override fun download(name: String, ifModifiedVersion: String?): StorageDownload {
-        AbstractHttpStorageBackend.logger.info("Downloading " + name)
+    override fun download(name: String, ifModifiedVersion: String): StorageDownload {
         val uri = root.resolve(name)
         val httpGet = HttpGet(uri)
-        if (ifModifiedVersion != null) {
+        if (ifModifiedVersion.isNotEmpty()) {
             httpGet.addHeader(HttpHeaders.IF_NONE_MATCH, ifModifiedVersion)
         }
         prepareRequest(httpGet)
@@ -54,7 +53,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageReadBackend
                 }
                 val modifiedVersion = response.getFirstHeader(HttpHeaders.ETAG).value
 
-                if (ifModifiedVersion != null && modifiedVersion == ifModifiedVersion) {
+                if (modifiedVersion == ifModifiedVersion) {
                     throw UnmodifiedException()
                 }
                 val entity = response.entity ?: throw QblStorageException("No content")

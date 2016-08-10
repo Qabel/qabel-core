@@ -31,9 +31,8 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * *
      * @return old Entity associated to the same key identifier or null if no such old Entity was present.
      */
-    @Synchronized fun put(entity: T): T {
+    @Synchronized fun put(entity: T): T? {
         val result = privateEntities.put(entity.keyIdentifier, entity)
-            ?: throw IllegalStateException("Could not insert entity")
         notifyObservers()
         return result
     }
@@ -45,7 +44,7 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * *
      * @return old Entity associated to the key identifier of the given Entity, or null if there was no such Entity
      */
-    @Synchronized fun remove(entity: T): T {
+    @Synchronized fun remove(entity: T): T? {
         return remove(entity.keyIdentifier)
     }
 
@@ -56,9 +55,8 @@ abstract class EntityMap<T : Entity> : Persistable(), EntityObservable {
      * *
      * @return old Entity associated to the given key identifier, or null if there was no such Entity
      */
-    @Synchronized fun remove(keyIdentifier: String): T {
+    @Synchronized fun remove(keyIdentifier: String): T? {
         val result = privateEntities.remove(keyIdentifier)
-            ?: throw IllegalStateException("Could not remove entity")
         notifyObservers()
         return result
     }
