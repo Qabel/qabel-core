@@ -38,7 +38,7 @@ class MainDropServer : DropServerHttp {
     override fun receiveMessageBytes(uri: URI, eTag: String): Triple<Int, String, Collection<ByteArray>> =
         connect(uri).use {
             if (!eTag.isEmpty()) {
-                it.addRequestProperty(QblHeaders.X_QABEL_LATEST, eTag)
+                it.addRequestProperty(QblHeaders.X_QABEL_NEW_SINCE, eTag)
             }
 
             val statusCode = it.responseCode

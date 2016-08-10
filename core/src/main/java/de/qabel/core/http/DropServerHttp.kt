@@ -12,6 +12,7 @@ interface DropServerHttp {
     object QblHeaders {
         const val AUTHORIZATION = "Authorization"
         const val X_QABEL_LATEST = "X-Qabel-Latest"
+        const val X_QABEL_NEW_SINCE = "X-Qabel-New-Since"
     }
 
     object QblStatusCodes {
