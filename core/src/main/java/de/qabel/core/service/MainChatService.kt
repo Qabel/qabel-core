@@ -72,7 +72,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
                 val message = createChatDropMessage(identity, this, it)
                 if (!chatDropMessageRepository.exists(message)) {
                     chatDropMessageRepository.persist(message)
-                    resultList.add(createChatDropMessage(identity, this, it))
+                    resultList.add(message)
                 } else {
                     logger.debug("Ignoring duplicated msg to " + identity.keyIdentifier)
                 }
