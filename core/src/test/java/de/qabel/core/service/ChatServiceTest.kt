@@ -4,6 +4,7 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
+import de.qabel.core.drop.DropMessage
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage
@@ -31,9 +32,8 @@ class ChatServiceTest {
     val contactRepository = InMemoryContactRepository()
     val chatDropRepo = InMemoryChatDropMessageRepository()
     val dropStateRepo = InMemoryDropStateRepository()
-    val chatService = MainChatService(MainDropConnector(MockDropServer()),
-        identityRepository, contactRepository,
-        chatDropRepo, dropStateRepo)
+    val chatService = MainChatService(MainDropConnector(MockDropServer()), identityRepository,
+        contactRepository, chatDropRepo, dropStateRepo)
 
     @Before
     fun setUp() {
@@ -92,8 +92,8 @@ class ChatServiceTest {
 
         val currentETag = ""
         dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
-
         val result = chatService.refreshMessages()
+
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
 
@@ -101,6 +101,11 @@ class ChatServiceTest {
 
         val newDropState = dropStateRepo.getDropState(identityB.dropUrls.first())
         assertThat(newDropState.eTag, not(currentETag))
+
+        //reset dropstate and receive again
+        dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
+        val result2 = chatService.refreshMessages()
+        assertThat(result2.keys, hasSize(0))
     }
 
     @Test
@@ -134,22 +139,47 @@ class ChatServiceTest {
     }
 
     @Test
-    fun testReceiveMessageFromIgnored() {
+    fun testHandleMessageFromIgnored() {
         val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
             email = "some@one.zz"
             phone = "0190666666"
         }
-        identityRepository.save(someone)
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        chatService.sendMessage(message)
-
         //Update contact with ignoredFlag and add to target identity
         val someOnesContact = someone.toContact()
         someOnesContact.isIgnored = true;
         contactRepository.save(someOnesContact, identityA)
 
-        val result = chatService.refreshMessages()
+        val result = chatService.handleDropUpdate(identityA, dropStateRepo.getDropState(identityA.helloDropUrl),
+            listOf(message.toDropMessage(someone)))
 
         assertThat(result.size, `is`(0))
     }
+
+    @Test
+    fun testHandleMessages() {
+        val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
+            createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+
+        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result, hasSize(3))
+    }
+
+    @Test
+    fun testHandleDuplicateMessages() {
+        val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
+            createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+
+        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result, hasSize(3))
+        //test duplicate handling
+        val result2 = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        assertThat(result2, hasSize(0))
+    }
+
+    fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
+        DropMessage(identity, ChatDropMessage.MessagePayload.encode(messageType, payload), messageType.type)
+
 }

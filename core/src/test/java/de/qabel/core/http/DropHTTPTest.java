@@ -12,7 +12,6 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
-@Ignore
 public class DropHTTPTest {
 
     public long postedAt;
@@ -58,8 +57,6 @@ public class DropHTTPTest {
         // Then
         assertEquals(200, result.getResponseCode());
         assertTrue(result.isOk());
-
-        assertTrue(dHTTP.receiveMessages(workingUri).getData().contains(message.getBytes()));
     }
 
     // POST 400

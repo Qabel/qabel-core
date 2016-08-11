@@ -53,10 +53,10 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
     override fun exists(chatDropMessage: ChatDropMessage): Boolean {
         return messages.any {
-            chatDropMessage.direction == it.direction &&
+            chatDropMessage.direction.type == it.direction.type &&
                 chatDropMessage.contactId == it.contactId &&
                 chatDropMessage.identityId == it.identityId &&
-                chatDropMessage.messageType == it.messageType &&
+                chatDropMessage.messageType.type == it.messageType.type &&
                 chatDropMessage.payload.toString() == it.payload.toString()
         }
     }
