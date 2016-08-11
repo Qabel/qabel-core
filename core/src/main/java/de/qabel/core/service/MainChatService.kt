@@ -58,7 +58,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
                     val newMessages = handleDropUpdate(identity, dropResult.dropState, dropResult.dropMessages)
                     resultMap.getOrDefault(identity).addAll(newMessages)
                 } catch(ex: Throwable) {
-                    logger.warn("Cannot receive messages from {}", dropState.drop)
+                    logger.warn("Cannot receive messages from {}", dropState.drop, ex)
                 }
             }
         }
