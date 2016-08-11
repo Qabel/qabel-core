@@ -7,20 +7,12 @@ import java.util.Arrays
 
 /**
  * Elliptic curve public key
- */
-class QblECPublicKey
-/**
+ *
  * Generate elliptic curve public key from raw byte array
-
+ *
  * @param pubKey Point which represents the public key
  */
-(
-        /**
-         * Get encoded public key
-
-         * @return public key
-         */
-        val key: ByteArray) : Serializable {
+class QblECPublicKey (val key: ByteArray) : Serializable {
 
     val readableKeyIdentifier: String
         get() = Hex.toHexString(key)

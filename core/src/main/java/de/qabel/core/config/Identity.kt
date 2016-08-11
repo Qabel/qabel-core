@@ -103,9 +103,9 @@ class Identity(alias: String, drops: Collection<DropURL>,
         get() = primaryKeyPair.pub
 
     /**
-    +     * The drop URL that should be used for the HELLO protocol, i.e.
-    +     * made public and exported to qabel-index.
-    +     */
+    * The drop URL that should be used for the HELLO protocol, i.e.
+    * made public and exported to qabel-index.
+    */
     val helloDropUrl: DropURL
         get() = dropUrls.first()
 
