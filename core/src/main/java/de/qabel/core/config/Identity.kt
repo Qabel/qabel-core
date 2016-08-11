@@ -93,14 +93,21 @@ class Identity(alias: String, drops: Collection<DropURL>,
     }
 
     fun toContact(): Contact {
-        val contact = Contact(this.alias!!, dropUrls, ecPublicKey)
+        val contact = Contact(this.alias, dropUrls, ecPublicKey)
         contact.email = email
         contact.phone = phone
         return contact
     }
 
     override val ecPublicKey: QblECPublicKey
-        get() = primaryKeyPair!!.pub
+        get() = primaryKeyPair.pub
+
+    /**
+    +     * The drop URL that should be used for the HELLO protocol, i.e.
+    +     * made public and exported to qabel-index.
+    +     */
+    val helloDropUrl: DropURL
+        get() = dropUrls.first()
 
     override fun hashCode(): Int {
         val prime = 31

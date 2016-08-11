@@ -21,7 +21,7 @@ class DropURL : Serializable {
 
      * @return the URI
      */
-    var uri: URI? = null
+    var uri: URI
         private set
 
     /**
@@ -66,7 +66,7 @@ class DropURL : Serializable {
      */
     private val dropId: String
         get() {
-            val path = uri!!.path
+            val path = uri.path
             return path.substring(path.lastIndexOf("/") + 1)
         }
 
@@ -91,13 +91,13 @@ class DropURL : Serializable {
     }
 
     override fun toString(): String {
-        return uri!!.toString()
+        return uri.toString()
     }
 
     override fun hashCode(): Int {
         val prime = 31
         var result = 1
-        result = prime * result + if (uri == null) 0 else uri!!.hashCode()
+        result = prime * result + if (uri == null) 0 else uri.hashCode()
         return result
     }
 

@@ -45,11 +45,11 @@ data class UpdateIdentity(
     companion object {
         fun fromIdentity(identity: Identity, action: UpdateAction): UpdateIdentity {
             val fields = ArrayList<UpdateField>()
-            if (identity.email != null) {
-                fields += UpdateField(action, FieldType.EMAIL, identity.email)
+            identity.email?.let {
+                fields += UpdateField(action, FieldType.EMAIL, it)
             }
-            if (identity.phone != null) {
-                fields += UpdateField(action, FieldType.PHONE, identity.phone)
+            identity.phone?.let {
+                fields += UpdateField(action, FieldType.PHONE, it)
             }
             return UpdateIdentity(
                 keyPair = identity.primaryKeyPair,
