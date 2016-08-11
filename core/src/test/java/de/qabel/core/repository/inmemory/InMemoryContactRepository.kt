@@ -21,7 +21,7 @@ class InMemoryContactRepository : ContactRepository {
         val identityContacts = identityMapping.getOrDefault(identity);
         val resultContacts = Contacts(identity);
         for (contactKey in identityContacts) {
-            resultContacts.put(this.contacts[contactKey])
+            resultContacts.put(this.contacts[contactKey] ?: throw IllegalArgumentException())
         }
         return resultContacts;
     }

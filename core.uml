@@ -100,9 +100,9 @@
                 <language>java</language>
                 <body>final int prime = 31;
 		int result = 1;
-		
+
 		result = super.hashCode();
-		
+
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
 		result = prime * result + ((provider == null) ? 0 : provider.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
@@ -125,7 +125,7 @@
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		
+
 		Account other = (Account) obj;
 		if (auth == null) {
 			if (other.auth != null)
@@ -174,9 +174,9 @@
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_4h_acLU1EeShbLALyvfh1A" name="Accounts">
               <ownedComment xmi:id="_4uj20bU1EeShbLALyvfh1A">
-                <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts</body>
+                <body>https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#internalAccounts</body>
               </ownedComment>
-              <ownedAttribute xmi:id="_4tbOYLU1EeShbLALyvfh1A" name="accounts" visibility="private" isLeaf="true" type="_4h8-MLU1EeShbLALyvfh1A" isReadOnly="true" association="_4u08kLU1EeShbLALyvfh1A">
+              <ownedAttribute xmi:id="_4tbOYLU1EeShbLALyvfh1A" name="internalAccounts" visibility="private" isLeaf="true" type="_4h8-MLU1EeShbLALyvfh1A" isReadOnly="true" association="_4u08kLU1EeShbLALyvfh1A">
                 <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4tbOYbU1EeShbLALyvfh1A" value="*"/>
                 <defaultValue xmi:type="uml:LiteralString" xmi:id="_4tb1cLU1EeShbLALyvfh1A" value="new HashSet&lt;Account>()"/>
               </ownedAttribute>
@@ -185,7 +185,7 @@
                   <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t3TQrU1EeShbLALyvfh1A" value="*"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>return Collections.unmodifiableSet(this.accounts);
+                <body>return Collections.unmodifiableSet(this.internalAccounts);
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t3TQ7U1EeShbLALyvfh1A" name="add" specification="_4qE_cbU1EeShbLALyvfh1A">
@@ -194,7 +194,7 @@
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>return this.accounts.add(account);
+                <body>return this.internalAccounts.add(account);
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t3TRrU1EeShbLALyvfh1A" name="remove" specification="_4qFmgrU1EeShbLALyvfh1A">
@@ -203,7 +203,7 @@
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/JavaPrimitiveTypes.library.uml#boolean"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>return this.accounts.remove(account);
+                <body>return this.internalAccounts.remove(account);
 	</body>
               </ownedBehavior>
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t3TSbU1EeShbLALyvfh1A" name="hashCode" specification="_4iGvMLU1EeShbLALyvfh1A">
@@ -213,7 +213,7 @@
                 <language>java</language>
                 <body>final int prime = 31;
 		int result = 1;
-		result = prime * result + ((accounts == null) ? 0 : accounts.hashCode());
+		result = prime * result + ((internalAccounts == null) ? 0 : internalAccounts.hashCode());
 		return result;
 	</body>
               </ownedBehavior>
@@ -230,17 +230,17 @@
 		if (getClass() != obj.getClass())
 			return false;
 		Accounts other = (Accounts) obj;
-		if (accounts == null) {
-			if (other.accounts != null)
+		if (internalAccounts == null) {
+			if (other.internalAccounts != null)
 				return false;
-		} else if (!accounts.equals(other.accounts))
+		} else if (!internalAccounts.equals(other.internalAccounts))
 			return false;
 		return true;
 	</body>
               </ownedBehavior>
               <ownedOperation xmi:id="_4iGIILU1EeShbLALyvfh1A" name="getAccounts" method="_4t3TQLU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_4uj20rU1EeShbLALyvfh1A">
-                  <body>Returns unmodifiable set of contained accounts
+                  <body>Returns unmodifiable set of contained internalAccounts
 	 * @return Set&lt;Account></body>
                 </ownedComment>
                 <ownedParameter xmi:id="_4iGIIbU1EeShbLALyvfh1A" type="_4h8-MLU1EeShbLALyvfh1A" direction="return">
@@ -260,7 +260,7 @@
               </ownedOperation>
               <ownedOperation xmi:id="_4qFmgrU1EeShbLALyvfh1A" name="remove" method="_4t3TRrU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_4uj207U1EeShbLALyvfh1A">
-                  <body>Removes account from list of accounts
+                  <body>Removes account from list of internalAccounts
 	 * @param account
 	 * @return true if account was contained in list, false if not</body>
                 </ownedComment>
@@ -301,20 +301,20 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
-		Accounts accounts = new Accounts();
+		Accounts internalAccounts = new Accounts();
 		TypeAdapter&lt;Account> adapter = gson.getAdapter(Account.class);
-		Account account = null; 
-		
+		Account account = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			account = adapter.read(in);
-			accounts.add(account);
+			internalAccounts.add(account);
 		}
 		in.endArray();
-		
-		return accounts;
+
+		return internalAccounts;
 	</body>
               </ownedBehavior>
               <ownedOperation xmi:id="_4rkNMLU1EeShbLALyvfh1A" name="write" method="_4t36ULU1EeShbLALyvfh1A" raisedException="_4qGNkLU1EeShbLALyvfh1A">
@@ -352,10 +352,10 @@
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4t5IeLU1EeShbLALyvfh1A" name="Contact" specification="_4qNiULU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_7ualUcDJEeSZ-dz5sVoj6g" name="owner" type="_4jIC4LU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_7ualUsDJEeSZ-dz5sVoj6g" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
-                <ownedParameter xmi:id="_7ualU8DJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_7ualU8DJEeSZ-dz5sVoj6g" name="privateDropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_7ualVMDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
                 <language>java</language>
-                <body>super(dropUrls);
+                <body>super(privateDropUrls);
 		this.contactOwner = owner;
 		this.contactOwnerKeyId = owner.getKeyIdentifier();
 		this.setPrimaryPublicKey(pubKey);
@@ -417,10 +417,10 @@
                 <ownedParameter xmi:id="_5KzZEMDJEeSZ-dz5sVoj6g" type="_4iLAoLU1EeShbLALyvfh1A" direction="return">
                   <name xsi:nil="true"/>
                 </ownedParameter>
-                <ownedParameter xmi:id="_5KzZEcDJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5KzZEcDJEeSZ-dz5sVoj6g" name="privateDropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5KzZEsDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
                 <language>java</language>
-                <body>super(dropUrls);
+                <body>super(privateDropUrls);
 		this.contactOwnerKeyId = ownerKeyId;
 		this.setPrimaryPublicKey(pubKey);
 	</body>
@@ -444,7 +444,7 @@
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <ownedParameter xmi:id="_4iP5JLU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
-                <ownedParameter xmi:id="_5F98YMDJEeSZ-dz5sVoj6g" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_5F98YMDJEeSZ-dz5sVoj6g" name="privateDropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5F_xkcDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
               </ownedOperation>
               <ownedOperation xmi:id="_4iP5JbU1EeShbLALyvfh1A" name="hashCode" method="_4t5vgLU1EeShbLALyvfh1A">
@@ -468,7 +468,7 @@
                 </ownedComment>
                 <ownedParameter xmi:id="_4qNiUbU1EeShbLALyvfh1A" name="owner" type="_4jIC4LU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_4qNiVLU1EeShbLALyvfh1A" type="_4iLAoLU1EeShbLALyvfh1A" direction="return"/>
-                <ownedParameter xmi:id="_4tkYUbU1EeShbLALyvfh1A" name="dropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
+                <ownedParameter xmi:id="_4tkYUbU1EeShbLALyvfh1A" name="privateDropUrls" type="_4qSa0rU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_5F8uQMDJEeSZ-dz5sVoj6g" name="pubKey" type="_4qZIgbU1EeShbLALyvfh1A"/>
               </ownedOperation>
               <ownedOperation xmi:id="_4rrh8LU1EeShbLALyvfh1A" name="equals" method="_4t5vgrU1EeShbLALyvfh1A">
@@ -491,19 +491,19 @@
 		Gson gson = builder.create();
 		TypeAdapter&lt;QblPrimaryPublicKey> primaryKeyAdapter = gson.getAdapter(QblPrimaryPublicKey.class);
 		primaryKeyAdapter.write(out, value.getPrimaryPublicKey());
-		
+
 		out.name(&quot;my_identity&quot;);
 		out.value(value.getContactOwnerKeyId());
-		
+
 		out.name(&quot;drop_urls&quot;);
 		out.beginArray();
-		Collection&lt;DropURL> dropUrls = value.getDropUrls();
+		Collection&lt;DropURL> privateDropUrls = value.getDropUrls();
 		TypeAdapter&lt;URL> urlAdapter = gson.getAdapter(URL.class);
-		for(DropURL url : dropUrls) {
+		for(DropURL url : privateDropUrls) {
 			urlAdapter.write(out, url.getUrl());
 		}
 		out.endArray();
-		
+
 		out.name(&quot;module_data&quot;);
 		out.beginObject();
 		//TODO: write module data
@@ -516,7 +516,7 @@
 		out.name(&quot;deleted&quot;).value(value.getDeleted());
 
 		out.endObject();
-		
+
 		return;
 	</body>
               </ownedBehavior>
@@ -579,11 +579,11 @@
 			}
 		}
 		in.endObject();
-		
+
 		if(qppk == null || contactOwnerKeyId == null || dropURLs == null) {
 			return null;
 		}
-		
+
 		contact = new Contact(contactOwnerKeyId, dropURLs, qppk);
 
 		// copy all sync item properties
@@ -591,7 +591,7 @@
 		contact.setCreated(syncItem.getCreated());
 		contact.setUpdated(syncItem.getUpdated());
 		contact.setDeleted(syncItem.getDeleted());
-		
+
 		return contact;
 	</body>
               </ownedBehavior>
@@ -653,19 +653,19 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
 		Contacts contacts = new Contacts();
 		TypeAdapter&lt;Contact> adapter = gson.getAdapter(Contact.class);
-		Contact contact = null; 
-		
+		Contact contact = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			contact = adapter.read(in);
 			contacts.add(contact);
 		}
 		in.endArray();
-		
+
 		return contacts;
 	</body>
               </ownedBehavior>
@@ -712,9 +712,9 @@
                 <language>java</language>
                 <body>final int prime = 31;
 		int result = 1;
-		
+
 		result = super.hashCode();
-		
+
 		result = prime * result + (active ? 1231 : 1237);
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
@@ -920,19 +920,19 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
 		DropServers dropServers = new DropServers();
 		TypeAdapter&lt;DropServer> adapter = gson.getAdapter(DropServer.class);
-		DropServer dropServer = null; 
-		
+		DropServer dropServer = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			dropServer = adapter.read(in);
 			dropServers.add(dropServer);
 		}
 		in.endArray();
-		
+
 		return dropServers;
 	</body>
               </ownedBehavior>
@@ -996,20 +996,20 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		GsonBuilder builder = new GsonBuilder();
 		builder.registerTypeAdapter(QblPrimaryKeyPair.class, new QblPrimaryKeyPairTypeAdapter());
 		Gson gson = builder.create();		Identities identities = new Identities();
 		TypeAdapter&lt;Identity> adapter = gson.getAdapter(Identity.class);
-		Identity identity = null; 
-		
+		Identity identity = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			identity = adapter.read(in);
 			identities.add(identity);
 		}
 		in.endArray();
-		
+
 		return identities;
 	</body>
               </ownedBehavior>
@@ -1375,9 +1375,9 @@
                 <language>java</language>
                 <body>final int prime = 31;
 		int result = 1;
-		
+
 		result = super.hashCode();
-		
+
 		result = prime * result + ((auth == null) ? 0 : auth.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
@@ -1592,19 +1592,19 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		Gson gson = new Gson();
 		StorageServers storageServers = new StorageServers();
 		TypeAdapter&lt;StorageServer> adapter = gson.getAdapter(StorageServer.class);
-		StorageServer storageServer = null; 
-		
+		StorageServer storageServer = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			storageServer = adapter.read(in);
 			storageServers.add(storageServer);
 		}
 		in.endArray();
-		
+
 		return storageServers;
 	</body>
               </ownedBehavior>
@@ -2065,18 +2065,18 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		StorageVolumes storageVolumes = new StorageVolumes();
 		TypeAdapter&lt;StorageVolume> adapter = new StorageVolumeTypeAdapter();
-		StorageVolume storageVolume = null; 
-		
+		StorageVolume storageVolume = null;
+
 		in.beginArray();
 		while(in.hasNext()) {
 			storageVolume = adapter.read(in);
 			storageVolumes.add(storageVolume);
 		}
 		in.endArray();
-		
+
 		return storageVolumes;
 	</body>
               </ownedBehavior>
@@ -2219,7 +2219,7 @@
                 <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4txzsbU1EeShbLALyvfh1A" value="*"/>
               </ownedAttribute>
               <ownedAttribute xmi:id="_4txzsrU1EeShbLALyvfh1A" name="identities" type="_4i8csLU1EeShbLALyvfh1A" association="_4usZsLU1EeShbLALyvfh1A"/>
-              <ownedAttribute xmi:id="_4tyawLU1EeShbLALyvfh1A" name="accounts" type="_4h_acLU1EeShbLALyvfh1A" association="_4usZsrU1EeShbLALyvfh1A"/>
+              <ownedAttribute xmi:id="_4tyawLU1EeShbLALyvfh1A" name="internalAccounts" type="_4h_acLU1EeShbLALyvfh1A" association="_4usZsrU1EeShbLALyvfh1A"/>
               <ownedAttribute xmi:id="_4tyawbU1EeShbLALyvfh1A" name="contacts" type="_4ictcLU1EeShbLALyvfh1A" association="_4utAwLU1EeShbLALyvfh1A"/>
               <ownedAttribute xmi:id="_4tyawrU1EeShbLALyvfh1A" name="dropServers" type="_4ixdkLU1EeShbLALyvfh1A" association="_4utAwrU1EeShbLALyvfh1A"/>
               <ownedAttribute xmi:id="_4tzB0LU1EeShbLALyvfh1A" name="storageServers" type="_4jqOYLU1EeShbLALyvfh1A" association="_4utAxLU1EeShbLALyvfh1A"/>
@@ -2227,7 +2227,7 @@
               <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_4ue-WbU1EeShbLALyvfh1A" name="SyncedSettings" specification="_4ki_MLU1EeShbLALyvfh1A">
                 <ownedParameter xmi:id="_4ue-WrU1EeShbLALyvfh1A" type="_4kiYILU1EeShbLALyvfh1A" direction="return"/>
                 <language>java</language>
-                <body>this.accounts = new Accounts();
+                <body>this.internalAccounts = new Accounts();
 		this.contacts = new Contacts();
 		this.dropServers = new DropServers();
 		this.identities = new Identities();
@@ -2262,7 +2262,7 @@
                 <body>final int prime = 31;
 		int result = 1;
 		result = prime * result
-				+ ((accounts == null) ? 0 : accounts.hashCode());
+				+ ((internalAccounts == null) ? 0 : internalAccounts.hashCode());
 		result = prime * result
 				+ ((contacts == null) ? 0 : contacts.hashCode());
 		result = prime * result
@@ -2293,10 +2293,10 @@
 		if (getClass() != obj.getClass())
 			return false;
 		SyncedSettings other = (SyncedSettings) obj;
-		if (accounts == null) {
-			if (other.accounts != null)
+		if (internalAccounts == null) {
+			if (other.internalAccounts != null)
 				return false;
-		} else if (!accounts.equals(other.accounts))
+		} else if (!internalAccounts.equals(other.internalAccounts))
 			return false;
 		if (contacts == null) {
 			if (other.contacts != null)
@@ -2362,52 +2362,52 @@
                 <ownedParameter xmi:id="_4ugMcrU1EeShbLALyvfh1A" name="value" type="_4kiYILU1EeShbLALyvfh1A"/>
                 <language>java</language>
                 <body>out.beginObject();
-				
+
 		// Accounts
-		out.name(&quot;accounts&quot;);
-		TypeAdapter&lt;Accounts> accountsAdapter = 
+		out.name(&quot;internalAccounts&quot;);
+		TypeAdapter&lt;Accounts> accountsAdapter =
 				new AccountsTypeAdapter();
 		accountsAdapter.write(out, value.getAccounts());
-		
+
 		// Contacts
 		out.name(&quot;contacts&quot;);
 		TypeAdapter&lt;Contacts> contactsAdapter =
 				new ContactsTypeAdapter();
 		contactsAdapter.write(out, value.getContacts());
-		
+
 		// Identities
 		out.name(&quot;identities&quot;);
-		TypeAdapter&lt;Identities> identitiesAdapter = 
+		TypeAdapter&lt;Identities> identitiesAdapter =
 				new IdentitiesTypeAdapter();
 		identitiesAdapter.write(out, value.getIdentities());
-		
+
 		// DropServers
 		out.name(&quot;drop_servers&quot;);
-		TypeAdapter&lt;DropServers> dropServersAdapter = 
+		TypeAdapter&lt;DropServers> dropServersAdapter =
 				new DropServersTypeAdapter();
 		dropServersAdapter.write(out, value.getDropServers());
-		
+
 		// StorageServers
 		out.name(&quot;storage_servers&quot;);
-		TypeAdapter&lt;StorageServers> storageServersAdapter = 
+		TypeAdapter&lt;StorageServers> storageServersAdapter =
 				new StorageServersTypeAdapter();
 		storageServersAdapter.write(out, value.getStorageServers());
-		
+
 		// StorageVolumes
 		out.name(&quot;storage_volumes&quot;);
 		TypeAdapter&lt;StorageVolumes> storageVolumesAdapter =
 				new StorageVolumesTypeAdapter();
 		storageVolumesAdapter.write(out, value.getStorageVolumes());
-		
+
 		// SyncedModuleSettings
 		out.name(&quot;module_data&quot;);
 		out.beginObject();
 		// TODO: call serialization of SyncedModuleSettings
 		out.endObject();
-		
-		
+
+
 		out.endObject();
-				
+
 		return;
 	</body>
               </ownedBehavior>
@@ -2421,41 +2421,41 @@
 			in.nextNull();
 			return null;
 		}
-		
+
 		SyncedSettings syncedSettings = null;
-		Accounts accounts = null;
+		Accounts internalAccounts = null;
 		Contacts contacts = null;
 		Identities identities = null;
 		DropServers dropServers = null;
 		StorageServers storageServers = null;
-		StorageVolumes storageVolumes = null;		
+		StorageVolumes storageVolumes = null;
 		Set&lt;SyncedModuleSettings> syncedModuleSettings = null;
-		
+
 		in.beginObject();
 		while(in.hasNext()) {
 			switch(in.nextName()) {
-			case &quot;accounts&quot;:
-				TypeAdapter&lt;Accounts> accountsAdapter = 
+			case &quot;internalAccounts&quot;:
+				TypeAdapter&lt;Accounts> accountsAdapter =
 						new AccountsTypeAdapter();
-				accounts = accountsAdapter.read(in);		
+				internalAccounts = accountsAdapter.read(in);
 				break;
 			case &quot;contacts&quot;:
-				TypeAdapter&lt;Contacts> contactsAdapter = 
+				TypeAdapter&lt;Contacts> contactsAdapter =
 						new ContactsTypeAdapter();
 				contacts = contactsAdapter.read(in);
 				break;
 			case &quot;identities&quot;:
-				TypeAdapter&lt;Identities> identitiesAdapter = 
+				TypeAdapter&lt;Identities> identitiesAdapter =
 						new IdentitiesTypeAdapter();
 				identities = identitiesAdapter.read(in);
 				break;
 			case &quot;drop_servers&quot;:
-				TypeAdapter&lt;DropServers> dropServersAdapter = 
+				TypeAdapter&lt;DropServers> dropServersAdapter =
 						new DropServersTypeAdapter();
 				dropServers = dropServersAdapter.read(in);
 				break;
 			case &quot;storage_servers&quot;:
-				TypeAdapter&lt;StorageServers> storageServersAdapter = 
+				TypeAdapter&lt;StorageServers> storageServersAdapter =
 						new StorageServersTypeAdapter();
 				storageServers = storageServersAdapter.read(in);
 				break;
@@ -2472,8 +2472,8 @@
 			}
 		}
 		in.endObject();
-		
-		if(accounts == null
+
+		if(internalAccounts == null
 				|| contacts == null
 				|| identities == null
 				|| dropServers == null
@@ -2488,7 +2488,7 @@
 					identities.getByKeyIdentifier(
 							contact.getContactOwnerKeyId()));
 		}
-		
+
 		for (StorageVolume volume : storageVolumes.getStorageVolumes()) {
 			// remove and re-insert updated volume to update hash
 			storageVolumes.remove(volume);
@@ -2496,15 +2496,15 @@
 					storageServers.getStorageServerByUrl(volume.getServerUrlString()));
 			storageVolumes.add(volume);
 		}
-		
+
 		syncedSettings = new SyncedSettings();
-		syncedSettings.setAccounts(accounts);
+		syncedSettings.setAccounts(internalAccounts);
 		syncedSettings.setContacts(contacts);
 		syncedSettings.setIdentities(identities);
 		syncedSettings.setDropServers(dropServers);
 		syncedSettings.setStorageServers(storageServers);
 		syncedSettings.setStorageVolumes(storageVolumes);
-		
+
 		return syncedSettings;
 	</body>
               </ownedBehavior>
@@ -2797,7 +2797,7 @@
                 <ownedComment xmi:id="_4uuO4rU1EeShbLALyvfh1A">
                   <body>Disassemble binary transport message assuming it sent by the given
 	 * sender.
-	 * 
+	 *
 	 * @param sender Assumed sender.
 	 * @return Disassembled drop message or null if either the sender assumption
 	 *         was wrong or the message verification faild.</body>
@@ -2962,7 +2962,7 @@ used to identify valid encryption and signature sub-keys.</body>
 		out.name(&quot;exponent&quot;);
 		out.value(value.getPublicExponent().toString());
 		out.endObject();
-		
+
 		List&lt;QblEncPublicKey> encPublicKeys = value.getEncPublicKeys();
 		out.name(&quot;public_enc_keys&quot;);
 		out.beginArray();
@@ -2977,7 +2977,7 @@ used to identify valid encryption and signature sub-keys.</body>
 			out.endObject();
 		}
 		out.endArray();
-		
+
 		List&lt;QblSignPublicKey> signPublicKeys = value.getSignPublicKeys();
 		out.name(&quot;public_sign_keys&quot;);
 		out.beginArray();
@@ -2988,13 +2988,13 @@ used to identify valid encryption and signature sub-keys.</body>
 			out.name(&quot;exponent&quot;);
 			out.value(key.getPublicExponent().toString());
 			out.name(&quot;signature&quot;);
-			out.value(getStringFromByteArray(key.getPrimaryKeySignature()));		
+			out.value(getStringFromByteArray(key.getPrimaryKeySignature()));
 			out.endObject();
 		}
 		out.endArray();
-		
-		out.endObject();		
-		
+
+		out.endObject();
+
 		return;
 	</body>
               </ownedBehavior>
@@ -3036,7 +3036,7 @@ used to identify valid encryption and signature sub-keys.</body>
 					in.endObject();
 				}
 				in.endArray();
-				break;				
+				break;
 			}
 		}
 		in.endObject();
@@ -3049,10 +3049,10 @@ used to identify valid encryption and signature sub-keys.</body>
 					primaryPublicKey.attachSignPublicKey(key);
 				}
 			} catch (InvalidKeyException e) {
-				logger.error(&quot;Read public key is invalid!&quot;);			
+				logger.error(&quot;Read public key is invalid!&quot;);
 			}
 		}
-		
+
 		return primaryPublicKey;
 	</body>
               </ownedBehavior>
@@ -3073,7 +3073,7 @@ used to identify valid encryption and signature sub-keys.</body>
 				break;
 			}
 		}
-		
+
 		if(modulus == null || exponent == null) {
 			return null;
 		}
@@ -3090,7 +3090,7 @@ used to identify valid encryption and signature sub-keys.</body>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		primaryPublicKey = new QblPrimaryPublicKey(rsaPubKey);
 		return primaryPublicKey;
 	</body>
@@ -3115,11 +3115,11 @@ used to identify valid encryption and signature sub-keys.</body>
 				signature = in.nextString();
 			}
 		}
-		
+
 		if(modulus == null || exponent == null || signature == null) {
 			return null;
 		}
-		
+
 		KeyFactory kf;
 		RSAPublicKey rsaPubKey = null;
 		try {
@@ -3132,7 +3132,7 @@ used to identify valid encryption and signature sub-keys.</body>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		encPublicKey = new QblEncPublicKey(rsaPubKey);
 		encPublicKey.setPrimaryKeySignature(getByteArrayFromString(signature));
 		return encPublicKey;
@@ -3158,11 +3158,11 @@ used to identify valid encryption and signature sub-keys.</body>
 				signature = in.nextString();
 			}
 		}
-		
+
 		if(modulus == null || exponent == null || signature == null) {
 			return null;
 		}
-		
+
 		KeyFactory kf;
 		RSAPublicKey rsaPubKey = null;
 		try {
@@ -3175,7 +3175,7 @@ used to identify valid encryption and signature sub-keys.</body>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		signPublicKey = new QblSignPublicKey(rsaPubKey);
 		signPublicKey.setPrimaryKeySignature(getByteArrayFromString(signature));
 		return signPublicKey;
@@ -3288,7 +3288,7 @@ encryption and one signature sub-keypair.
 		signKeyPairs = new ArrayList&lt;QblSignKeyPair>();
 		signPublicKeys = new ArrayList&lt;QblSignPublicKey>();
 		signPrivateKeys = new ArrayList&lt;RSAPrivateKey>();
-		
+
 		generateEncKeyPair();
 		generateSignKeyPair();
 	</body>
@@ -3532,7 +3532,7 @@ encryption and one signature sub-keypair.
               <ownedOperation xmi:id="_6kdBcbU1EeShbLALyvfh1A" name="getQblPrimaryPublicKey" method="_6s-rVbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tiE9bU1EeShbLALyvfh1A">
                   <body>Returns the primary public key
-	 * 
+	 *
 	 * @return primary public key</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6kdBcrU1EeShbLALyvfh1A" type="_4qZIgbU1EeShbLALyvfh1A" direction="return"/>
@@ -3540,7 +3540,7 @@ encryption and one signature sub-keypair.
               <ownedOperation xmi:id="_6kdBc7U1EeShbLALyvfh1A" name="getQblEncPublicKeys" method="_6s-rV7U1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tiE9rU1EeShbLALyvfh1A">
                   <body>Returns all encryption public keys
-	 * 
+	 *
 	 * @return encryption public keys</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6kdBdLU1EeShbLALyvfh1A" type="_4roeoLU1EeShbLALyvfh1A" isOrdered="true" direction="return">
@@ -3550,7 +3550,7 @@ encryption and one signature sub-keypair.
               <ownedOperation xmi:id="_6kdBdrU1EeShbLALyvfh1A" name="getQblSignPublicKeys" method="_6s_SYLU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tiE97U1EeShbLALyvfh1A">
                   <body>Returns all signature public keys
-	 * 
+	 *
 	 * @return signature public keys</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6kdBd7U1EeShbLALyvfh1A" type="_4rqT0LU1EeShbLALyvfh1A" isOrdered="true" direction="return">
@@ -3560,7 +3560,7 @@ encryption and one signature sub-keypair.
               <ownedOperation xmi:id="_6kdogbU1EeShbLALyvfh1A" name="getQblEncPrivateKeys" method="_6s_SY7U1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tiE-LU1EeShbLALyvfh1A">
                   <body>Returns all encryption private keys
-	 * 
+	 *
 	 * @return encryption private keys</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6kdogrU1EeShbLALyvfh1A" type="_5NcyQ7U1EeShbLALyvfh1A" isOrdered="true" direction="return">
@@ -3570,7 +3570,7 @@ encryption and one signature sub-keypair.
               <ownedOperation xmi:id="_6kdohLU1EeShbLALyvfh1A" name="getQblSignPrivateKeys" method="_6s_SZrU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tiE-bU1EeShbLALyvfh1A">
                   <body>Returns all signature private keys
-	 * 
+	 *
 	 * @return signature private keys</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6kdohbU1EeShbLALyvfh1A" type="_5NcyQ7U1EeShbLALyvfh1A" isOrdered="true" direction="return">
@@ -3602,8 +3602,8 @@ encryption and one signature sub-keypair.
                 <ownedParameter xmi:id="_6tBHkrU1EeShbLALyvfh1A" name="value" type="_4qrcYLU1EeShbLALyvfh1A"/>
                 <language>java</language>
                 <body>out.beginObject();
-		
-		QblPrimaryPublicKey primaryPublicKey = value.getQblPrimaryPublicKey();		
+
+		QblPrimaryPublicKey primaryPublicKey = value.getQblPrimaryPublicKey();
 		out.name(&quot;primary_key&quot;);
 		out.beginObject();
 		out.name(&quot;modulus&quot;);
@@ -3613,7 +3613,7 @@ encryption and one signature sub-keypair.
 		out.name(&quot;private_exponent&quot;);
 		out.value(value.getRSAPrivateKey().getPrivateExponent().toString());
 		out.endObject();
-		
+
 		List&lt;QblEncKeyPair> encKeyPairs = value.getEncKeyPairs();
 		out.name(&quot;enc_keys&quot;);
 		out.beginArray();
@@ -3630,7 +3630,7 @@ encryption and one signature sub-keypair.
 			out.endObject();
 		}
 		out.endArray();
-		
+
 		List&lt;QblSignKeyPair> signKeyPairs = value.getSignKeyPairs();
 		out.name(&quot;sign_keys&quot;);
 		out.beginArray();
@@ -3647,9 +3647,9 @@ encryption and one signature sub-keypair.
 			out.endObject();
 		}
 		out.endArray();
-		
+
 		out.endObject();
-		
+
 		return;
 	</body>
               </ownedBehavior>
@@ -3661,7 +3661,7 @@ encryption and one signature sub-keypair.
 			in.nextNull();
 			return null;
 		}
-		
+
 		QblPrimaryKeyPair primaryKeyPair = null;
 		List&lt;QblEncKeyPair> encKeyPairs = null;
 		List&lt;QblSignKeyPair> signKeyPairs = null;
@@ -3700,18 +3700,18 @@ encryption and one signature sub-keypair.
 			}
 		}
 		in.endObject();
-		
+
 		if (primaryKeyPair == null || encKeyPairs == null || signKeyPairs == null) {
 			return null;
 		}
-		
+
 		for(QblEncKeyPair pair : encKeyPairs) {
 			primaryKeyPair.attachEncKeyPair(pair);
 		}
 		for(QblSignKeyPair pair : signKeyPairs) {
 			primaryKeyPair.attachSignKeyPair(pair);
 		}
-		
+
 		return primaryKeyPair;
 	</body>
               </ownedBehavior>
@@ -3719,7 +3719,7 @@ encryption and one signature sub-keypair.
                 <ownedParameter xmi:id="_6tBHl7U1EeShbLALyvfh1A" name="in" type="_4qICwLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tBHmLU1EeShbLALyvfh1A" type="_4qrcYLU1EeShbLALyvfh1A" direction="return"/>
                 <language>java</language>
-                <body>QblKeyFactory keyFactory = QblKeyFactory.getInstance();		
+                <body>QblKeyFactory keyFactory = QblKeyFactory.getInstance();
 		String modulus = null;
 		String publicExponent = null;
 		String privateExponent = null;
@@ -3736,11 +3736,11 @@ encryption and one signature sub-keypair.
 				break;
 			}
 		}
-		
+
 		if(modulus == null || publicExponent == null || privateExponent == null) {
 			return null;
 		}
-		
+
 		try {
 			return keyFactory.createQblPrimaryKeyPair(new BigInteger(modulus), new BigInteger(privateExponent), new BigInteger(publicExponent));
 		} catch (InvalidKeySpecException e) {
@@ -3771,11 +3771,11 @@ encryption and one signature sub-keypair.
 				break;
 			}
 		}
-		
+
 		if(modulus == null || publicExponent == null || privateExponent == null) {
 			return null;
 		}
-		
+
 		try {
 			return keyFactory.createQblEncKeyPair(new BigInteger(modulus), new BigInteger(privateExponent), new BigInteger(publicExponent));
 		} catch (InvalidKeySpecException e) {
@@ -3805,11 +3805,11 @@ encryption and one signature sub-keypair.
 				privateExponent = in.nextString();
 			}
 		}
-		
+
 		if(modulus == null || publicExponent == null || privateExponent == null) {
 			return null;
 		}
-		
+
 		try {
 			return keyFactory.createQblSignKeyPair(new BigInteger(modulus), new BigInteger(privateExponent), new BigInteger(publicExponent));
 		} catch (InvalidKeySpecException e) {
@@ -4649,7 +4649,7 @@ related private key</body>
                 <language>java</language>
                 <body>ByteArrayOutputStream bs = new ByteArrayOutputStream();
 		SecretKey aesKey = keyGenerator.generateKey();
-		
+
 		// pad message
 
 		try {
@@ -4980,7 +4980,7 @@ related private key</body>
 		} catch (InvalidAlgorithmParameterException e) {
 			throw new RuntimeException(&quot;Decryption: Wrong parameters for file decryption.&quot;, e);
 		}
-		
+
 		FileOutputStream fileOutput = new FileOutputStream(file);
 		try {
 			while ((readBytes = bufferedInput.read(temp, 0,
@@ -5031,7 +5031,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LYVs7U1EeShbLALyvfh1A" name="getRandomBytes" visibility="package" method="_5PCtsrU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PL3o7U1EeShbLALyvfh1A">
                   <body>Returns a random byte array with an arbitrary size
-	 * 
+	 *
 	 * @param numBytes
 	 *            Number of random bytes
 	 * @return byte[ ] with random bytes</body>
@@ -5047,7 +5047,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LZj0LU1EeShbLALyvfh1A" name="getSHA512sum" method="_5PDUwLU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PL3pLU1EeShbLALyvfh1A">
                   <body>Returns the SHA512 digest for a byte array
-	 * 
+	 *
 	 * @param bytes
 	 *            byte[ ] to get the digest from
 	 * @return byte[ ] with SHA512 digest</body>
@@ -5064,7 +5064,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LaK4bU1EeShbLALyvfh1A" name="getSHA512sumHumanReadable" method="_5PDUxbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PL3pbU1EeShbLALyvfh1A">
                   <body>Returns the SHA512 digest for a byte array
-	 * 
+	 *
 	 * @param bytes
 	 *            byte[ ] to get the digest from
 	 * @return SHA512 digest as as String in the following format:
@@ -5081,7 +5081,7 @@ related private key</body>
               <ownedOperation xmi:id="_5Lax8LU1EeShbLALyvfh1A" name="getSHA512sum" method="_5PDUybU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PL3prU1EeShbLALyvfh1A">
                   <body>Returns the SHA512 digest for a String
-	 * 
+	 *
 	 * @param plain
 	 *            Input String
 	 * @return byte[ ] with SHA512 digest</body>
@@ -5097,7 +5097,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LbZALU1EeShbLALyvfh1A" name="getSHA512sumHumanReadable" method="_5PDUzbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PL3p7U1EeShbLALyvfh1A">
                   <body>Returns the SHA512 digest for a String
-	 * 
+	 *
 	 * @param plain
 	 *            Input String
 	 * @return SHA512 digest as as String in the following format:
@@ -5114,7 +5114,7 @@ related private key</body>
                 <ownedComment xmi:id="_5PMetLU1EeShbLALyvfh1A">
                   <body>Validates the signature of a message. The SHA512 digest of the message is
 	 * validated against the provided signature.
-	 * 
+	 *
 	 * @param message
 	 *            Message to validate signature from
 	 * @param signature
@@ -5140,7 +5140,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LcnJLU1EeShbLALyvfh1A" name="rsaEncryptForRecipient" visibility="package" method="_5PEi57U1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMetbU1EeShbLALyvfh1A">
                   <body>Encrypts a byte[ ] with RSA
-	 * 
+	 *
 	 * @param message
 	 *            message to encrypt
 	 * @param reciPubKey
@@ -5172,7 +5172,7 @@ related private key</body>
               <ownedOperation xmi:id="_5LiGsLU1EeShbLALyvfh1A" name="generateSymmetricKey" method="_5PHmNbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNFwbU1EeShbLALyvfh1A">
                   <body>Generates a new symmetric key for encryption.
-	 * 
+	 *
 	 * @return new symmetric key.</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_5OOOULU1EeShbLALyvfh1A" type="_5NRzILU1EeShbLALyvfh1A" direction="return"/>
@@ -5180,7 +5180,7 @@ related private key</body>
               <ownedOperation xmi:id="_5N9vobU1EeShbLALyvfh1A" name="createSignature" visibility="package" method="_5PDU0LU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMesLU1EeShbLALyvfh1A">
                   <body>Create a signature over the SHA512 sum of message with signature key
-	 * 
+	 *
 	 * @param message
 	 *            Message to create signature for
 	 * @param signatureKey
@@ -5200,7 +5200,7 @@ related private key</body>
               <ownedOperation xmi:id="_5N-9wbU1EeShbLALyvfh1A" name="rsaSign" visibility="private" method="_5PD70LU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMesbU1EeShbLALyvfh1A">
                   <body>Sign data with RSA
-	 * 
+	 *
 	 * @param data
 	 *            Data to sign. Usually a message digest.
 	 * @param signatureKey
@@ -5220,7 +5220,7 @@ related private key</body>
               <ownedOperation xmi:id="_5OAL4bU1EeShbLALyvfh1A" name="rsaSign" visibility="package" method="_5PD71rU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMesrU1EeShbLALyvfh1A">
                   <body>Sign data with RSA
-	 * 
+	 *
 	 * @param data
 	 *            Data to sign. Usually a message digest.
 	 * @param signatureKey
@@ -5240,7 +5240,7 @@ related private key</body>
               <ownedOperation xmi:id="_5OBaALU1EeShbLALyvfh1A" name="rsaValidateSignature" visibility="package" method="_5PD73LU1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMes7U1EeShbLALyvfh1A">
                   <body>Validate the RSA signature of a data.
-	 * 
+	 *
 	 * @param data
 	 *            Data to validate signature from. Usually a message digest.
 	 * @param signature
@@ -5266,7 +5266,7 @@ related private key</body>
               <ownedOperation xmi:id="_5OCBFLU1EeShbLALyvfh1A" name="rsaDecrypt" visibility="package" method="_5PFJ8LU1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMetrU1EeShbLALyvfh1A">
                   <body>Decrypts a RSA encrypted ciphertext
-	 * 
+	 *
 	 * @param cipherText
 	 *            ciphertext to decrypt
 	 * @param privKey
@@ -5289,7 +5289,7 @@ related private key</body>
                   <body>Returns the encrypted byte[] of the given plaintext, i.e.
 	 * ciphertext=enc(plaintext,key) The algorithm, mode and padding is set in
 	 * constant SYMM_TRANSFORMATION. A random value is used for the nonce.
-	 * 
+	 *
 	 * @param plainText
 	 *            message which will be encrypted
 	 * @param key
@@ -5313,7 +5313,7 @@ related private key</body>
                   <body>Returns the encrypted byte[] of the given plaintext, i.e.
 	 * ciphertext=enc(plaintext,key,IV). The algorithm, mode and padding is set
 	 * in constant SYMM_TRANSFORMATION. IV=(nonce||counter)
-	 * 
+	 *
 	 * @param plainText
 	 *            message which will be encrypted
 	 * @param key
@@ -5343,7 +5343,7 @@ related private key</body>
                   <body>Returns the plaintext of the encrypted input
 	 * plaintext=enc⁻¹(ciphertext,key) The algorithm, mode and padding is set in
 	 * constant SYMM_TRANSFORMATION
-	 * 
+	 *
 	 * @param cipherText
 	 *            encrypted message which will be decrypted
 	 * @param key
@@ -5376,7 +5376,7 @@ related private key</body>
               <ownedOperation xmi:id="_5OGSgbU1EeShbLALyvfh1A" name="calcHmac" method="_5PFxDLU1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMeurU1EeShbLALyvfh1A">
                   <body>Calculates HMAC of input.
-	 * 
+	 *
 	 * @param text
 	 *            input text
 	 * @param key
@@ -5398,7 +5398,7 @@ related private key</body>
               <ownedOperation xmi:id="_5OG5krU1EeShbLALyvfh1A" name="validateHmac" method="_5PGYELU1EeShbLALyvfh1A" raisedException="_4qLGELU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PMeu7U1EeShbLALyvfh1A">
                   <body>Simple verification of HMAC
-	 * 
+	 *
 	 * @param text
 	 *            original input text
 	 * @param hmac
@@ -5427,7 +5427,7 @@ related private key</body>
                   <body>Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
 	 * an alternative to encrypt-then-(H)MAC in CTR mode. A random value is used
 	 * for the nonce.
-	 * 
+	 *
 	 * @param plainText
 	 *            Plaintext which will be encrypted
 	 * @param key
@@ -5453,7 +5453,7 @@ related private key</body>
                   <body>Encryptes plaintext in GCM Mode to get an authenticated encryption. It's
 	 * an alternative to encrypt-then-(H)MAC in CTR mode. It will be tested and
 	 * reviewed which AE will be used.
-	 * 
+	 *
 	 * @param plainText
 	 *            Plaintext which will be encrypted
 	 * @param key
@@ -5484,7 +5484,7 @@ related private key</body>
                   <body>Decryptes ciphertext in GCM Mode and verifies the integrity and
 	 * authentication. As well as encryptAuthenticatedSymmetric() it will be
 	 * tested which AE will be used.
-	 * 
+	 *
 	 * @param cipherText
 	 *            Ciphertext which will be decrypted
 	 * @param key
@@ -5510,7 +5510,7 @@ related private key</body>
                   <body>Encrypts a File to an OutputStream. The OutputStream gets the result
 	 * immediately while encrypting. The step size of every seperate decryption
 	 * step is defined in SYMM_ALT_READ_SIZE_BYTE.
-	 * 
+	 *
 	 * @param file
 	 *            Input file that will be encrypted
 	 * @param outputStream
@@ -5536,7 +5536,7 @@ related private key</body>
 	 * step is defined in SYMM_ALT_READ_SIZE_BYTE. Nonce of size
 	 * SYMM_NONCE_SIZE_BIT is taken as nonce directly, else a random nonce is
 	 * generated.
-	 * 
+	 *
 	 * @param file
 	 *            Input file that will be encrypted
 	 * @param outputStream
@@ -5568,7 +5568,7 @@ related private key</body>
 	 * step is defined in SYMM_GCM_READ_SIZE_BYTE. Nonce of size
 	 * SYMM_NONCE_SIZE_BIT is taken as nonce directly, else a random nonce is
 	 * generated.
-	 * 
+	 *
 	 * @param inputStream InputStream that will be encrypted
 	 * @param outputStream OutputStream where ciphertext is streamed to
 	 * @param key Key which is used to en-/decrypt
@@ -5593,7 +5593,7 @@ related private key</body>
 	 * is written to the file immediately. If decryption was successful true
 	 * is returned, if authentication tag validation fails or another error
 	 * occurs false is returned.
-	 * 
+	 *
 	 * @param inputStream
 	 *            InputStream from where the ciphertext is read
 	 * @param pathName
@@ -5762,9 +5762,9 @@ and QblPublic keys from the modulus and exponent
                 <language>java</language>
                 <body>try {
 			Security.addProvider(new BouncyCastleProvider());
-			
+
 			cryptoUtils = new CryptoUtils();
-			
+
 			keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
 			keyPairGen = KeyPairGenerator.getInstance(KEY_ALGORITHM,
 					CRYPTOGRAPHIC_PROVIDER);
@@ -5951,7 +5951,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5L0akLU1EeShbLALyvfh1A" name="generateKeyPair" visibility="package" method="_5PI0WbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNFxbU1EeShbLALyvfh1A">
                   <body>Returns a new KeyPair
-	 * 
+	 *
 	 * @return KeyPair</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_5OWxMLU1EeShbLALyvfh1A" type="_5Nq0sLU1EeShbLALyvfh1A" direction="return"/>
@@ -5960,7 +5960,7 @@ and QblPublic keys from the modulus and exponent
                 <ownedComment xmi:id="_5PNFy7U1EeShbLALyvfh1A">
                   <body>Generates a new QblPrimaryKeyPair with a QblEncKeyPair and
 	 * QblSignKeyPair attached
-	 * 
+	 *
 	 * @return newly generated QblPrimaryKeyPair</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_5L1BobU1EeShbLALyvfh1A" type="_4qrcYLU1EeShbLALyvfh1A" direction="return"/>
@@ -5971,7 +5971,7 @@ and QblPublic keys from the modulus and exponent
                 </eAnnotations>
                 <ownedComment xmi:id="_5PNFxrU1EeShbLALyvfh1A">
                   <body>Signs a sub-key pair with a primary key
-	 * 
+	 *
 	 * @param qkp
 	 *            Sub-key pair to sign
 	 * @param qpkp
@@ -5991,7 +5991,7 @@ and QblPublic keys from the modulus and exponent
                 </eAnnotations>
                 <ownedComment xmi:id="_5PNFx7U1EeShbLALyvfh1A">
                   <body>Validates a signature from a sub-public key with a primary public key
-	 * 
+	 *
 	 * @param subKey
 	 *            Sub-public key to validate
 	 * @param primaryKey
@@ -6022,7 +6022,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5OabkLU1EeShbLALyvfh1A" name="generateRSAPrivateKey" visibility="private" method="_5PJbbbU1EeShbLALyvfh1A" raisedException="_5NvGILU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNFybU1EeShbLALyvfh1A">
                   <body>Creates a new RSAPrivate key
-	 * 
+	 *
 	 * @param modulus
 	 *            RSA modulus
 	 * @param privateExponent
@@ -6038,7 +6038,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5ObpsLU1EeShbLALyvfh1A" name="generateRSAPublicKey" visibility="private" method="_5PJbcbU1EeShbLALyvfh1A" raisedException="_5NvGILU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNFyrU1EeShbLALyvfh1A">
                   <body>Creates a new RSAPublic key
-	 * 
+	 *
 	 * @param modulus
 	 *            RSA modulus
 	 * @param privateExponent
@@ -6055,7 +6055,7 @@ and QblPublic keys from the modulus and exponent
                 <ownedComment xmi:id="_5PNFzLU1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblPrimaryKeyPair from the modulus, public and private
 	 * exponents.
-	 * 
+	 *
 	 * @param modulus
 	 *            shared RSA modulus
 	 * @param privateExponent
@@ -6075,7 +6075,7 @@ and QblPublic keys from the modulus and exponent
                 <ownedComment xmi:id="_5PNFzbU1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblEncKeyPair from the modulus, public and private
 	 * exponents.
-	 * 
+	 *
 	 * @param modulus
 	 *            shared RSA modulus
 	 * @param privateExponent
@@ -6095,7 +6095,7 @@ and QblPublic keys from the modulus and exponent
                 <ownedComment xmi:id="_5PNFzrU1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblSignKeyPair from the modulus, public and private
 	 * exponents.
-	 * 
+	 *
 	 * @param modulus
 	 *            shared RSA modulus
 	 * @param privateExponent
@@ -6114,7 +6114,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5OetBLU1EeShbLALyvfh1A" name="createQblPrimaryPublicKey" method="_5PKCf7U1EeShbLALyvfh1A" raisedException="_5NvGILU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNFz7U1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblPrimaryPublicKey from the modulus and public exponent.
-	 * 
+	 *
 	 * @param modulus
 	 *            RSA modulus
 	 * @param publicExponent
@@ -6130,7 +6130,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5Of7IrU1EeShbLALyvfh1A" name="createQblEncPublicKey" method="_5PKCg7U1EeShbLALyvfh1A" raisedException="_5NvGILU1EeShbLALyvfh1A _5Of7ILU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNs0LU1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblEncPublicKey from the modulus and public exponent.
-	 * 
+	 *
 	 * @param modulus
 	 *            RSA modulus
 	 * @param publicExponent
@@ -6150,7 +6150,7 @@ and QblPublic keys from the modulus and exponent
               <ownedOperation xmi:id="_5OkMkLU1EeShbLALyvfh1A" name="createQblSignPublicKey" method="_5PKCibU1EeShbLALyvfh1A" raisedException="_5NvGILU1EeShbLALyvfh1A _5Of7ILU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_5PNs0bU1EeShbLALyvfh1A">
                   <body>(Re)-creates a QblSignPublicKey from the modulus and public exponent.
-	 * 
+	 *
 	 * @param modulus
 	 *            RSA modulus
 	 * @param publicExponent
@@ -6287,14 +6287,14 @@ for signatures.</body>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_5OQqkLU1EeShbLALyvfh1A" name="QblSubKeyPair" visibility="package" isAbstract="true">
               <ownedComment xmi:id="_6tjTErU1EeShbLALyvfh1A">
-                <body>Abstract super class for all QblSub...KeyPair types 
+                <body>Abstract super class for all QblSub...KeyPair types
  *</body>
               </ownedComment>
               <generalization xmi:id="_6k4fQLU1EeShbLALyvfh1A" general="_5OXYQLU1EeShbLALyvfh1A"/>
               <ownedOperation xmi:id="_6mx8sbU1EeShbLALyvfh1A" name="setQblPrimaryKeySignature" visibility="package" isAbstract="true">
                 <ownedComment xmi:id="_6tjTE7U1EeShbLALyvfh1A">
                   <body>Set the primary key signature for this sub key. A QblPrimaryKeyPair has to
-	 * call this method on all its sub keys after creation. 
+	 * call this method on all its sub keys after creation.
 	 * @param primaryKeySignature</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6myjwLU1EeShbLALyvfh1A" name="primaryKeySignature">
@@ -6353,7 +6353,7 @@ for signatures.</body>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_5OXYQLU1EeShbLALyvfh1A" name="QblKeyPair" visibility="package" isAbstract="true">
               <ownedComment xmi:id="_6tiE8LU1EeShbLALyvfh1A">
-                <body>Abstract super class for all Qbl...KeyPair types 
+                <body>Abstract super class for all Qbl...KeyPair types
  *</body>
               </ownedComment>
               <ownedAttribute xmi:id="_6sKL8LU1EeShbLALyvfh1A" name="privateKey" visibility="private" type="_5NcyQ7U1EeShbLALyvfh1A" association="_6tvgULU1EeShbLALyvfh1A"/>
@@ -6449,7 +6449,7 @@ for signatures.</body>
             </packagedElement>
             <packagedElement xmi:type="uml:Class" xmi:id="_6mqA4LU1EeShbLALyvfh1A" name="QblPublicKey" visibility="package" isAbstract="true">
               <ownedComment xmi:id="_6tisAbU1EeShbLALyvfh1A">
-                <body>Abstract super class for all Qbl...PublicKey types 
+                <body>Abstract super class for all Qbl...PublicKey types
  *</body>
               </ownedComment>
               <ownedAttribute xmi:id="_6sRgsLU1EeShbLALyvfh1A" name="publicKey" visibility="private" type="_5NdZUbU1EeShbLALyvfh1A" association="_6t4qQbU1EeShbLALyvfh1A"/>
@@ -6463,7 +6463,7 @@ for signatures.</body>
                 <language>java</language>
                 <body>super();
 		this.publicKey = publicKey;
-		publicKeyFingerprint = 
+		publicKeyFingerprint =
 				QblKeyFactory.getInstance().getFingerprint(publicKey);
 	</body>
               </ownedBehavior>
@@ -6682,7 +6682,7 @@ for signatures.</body>
                 </ownedParameter>
                 <language>java</language>
                 <body>String dropId = generator.generateDropId();
-		
+
 		try {
 			this.url = new URL(server.getUrl().toString() + &quot;/&quot; + dropId);
 		} catch (MalformedURLException e) {
@@ -6706,11 +6706,11 @@ for signatures.</body>
                 <language>java</language>
                 <body>// check if its a valid Drop-URL.
 		String dropID = this.getDropId();
-		
+
 		if (dropID.length() != DropIdGenerator.DROP_ID_LENGTH) {
 			throw new QblDropInvalidURL();
 		}
-		
+
 		try {
 			UrlBase64.decode(dropID + &quot;.&quot;); // add terminating dot
 		} catch (DecoderException e) {
@@ -6768,7 +6768,7 @@ for signatures.</body>
                 <ownedComment xmi:id="_6tlIR7U1EeShbLALyvfh1A">
                   <body>Constructs a new drop url for a drop on the given drop server.
 	 * This uses the default drop id generator.
-	 * 
+	 *
 	 * @param server Hosting drop server
 	 * @see DropIdGenerator</body>
                 </ownedComment>
@@ -6812,7 +6812,7 @@ for signatures.</body>
                 </eAnnotations>
                 <ownedComment xmi:id="_6tlIRrU1EeShbLALyvfh1A">
                   <body>Constructs a drop url by the given url.
-	 * 
+	 *
 	 * @param url URL fully qualifying a drop
 	 * @throws MalformedURLException if the url is violates the general URL syntax
 	 * @throws QblDropInvalidURL if the url is generally well-formed but violates the drop url syntax</body>
@@ -7192,7 +7192,7 @@ and therefore less anonymity but more performance.</body>
               <ownedOperation xmi:id="_6m1AA7U1EeShbLALyvfh1A" name="nextRandomBigInteger" visibility="private" isStatic="true" method="_6tQ_PbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tjTGLU1EeShbLALyvfh1A">
                   <body>Generate a random BigInteger smaller than given n.
-	 * 
+	 *
 	 * @param n Upper bound of random number range.
 	 * @return Randomized BigInteger</body>
                 </ownedComment>
@@ -7332,7 +7332,7 @@ and therefore less anonymity but more performance.</body>
                 </ownedParameter>
                 <language>java</language>
                 <body>DropResult result;
-		
+
 		result = new DropResult();
 
 		for (Contact contact : contacts) {
@@ -7371,7 +7371,7 @@ and therefore less anonymity but more performance.</body>
 		for (DropURL u : contact.getDropUrls()) {
 			result.addErrorCode(http.send(u.getUrl(), binaryMessage.assembleMessageFor(contact)));
 		}
-		
+
 		return result;
 	</body>
               </ownedBehavior>
@@ -7393,7 +7393,7 @@ and therefore less anonymity but more performance.</body>
 		for (byte[] cipherMessage : cipherMessages) {
 			AbstractBinaryDropMessage binMessage;
 			byte binaryFormatVersion = cipherMessage[0];
-			
+
 			switch (binaryFormatVersion) {
 			case 0:
 				try {
@@ -7441,7 +7441,7 @@ and therefore less anonymity but more performance.</body>
                 <ownedComment xmi:id="_6tjTGbU1EeShbLALyvfh1A">
                   <body>Handles a received DropMessage. Puts this DropMessage into the registered
 	 * Queues.
-	 * 
+	 *
 	 * @param dm
 	 *            DropMessage which should be handled</body>
                 </ownedComment>
@@ -7469,7 +7469,7 @@ and therefore less anonymity but more performance.</body>
                 <ownedComment xmi:id="_6tj6IbU1EeShbLALyvfh1A">
                   <body>Sends the message and waits for acknowledgement.
 	 * Uses sendAndForget() for now.
-	 * 
+	 *
 	 * TODO: implement
 	 * @param message  Message to send
 	 * @param contacts Contacts to send message to
@@ -7537,7 +7537,7 @@ and therefore less anonymity but more performance.</body>
                   <type xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
                 </ownedParameter>
                 <language>java</language>
-                <body>byte[] id = Arrays.copyOf(this.generateDropIdBytes(), DROP_ID_LENGTH_BYTE); 
+                <body>byte[] id = Arrays.copyOf(this.generateDropIdBytes(), DROP_ID_LENGTH_BYTE);
 		return new String(UrlBase64.encode(id)).substring(0, DROP_ID_LENGTH); // cut off terminating dot
 	</body>
               </ownedBehavior>
@@ -7610,15 +7610,15 @@ whether everything is okay</body>
                 <ownedParameter xmi:id="_6tVQprU1EeShbLALyvfh1A" type="_6nOBkLU1EeShbLALyvfh1A" direction="return"/>
                 <language>java</language>
                 <body>Iterator&lt;DropResultContact> iterator;
-		
+
 		this.results = results;
-		
+
 		iterator = this.results.iterator();
 		while (iterator.hasNext()) {
 			DropResultContact item;
-			
+
 			this.checked = true;
-			
+
 			item = iterator.next();
 			if (item.isSuccess() == false) {
 				this.success = false;
@@ -7630,9 +7630,9 @@ whether everything is okay</body>
                 <ownedParameter xmi:id="_6tVQqLU1EeShbLALyvfh1A" name="result" type="_6nRr8LU1EeShbLALyvfh1A"/>
                 <language>java</language>
                 <body>this.results.add(result);
-		
+
 		this.checked = true;
-		
+
 		if (result.isSuccess() == false) {
 			this.success = false;
 		}
@@ -7670,7 +7670,7 @@ whether everything is okay</body>
                 </eAnnotations>
                 <ownedComment xmi:id="_6tlIQLU1EeShbLALyvfh1A">
                   <body>Constructor
-	 * 
+	 *
 	 * @param results
 	 *            List of all results</body>
                 </ownedComment>
@@ -7680,7 +7680,7 @@ whether everything is okay</body>
               <ownedOperation xmi:id="_6nP2wbU1EeShbLALyvfh1A" name="isSuccess" method="_6tVQqbU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tlIQrU1EeShbLALyvfh1A">
                   <body>Return the overview state of the complete shipping
-	 * 
+	 *
 	 * @return State of the shipping</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6nP2wrU1EeShbLALyvfh1A" direction="return">
@@ -7690,7 +7690,7 @@ whether everything is okay</body>
               <ownedOperation xmi:id="_6nQd0LU1EeShbLALyvfh1A" name="getList" method="_6tV3sLU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tlIQ7U1EeShbLALyvfh1A">
                   <body>Return the list of all results of the contacts
-	 * 
+	 *
 	 * @return List of all results</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6nQd0bU1EeShbLALyvfh1A" type="_6nRr8LU1EeShbLALyvfh1A" isOrdered="true" direction="return">
@@ -7700,7 +7700,7 @@ whether everything is okay</body>
               <ownedOperation xmi:id="_6rZW8LU1EeShbLALyvfh1A" name="addContactResult" method="_6tVQp7U1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tlIQbU1EeShbLALyvfh1A">
                   <body>Add one result
-	 * 
+	 *
 	 * @param pair
 	 *            Object of DropResultContact</body>
                 </ownedComment>
@@ -7740,9 +7740,9 @@ whether everything is okay</body>
                 <body>if (errorCode == 200) {
 			this.success = true;
 		}
-		
+
 		this.errorCode = this.addElement(this.errorCode, errorCode);
-		
+
 		return this.success;
 	</body>
               </ownedBehavior>
@@ -7816,7 +7816,7 @@ whether everything is okay</body>
                 <ownedParameter xmi:id="_6tXs5LU1EeShbLALyvfh1A" name="cls" type="_4s30wLU1EeShbLALyvfh1A"/>
                 <ownedParameter xmi:id="_6tXs5bU1EeShbLALyvfh1A" type="_6rvVMLU1EeShbLALyvfh1A" direction="return"/>
                 <language>java</language>
-                <body>return cls.cast(this); 
+                <body>return cls.cast(this);
 	</body>
               </ownedBehavior>
               <ownedOperation xmi:id="_6nbc8LU1EeShbLALyvfh1A" name="as" method="_6tXs47U1EeShbLALyvfh1A">
@@ -8231,7 +8231,7 @@ whether everything is okay</body>
 					if (state == EntityState.T_BODY) {
 						byte[] message = IOUtils.toByteArray(stream.getInputStream());
 						messages.add(message);
-					}		
+					}
 				}
 			}
 		} catch (IOException e) {
@@ -8919,7 +8919,7 @@ whether everything is okay</body>
                 <ownedComment xmi:id="_6tm9crU1EeShbLALyvfh1A">
                   <body>Creates an InputStream that pads the given InputStream to the given size. The stream is padded with the zero
 	 * byte.
-	 * 
+	 *
 	 * @param stream Input stream to pad.
 	 * @param paddedSize Size of the padded stream in bytes.</body>
                 </ownedComment>
@@ -8935,7 +8935,7 @@ whether everything is okay</body>
                 </eAnnotations>
                 <ownedComment xmi:id="_6tm9c7U1EeShbLALyvfh1A">
                   <body>Creates an InputStream that pads the given InputStream to the smallest power-of-two size within the given range.
-	 * 
+	 *
 	 * @param stream InputStream to pad.
 	 * @param lowerBound Lower bound power of two of the padding range in bytes.
 	 * @param upperBound Upper bound power of two of the padding range in bytes.</body>
@@ -8961,7 +8961,7 @@ whether everything is okay</body>
                 <ownedComment xmi:id="_6tm9dLU1EeShbLALyvfh1A">
                   <body>Return the number of bytes the unpadded InputStream provided. Until the unpadded input stream has been exhausted,
 	 * this method returns zero.
-	 * 
+	 *
 	 * @return size of unpadded InputStream in bytes.</body>
                 </ownedComment>
                 <ownedParameter xmi:id="_6oCg8bU1EeShbLALyvfh1A" direction="return">
@@ -9064,7 +9064,7 @@ whether everything is okay</body>
                 <body>StorageHTTP http = new StorageHTTP(volume.getStorageServer());
 		CryptoUtils cryptoUtils = new CryptoUtils();
 
-		
+
 
 		OutputStream out = http.prepareUpload(volume.getPublicIdentifier(),
 				blob.getName(), volume.getToken());
@@ -9282,7 +9282,7 @@ whether everything is okay</body>
                 </eAnnotations>
                 <ownedComment xmi:id="_6tnkgLU1EeShbLALyvfh1A">
                   <body>Generates a StorageBlob from an InputStream.
-	 * 
+	 *
 	 * @param bolbStream InputStream containing the blob.
 	 * @param name Name of the blob, if null then a random name will be set.
 	 * @throws IOException if maximum blob size was exceeded while reading.
@@ -9300,7 +9300,7 @@ whether everything is okay</body>
                 </eAnnotations>
                 <ownedComment xmi:id="_6tnkgbU1EeShbLALyvfh1A">
                   <body>Generates a StorageBlob from an InputStream.
-	 * 
+	 *
 	 * @param bolb The blob.
 	 * @param name Name of the blob, if null then a random name will be set.
 	 * @throws IOException if maximum blob size was exceeded while reading.
@@ -9318,7 +9318,7 @@ whether everything is okay</body>
               <ownedOperation xmi:id="_6oKcxLU1EeShbLALyvfh1A" name="setName" method="_6tdzhbU1EeShbLALyvfh1A" raisedException="_6nixsLU1EeShbLALyvfh1A">
                 <ownedComment xmi:id="_6tnkgrU1EeShbLALyvfh1A">
                   <body>Set blob name.
-	 * 
+	 *
 	 * @param name Blob name, if null then a random name is generated.
 	 * @throws QblStorageInvalidBlobName if name contains characters not allowed by Base64url.</body>
                 </ownedComment>
@@ -9873,7 +9873,7 @@ whether everything is okay</body>
       <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_4t36WLU1EeShbLALyvfh1A" value="*"/>
     </ownedParameter>
     <language>java</language>
-    <body>return dropUrls;
+    <body>return privateDropUrls;
 	</body>
   </uml:OpaqueBehavior>
   <uml:OpaqueBehavior xmi:id="_4t-A87U1EeShbLALyvfh1A" name="getPrimaryKeyPair" specification="_4tjKMbU1EeShbLALyvfh1A">

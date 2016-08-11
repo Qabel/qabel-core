@@ -17,7 +17,7 @@
       <visibility xmi:id="_wOnqkJS-EeSNP8fh6jUNPw" label="+"/>
       <cardinality xmi:id="_wOnDgJS-EeSNP8fh6jUNPw" label="1" max="1" min="1"/>
     </sourceRole>
-    <targetRole xmi:id="_wOa2QJS-EeSNP8fh6jUNPw" aggregationKind="NONE" name="accounts" navigable="true">
+    <targetRole xmi:id="_wOa2QJS-EeSNP8fh6jUNPw" aggregationKind="NONE" name="internalAccounts" navigable="true">
       <modelElement href="qabel-core.uml#_sf3g4JS-EeSNP8fh6jUNPw"/>
       <visualProperties xmi:id="_yz6R0ZS-EeSNP8fh6jUNPw" position="41.6225925925919,8.000000000000227"/>
       <visibility xmi:id="_wOnqkpS-EeSNP8fh6jUNPw" label="-"/>
@@ -118,7 +118,7 @@
       <visibility xmi:id="_wQaaVJS-EeSNP8fh6jUNPw" label="+"/>
       <cardinality xmi:id="_wQaaVZS-EeSNP8fh6jUNPw" label="1" max="1" min="1"/>
     </sourceRole>
-    <targetRole xmi:id="_wQaaVpS-EeSNP8fh6jUNPw" aggregationKind="NONE" name="dropUrls" navigable="true">
+    <targetRole xmi:id="_wQaaVpS-EeSNP8fh6jUNPw" aggregationKind="NONE" name="privateDropUrls" navigable="true">
       <modelElement href="qabel-core.uml#_sf59IpS-EeSNP8fh6jUNPw"/>
       <visualProperties xmi:id="_y0AYcZS-EeSNP8fh6jUNPw" position="41.355925925925476,0.9999999999995453"/>
       <visibility xmi:id="_wQaaV5S-EeSNP8fh6jUNPw" label="+"/>
@@ -571,7 +571,7 @@
     <nameVisual xmi:id="_wqmb8pS-EeSNP8fh6jUNPw" text="">
       <visualProperties xmi:id="_yz7f8JS-EeSNP8fh6jUNPw" position="41.6225925925919,1.5"/>
     </nameVisual>
-    <sourceRole xmi:id="_wqmb85S-EeSNP8fh6jUNPw" aggregationKind="NONE" name="accounts" navigable="true">
+    <sourceRole xmi:id="_wqmb85S-EeSNP8fh6jUNPw" aggregationKind="NONE" name="internalAccounts" navigable="true">
       <modelElement href="qabel-core.uml#_sgRwk5S-EeSNP8fh6jUNPw"/>
       <visualProperties xmi:id="_yz644JS-EeSNP8fh6jUNPw" position="-57.3774074074081,-48.0"/>
       <visibility xmi:id="_wqo4MZS-EeSNP8fh6jUNPw" label="+"/>
@@ -1814,13 +1814,13 @@
   <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wNfCIJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wNnlAJS-EeSNP8fh6jUNPw" text="https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#account" item="_wNwu8JS-EeSNP8fh6jUNPw">
     <modelElement href="qabel-core.uml#_sjs4AJS-EeSNP8fh6jUNPw"/>
   </nodes>
-  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOS6cJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOXy8JS-EeSNP8fh6jUNPw" text="https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#accounts" item="_wOqG0JS-EeSNP8fh6jUNPw">
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOS6cJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOXy8JS-EeSNP8fh6jUNPw" text="https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Configuration#internalAccounts" item="_wOqG0JS-EeSNP8fh6jUNPw">
     <modelElement href="qabel-core.uml#_sjtfEJS-EeSNP8fh6jUNPw"/>
   </nodes>
-  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOfHsJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOgV0JS-EeSNP8fh6jUNPw" text="Returns unmodifiable set of contained accounts&#xA;&#x9; * @return Set&lt;Account>" item="_wOqG2JS-EeSNP8fh6jUNPw">
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOfHsJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOgV0JS-EeSNP8fh6jUNPw" text="Returns unmodifiable set of contained internalAccounts&#xA;&#x9; * @return Set&lt;Account>" item="_wOqG2JS-EeSNP8fh6jUNPw">
     <modelElement href="qabel-core.uml#_sjtfEZS-EeSNP8fh6jUNPw"/>
   </nodes>
-  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOlOUJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOl1YJS-EeSNP8fh6jUNPw" text="Removes account from list of accounts&#xA;&#x9; * @param account&#xA;&#x9; * @return true if account was contained in list, false if not" item="_wOqG6JS-EeSNP8fh6jUNPw">
+  <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wOlOUJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wOl1YJS-EeSNP8fh6jUNPw" text="Removes account from list of internalAccounts&#xA;&#x9; * @param account&#xA;&#x9; * @return true if account was contained in list, false if not" item="_wOqG6JS-EeSNP8fh6jUNPw">
     <modelElement href="qabel-core.uml#_sjtfEpS-EeSNP8fh6jUNPw"/>
   </nodes>
   <nodes xsi:type="com.yattasolutions.diagrams:CommentVisual" xmi:id="_wP_jkJS-EeSNP8fh6jUNPw" sourceConnectionVisual="_wQDN8JS-EeSNP8fh6jUNPw" text="https://github.com/Qabel/qabel-doc/wiki/Qabel-Client-Contact-Drop-Messages#contact" item="_wQbBYJS-EeSNP8fh6jUNPw">
@@ -2397,7 +2397,7 @@
     <modelElement href="qabel-core.uml#_sELqcJS-EeSNP8fh6jUNPw"/>
     <visualProperties xmi:id="_wOqG0ZS-EeSNP8fh6jUNPw" position="5101.0,1327.0" size="-1.0,-1.0"/>
     <visibility xmi:id="_wOqG0pS-EeSNP8fh6jUNPw" label="+"/>
-    <attributes xmi:id="_wOqG05S-EeSNP8fh6jUNPw" defaultValue="new HashSet&lt;Account>()" name="accounts">
+    <attributes xmi:id="_wOqG05S-EeSNP8fh6jUNPw" defaultValue="new HashSet&lt;Account>()" name="internalAccounts">
       <modelElement href="qabel-core.uml#_sf3g4JS-EeSNP8fh6jUNPw"/>
       <stereotypes xmi:id="_wOqG1JS-EeSNP8fh6jUNPw" name="LegacyStyledElement">
         <modelElement href="qabel-core.uml#_sf4H8ZS-EeSNP8fh6jUNPw"/>
@@ -2575,7 +2575,7 @@
         <modelElement href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
       </type>
     </attributes>
-    <attributes xmi:id="_wQbBcZS-EeSNP8fh6jUNPw" defaultValue="new HashSet&lt;DropURL>()" name="dropUrls">
+    <attributes xmi:id="_wQbBcZS-EeSNP8fh6jUNPw" defaultValue="new HashSet&lt;DropURL>()" name="privateDropUrls">
       <modelElement href="qabel-core.uml#_sf59IpS-EeSNP8fh6jUNPw"/>
       <stereotypes xmi:id="_wQbBcpS-EeSNP8fh6jUNPw" name="LegacyStyledElement">
         <modelElement href="qabel-core.uml#_sf6kMJS-EeSNP8fh6jUNPw"/>
@@ -4376,7 +4376,7 @@
         <modelElement href="qabel-core.uml#_sFM-IJS-EeSNP8fh6jUNPw"/>
       </type>
     </attributes>
-    <attributes xmi:id="_wqr7i5S-EeSNP8fh6jUNPw" name="accounts">
+    <attributes xmi:id="_wqr7i5S-EeSNP8fh6jUNPw" name="internalAccounts">
       <modelElement href="qabel-core.uml#_sgRwk5S-EeSNP8fh6jUNPw"/>
       <visibility xmi:id="_wqr7jJS-EeSNP8fh6jUNPw" label="+"/>
       <cardinality xmi:id="_wqr7jZS-EeSNP8fh6jUNPw" label="1" max="1" min="1"/>

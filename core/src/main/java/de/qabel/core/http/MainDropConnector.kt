@@ -28,11 +28,12 @@ class MainDropConnector(val dropServer: DropServerHttp):
                                  message: DropMessage, server: DropURL) {
         val messageBytes = BinaryDropMessageV0(message)
             .assembleMessageFor(contact, identity)
-        dropServer.sendBytes(server.uri, messageBytes)
+        dropServer.sendBytes(server.uri ?: throw IllegalStateException("No drop server uri"), messageBytes)
     }
 
     override fun receiveDropMessages(identity: Identity, dropUrl: DropURL, dropState: DropState): DropServerResponse<DropMessage> {
-        val (status, eTag, byteMessages) = dropServer.receiveMessageBytes(dropUrl.uri, dropState.eTag)
+        val (status, eTag, byteMessages) = dropServer.receiveMessageBytes(
+            dropUrl.uri ?: throw IllegalStateException("No drop server uri"), dropState.eTag)
         if (!eTag.isEmpty()) {
             dropState.eTag = eTag
         }

@@ -75,7 +75,7 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
             phone = resultSet.getString(PHONE.alias())
             email = resultSet.getString(EMAIL.alias())
             val statusInt = resultSet.getInt(STATUS.alias())
-            status = Contact.ContactStatus.values().find { it.status == statusInt }
+            status = Contact.ContactStatus.values().find { it.status == statusInt } ?: Contact.ContactStatus.UNKNOWN
             isIgnored = resultSet.getBoolean(IGNORED.alias())
             nickName = resultSet.getString(NICKNAME.alias())
             dropUrlRepository.findAll(this).forEach { addDrop(it) }

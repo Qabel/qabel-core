@@ -22,7 +22,7 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
     val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()));
     val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()));
 
-    override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): SqliteDropUrlRepository? {
+    override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): SqliteDropUrlRepository {
         val identityRepo = SqliteIdentityRepository(clientDatabase, em)
         contactRepo = SqliteContactRepository(clientDatabase, em, SqliteDropUrlRepository(clientDatabase), identityRepo)
         identityRepo.save(identityA)

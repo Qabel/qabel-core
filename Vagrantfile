@@ -11,6 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider "docker" do |d|
     d.image = "qabel/infrastructure:latest"
+    d.force_host_vm = false
     d.pull = true
     d.ports = [
       "5000:5000",

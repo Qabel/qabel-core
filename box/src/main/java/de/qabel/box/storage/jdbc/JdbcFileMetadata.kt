@@ -29,7 +29,7 @@ class JdbcFileMetadata(connection: ClientDatabase, path: File) : AbstractMetadat
                 }
             }
         } catch (e: SQLException) {
-            logger.error("Could not insert file " + boxFile.getName())
+            logger.error("Could not insert file " + boxFile.name)
             throw QblStorageException(e)
         }
     }

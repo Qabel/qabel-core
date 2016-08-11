@@ -1,5 +1,6 @@
 package de.qabel.box.storage
 
+import de.qabel.box.storage.exceptions.QblStorageException
 import java.util.*
 
 open class BoxFile(
@@ -8,7 +9,7 @@ open class BoxFile(
     name: String,
     override val size: Long,
     mtime: Long,
-    key: ByteArray,
+    override var key: ByteArray,
     var hashed: Hash? = null,
     var shared: Share? = null
 ) : BoxObject(name), BoxFileState {
@@ -20,10 +21,6 @@ open class BoxFile(
                  mtime: Long,
                  key: ByteArray) : this(prefix, block, name, size, mtime, key, null, null)
 
-
-    init {
-        this.key = key
-    }
 
     val meta: String? get() = shared?.meta
     val metakey: ByteArray? get () = shared?.metaKey
@@ -86,9 +83,8 @@ open class BoxFile(
         return BoxFile(prefix, block, name, size, mtime, key, hashed, shared)
     }
 
-    override fun getRef(): String? {
-        return meta
-    }
+    override val ref: String
+        get() = meta ?: throw QblStorageException("meta is null")
 
     fun isSame(expectedFile: BoxFile?): Boolean {
         return expectedFile?.block == block
