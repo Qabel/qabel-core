@@ -1,5 +1,6 @@
 package de.qabel.core.crypto
 
+import com.google.gson.annotations.JsonAdapter
 import org.spongycastle.util.encoders.Hex
 
 import java.io.Serializable
@@ -12,6 +13,7 @@ import java.util.Arrays
  *
  * @param pubKey Point which represents the public key
  */
+@JsonAdapter(QblECPublicKeyIndexTypeAdapter::class)
 class QblECPublicKey (val key: ByteArray) : Serializable {
 
     val readableKeyIdentifier: String
