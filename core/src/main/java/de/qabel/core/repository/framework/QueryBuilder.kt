@@ -19,6 +19,7 @@ class QueryBuilder {
     private val where = StringBuilder()
     private val orderBy = StringBuilder()
     private val groupBy = StringBuilder()
+    private var paging = ""
     val params = mutableListOf<Any>()
 
     fun select(field: Field) = select(field.select())
@@ -143,7 +144,19 @@ class QueryBuilder {
         groupBy.append(field.exp())
     }
 
+    fun setPaging(offset : Int, pageSize : Int){
+        paging = " LIMIT $offset, $pageSize"
+    }
+
     fun queryString(): String = select.toString() + " " +
+        from.toString() + " " +
+        (if (!joins.isEmpty()) joins.toString() else "") + " " +
+        (if (!where.isEmpty()) where.toString() else "") + " " +
+        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
+        (if (!orderBy.isEmpty()) orderBy.toString() else "") +
+        paging
+
+    fun countQueryString() : String = " SELECT count(*) " +
         from.toString() + " " +
         (if (!joins.isEmpty()) joins.toString() else "") + " " +
         (if (!where.isEmpty()) where.toString() else "") + " " +

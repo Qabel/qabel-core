@@ -9,6 +9,7 @@ import de.qabel.core.repository.entities.ChatDropMessage.Direction
 import de.qabel.core.repository.entities.ChatDropMessage.Status
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepositoryImpl
+import de.qabel.core.repository.framework.PagingResult
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
@@ -25,11 +26,20 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     ChatDropMessageRepository {
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
-        with(createEntityQuery()) {
+        createChatQuery(contactId, identityId).let {
+            return getResultList(it, relation)
+        }
+
+    override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
+        createChatQuery(contactId, identityId).let {
+            return getPagingResult(it, relation, offset, pageSize)
+        }
+
+    private fun createChatQuery(contactId: Int, identityId: Int): QueryBuilder =
+        createEntityQuery().apply {
             whereAndEquals(CONTACT_ID, contactId)
             whereAndEquals(IDENTITY_ID, identityId)
             orderBy(ChatDropMessageDB.CREATED_ON.exp())
-            return getResultList(this)
         }
 
     override fun findNew(identityId: Int): List<ChatDropMessage> =

@@ -5,6 +5,7 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.Hydrator
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -82,6 +83,31 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             results
         })
     }
+
+    internal fun <X> getPagingResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>, offset: Int, pageSize: Int): PagingResult<X> {
+        queryBuilder.setPaging(offset, pageSize)
+        val results = getResultList(queryBuilder, hydrator)
+        val totalSize = executeCount(queryBuilder)
+        return PagingResult(totalSize, results)
+    }
+
+    internal fun executeCount(queryBuilder: QueryBuilder): Int =
+        try {
+            client.prepare(queryBuilder.countQueryString()).use({ statement ->
+                queryBuilder.params.mapIndexed { i, value ->
+                    statement.setObject(i + 1, value)
+                }
+                statement.executeQuery().use({ resultSet ->
+                    if (resultSet.next()) {
+                        return resultSet.getInt(1)
+                    } else {
+                        throw PersistenceException("No results for count query")
+                    }
+                })
+            })
+        } catch (e: SQLException) {
+            throw PersistenceException("query failed " + e.message + ")", e)
+        }
 
     internal fun <X> executeQuery(queryBuilder: QueryBuilder, resultHandler: (ResultSet) -> X): X {
         try {
