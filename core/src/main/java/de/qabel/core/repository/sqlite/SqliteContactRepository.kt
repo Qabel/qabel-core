@@ -34,12 +34,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         with(createEntityQuery()) {
             joinIdentityContacts(this)
             whereAndEquals(IdentityContacts.IDENTITY_ID, identity.id)
-            val resultList = getResultList<Contact>(this);
-            val contacts = Contacts(identity);
-            for (contact in resultList) {
-                contacts.put(contact)
+            val resultList = getResultList<Contact>(this)
+            return Contacts(identity).apply {
+                resultList.forEach { put(it) }
             }
-            return contacts;
         }
 
     override fun save(contact: Contact, identity: Identity) {
@@ -91,13 +89,13 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             joinIdentityContacts(this)
             whereAndEquals(IdentityContacts.IDENTITY_ID, identity.id)
             whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
-            return getSingleResult(this)
+            return this@SqliteContactRepository.getSingleResult(this)
         }
 
     override fun findByKeyId(keyId: String): Contact =
         with(createEntityQuery()) {
             whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
-            return getSingleResult(this)
+            return this@SqliteContactRepository.getSingleResult(this)
         }
 
     override fun exists(contact: Contact): Boolean = try {
@@ -125,9 +123,12 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             }, contacts.map { it.id })
     }
 
-    override fun findWithIdentities(searchString: String): Collection<Pair<Contact, List<Identity>>> {
-        val identities = identityRepository.findAll()
+    override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<Pair<Contact, List<Identity>>> {
         val contacts = with(createEntityQuery()) {
+            if (excludeIgnored) {
+                whereAndEquals(contactRelation.IGNORED, false)
+            }
+            whereAndIn(contactRelation.STATUS, status.map { it.status })
             if (!searchString.isEmpty()) {
                 whereAndLowerEquals(searchString, contactRelation.ALIAS, contactRelation.NICKNAME,
                     contactRelation.EMAIL, contactRelation.PHONE)
@@ -135,15 +136,14 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             orderBy(contactRelation.ALIAS.exp())
             getResultList<Contact>(this)
         }
+        val identities = identityRepository.findAll()
         val contactIdentities = findIdentityIds(contacts)
-
-        val resultList = mutableListOf<Pair<Contact, List<Identity>>>()
-        for (contact in contacts) {
-            resultList.add(Pair(contact, contactIdentities[contact.id]!!.map {
+        println(contacts.size)
+        return contacts.map {
+            Pair(it, contactIdentities[it.id]!!.map {
                 identities.entities.findById(it)!!
-            }))
+            })
         }
-        return resultList
     }
 
     override fun find(id: Int): Contact = findById(id)
@@ -151,7 +151,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         update(contact)
         removeIdentityConnections(contact)
-        if(activeIdentities.size > 0){
+        if (activeIdentities.size > 0) {
             addIdentityConnections(contact, activeIdentities)
         }
     }

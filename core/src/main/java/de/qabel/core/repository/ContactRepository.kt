@@ -30,7 +30,10 @@ interface ContactRepository {
     fun findContactWithIdentities(keyId: String): Pair<Contact, List<Identity>>
 
     @Throws(PersistenceException::class)
-    fun findWithIdentities(searchString: String = ""): Collection<Pair<Contact, List<Identity>>>
+    fun findWithIdentities(searchString: String = "",
+                           status: List<Contact.ContactStatus> = listOf(Contact.ContactStatus.NORMAL, Contact.ContactStatus.VERIFIED),
+                           excludeIgnored: Boolean = true
+    ): Collection<Pair<Contact, List<Identity>>>
 
     @Throws fun find(id: Int): Contact
 

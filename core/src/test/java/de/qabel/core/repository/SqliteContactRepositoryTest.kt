@@ -25,6 +25,8 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var otherIdentity: Identity
     private lateinit var contact: Contact
     private lateinit var otherContact: Contact
+    private lateinit var unknownContact: Contact
+    private lateinit var ignoredContact : Contact
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
     private lateinit var dropUrlGenerator: DropUrlGenerator
@@ -35,8 +37,9 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         otherIdentity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("other i").build()
         pubKey = QblECPublicKey("test".toByteArray())
         contact = Contact("testcontact", LinkedList<DropURL>(), pubKey)
-        val otherPubKey = QblECPublicKey("test2".toByteArray())
-        otherContact = Contact("other contact", LinkedList<DropURL>(), otherPubKey)
+        otherContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test2".toByteArray()))
+        unknownContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test3".toByteArray())).apply { status = Contact.ContactStatus.UNKNOWN }
+        ignoredContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test4".toByteArray())).apply { isIgnored = true }
 
         identityRepository.save(identity)
         identityRepository.save(otherIdentity)
@@ -215,25 +218,23 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     @Test
     fun testFindAll() {
         repo.save(contact, identity)
-        repo.save(contact, otherIdentity)
+        repo.update(contact, listOf(identity, otherIdentity))
         repo.save(otherContact, identity)
+        repo.update(otherContact, emptyList())
 
         //Sorted by name with associated identities
         val storedContacts = listOf(
-            Pair(otherContact, listOf(identity)),
-            Pair(otherIdentity.toContact(), emptyList<Identity>()),
-            Pair(contact, listOf(identity, otherIdentity)),
-            Pair(identity.toContact(), emptyList<Identity>()))
+            Pair(otherContact, emptyList()),
+            Pair(contact, listOf(identity, otherIdentity)))
 
-        val contacts = repo.findWithIdentities();
-        var index = 0;
+        val contacts = repo.findWithIdentities()
+        contacts.forEach { println(it.first.alias); println(it.second.map { it.alias }.joinToString()) }
         for (contact in contacts) {
-            val storedDto = storedContacts[index];
-            assertThat(storedDto.first.alias, equalTo(contact.first.alias));
-            assertThat(storedDto.second, hasSize(contact.second.size));
-            index++;
+            val storedDto = storedContacts.find{it.first.id == contact.first.id}!!
+            assertThat(storedDto.first.alias, equalTo(contact.first.alias))
+            assertThat(storedDto.second, hasSize(contact.second.size))
         }
-        assertThat(storedContacts, hasSize(contacts.size));
+        assertThat(storedContacts, hasSize(contacts.size))
     }
 
     @Test
@@ -242,12 +243,42 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(contact, otherIdentity)
         repo.save(otherContact, identity)
 
-        val filter = "other c";
-        val contacts = repo.findWithIdentities(filter);
+        val filter = "other c"
+        val contacts = repo.findWithIdentities(filter)
         Assert.assertEquals(1, contacts.size)
-        val fooContact = contacts.iterator().next();
-        assertThat(otherContact.alias, equalTo(fooContact.first.alias));
-        assertThat(1, equalTo(fooContact.second.size));
+        val fooContact = contacts.iterator().next()
+        assertThat(otherContact.alias, equalTo(fooContact.first.alias))
+        assertThat(1, equalTo(fooContact.second.size))
+    }
+
+    @Test
+    fun testFindAllWithDefaults() {
+        repo.save(contact, identity)
+        repo.save(unknownContact, identity)
+        repo.save(ignoredContact, identity)
+        repo.save(otherContact, identity)
+
+        //Use defaults
+        val contacts = repo.findWithIdentities()
+
+        Assert.assertEquals(2, contacts.size)
+        val fooContact = contacts.iterator().next()
+        assertThat(otherContact.alias, equalTo(fooContact.first.alias))
+        assertThat(1, equalTo(fooContact.second.size))
+    }
+
+    @Test
+    fun testFindAllIgnored() {
+        repo.save(contact, identity)
+        repo.save(unknownContact, identity)
+        repo.save(ignoredContact, identity)
+        repo.save(otherContact, identity)
+
+        val contacts = repo.findWithIdentities("", listOf(Contact.ContactStatus.NORMAL), false)
+        Assert.assertEquals(5, contacts.size)
+        val igContact = contacts.find { it.first.id == ignoredContact.id }!!
+        assertThat(ignoredContact.alias, equalTo(igContact.first.alias))
+        assertThat(1, equalTo(igContact.second.size))
     }
 
     @Test
