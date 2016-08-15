@@ -9,6 +9,7 @@ import de.qabel.core.repository.sqlite.Hydrator
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.util.*
 
 abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
                                                   val client: ClientDatabase,
@@ -94,9 +95,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
     internal fun executeCount(queryBuilder: QueryBuilder): Int =
         try {
             client.prepare(queryBuilder.countQueryString()).use({ statement ->
-                queryBuilder.params.mapIndexed { i, value ->
-                    statement.setObject(i + 1, value)
-                }
+                addParams(queryBuilder, statement)
                 statement.executeQuery().use({ resultSet ->
                     if (resultSet.next()) {
                         return resultSet.getInt(1)
@@ -109,12 +108,21 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             throw PersistenceException("query failed " + e.message + ")", e)
         }
 
+    private fun addParams(query: QueryBuilder, statement: PreparedStatement) {
+        query.params.mapIndexed { i, value ->
+            val paramIndex = i + 1
+            when (value) {
+                is Date -> statement.setDate(paramIndex, java.sql.Date(value.time))
+                is Boolean -> statement.setBoolean(paramIndex, value)
+                else -> statement.setObject(paramIndex, value)
+            }
+        }
+    }
+
     internal fun <X> executeQuery(queryBuilder: QueryBuilder, resultHandler: (ResultSet) -> X): X {
         try {
             client.prepare(queryBuilder.queryString()).use({ statement ->
-                queryBuilder.params.mapIndexed { i, value ->
-                    statement.setObject(i + 1, value)
-                }
+                addParams(queryBuilder, statement)
                 statement.executeQuery().use({ resultSet ->
                     return resultHandler(resultSet)
                 })
