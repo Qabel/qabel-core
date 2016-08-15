@@ -20,7 +20,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
 
     open fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
 
-    fun persist(model: T) =
+    open fun persist(model: T) =
         executeStatement(insertStatement, {
             relation.applyValues(1, it, model)
         }, {
@@ -31,7 +31,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
             entityManager.put(model.javaClass, model, model.id)
         })
 
-    fun update(model: T) =
+    open fun update(model: T) =
         executeStatement(updateStatement, {
             val i = relation.applyValues(1, it, model)
             it.setInt(i, model.id)
@@ -48,7 +48,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    fun delete(id: Int) = executeStatement(deleteStatement, {
+    open fun delete(id: Int) = executeStatement(deleteStatement, {
         it.setInt(1, id)
     })
 

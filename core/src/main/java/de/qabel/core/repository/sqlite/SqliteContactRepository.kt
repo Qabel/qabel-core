@@ -28,7 +28,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
     BaseRepositoryImpl<Contact>(contactRelation, db, em), ContactRepository {
 
-    val log by lazy { LoggerFactory.getLogger(ContactRepository::class.java)}
+    val log by lazy { LoggerFactory.getLogger(ContactRepository::class.java) }
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
@@ -52,8 +52,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         } else {
             update(contact)
         }
-        dropAllManyToMany(ContactDropUrls.CONTACT_ID, contact.id)
-        contact.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, contact.id, ContactDropUrls.DROP_URL, it.toString()) }
 
         addIdentityConnection(contact, identity)
     }
@@ -158,4 +156,22 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             addIdentityConnections(contact, activeIdentities)
         }
     }
+
+    override fun update(model: Contact) {
+        super.update(model)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+    }
+
+    override fun persist(model: Contact) {
+        super.persist(model)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+    }
+
+    override fun delete(id: Int) {
+        super.delete(id)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, id)
+    }
+
+
 }

@@ -26,7 +26,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var contact: Contact
     private lateinit var otherContact: Contact
     private lateinit var unknownContact: Contact
-    private lateinit var ignoredContact : Contact
+    private lateinit var ignoredContact: Contact
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
     private lateinit var dropUrlGenerator: DropUrlGenerator
@@ -36,10 +36,10 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("tester").build()
         otherIdentity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("other i").build()
         pubKey = QblECPublicKey("test".toByteArray())
-        contact = Contact("testcontact", LinkedList<DropURL>(), pubKey)
-        otherContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test2".toByteArray()))
-        unknownContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test3".toByteArray())).apply { status = Contact.ContactStatus.UNKNOWN }
-        ignoredContact = Contact("other contact", LinkedList<DropURL>(), QblECPublicKey("test4".toByteArray())).apply { isIgnored = true }
+        contact = Contact("testcontact", mutableListOf(), pubKey)
+        otherContact = Contact("other contact", mutableListOf(), QblECPublicKey("test2".toByteArray()))
+        unknownContact = Contact("other contact", mutableListOf(), QblECPublicKey("test3".toByteArray())).apply { status = Contact.ContactStatus.UNKNOWN }
+        ignoredContact = Contact("other contact", mutableListOf(), QblECPublicKey("test4".toByteArray())).apply { isIgnored = true }
 
         identityRepository.save(identity)
         identityRepository.save(otherIdentity)
@@ -230,7 +230,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val contacts = repo.findWithIdentities()
 
         for (contact in contacts) {
-            val storedDto = storedContacts.find{it.first.id == contact.first.id}!!
+            val storedDto = storedContacts.find { it.first.id == contact.first.id }!!
             assertThat(storedDto.first.alias, equalTo(contact.first.alias))
             assertThat(storedDto.second, hasSize(contact.second.size))
         }
@@ -283,13 +283,19 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
 
     @Test
     fun testUpdate() {
+        val dropGen = DropUrlGenerator("http://mock.de")
+        val dropA = dropGen.generateUrl()
+        val dropB = dropGen.generateUrl()
+        contact.addDrop(dropA)
         repo.save(contact, identity)
+        contact.addDrop(dropB)
         contact.nickName = "testNick"
         repo.update(contact, listOf(identity, otherIdentity))
 
         val result = repo.findContactWithIdentities(contact.keyIdentifier)
         assertThat(result.first.nickName, equalTo("testNick"))
         assertThat(result.second, containsInAnyOrder(identity, otherIdentity))
+        assertThat(contact.dropUrls, containsInAnyOrder(dropA, dropB))
     }
 
 }
