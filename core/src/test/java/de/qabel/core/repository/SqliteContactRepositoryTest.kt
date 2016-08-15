@@ -228,7 +228,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
             Pair(contact, listOf(identity, otherIdentity)))
 
         val contacts = repo.findWithIdentities()
-        contacts.forEach { println(it.first.alias); println(it.second.map { it.alias }.joinToString()) }
+
         for (contact in contacts) {
             val storedDto = storedContacts.find{it.first.id == contact.first.id}!!
             assertThat(storedDto.first.alias, equalTo(contact.first.alias))

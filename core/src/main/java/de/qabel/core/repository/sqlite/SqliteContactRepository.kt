@@ -18,6 +18,7 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB.ContactDropUrls
 import de.qabel.core.repository.sqlite.schemas.ContactDB.IdentityContacts
 import de.qabel.core.util.DefaultHashMap
+import org.slf4j.LoggerFactory
 import java.sql.ResultSet
 import java.util.*
 
@@ -26,6 +27,8 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
                               private val identityRepository: IdentityRepository,
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
     BaseRepositoryImpl<Contact>(contactRelation, db, em), ContactRepository {
+
+    val log by lazy { LoggerFactory.getLogger(ContactRepository::class.java)}
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
@@ -124,6 +127,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     }
 
     override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<Pair<Contact, List<Identity>>> {
+        log.info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
         val contacts = with(createEntityQuery()) {
             if (excludeIgnored) {
                 whereAndEquals(contactRelation.IGNORED, false)
@@ -138,7 +142,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         }
         val identities = identityRepository.findAll()
         val contactIdentities = findIdentityIds(contacts)
-        println(contacts.size)
         return contacts.map {
             Pair(it, contactIdentities[it.id]!!.map {
                 identities.entities.findById(it)!!
