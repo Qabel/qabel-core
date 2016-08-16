@@ -39,7 +39,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
         createEntityQuery().apply {
             whereAndEquals(CONTACT_ID, contactId)
             whereAndEquals(IDENTITY_ID, identityId)
-            orderBy(ChatDropMessageDB.CREATED_ON.exp())
+            orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
         }
 
     override fun findNew(identityId: Int): List<ChatDropMessage> =
