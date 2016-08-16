@@ -1,5 +1,66 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
     ext.kotlin_version = '1.0.2'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    version = '0.16.2'
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+
+    sourceCompatibility = 1.7
+
+    ext.sharedManifest = manifest {
+        attributes 'Implementation-Version': version
+        attributes 'Project': 'Qabel Core'
+        attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
+    }
+
+    dependencies {
+        testCompile group: 'junit', name: 'junit', version: '4.+'
+        testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
+        testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+        compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = 'sources'
+        from sourceSets.main.allSource + sourceSets.test.allSource
+    }
+
+    task testJar(type: Jar) {
+        classifier = 'tests'
+        from(sourceSets.test.output) {
+            include "**"
+        }
+        manifest {
+            from sharedManifest
+            attributes 'Implementation-Title': 'Qabel Core - Test artifact'
+        }
+    }
+
+    sourceSets {
+        main {
+            resources.srcDirs += ['src/resources/config/']
+        }
+        test {
+            resources.srcDirs += ['src/resources/config/']
+        }
+    }
+
+    jar.manifest.writeTo("$buildDir/manifest.mf")
+    testJar.manifest.writeTo("$buildDir/test-manifest.mf")
+
+    artifacts {
+        archives sourcesJar
+        archives testJar
+    }
 }
