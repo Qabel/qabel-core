@@ -93,24 +93,31 @@ abstract class AbstractNavigation(
         dm.commit()
         logger.info("Committing version " + String(Hex.encodeHex(dm.version))
                 + " with device id " + String(Hex.encodeHex(deviceId)))
-        var updatedDM: DirectoryMetadata? = null
-        try {
-            updatedDM = reloadMetadata()
-            logger.info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
-        } catch (e: QblStorageNotFound) {
-            logger.trace("Could not reload metadata, none exists yet")
-        }
+        while (true) {
+            var updatedDM: DirectoryMetadata? = null
+            try {
+                updatedDM = reloadMetadata()
+                logger.info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
+            } catch (e: QblStorageNotFound) {
+                logger.trace("Could not reload metadata, none exists yet")
+            }
 
-        // the remote version has changed from the _old_ version
-        if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
-            logger.info("Conflicting version")
-            // ignore our local directory metadata
-            // all changes that are not inserted in the new dm are _lost_!
-            dm = updatedDM
-            changes.execute(dm)
-            dm.commit()
+            // the remote version has changed from the _old_ version
+            if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
+                logger.info("Conflicting version")
+                // ignore our local directory metadata
+                // all changes that are not inserted in the new dm are _lost_!
+                dm = updatedDM
+                changes.execute(dm)
+                dm.commit()
+            }
+            try {
+                uploadDirectoryMetadata()
+                break
+            } catch (e: ModifiedException) {
+                logger.info("DM conflicted while uploading, will retry merge and upload")
+            }
         }
-        uploadDirectoryMetadata()
         changes.postprocess(dm, writeBackend)
 
         changes.clear()
@@ -240,8 +247,6 @@ abstract class AbstractNavigation(
             }
         }, autocommitDelay, TimeUnit.MILLISECONDS)
     }
-
-
 
     @Throws(QblStorageException::class)
     @JvmOverloads protected fun uploadEncrypted(file: File, key: KeyParameter, block: String, listener: ProgressListener? = null)
@@ -541,7 +546,7 @@ abstract class AbstractNavigation(
                 return false
             }
 
-            writeBackend.delete(boxFile.meta)
+            writeBackend.delete(boxFile.meta!!)
             boxFile.shared = null
 
             // Overwrite = delete old file, upload new file

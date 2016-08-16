@@ -1,7 +1,10 @@
 package de.qabel.box.storage;
 
 import de.qabel.box.storage.exceptions.QblStorageException;
+import de.qabel.box.storage.hash.Hasher;
+import de.qabel.box.storage.hash.Md5Hasher;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,7 @@ import java.nio.file.Path;
 public class LocalWriteBackend implements StorageWriteBackend {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalReadBackend.class);
+    private static final Hasher hasher = new Md5Hasher();
     private Path root;
 
 
@@ -23,27 +27,35 @@ public class LocalWriteBackend implements StorageWriteBackend {
     }
 
     @Override
-    public long upload(String name, InputStream inputStream) throws QblStorageException {
-        Path file = root.resolve(name);
-        logger.trace("Uploading file path " + file);
-        try {
-            Files.createDirectories(root.resolve("blocks"));
-            OutputStream output = Files.newOutputStream(file);
-            output.write(IOUtils.toByteArray(inputStream));
-            return Files.getLastModifiedTime(file).toMillis();
-        } catch (IOException e) {
-            throw new QblStorageException(e.getMessage(), e);
-        }
+    public long upload(@NotNull String name, InputStream content) throws QblStorageException {
+        return upload(name, content, null);
     }
 
     @Override
-    public void delete(String name) throws QblStorageException {
+    public void delete(@NotNull String name) throws QblStorageException {
         Path file = root.resolve(name);
         logger.trace("Deleting file path " + file);
         try {
             Files.delete(file);
         } catch (NoSuchFileException e) {
             // ignore this just like the S3 API
+        } catch (IOException e) {
+            throw new QblStorageException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public long upload(@NotNull String name, @NotNull InputStream content, String eTag) throws QblStorageException, ModifiedException {
+        Path file = root.resolve(name);
+        logger.trace("Uploading file path " + file);
+        try {
+            if (Files.exists(file) && eTag != null && !hasher.getMHash(file).equals(eTag)) {
+                throw new ModifiedException("file has changed");
+            }
+            Files.createDirectories(root.resolve("blocks"));
+            OutputStream output = Files.newOutputStream(file);
+            output.write(IOUtils.toByteArray(content));
+            return Files.getLastModifiedTime(file).toMillis();
         } catch (IOException e) {
             throw new QblStorageException(e.getMessage(), e);
         }

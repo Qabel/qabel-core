@@ -7,7 +7,7 @@ import java.util.*
 class InMemoryDirectoryMetadata : DirectoryMetadata {
 
     override val path: File get() = throw UnsupportedOperationException()
-    override val fileName: String get() = throw UnsupportedOperationException()
+    override val fileName by lazy { UUID.randomUUID().toString() }
 
     override val version = ByteArray(0)
     val files = HashMap<String, BoxFile>()
