@@ -67,10 +67,10 @@ class ChatServiceTest {
 
         val result = chatService.refreshMessages()
         assertThat(result.keys, hasSize(1))
-        assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
+        assertThat(result.keys.first(), equalTo(identityB.keyIdentifier))
 
         assertThat(result.values.first(), hasSize(1))
-        val received = result.values.first().first();
+        val received = result.values.first().first()
         assertThat(received.contactId, equalTo(identityA.id))
         assertThat(ChatDropMessage.MessagePayload.encode(received.messageType, received.payload),
             equalTo(ChatDropMessage.MessagePayload.encode(message.messageType, message.payload)))
@@ -82,7 +82,7 @@ class ChatServiceTest {
     fun testReceiveMessages() {
         val message = createMessage(identityA, contactB, "Blub blub blubb")
         val messages = listOf(createMessage(identityA, contactB, "Blub blub"), message,
-            createMessage(identityA, contactB, "Blub blub blubb blubb"));
+            createMessage(identityA, contactB, "Blub blub blubb blubb"))
 
         val stored = message.copy(contactId = contactA.id, identityId = contactB.id,
             direction = ChatDropMessage.Direction.INCOMING, status = ChatDropMessage.Status.NEW)
@@ -95,7 +95,7 @@ class ChatServiceTest {
         val result = chatService.refreshMessages()
 
         assertThat(result.keys, hasSize(1))
-        assertThat(result.keys.first().keyIdentifier, equalTo(identityB.keyIdentifier))
+        assertThat(result.keys.first(), equalTo(identityB.keyIdentifier))
 
         assertThat(result.values.first(), hasSize(2))
 
@@ -124,10 +124,10 @@ class ChatServiceTest {
         val result = chatService.refreshMessages()
 
         assertThat(result.keys, hasSize(1))
-        assertThat(result.keys.first(), equalTo(identityA))
-        assertThat(result[identityA], hasSize(1))
+        assertThat(result.keys.first(), equalTo(identityA.keyIdentifier))
+        assertThat(result[identityA.keyIdentifier], hasSize(1))
 
-        val dropMessage = result[identityA]!!.first();
+        val dropMessage = result[identityA.keyIdentifier]!!.first()
         val unknownContact = contactRepository.find(dropMessage.contactId)
 
         assertThat(unknownContact.status, equalTo(Contact.ContactStatus.UNKNOWN))
@@ -147,7 +147,7 @@ class ChatServiceTest {
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
         //Update contact with ignoredFlag and add to target identity
         val someOnesContact = someone.toContact()
-        someOnesContact.isIgnored = true;
+        someOnesContact.isIgnored = true
         contactRepository.save(someOnesContact, identityA)
 
         val result = chatService.handleDropUpdate(identityA, dropStateRepo.getDropState(identityA.helloDropUrl),
@@ -160,7 +160,7 @@ class ChatServiceTest {
     fun testHandleMessages() {
         val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
             createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
-            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA))
 
         val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result, hasSize(3))
@@ -170,7 +170,7 @@ class ChatServiceTest {
     fun testHandleDuplicateMessages() {
         val messages = listOf(createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA),
             createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
-            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA));
+            createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA))
 
         val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result, hasSize(3))
