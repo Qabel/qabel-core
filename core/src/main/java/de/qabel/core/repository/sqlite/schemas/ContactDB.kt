@@ -38,6 +38,13 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
         val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
     }
 
+    object IdentityJoin {
+        const val TABLE = "identity"
+        const val TABLE_ALIAS = "idc"
+        val ID = DBField("id", TABLE, TABLE_ALIAS)
+        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
+    }
+
     object ContactDropUrls : ResultAdapter<DropURL> {
 
         const val TABLE = "drop_url"

@@ -275,7 +275,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(otherContact, identity)
 
         val contacts = repo.findWithIdentities("", listOf(Contact.ContactStatus.NORMAL), false)
-        Assert.assertEquals(5, contacts.size)
+        Assert.assertEquals(3, contacts.size)
         val igContact = contacts.find { it.first.id == ignoredContact.id }!!
         assertThat(ignoredContact.alias, equalTo(igContact.first.alias))
         assertThat(1, equalTo(igContact.second.size))
