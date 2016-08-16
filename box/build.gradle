@@ -1,25 +1,6 @@
-apply plugin: 'java'
-apply plugin: "kotlin"
-
-sourceCompatibility = 1.7
-version = '0.16.1'
 group = 'de.qabel.box'
 
-ext.sharedManifest = manifest {
-    attributes 'Implementation-Version': version
-    attributes 'Project': 'Qabel Core'
-    attributes 'Component': 'Box'
-    attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
+ext.sharedManifest.attributes 'Component': 'Box'
 
 jar {
     manifest = project.manifest {
@@ -33,43 +14,12 @@ repositories {
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-	testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
 	compile project(':core')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 tasks.withType(Test) {
 	def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
 	systemProperty "java.library.path", "../core/build/binaries/curve25519SharedLibrary/$platform/"
 }
+testJar.manifest.attributes 'Implementation-Title': 'Qabel Core - Box Component - Test artifact'
 
-sourceSets {
-	main {
-		resources.srcDirs += ['src/resources/config/']
-	}
-	test {
-		resources.srcDirs += ['src/resources/config/']
-	}
-}
-
-task testJar(type: Jar) {
-    from(sourceSets.test.output) {
-        include "**"
-    }
-    baseName = 'box-test'
-    manifest {
-        from sharedManifest
-        attributes 'Implementation-Title': 'Qabel Core - Box Component - Test artifact'
-    }
-}
-
-jar.manifest.writeTo("$buildDir/manifest.mf")
-testJar.manifest.writeTo("$buildDir/test-manifest.mf")
-jar.dependsOn(testJar)
-
-artifacts {
-    archives jar
-    //archives testJar
-}

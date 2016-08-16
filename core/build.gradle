@@ -1,27 +1,8 @@
-apply plugin: 'java'
 apply plugin: 'c'
-apply plugin: "kotlin"
 
-sourceCompatibility = 1.7
-version = '0.16.1'
 group = 'de.qabel.core'
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
-
-ext.sharedManifest = manifest {
-    attributes 'Implementation-Version': version
-    attributes 'Project': 'Qabel Core'
-    attributes 'Component': 'Core'
-    attributes 'Built-From-Revision': "git rev-parse HEAD".execute().text.trim()
-}
+ext.sharedManifest.attributes 'Component': 'Core'
 
 jar {
     manifest = project.manifest {
@@ -35,9 +16,6 @@ repositories {
 }
 
 dependencies {
-	testCompile group: 'junit', name: 'junit', version: '4.+'
-	testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
-    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
 	compile 'com.google.code.gson:gson:2.+'
 	compile 'com.github.salomonbrys.kotson:kotson:2.3.0'
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
@@ -50,7 +28,6 @@ dependencies {
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.7'
 	compile 'com.madgag.spongycastle:prov:1.53.0.0'
 	compile 'org.json:json:20160212'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 task nativeHeaders {
@@ -166,26 +143,4 @@ tasks.withType(Test) {
 	systemProperty "java.library.path", "./build/binaries/curve25519SharedLibrary/$platform/"
 }
 
-sourceSets {
-	main {
-		resources.srcDirs += ['src/resources/config/']
-	}
-	test {
-		resources.srcDirs += ['src/resources/config/']
-	}
-}
-
-task testJar(type: Jar) {
-    from(sourceSets.test.output) {
-        include "**"
-    }
-    baseName = 'core-test'
-    manifest {
-        from sharedManifest
-        attributes 'Implementation-Title': 'Qabel Core - Box Component - Test artifact'
-    }
-}
-
-jar.manifest.writeTo("$buildDir/manifest.mf")
-testJar.manifest.writeTo("$buildDir/test-manifest.mf")
-jar.dependsOn(testJar)
+testJar.manifest.attributes 'Implementation-Title': 'Qabel Core - Core Component - Test artifact'
