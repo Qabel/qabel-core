@@ -5,11 +5,9 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 import de.qabel.core.repository.sqlite.ClientDatabase
-import de.qabel.core.repository.sqlite.Hydrator
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.util.*
 
 abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
                                                   val client: ClientDatabase,
