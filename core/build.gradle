@@ -3,7 +3,7 @@ apply plugin: 'c'
 apply plugin: "kotlin"
 
 sourceCompatibility = 1.7
-version = '0.12.1'
+version = '0.16.1'
 group = 'de.qabel.core'
 
 buildscript {
