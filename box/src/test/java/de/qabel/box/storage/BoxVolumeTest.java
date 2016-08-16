@@ -240,6 +240,7 @@ public abstract class BoxVolumeTest {
             @Override
             public Boolean call() throws Exception {
                 BoxNavigation nav3 = volume2.navigate();
+                nav3.refresh();
                 return nav3.hasFile("testfile");
             }
         }, 2000L);
