@@ -112,8 +112,7 @@ abstract class BaseRepositoryImpl<T : BaseEntity>(val relation: DBRelation<T>,
         query.params.mapIndexed { i, value ->
             val paramIndex = i + 1
             when (value) {
-                is Date -> statement.setDate(paramIndex, java.sql.Date(value.time))
-                is Boolean -> statement.setBoolean(paramIndex, value)
+                is Boolean -> statement.setInt(paramIndex, if(value) 1 else 0)
                 else -> statement.setObject(paramIndex, value)
             }
         }
