@@ -9,7 +9,9 @@ buildscript {
 }
 
 allprojects {
-    version = '0.16.2'
+    String tag ='git describe --tags'.execute().text.trim()
+    Boolean isTag = !tag.contains('-')
+    version = isTag ? tag : 'git rev-parse HEAD'.execute().text.trim() + '-SNAPSHOT'
 }
 
 subprojects {
