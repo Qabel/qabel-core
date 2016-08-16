@@ -240,6 +240,7 @@ public abstract class BoxVolumeTest {
             @Override
             public Boolean call() throws Exception {
                 BoxNavigation nav3 = volume2.navigate();
+                nav3.refresh();
                 return nav3.hasFile("testfile");
             }
         }, 2000L);
@@ -634,10 +635,10 @@ public abstract class BoxVolumeTest {
         subnav2.commit();
 
         // test the conflict result
-        BoxNavigation nav = volume.navigate();
-        nav.setMetadata(nav.reloadMetadata());
-        assertThat(nav.listFolders(), hasSize(1));
-        BoxNavigation subnav = nav.navigate(folder1);
+        nav1.refresh();
+        assertThat(nav1.listFolders(), hasSize(1));
+
+        BoxNavigation subnav = nav1.navigate(folder1);
         assertTrue(subnav.hasFile("file1"));
         assertTrue(subnav.hasFile("file2"));
         assertThat(subnav.listFiles(), hasSize(2));
