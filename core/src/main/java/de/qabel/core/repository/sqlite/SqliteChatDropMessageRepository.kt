@@ -19,6 +19,7 @@ import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
+import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(val database: ClientDatabase,
                                       entityManager: EntityManager) :
@@ -53,6 +54,9 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     override fun findLatest(identityId: Int): List<ChatDropMessage> =
         with(createEntityQuery()) {
             whereAndEquals(IDENTITY_ID, identityId)
+
+            innerJoin(ContactDB.TABLE, ContactDB.T_ALIAS, ContactDB.ID.exp(), CONTACT_ID.exp())
+            whereAndEquals(ContactDB.IGNORED, false)
 
             //filter newest messages by join
             leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())

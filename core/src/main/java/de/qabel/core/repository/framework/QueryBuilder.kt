@@ -48,13 +48,13 @@ class QueryBuilder {
 
     fun innerJoin(table: String, tableAlias: String,
                   joinField: String, targetField: String) {
-        joins.append("INNER ")
+        joins.append(" INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 
     fun leftJoin(table: String, tableAlias: String,
                  joinField: String, targetField: String) {
-        joins.append("LEFT ")
+        joins.append(" LEFT ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 

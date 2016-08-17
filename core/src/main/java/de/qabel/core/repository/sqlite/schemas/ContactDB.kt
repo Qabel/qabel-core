@@ -15,18 +15,23 @@ import java.sql.ResultSet
 
 class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<Contact> {
 
-    override val TABLE_NAME = "contact"
+    override val TABLE_NAME = TABLE
     override val TABLE_ALIAS = "c"
+    override val ID: DBField = ContactDB.ID
 
-    override val ID = DBField("id", TABLE_NAME, TABLE_ALIAS)
-    val ALIAS = DBField("alias", TABLE_NAME, TABLE_ALIAS)
-    val PUBLIC_KEY = DBField("publicKey", TABLE_NAME, TABLE_ALIAS)
-    val PHONE = DBField("phone", TABLE_NAME, TABLE_ALIAS)
-    val EMAIL = DBField("email", TABLE_NAME, TABLE_ALIAS)
+    companion object {
+        const val TABLE = "contact"
+        const val T_ALIAS = "c"
+        val ID = DBField("id", TABLE, T_ALIAS)
+        val ALIAS = DBField("alias", TABLE, T_ALIAS)
+        val PUBLIC_KEY = DBField("publicKey", TABLE, T_ALIAS)
+        val PHONE = DBField("phone", TABLE, T_ALIAS)
+        val EMAIL = DBField("email", TABLE, T_ALIAS)
 
-    val STATUS = DBField("status", TABLE_NAME, TABLE_ALIAS)
-    val IGNORED = DBField("ignored", TABLE_NAME, TABLE_ALIAS)
-    val NICKNAME = DBField("nickname", TABLE_NAME, TABLE_ALIAS)
+        val STATUS = DBField("status", TABLE, T_ALIAS)
+        val IGNORED = DBField("ignored", TABLE, T_ALIAS)
+        val NICKNAME = DBField("nickname", TABLE, T_ALIAS)
+    }
 
     override val ENTITY_CLASS: Class<Contact> = Contact::class.java
     override val ENTITY_FIELDS = listOf(ALIAS, PUBLIC_KEY, PHONE, EMAIL, STATUS, IGNORED, NICKNAME)

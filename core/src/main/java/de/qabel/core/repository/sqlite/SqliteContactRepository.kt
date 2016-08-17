@@ -90,13 +90,13 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         with(createEntityQuery()) {
             joinIdentityContacts(this)
             whereAndEquals(IdentityContacts.IDENTITY_ID, identity.id)
-            whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
+            whereAndEquals(ContactDB.PUBLIC_KEY, keyId)
             return this@SqliteContactRepository.getSingleResult(this)
         }
 
     override fun findByKeyId(keyId: String): Contact =
         with(createEntityQuery()) {
-            whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
+            whereAndEquals(ContactDB.PUBLIC_KEY, keyId)
             return this@SqliteContactRepository.getSingleResult(this)
         }
 
@@ -134,14 +134,14 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             whereAndNull(ContactDB.IdentityJoin.CONTACT_ID)
 
             if (excludeIgnored) {
-                whereAndEquals(contactRelation.IGNORED, false)
+                whereAndEquals(ContactDB.IGNORED, false)
             }
-            whereAndIn(contactRelation.STATUS, status.map { it.status })
+            whereAndIn(ContactDB.STATUS, status.map { it.status })
             if (!searchString.isEmpty()) {
-                whereAndLowerEquals(searchString, contactRelation.ALIAS, contactRelation.NICKNAME,
-                    contactRelation.EMAIL, contactRelation.PHONE)
+                whereAndLowerEquals(searchString, ContactDB.ALIAS, ContactDB.NICKNAME,
+                    ContactDB.EMAIL, ContactDB.PHONE)
             }
-            orderBy(contactRelation.ALIAS.exp())
+            orderBy(ContactDB.ALIAS.exp())
             getResultList<Contact>(this)
         }
         val identities = identityRepository.findAll()

@@ -124,10 +124,15 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
     @Test
     fun testFindLatest() {
+        val ignoredContact = Contact("ignored", emptyList(), QblECPublicKey("test".toByteArray())).apply { isIgnored = true }
+        contactRepo.save(ignoredContact, identityA)
+
         val msgA = message.copy(createdOn = System.currentTimeMillis() + 1000, payload = createTextPayload("A"))
         val msgB = message.copy(contactId = contactB.id, createdOn = System.currentTimeMillis() + 100, payload = createTextPayload("B"))
+        val msgIgnored = message.copy(contactId = ignoredContact.id)
         dropRepo.persist(msgA)
         dropRepo.persist(msgB)
+        dropRepo.persist(msgIgnored)
         dropRepo.persist(message)
         dropRepo.persist(message.copy(contactId = contactB.id))
 
