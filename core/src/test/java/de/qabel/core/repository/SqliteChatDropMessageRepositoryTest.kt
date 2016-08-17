@@ -70,9 +70,10 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
     @Test
     fun testFindByContactWithPaging() {
+        var time = System.currentTimeMillis()
         val messages = mutableListOf<ChatDropMessage>().apply {
             for(i in 0 until 100){
-                add(message.copy(payload = createTextPayload("BLUBB BLUBB" + i), createdOn = System.currentTimeMillis()))
+                add(message.copy(payload = createTextPayload("BLUBB BLUBB" + i), createdOn = time++))
             }
         }
         messages.forEach { dropRepo.persist(it) }
@@ -92,7 +93,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         resultList.addAll(pageC.result)
 
         assertThat(resultList.size, equalTo(messages.size))
-        assertThat(messages, equalTo(resultList))
+        assertThat(messages.reversed(), equalTo(resultList.toList()))
     }
 
     @Test
