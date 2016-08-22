@@ -63,6 +63,8 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
     }
 
     override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
-        TODO()
+        findByContact(contactId, identityId).let {
+            PagingResult(it.size, it.filterIndexed { i, chatDropMessage -> i >= offset && i < (offset + pageSize) })
+        }
 
 }

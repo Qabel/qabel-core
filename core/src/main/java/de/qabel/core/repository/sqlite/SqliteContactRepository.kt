@@ -4,6 +4,8 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
 import de.qabel.core.extensions.findById
+import de.qabel.core.log.QblLogger
+import de.qabel.core.log.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
@@ -18,8 +20,6 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB.ContactDropUrls
 import de.qabel.core.repository.sqlite.schemas.ContactDB.IdentityContacts
 import de.qabel.core.util.DefaultHashMap
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.sql.ResultSet
 import java.util.*
 
@@ -27,9 +27,7 @@ import java.util.*
 class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                               private val identityRepository: IdentityRepository,
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepository<Contact>(contactRelation, db, em), ContactRepository {
-
-    val log: Logger by lazy { LoggerFactory.getLogger(ContactRepository::class.java) }
+    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QblLogger {
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
@@ -126,7 +124,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     }
 
     override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<Pair<Contact, List<Identity>>> {
-        log.info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
+        info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
         val contacts = with(createEntityQuery()) {
             //Exclude identities
             leftJoin(ContactDB.IdentityJoin.TABLE, ContactDB.IdentityJoin.TABLE_ALIAS,
