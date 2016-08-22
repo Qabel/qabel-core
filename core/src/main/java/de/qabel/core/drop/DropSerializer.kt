@@ -20,6 +20,7 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
         private const val SENDER = "sender"
         private const val PAYLOAD_TYPE = "drop_payload_type"
         private const val PAYLOAD = "drop_payload"
+        private const val ACK_ID = "acknowledge_id"
     }
 
     override fun serialize(src: DropMessage, typeOfSrc: Type, context: JsonSerializationContext): JsonElement =
@@ -29,6 +30,7 @@ class DropSerializer : JsonSerializer<DropMessage>, JsonDeserializer<DropMessage
             addProperty(SENDER, src.sender.keyIdentifier)
             add(PAYLOAD, context.serialize(src.dropPayload))
             add(PAYLOAD_TYPE, context.serialize(src.dropPayloadType))
+            add(ACK_ID, context.serialize(src.acknowledgeID))
 
             src.dropMessageMetadata?.let {
                 add(META_DATA, context.serialize(it))
