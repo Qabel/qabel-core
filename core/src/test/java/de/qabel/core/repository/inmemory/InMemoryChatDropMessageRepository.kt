@@ -9,10 +9,6 @@ import de.qabel.core.repository.framework.PagingResult
 
 class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
-    override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> {
-        throw UnsupportedOperationException("Not implemented in Mock")
-    }
-
     val messages = mutableListOf<ChatDropMessage>()
 
     override fun findById(id: Int): ChatDropMessage = messages.find { it.id == id } ?: throw EntityNotFoundException("ChatDropMessage not found")
@@ -65,5 +61,8 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
                 chatDropMessage.payload.toString() == it.payload.toString()
         }
     }
+
+    override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
+        TODO()
 
 }

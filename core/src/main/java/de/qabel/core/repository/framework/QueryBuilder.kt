@@ -4,6 +4,7 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
+        private const val GREATER = ">"
         private const val WILD_CARD = "%"
     }
 
@@ -75,6 +76,11 @@ class QueryBuilder {
         params.add(value)
     }
 
+    fun whereAndGreater(field: Field, value: Any) {
+        where(field.exp(), GREATER, "?", " AND ")
+        params.add(value)
+    }
+
     fun whereAndNull(field: Field) {
         where(field.exp(), " IS NULL ", "", " AND ")
     }
@@ -121,7 +127,9 @@ class QueryBuilder {
         where.append(valuePlaceholder)
     }
 
-    fun where(sql: String) { where.append(sql) }
+    fun where(sql: String) {
+        where.append(sql)
+    }
 
     fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
         if (orderBy.isEmpty()) {
