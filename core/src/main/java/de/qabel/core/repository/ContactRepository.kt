@@ -14,7 +14,7 @@ interface ContactRepository {
     @Throws(PersistenceException::class)
     fun save(contact: Contact, identity: Identity)
 
-    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    @Throws(PersistenceException::class)
     fun delete(contact: Contact, identity: Identity)
 
     @Throws(EntityNotFoundException::class)
