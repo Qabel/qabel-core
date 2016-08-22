@@ -10,7 +10,7 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.framework.BaseRepositoryImpl
+import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.framework.ResultAdapter
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
@@ -27,7 +27,7 @@ import java.util.*
 class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                               private val identityRepository: IdentityRepository,
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepositoryImpl<Contact>(contactRelation, db, em), ContactRepository {
+    BaseRepository<Contact>(contactRelation, db, em), ContactRepository {
 
     val log: Logger by lazy { LoggerFactory.getLogger(ContactRepository::class.java) }
 

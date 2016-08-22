@@ -8,7 +8,7 @@ import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.ChatDropMessage.Direction
 import de.qabel.core.repository.entities.ChatDropMessage.Status
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.framework.BaseRepositoryImpl
+import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.PagingResult
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
@@ -23,7 +23,7 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(val database: ClientDatabase,
                                       entityManager: EntityManager) :
-    BaseRepositoryImpl<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
+    BaseRepository<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
