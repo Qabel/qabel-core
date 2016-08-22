@@ -12,30 +12,29 @@ object DropStateDB : DBRelation<DropState> {
     override val TABLE_NAME = "drop_state"
     override val TABLE_ALIAS = "ds"
 
-    override val ID = DBField("id", TABLE_NAME, TABLE_ALIAS)
-    val DROP = DBField("drop_id", TABLE_NAME, TABLE_ALIAS)
-    val E_TAG = DBField("e_tag", TABLE_NAME, TABLE_ALIAS)
+    override val ID = field("id")
+    val DROP = field("drop_id")
+    val E_TAG = field("e_tag")
 
     override val ENTITY_FIELDS: List<DBField> = listOf(DROP, E_TAG)
 
     override val ENTITY_CLASS: Class<DropState> = DropState::class.java
 
-    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: DropState) : Int =
+    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: DropState): Int =
         with(statement) {
             var i = startIndex
             statement.setString(i++, model.drop)
             statement.setString(i++, model.eTag)
-            return i;
+            return i
         }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropState {
-        val id = resultSet.getInt(ID.alias());
+        val id = resultSet.getInt(ID.alias())
         if (entityManager.contains(ENTITY_CLASS, id)) {
             return entityManager.get(ENTITY_CLASS, id)
         }
         return DropState(resultSet.getString(DROP.alias()),
-            resultSet.getString(E_TAG.alias()),
-            id)
+            resultSet.getString(E_TAG.alias()), id)
     }
 
 }

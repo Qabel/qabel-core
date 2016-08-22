@@ -54,7 +54,7 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
 
         const val TABLE = "drop_url"
         const val TABLE_ALIAS = "dru"
-        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS);
+        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
         val DROP_URL = DBField("url", TABLE, TABLE_ALIAS)
 
         override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropURL =

@@ -12,26 +12,26 @@ import java.sql.Timestamp
 object ChatDropMessageDB : DBRelation<ChatDropMessage> {
 
     override val TABLE_NAME = "chat_drop_message"
-    override val TABLE_ALIAS = "cdm";
+    override val TABLE_ALIAS = "cdm"
 
-    override val ID: DBField = DBField("id", TABLE_NAME, TABLE_ALIAS);
-    val IDENTITY_ID: DBField = DBField("identity_id", TABLE_NAME, TABLE_ALIAS);
-    val CONTACT_ID = DBField("contact_id", TABLE_NAME, TABLE_ALIAS);
+    override val ID: DBField = field("id")
+    val IDENTITY_ID: DBField = field("identity_id")
+    val CONTACT_ID = field("contact_id")
 
-    val DIRECTION = DBField("direction", TABLE_NAME, TABLE_ALIAS)
-    val STATUS = DBField("status", TABLE_NAME, TABLE_ALIAS);
+    val DIRECTION = field("direction")
+    val STATUS = field("status")
 
-    val PAYLOAD_TYPE = DBField("payload_type", TABLE_NAME, TABLE_ALIAS);
-    val PAYLOAD = DBField("payload", TABLE_NAME, TABLE_ALIAS);
+    val PAYLOAD_TYPE = field("payload_type")
+    val PAYLOAD = field("payload")
 
-    val CREATED_ON = DBField("created_on", TABLE_NAME, TABLE_ALIAS);
+    val CREATED_ON = field("created_on")
 
     override val ENTITY_FIELDS = listOf(CONTACT_ID, IDENTITY_ID, DIRECTION, STATUS,
         PAYLOAD_TYPE, PAYLOAD, CREATED_ON)
 
     override val ENTITY_CLASS: Class<ChatDropMessage> = ChatDropMessage::class.java
 
-    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage) : Int =
+    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage): Int =
         with(statement) {
             var i = startIndex;
             setInt(i++, model.contactId)
