@@ -33,7 +33,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
 
     override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage): Int =
         with(statement) {
-            var i = startIndex;
+            var i = startIndex
             setInt(i++, model.contactId)
             setInt(i++, model.identityId)
             setByte(i++, model.direction.type)
@@ -41,7 +41,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             setString(i++, model.messageType.type)
             setString(i++, MessagePayload.encode(model.messageType, model.payload))
             setTimestamp(i++, Timestamp(model.createdOn))
-            return i;
+            return i
         }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): ChatDropMessage {
@@ -56,7 +56,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),
             resultSet.getTimestamp(CREATED_ON.alias()).time,
-            id);
+            id)
     }
 
     fun <X : Enum<X>, S : Any> toEnum(enum: Array<X>, value: S, extract: (enum: X) -> S) =
