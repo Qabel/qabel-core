@@ -4,8 +4,7 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
-
-        private const val WILD_CARD = "%";
+        private const val WILD_CARD = "%"
     }
 
     enum class Direction(val sql: String) {
@@ -116,13 +115,13 @@ class QueryBuilder {
 
 
     private fun where(field: String, condition: String, valuePlaceholder: String, concatenation: String) {
-        startWhere(concatenation);
+        startWhere(concatenation)
         where.append(field)
         where.append(condition)
         where.append(valuePlaceholder)
     }
 
-    fun where(sql: String) = where.append(sql)
+    fun where(sql: String) { where.append(sql) }
 
     fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
         if (orderBy.isEmpty()) {
@@ -144,24 +143,15 @@ class QueryBuilder {
         groupBy.append(field.exp())
     }
 
-    fun setPaging(offset : Int, pageSize : Int){
+    fun setPaging(offset: Int, pageSize: Int) {
         paging = " LIMIT $offset, $pageSize"
     }
 
-    fun queryString(): String = select.toString() + " " +
-        from.toString() + " " +
-        (if (!joins.isEmpty()) joins.toString() else "") + " " +
-        (if (!where.isEmpty()) where.toString() else "") + " " +
-        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
-        (if (!orderBy.isEmpty()) orderBy.toString() else "") +
-        paging
+    private fun createQuerySelection() = listOf(from, joins, where, groupBy, orderBy).joinToString(" ")
 
-    fun countQueryString() : String = " SELECT count(*) " +
-        from.toString() + " " +
-        (if (!joins.isEmpty()) joins.toString() else "") + " " +
-        (if (!where.isEmpty()) where.toString() else "") + " " +
-        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
-        (if (!orderBy.isEmpty()) orderBy.toString() else "")
+    fun queryString(): String = listOf(select, createQuerySelection(), paging).joinToString(" ")
+
+    fun countQueryString(): String = "SELECT count(*) " + createQuerySelection()
 
 }
 
