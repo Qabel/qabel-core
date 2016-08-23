@@ -5,7 +5,6 @@ import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
-import de.qabel.core.drop.DropURL
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
@@ -229,10 +228,12 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
 
         val contacts = repo.findWithIdentities()
 
-        for (contact in contacts) {
-            val storedDto = storedContacts.find { it.first.id == contact.first.id }!!
-            assertThat(storedDto.first.alias, equalTo(contact.first.alias))
-            assertThat(storedDto.second, hasSize(contact.second.size))
+        //Check content and order
+        contacts.forEachIndexed { i, contactDetails ->
+            val storedDto = storedContacts[i]
+            assertThat(storedDto, notNullValue())
+            assertThat(storedDto.first.alias, equalTo(contactDetails.contact.alias))
+            assertThat(storedDto.second, hasSize(contactDetails.identities.size))
         }
         assertThat(storedContacts, hasSize(contacts.size))
     }
@@ -246,9 +247,10 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val filter = "other c"
         val contacts = repo.findWithIdentities(filter)
         Assert.assertEquals(1, contacts.size)
-        val fooContact = contacts.iterator().next()
-        assertThat(otherContact.alias, equalTo(fooContact.first.alias))
-        assertThat(1, equalTo(fooContact.second.size))
+
+        val fooContactDetails = contacts.first()
+        assertThat(otherContact.alias, equalTo(fooContactDetails.contact.alias))
+        assertThat(1, equalTo(fooContactDetails.identities.size))
     }
 
     @Test
@@ -262,9 +264,10 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         val contacts = repo.findWithIdentities()
 
         Assert.assertEquals(2, contacts.size)
-        val fooContact = contacts.iterator().next()
-        assertThat(otherContact.alias, equalTo(fooContact.first.alias))
-        assertThat(1, equalTo(fooContact.second.size))
+
+        val fooContact = contacts.first()
+        assertThat(otherContact.alias, equalTo(fooContact.contact.alias))
+        assertThat(1, equalTo(fooContact.identities.size))
     }
 
     @Test
@@ -276,9 +279,9 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
 
         val contacts = repo.findWithIdentities("", listOf(Contact.ContactStatus.NORMAL), false)
         Assert.assertEquals(3, contacts.size)
-        val igContact = contacts.find { it.first.id == ignoredContact.id }!!
-        assertThat(ignoredContact.alias, equalTo(igContact.first.alias))
-        assertThat(1, equalTo(igContact.second.size))
+        val igContact = contacts.find { it.contact.id == ignoredContact.id }!!
+        assertThat(ignoredContact.alias, equalTo(igContact.contact.alias))
+        assertThat(1, equalTo(igContact.identities.size))
     }
 
     @Test
@@ -293,8 +296,8 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.update(contact, listOf(identity, otherIdentity))
 
         val result = repo.findContactWithIdentities(contact.keyIdentifier)
-        assertThat(result.first.nickName, equalTo("testNick"))
-        assertThat(result.second, containsInAnyOrder(identity, otherIdentity))
+        assertThat(result.contact.nickName, equalTo("testNick"))
+        assertThat(result.identities, containsInAnyOrder(identity, otherIdentity))
         assertThat(contact.dropUrls, containsInAnyOrder(dropA, dropB))
     }
 

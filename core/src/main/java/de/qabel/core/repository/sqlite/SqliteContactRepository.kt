@@ -3,6 +3,7 @@ package de.qabel.core.repository.sqlite
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
+import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
 import de.qabel.core.util.QblLogger
 import de.qabel.core.util.info
@@ -15,6 +16,7 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.framework.ResultAdapter
+import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB.ContactDropUrls
@@ -24,8 +26,9 @@ import java.sql.ResultSet
 import java.util.*
 
 
-class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
-                              private val identityRepository: IdentityRepository,
+class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
+                              dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
+                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
     BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QblLogger {
 
@@ -104,10 +107,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         false
     }
 
-    override fun findContactWithIdentities(keyId: String): Pair<Contact, List<Identity>> {
+    override fun findContactWithIdentities(keyId: String): ContactData {
         val contact = findByKeyId(keyId)
         val identityKeys = getIdentityConnections(contact)
-        return Pair(contact, identityRepository.findAll().entities.filter { identityKeys.contains(it.id) })
+        return ContactData(contact, identityRepository.findAll().entities.filter { identityKeys.contains(it.id) })
     }
 
     private fun findIdentityIds(contacts: List<Contact>): Map<Int, List<Int>>
@@ -123,7 +126,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             }, contacts.map { it.id })
     }
 
-    override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<Pair<Contact, List<Identity>>> {
+    override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<ContactData> {
         info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
         val contacts = with(createEntityQuery()) {
             //Exclude identities
@@ -145,7 +148,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         val identities = identityRepository.findAll()
         val contactIdentities = findIdentityIds(contacts)
         return contacts.map {
-            Pair(it, contactIdentities[it.id]!!.map {
+            ContactData(it, contactIdentities[it.id]!!.map {
                 identities.entities.findById(it)!!
             })
         }
