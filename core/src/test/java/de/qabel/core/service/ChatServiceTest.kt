@@ -67,10 +67,12 @@ class ChatServiceTest {
 
         val result = chatService.refreshMessages()
         assertThat(result.keys, hasSize(1))
-        assertThat(result.keys.first(), equalTo(identityB.keyIdentifier))
 
-        assertThat(result.values.first(), hasSize(1))
-        val received = result.values.first().first()
+        val (identityKey, messages) = result.entries.first()
+        assertThat(identityKey, equalTo(identityB.keyIdentifier))
+        assertThat(messages, hasSize(1))
+
+        val received = messages.first()
         assertThat(received.contactId, equalTo(identityA.id))
         assertThat(ChatDropMessage.MessagePayload.encode(received.messageType, received.payload),
             equalTo(ChatDropMessage.MessagePayload.encode(message.messageType, message.payload)))
