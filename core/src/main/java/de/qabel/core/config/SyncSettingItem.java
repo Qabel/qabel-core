@@ -90,13 +90,7 @@ public class SyncSettingItem extends Persistable implements BaseEntity {
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
-        result = prime * result + id;
-        result = prime * result + new Long(created).hashCode();
-        result = prime * result + new Long(updated).hashCode();
-        result = prime * result + new Long(deleted).hashCode();
-
-        return result;
+        return prime + id;
     }
 
     @Override
@@ -115,15 +109,6 @@ public class SyncSettingItem extends Persistable implements BaseEntity {
 
         other = (SyncSettingItem) obj;
 
-        if (created != other.created) {
-            return false;
-        }
-        if (updated != other.updated) {
-            return false;
-        }
-        if (deleted != other.deleted) {
-            return false;
-        }
         return id == other.id;
 
     }

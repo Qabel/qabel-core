@@ -163,7 +163,9 @@ public class Identity extends Entity {
         int result = 1;
 
         result = super.hashCode();
+        result = prime * result + alias.hashCode();
         result = prime * result + (primaryKeyPair == null ? 0 : primaryKeyPair.hashCode());
+        result = prime * result + (prefixes == null ? 0 : prefixes.hashCode());
         return result;
     }
 
@@ -201,21 +203,6 @@ public class Identity extends Entity {
         } else if (!prefixes.equals(other.prefixes)) {
             return false;
         }
-        if (email == null) {
-            if (other.email != null) {
-                return false;
-            }
-        } else if (!email.equals(other.email)) {
-            return false;
-        }
-        if (phone == null) {
-            if (other.phone != null) {
-                return false;
-            }
-        } else if (!phone.equals(other.phone)) {
-            return false;
-        }
-
         return true;
     }
 }
