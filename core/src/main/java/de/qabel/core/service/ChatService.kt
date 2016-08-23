@@ -9,7 +9,7 @@ import de.qabel.core.repository.entities.DropState
 interface ChatService {
 
     fun sendMessage(message: ChatDropMessage)
-    fun refreshMessages(): Map<Identity, List<ChatDropMessage>>
+    fun refreshMessages(): Map<String, List<ChatDropMessage>>
 
     fun handleDropUpdate(identity: Identity, dropState: DropState, messages: List<DropMessage>): List<ChatDropMessage>
 }

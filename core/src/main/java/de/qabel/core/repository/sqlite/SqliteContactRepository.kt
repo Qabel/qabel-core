@@ -3,16 +3,20 @@ package de.qabel.core.repository.sqlite
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
+import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
+import de.qabel.core.util.QblLogger
+import de.qabel.core.util.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.framework.BaseRepositoryImpl
+import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.framework.ResultAdapter
+import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB.ContactDropUrls
@@ -22,10 +26,11 @@ import java.sql.ResultSet
 import java.util.*
 
 
-class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
-                              private val identityRepository: IdentityRepository,
+class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
+                              dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
+                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepositoryImpl<Contact>(contactRelation, db, em), ContactRepository {
+    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QblLogger {
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
@@ -34,12 +39,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         with(createEntityQuery()) {
             joinIdentityContacts(this)
             whereAndEquals(IdentityContacts.IDENTITY_ID, identity.id)
-            val resultList = getResultList<Contact>(this);
-            val contacts = Contacts(identity);
-            for (contact in resultList) {
-                contacts.put(contact)
+            val resultList = getResultList<Contact>(this)
+            return Contacts(identity).apply {
+                resultList.forEach { put(it) }
             }
-            return contacts;
         }
 
     override fun save(contact: Contact, identity: Identity) {
@@ -51,8 +54,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         } else {
             update(contact)
         }
-        dropAllManyToMany(ContactDropUrls.CONTACT_ID, contact.id)
-        contact.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, contact.id, ContactDropUrls.DROP_URL, it.toString()) }
 
         addIdentityConnection(contact, identity)
     }
@@ -90,14 +91,14 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         with(createEntityQuery()) {
             joinIdentityContacts(this)
             whereAndEquals(IdentityContacts.IDENTITY_ID, identity.id)
-            whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
-            return getSingleResult(this)
+            whereAndEquals(ContactDB.PUBLIC_KEY, keyId)
+            return this@SqliteContactRepository.getSingleResult(this)
         }
 
     override fun findByKeyId(keyId: String): Contact =
         with(createEntityQuery()) {
-            whereAndEquals(contactRelation.PUBLIC_KEY, keyId)
-            return getSingleResult(this)
+            whereAndEquals(ContactDB.PUBLIC_KEY, keyId)
+            return this@SqliteContactRepository.getSingleResult(this)
         }
 
     override fun exists(contact: Contact): Boolean = try {
@@ -106,10 +107,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
         false
     }
 
-    override fun findContactWithIdentities(keyId: String): Pair<Contact, List<Identity>> {
+    override fun findContactWithIdentities(keyId: String): ContactData {
         val contact = findByKeyId(keyId)
         val identityKeys = getIdentityConnections(contact)
-        return Pair(contact, identityRepository.findAll().entities.filter { identityKeys.contains(it.id) })
+        return ContactData(contact, identityRepository.findAll().entities.filter { identityKeys.contains(it.id) })
     }
 
     private fun findIdentityIds(contacts: List<Contact>): Map<Int, List<Int>>
@@ -125,25 +126,32 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
             }, contacts.map { it.id })
     }
 
-    override fun findWithIdentities(searchString: String): Collection<Pair<Contact, List<Identity>>> {
-        val identities = identityRepository.findAll()
+    override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<ContactData> {
+        info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
         val contacts = with(createEntityQuery()) {
-            if (!searchString.isEmpty()) {
-                whereAndLowerEquals(searchString, contactRelation.ALIAS, contactRelation.NICKNAME,
-                    contactRelation.EMAIL, contactRelation.PHONE)
+            //Exclude identities
+            leftJoin(ContactDB.IdentityJoin.TABLE, ContactDB.IdentityJoin.TABLE_ALIAS,
+                ContactDB.IdentityJoin.CONTACT_ID.exp(), relation.ID.exp())
+            whereAndNull(ContactDB.IdentityJoin.CONTACT_ID)
+
+            if (excludeIgnored) {
+                whereAndEquals(ContactDB.IGNORED, false)
             }
-            orderBy(contactRelation.ALIAS.exp())
+            whereAndIn(ContactDB.STATUS, status.map { it.status })
+            if (!searchString.isEmpty()) {
+                whereAndLowerEquals(searchString, ContactDB.ALIAS, ContactDB.NICKNAME,
+                    ContactDB.EMAIL, ContactDB.PHONE)
+            }
+            orderBy(ContactDB.ALIAS.exp())
             getResultList<Contact>(this)
         }
+        val identities = identityRepository.findAll()
         val contactIdentities = findIdentityIds(contacts)
-
-        val resultList = mutableListOf<Pair<Contact, List<Identity>>>()
-        for (contact in contacts) {
-            resultList.add(Pair(contact, contactIdentities[contact.id]!!.map {
+        return contacts.map {
+            ContactData(it, contactIdentities[it.id]!!.map {
                 identities.entities.findById(it)!!
-            }))
+            })
         }
-        return resultList
     }
 
     override fun find(id: Int): Contact = findById(id)
@@ -151,8 +159,26 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager, dropUrlRepo
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         update(contact)
         removeIdentityConnections(contact)
-        if(activeIdentities.size > 0){
+        if (activeIdentities.size > 0) {
             addIdentityConnections(contact, activeIdentities)
         }
     }
+
+    override fun update(model: Contact) {
+        super.update(model)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+    }
+
+    override fun persist(model: Contact) {
+        super.persist(model)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+    }
+
+    override fun delete(id: Int) {
+        super.delete(id)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, id)
+    }
+
+
 }

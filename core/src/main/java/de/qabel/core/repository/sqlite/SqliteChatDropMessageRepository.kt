@@ -8,7 +8,8 @@ import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.ChatDropMessage.Direction
 import de.qabel.core.repository.entities.ChatDropMessage.Status
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.framework.BaseRepositoryImpl
+import de.qabel.core.repository.framework.BaseRepository
+import de.qabel.core.repository.framework.PagingResult
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
@@ -18,18 +19,28 @@ import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
 import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
+import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(val database: ClientDatabase,
                                       entityManager: EntityManager) :
-    BaseRepositoryImpl<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
+    BaseRepository<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
-        with(createEntityQuery()) {
+        createChatQuery(contactId, identityId).let {
+            return getResultList(it, relation)
+        }
+
+    override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
+        createChatQuery(contactId, identityId).let {
+            return getPagingResult(it, relation, offset, pageSize)
+        }
+
+    private fun createChatQuery(contactId: Int, identityId: Int): QueryBuilder =
+        createEntityQuery().apply {
             whereAndEquals(CONTACT_ID, contactId)
             whereAndEquals(IDENTITY_ID, identityId)
-            orderBy(ChatDropMessageDB.CREATED_ON.exp())
-            return getResultList(this)
+            orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
         }
 
     override fun findNew(identityId: Int): List<ChatDropMessage> =
@@ -43,6 +54,9 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
     override fun findLatest(identityId: Int): List<ChatDropMessage> =
         with(createEntityQuery()) {
             whereAndEquals(IDENTITY_ID, identityId)
+
+            innerJoin(ContactDB.TABLE, ContactDB.T_ALIAS, ContactDB.ID.exp(), CONTACT_ID.exp())
+            whereAndEquals(ContactDB.IGNORED, false)
 
             //filter newest messages by join
             leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())

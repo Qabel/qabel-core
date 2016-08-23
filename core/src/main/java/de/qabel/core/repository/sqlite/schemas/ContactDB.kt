@@ -15,18 +15,23 @@ import java.sql.ResultSet
 
 class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<Contact> {
 
-    override val TABLE_NAME = "contact"
-    override val TABLE_ALIAS = "c";
+    override val TABLE_NAME = TABLE
+    override val TABLE_ALIAS = "c"
+    override val ID: DBField = ContactDB.ID
 
-    override val ID = DBField("id", TABLE_NAME, TABLE_ALIAS);
-    val ALIAS = DBField("alias", TABLE_NAME, TABLE_ALIAS);
-    val PUBLIC_KEY = DBField("publicKey", TABLE_NAME, TABLE_ALIAS);
-    val PHONE = DBField("phone", TABLE_NAME, TABLE_ALIAS);
-    val EMAIL = DBField("email", TABLE_NAME, TABLE_ALIAS);
+    companion object {
+        const val TABLE = "contact"
+        const val T_ALIAS = "c"
+        val ID = DBField("id", TABLE, T_ALIAS)
+        val ALIAS = DBField("alias", TABLE, T_ALIAS)
+        val PUBLIC_KEY = DBField("publicKey", TABLE, T_ALIAS)
+        val PHONE = DBField("phone", TABLE, T_ALIAS)
+        val EMAIL = DBField("email", TABLE, T_ALIAS)
 
-    val STATUS = DBField("status", TABLE_NAME, TABLE_ALIAS);
-    val IGNORED = DBField("ignored", TABLE_NAME, TABLE_ALIAS);
-    val NICKNAME = DBField("nickname", TABLE_NAME, TABLE_ALIAS);
+        val STATUS = DBField("status", TABLE, T_ALIAS)
+        val IGNORED = DBField("ignored", TABLE, T_ALIAS)
+        val NICKNAME = DBField("nickname", TABLE, T_ALIAS)
+    }
 
     override val ENTITY_CLASS: Class<Contact> = Contact::class.java
     override val ENTITY_FIELDS = listOf(ALIAS, PUBLIC_KEY, PHONE, EMAIL, STATUS, IGNORED, NICKNAME)
@@ -34,15 +39,22 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
     object IdentityContacts {
         const val TABLE = "identity_contacts"
         const val TABLE_ALIAS = "idc"
-        val IDENTITY_ID = DBField("identity_id", TABLE, TABLE_ALIAS);
-        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS);
+        val IDENTITY_ID = DBField("identity_id", TABLE, TABLE_ALIAS)
+        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
+    }
+
+    object IdentityJoin {
+        const val TABLE = "identity"
+        const val TABLE_ALIAS = "idc"
+        val ID = DBField("id", TABLE, TABLE_ALIAS)
+        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
     }
 
     object ContactDropUrls : ResultAdapter<DropURL> {
 
         const val TABLE = "drop_url"
         const val TABLE_ALIAS = "dru"
-        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS);
+        val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
         val DROP_URL = DBField("url", TABLE, TABLE_ALIAS)
 
         override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropURL =
@@ -59,7 +71,7 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
             setInt(i++, model.status.status)
             setBoolean(i++, model.isIgnored)
             setString(i++, model.nickName)
-            return i;
+            return i
         }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Contact {
@@ -77,7 +89,7 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
             val statusInt = resultSet.getInt(STATUS.alias())
             status = Contact.ContactStatus.values().find { it.status == statusInt }
             isIgnored = resultSet.getBoolean(IGNORED.alias())
-            nickName = resultSet.getString(NICKNAME.alias())
+            nickName = resultSet.getString(NICKNAME.alias()) ?: ""
             dropUrlRepository.findAll(this).forEach { addDrop(it) }
         }
     }

@@ -5,6 +5,7 @@ import de.qabel.core.config.Identity
 import de.qabel.core.repository.ChatDropMessageRepository
 import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.exception.EntityNotFoundException
+import de.qabel.core.repository.framework.PagingResult
 
 class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
@@ -60,5 +61,10 @@ class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
                 chatDropMessage.payload.toString() == it.payload.toString()
         }
     }
+
+    override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
+        findByContact(contactId, identityId).let {
+            PagingResult(it.size, it.filterIndexed { i, chatDropMessage -> i >= offset && i < (offset + pageSize) })
+        }
 
 }

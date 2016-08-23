@@ -28,7 +28,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         val sender = identityRepository.find(message.identityId)
         val receiver = contactRepository.find(message.contactId)
 
-        val dropMessage = message.toDropMessage(sender);
+        val dropMessage = message.toDropMessage(sender)
 
         var email = ""
         var phone = ""
@@ -47,8 +47,8 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         chatDropMessageRepository.update(message)
     }
 
-    override fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
-        val resultMap = DefaultHashMap<Identity, MutableList<ChatDropMessage>>({ mutableListOf() })
+    override fun refreshMessages(): Map<String, List<ChatDropMessage>> {
+        val resultMap = DefaultHashMap<String, MutableList<ChatDropMessage>>({ mutableListOf() })
         identityRepository.findAll().entities.forEach { identity ->
             identity.dropUrls.forEach { dropUrl ->
                 val dropState = dropStateRepository.getDropState(dropUrl)
@@ -56,7 +56,8 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
                 try {
                     val dropResult = dropConnector.receiveDropMessages(identity, dropUrl, dropState)
                     val newMessages = handleDropUpdate(identity, dropResult.dropState, dropResult.dropMessages)
-                    resultMap.getOrDefault(identity).addAll(newMessages)
+
+                    resultMap.getOrDefault(identity.keyIdentifier).addAll(newMessages)
                 } catch(ex: Throwable) {
                     logger.warn("Cannot receive messages from {}", dropState.drop, ex)
                 }
