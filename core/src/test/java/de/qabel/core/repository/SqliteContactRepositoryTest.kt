@@ -246,7 +246,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
 
         val filter = "other c"
         val contacts = repo.findWithIdentities(filter)
-        Assert.assertEquals(1, contacts.size)
+        assertEquals(1, contacts.size)
 
         val fooContactDetails = contacts.first()
         assertThat(otherContact.alias, equalTo(fooContactDetails.contact.alias))
@@ -263,7 +263,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         //Use defaults
         val contacts = repo.findWithIdentities()
 
-        Assert.assertEquals(2, contacts.size)
+        assertEquals(2, contacts.size)
 
         val fooContact = contacts.first()
         assertThat(otherContact.alias, equalTo(fooContact.contact.alias))
@@ -278,7 +278,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(otherContact, identity)
 
         val contacts = repo.findWithIdentities("", listOf(Contact.ContactStatus.NORMAL), false)
-        Assert.assertEquals(3, contacts.size)
+        assertEquals(3, contacts.size)
         val igContact = contacts.find { it.contact.id == ignoredContact.id }!!
         assertThat(ignoredContact.alias, equalTo(igContact.contact.alias))
         assertThat(1, equalTo(igContact.identities.size))
