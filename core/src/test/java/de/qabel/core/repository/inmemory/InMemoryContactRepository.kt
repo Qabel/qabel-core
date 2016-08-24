@@ -14,7 +14,7 @@ import java.util.*
 class InMemoryContactRepository : ContactRepository {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
-    val identities : MutableMap<String, Identity> = mutableMapOf()
+    val identities: MutableMap<String, Identity> = mutableMapOf()
     val identityMapping: DefaultHashMap<String, MutableSet<String>> = DefaultHashMap({ key -> HashSet() })
 
     override fun find(id: Int): Contact = contacts.values.find({ it.id == id }) ?: throw EntityNotFoundException("Contact not found")
@@ -32,7 +32,7 @@ class InMemoryContactRepository : ContactRepository {
         if (contact.id == 0 && exists(contact)) {
             throw EntityExistsException("Contact already exists!")
         } else if (contact.id == 0) {
-            contact.id = contacts.size+1
+            contact.id = contacts.size + 1
         }
         contacts.put(contact.keyIdentifier, contact)
         identityMapping.getOrDefault(identity.keyIdentifier).add(contact.keyIdentifier)
@@ -62,7 +62,10 @@ class InMemoryContactRepository : ContactRepository {
 
     override fun findContactWithIdentities(keyId: String): ContactData {
         if (contacts.contains(keyId)) {
-            return contacts[keyId].let { contact -> ContactData(contact!!, findContactIdentities(contact.keyIdentifier)) }
+            return contacts[keyId].let { contact ->
+                ContactData(contact!!, findContactIdentities(contact.keyIdentifier),
+                    identities.containsKey(contact.keyIdentifier))
+            }
         } else throw EntityNotFoundException("Contact is not one of the injected")
     }
 
@@ -73,7 +76,10 @@ class InMemoryContactRepository : ContactRepository {
                     status.contains(contact.status) &&
                     if (excludeIgnored) !contact.isIgnored else true
             }
-            .map { contact -> ContactData(contact, findContactIdentities(contact.keyIdentifier)) }
+            .map { contact ->
+                ContactData(contact, findContactIdentities(contact.keyIdentifier),
+                    identities.containsKey(contact.keyIdentifier))
+            }
     }
 
     private fun findContactIdentities(key: String): List<Identity> {

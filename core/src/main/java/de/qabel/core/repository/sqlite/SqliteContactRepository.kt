@@ -35,6 +35,8 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
 
+    override fun find(id: Int): Contact = findById(id)
+
     override fun find(identity: Identity): Contacts =
         with(createEntityQuery()) {
             joinIdentityContacts(this)
@@ -58,6 +60,43 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         addIdentityConnection(contact, identity)
     }
 
+    override fun persist(model: Contact) {
+        super.persist(model)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+        info("Contact ${model.alias} persisted with id ${model.id}")
+    }
+
+    override fun update(contact: Contact, activeIdentities: List<Identity>) {
+        update(contact)
+        removeIdentityConnections(contact)
+        if (activeIdentities.size > 0) {
+            addIdentityConnections(contact, activeIdentities)
+        }
+    }
+
+    override fun update(model: Contact) {
+        super.update(model)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+        info("Contact ${model.alias} (${model.id}) updated ")
+    }
+
+    override fun delete(contact: Contact, identity: Identity) {
+        val contactIdentities = getIdentityConnections(contact)
+        removeIdentityConnection(contact, identity)
+        if (contactIdentities.size == 1 && contactIdentities.first() == identity.id) {
+            delete(contact.id)
+        }
+    }
+
+    override fun delete(id: Int) {
+        val contact = findById(id)
+        removeIdentityConnections(contact)
+        dropAllManyToMany(ContactDropUrls.CONTACT_ID, id)
+        super.delete(id)
+        info("Contact ${contact.alias} ($id) deleted")
+    }
+
     private fun joinIdentityContacts(queryBuilder: QueryBuilder) =
         queryBuilder.innerJoin(IdentityContacts.TABLE, IdentityContacts.TABLE_ALIAS,
             IdentityContacts.CONTACT_ID.exp(), contactRelation.ID.exp())
@@ -78,14 +117,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
     private fun getIdentityConnections(contact: Contact) =
         findManyToMany(IdentityContacts.CONTACT_ID, contact.id, IdentityContacts.IDENTITY_ID, IntResultAdapter())
 
-
-    override fun delete(contact: Contact, identity: Identity) {
-        val contactIdentities = getIdentityConnections(contact)
-        removeIdentityConnection(contact, identity)
-        if (contactIdentities.size == 1 && contactIdentities.first() == identity.id) {
-            delete(contact.id)
-        }
-    }
 
     override fun findByKeyId(identity: Identity, keyId: String): Contact =
         with(createEntityQuery()) {
@@ -109,8 +140,10 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
 
     override fun findContactWithIdentities(keyId: String): ContactData {
         val contact = findByKeyId(keyId)
+        val identities = identityRepository.findAll()
         val identityKeys = getIdentityConnections(contact)
-        return ContactData(contact, identityRepository.findAll().entities.filter { identityKeys.contains(it.id) })
+        return ContactData(contact, identities.entities.filter { identityKeys.contains(it.id) },
+            identities.contains(contact.keyIdentifier))
     }
 
     private fun findIdentityIds(contacts: List<Contact>): Map<Int, List<Int>>
@@ -150,35 +183,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         return contacts.map {
             ContactData(it, contactIdentities[it.id]!!.map {
                 identities.entities.findById(it)!!
-            })
+            }, identities.contains(it.keyIdentifier))
         }
     }
-
-    override fun find(id: Int): Contact = findById(id)
-
-    override fun update(contact: Contact, activeIdentities: List<Identity>) {
-        update(contact)
-        removeIdentityConnections(contact)
-        if (activeIdentities.size > 0) {
-            addIdentityConnections(contact, activeIdentities)
-        }
-    }
-
-    override fun update(model: Contact) {
-        super.update(model)
-        dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
-        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
-    }
-
-    override fun persist(model: Contact) {
-        super.persist(model)
-        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
-    }
-
-    override fun delete(id: Int) {
-        super.delete(id)
-        dropAllManyToMany(ContactDropUrls.CONTACT_ID, id)
-    }
-
-
 }
