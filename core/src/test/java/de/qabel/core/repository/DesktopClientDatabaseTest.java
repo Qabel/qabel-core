@@ -1,7 +1,9 @@
 package de.qabel.core.repository;
 
 import de.qabel.core.repository.sqlite.DesktopClientDatabase;
+import de.qabel.core.repository.sqlite.HasVersion;
 import de.qabel.core.repository.sqlite.MigrationException;
+import de.qabel.core.repository.sqlite.PragmaVersion;
 import de.qabel.core.repository.sqlite.migration.AbstractSqliteTest;
 import de.qabel.core.repository.sqlite.migration.FailingMigration;
 import de.qabel.core.repository.sqlite.migration.Migration1460367000CreateIdentitiy;
@@ -18,6 +20,14 @@ public class DesktopClientDatabaseTest extends AbstractSqliteTest {
     public void setUp() throws Exception {
         super.setUp();
         database = new DesktopClientDatabase(connection);
+    }
+
+    @Test
+    public void testHasVersion() throws Exception {
+        HasVersion pragmaVersion = new PragmaVersion(connection);
+        assertEquals(0, pragmaVersion.getVersion());
+        pragmaVersion.setVersion(1);
+        assertEquals(1, pragmaVersion.getVersion());
     }
 
     @Test

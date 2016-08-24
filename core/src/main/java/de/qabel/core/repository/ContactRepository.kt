@@ -16,11 +16,10 @@ interface ContactRepository {
     /**
      * Deletes contact identity connection. Deletes contact if it is not associated with other identities.
      */
-    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    @Throws(PersistenceException::class)
     fun delete(contact: Contact, identity: Identity)
 
     fun update(contact: Contact, activeIdentities: List<Identity>)
-
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun find(id: Int): Contact
