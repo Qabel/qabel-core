@@ -86,8 +86,18 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
     }
 
     private fun getMessageContact(dropMessage: DropMessage, identity: Identity): Contact? = try {
-        val contact = contactRepository.findByKeyId(dropMessage.senderKeyId)
-        if (contact.isIgnored) null else contact
+        val contactDetails = contactRepository.findContactWithIdentities(dropMessage.senderKeyId)
+        //Filter ignored
+        if (contactDetails.contact.isIgnored) null
+        //Dont receive messages from known identities
+        else if(contactDetails.isIdentity) null
+        //Add connection if required, TODO currently in discussion #629
+        else if(!contactDetails.identities.contains(identity)){
+            contactRepository.save(contactDetails.contact, identity)
+            contactDetails.contact
+        }else {
+            contactDetails.contact
+        }
     } catch (ex: EntityNotFoundException) {
         //If DropMessageMetadata is given, we create a new unknown contact
         dropMessage.dropMessageMetadata?.let {

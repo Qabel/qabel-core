@@ -2,9 +2,11 @@ package de.qabel.core.service
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
-import de.qabel.core.config.factory.DropUrlGenerator
-import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.drop.DropMessage
+import de.qabel.core.extensions.CoreTestCase
+import de.qabel.core.extensions.createContact
+import de.qabel.core.extensions.createIdentity
+import de.qabel.core.http.DropConnector
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.ChatDropMessage
@@ -18,35 +20,35 @@ import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 
-class ChatServiceTest {
+class ChatServiceTest : CoreTestCase {
 
-    val dropGenerator = DropUrlGenerator("http://localhost:5000")
-    lateinit var identityA: Identity
-    lateinit var contactA: Contact
-    lateinit var identityB: Identity
-    lateinit var contactB: Contact
-
-    private fun createTextPayload(text: String) = "{\"msg\": \"$text\"}"
-
-    val identityRepository = InMemoryIdentityRepository()
-    val contactRepository = InMemoryContactRepository()
-    val chatDropRepo = InMemoryChatDropMessageRepository()
     val dropStateRepo = InMemoryDropStateRepository()
-    val chatService = MainChatService(MainDropConnector(MockDropServer()), identityRepository,
-        contactRepository, chatDropRepo, dropStateRepo)
+    val dropConnector: DropConnector = MainDropConnector(MockDropServer())
+
+    val identityA: Identity = createIdentity("IdentityA")
+    val contactA: Contact = createContact(identityA.alias, identityA.helloDropUrl, identityA.ecPublicKey)
+    val identityARepository = InMemoryIdentityRepository()
+    val contactARepository = InMemoryContactRepository()
+    val chatDropRepoA = InMemoryChatDropMessageRepository()
+    val chatServiceA = MainChatService(dropConnector, identityARepository,
+        contactARepository, chatDropRepoA, dropStateRepo)
+
+    val identityB: Identity = createIdentity("Identity B")
+    val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
+    val identityBRepository = InMemoryIdentityRepository()
+    val contactBRepository = InMemoryContactRepository()
+    val chatDropRepoB = InMemoryChatDropMessageRepository()
+    val chatServiceB = MainChatService(dropConnector, identityBRepository,
+        contactBRepository, chatDropRepoB, dropStateRepo)
+
 
     @Before
     fun setUp() {
-        identityA = Identity("IdentityA", listOf(dropGenerator.generateUrl()), QblECKeyPair())
-        contactA = identityA.toContact()
-        identityB = Identity("IdentityB", listOf(dropGenerator.generateUrl()), QblECKeyPair())
-        contactB = identityB.toContact()
+        identityARepository.save(identityA)
+        contactARepository.save(contactB, identityA)
 
-        identityRepository.save(identityA)
-        identityRepository.save(identityB)
-
-        contactRepository.save(contactA, identityB)
-        contactRepository.save(contactB, identityA)
+        identityBRepository.save(identityB)
+        contactBRepository.save(contactA, identityB)
     }
 
     private fun createMessage(identity: Identity, contact: Contact, text: String) =
@@ -57,15 +59,17 @@ class ChatServiceTest {
             ChatDropMessage.MessageType.BOX_MESSAGE,
             createTextPayload(text), System.currentTimeMillis())
 
+    private fun createTextPayload(text: String) = "{\"msg\": \"$text\"}"
+
     @Test
     fun testSend() {
         val message = createMessage(identityA, contactB, "Blub blub")
 
-        chatService.sendMessage(message)
+        chatServiceA.sendMessage(message)
 
         assertThat(message.status, equalTo(ChatDropMessage.Status.SENT))
 
-        val result = chatService.refreshMessages()
+        val result = chatServiceB.refreshMessages()
         assertThat(result.keys, hasSize(1))
 
         val (identityKey, messages) = result.entries.first()
@@ -89,12 +93,14 @@ class ChatServiceTest {
         val stored = message.copy(contactId = contactA.id, identityId = contactB.id,
             direction = ChatDropMessage.Direction.INCOMING, status = ChatDropMessage.Status.NEW)
 
-        chatDropRepo.persist(stored)
-        messages.forEach { chatService.sendMessage(it) }
+        //Send all messages
+        messages.forEach { chatServiceA.sendMessage(it) }
+        //Create existing entry
+        chatDropRepoB.persist(stored)
 
         val currentETag = ""
         dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
-        val result = chatService.refreshMessages()
+        val result = chatServiceB.refreshMessages()
 
         assertThat(result.keys, hasSize(1))
         assertThat(result.keys.first(), equalTo(identityB.keyIdentifier))
@@ -106,32 +112,31 @@ class ChatServiceTest {
 
         //reset dropstate and receive again
         dropStateRepo.setDropState(DropState(identityB.dropUrls.first().toString(), currentETag))
-        val result2 = chatService.refreshMessages()
+        val result2 = chatServiceB.refreshMessages()
         assertThat(result2.keys, hasSize(0))
     }
 
     @Test
     fun testReceiveMessageFromUnknown() {
-        val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
+        //Remove contact from repo for identity A
+        contactARepository.delete(contactB, identityA)
+
+        val someone = identityB.apply {
             email = "some@one.zz"
             phone = "0190666666"
         }
-        identityRepository.save(someone)
         val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        chatService.sendMessage(message)
+        chatServiceB.sendMessage(message)
 
-        //Remove Identity
-        identityRepository.delete(someone)
 
-        val result = chatService.refreshMessages()
-
+        val result = chatServiceA.refreshMessages()
         assertThat(result.keys, hasSize(1))
-        assertThat(result.keys.first(), equalTo(identityA.keyIdentifier))
-        assertThat(result[identityA.keyIdentifier], hasSize(1))
+        val (identityKey, messages) = result.entries.first()
+        assertThat(identityKey, equalTo(identityA.keyIdentifier))
+        assertThat(messages, hasSize(1))
 
-        val dropMessage = result[identityA.keyIdentifier]!!.first()
-        val unknownContact = contactRepository.find(dropMessage.contactId)
-
+        val dropMessage = messages.first()
+        val unknownContact = contactARepository.find(dropMessage.contactId)
         assertThat(unknownContact.status, equalTo(Contact.ContactStatus.UNKNOWN))
         assertThat(unknownContact.keyIdentifier, equalTo(someone.keyIdentifier))
         assertThat(unknownContact.dropUrls, equalTo(someone.dropUrls))
@@ -142,18 +147,12 @@ class ChatServiceTest {
 
     @Test
     fun testHandleMessageFromIgnored() {
-        val someone = Identity("someone", listOf(dropGenerator.generateUrl()), QblECKeyPair()).apply {
-            email = "some@one.zz"
-            phone = "0190666666"
-        }
-        val message = createMessage(someone, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
-        //Update contact with ignoredFlag and add to target identity
-        val someOnesContact = someone.toContact()
-        someOnesContact.isIgnored = true
-        contactRepository.save(someOnesContact, identityA)
+        contactB.isIgnored = true
+        contactARepository.save(contactB, identityA)
+        val message = createMessage(identityB, contactA, "Hey this is someone. WhatzzzzZZZZUAAPPP?")
 
-        val result = chatService.handleDropUpdate(identityA, dropStateRepo.getDropState(identityA.helloDropUrl),
-            listOf(message.toDropMessage(someone)))
+        val result = chatServiceA.handleDropUpdate(identityA, dropStateRepo.getDropState(identityA.helloDropUrl),
+            listOf(message.toDropMessage(identityA)))
 
         assertThat(result.size, `is`(0))
     }
@@ -164,7 +163,7 @@ class ChatServiceTest {
             createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
             createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA))
 
-        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        val result = chatServiceB.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result, hasSize(3))
     }
 
@@ -174,11 +173,30 @@ class ChatServiceTest {
             createMessage(identityA, contactB, "Blub blub blubb").toDropMessage(identityA),
             createMessage(identityB, contactB, "Blub blub blubb blubb").toDropMessage(identityA))
 
-        val result = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        val result = chatServiceB.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result, hasSize(3))
         //test duplicate handling
-        val result2 = chatService.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
+        val result2 = chatServiceB.handleDropUpdate(identityB, DropState(identityB.helloDropUrl.toString()), messages)
         assertThat(result2, hasSize(0))
+    }
+
+    @Test
+    fun testReceiveMessageFromOwnIdentity() {
+        contactARepository.save(contactB, identityB)
+        val message = createMessage(identityA, contactB, "Blub blub").toDropMessage(identityA)
+        val result = chatServiceA.handleDropUpdate(identityA, DropState(identityA.helloDropUrl.toString()), listOf(message))
+        assertThat(result, hasSize(0))
+    }
+
+    @Test
+    fun testContactNotAssigned() {
+        val newIdentity = createIdentity("Identity C")
+        identityBRepository.save(newIdentity)
+
+        val message = createMessage(identityA, newIdentity.toContact(), "Blub blub").toDropMessage(identityA)
+        val result = chatServiceB.handleDropUpdate(newIdentity, DropState(newIdentity.helloDropUrl.toString()), listOf(message))
+        assertThat(result, hasSize(1))
+        contactBRepository.findByKeyId(newIdentity, contactA.keyIdentifier)
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
