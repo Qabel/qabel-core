@@ -50,24 +50,19 @@ class InMemoryContactRepository : ContactRepository {
         } else throw EntityNotFoundException("Contact not found for Identity!")
     }
 
-    override fun findByKeyId(keyId: String): Contact {
-        if (contacts.contains(keyId)) {
-            return contacts[keyId]!!
-        } else throw EntityNotFoundException("Contact not found!")
-    }
+    override fun findByKeyId(keyId: String): Contact =
+        contacts[keyId] ?: throw EntityNotFoundException("Contact not found!")
 
     override fun exists(contact: Contact): Boolean {
         return contacts.contains(contact.keyIdentifier)
     }
 
-    override fun findContactWithIdentities(keyId: String): ContactData {
-        if (contacts.contains(keyId)) {
-            return contacts[keyId].let { contact ->
-                ContactData(contact!!, findContactIdentities(contact.keyIdentifier),
-                    identities.containsKey(contact.keyIdentifier))
-            }
-        } else throw EntityNotFoundException("Contact is not one of the injected")
-    }
+    override fun findContactWithIdentities(keyId: String): ContactData =
+        contacts[keyId]?.let { contact ->
+            ContactData(contact, findContactIdentities(contact.keyIdentifier),
+                identities.containsKey(contact.keyIdentifier))
+        } ?: throw EntityNotFoundException("Contact is not one of the injected")
+
 
     override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<ContactData> {
         return contacts.values
