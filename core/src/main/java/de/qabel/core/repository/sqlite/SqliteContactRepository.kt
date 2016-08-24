@@ -160,7 +160,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
     }
 
     override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<ContactData> {
-        info("findWithIdentities with filters {}, {}, {}", searchString, status.map { it.name }, excludeIgnored)
+        info("findWithIdentities with filters")
         val contacts = with(createEntityQuery()) {
             //Exclude identities
             leftJoin(ContactDB.IdentityJoin.TABLE, ContactDB.IdentityJoin.TABLE_ALIAS,
