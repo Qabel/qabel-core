@@ -12,28 +12,28 @@ import java.sql.Timestamp
 object ChatDropMessageDB : DBRelation<ChatDropMessage> {
 
     override val TABLE_NAME = "chat_drop_message"
-    override val TABLE_ALIAS = "cdm";
+    override val TABLE_ALIAS = "cdm"
 
-    override val ID: DBField = DBField("id", TABLE_NAME, TABLE_ALIAS);
-    val IDENTITY_ID: DBField = DBField("identity_id", TABLE_NAME, TABLE_ALIAS);
-    val CONTACT_ID = DBField("contact_id", TABLE_NAME, TABLE_ALIAS);
+    override val ID: DBField = field("id")
+    val IDENTITY_ID: DBField = field("identity_id")
+    val CONTACT_ID = field("contact_id")
 
-    val DIRECTION = DBField("direction", TABLE_NAME, TABLE_ALIAS)
-    val STATUS = DBField("status", TABLE_NAME, TABLE_ALIAS);
+    val DIRECTION = field("direction")
+    val STATUS = field("status")
 
-    val PAYLOAD_TYPE = DBField("payload_type", TABLE_NAME, TABLE_ALIAS);
-    val PAYLOAD = DBField("payload", TABLE_NAME, TABLE_ALIAS);
+    val PAYLOAD_TYPE = field("payload_type")
+    val PAYLOAD = field("payload")
 
-    val CREATED_ON = DBField("created_on", TABLE_NAME, TABLE_ALIAS);
+    val CREATED_ON = field("created_on")
 
     override val ENTITY_FIELDS = listOf(CONTACT_ID, IDENTITY_ID, DIRECTION, STATUS,
         PAYLOAD_TYPE, PAYLOAD, CREATED_ON)
 
     override val ENTITY_CLASS: Class<ChatDropMessage> = ChatDropMessage::class.java
 
-    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage) : Int =
+    override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage): Int =
         with(statement) {
-            var i = startIndex;
+            var i = startIndex
             setInt(i++, model.contactId)
             setInt(i++, model.identityId)
             setByte(i++, model.direction.type)
@@ -41,7 +41,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             setString(i++, model.messageType.type)
             setString(i++, MessagePayload.encode(model.messageType, model.payload))
             setTimestamp(i++, Timestamp(model.createdOn))
-            return i;
+            return i
         }
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): ChatDropMessage {
@@ -56,7 +56,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
             resultSet.getString(PAYLOAD.alias()),
             resultSet.getTimestamp(CREATED_ON.alias()).time,
-            id);
+            id)
     }
 
     fun <X : Enum<X>, S : Any> toEnum(enum: Array<X>, value: S, extract: (enum: X) -> S) =

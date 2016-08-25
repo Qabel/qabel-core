@@ -8,7 +8,7 @@ import de.qabel.core.repository.exception.PersistenceException
 
 import java.util.HashMap
 
-class InMemoryDropStateRepository : DropStateRepository {
+open class InMemoryDropStateRepository : DropStateRepository {
 
     private val states = HashMap<String, DropState>()
 

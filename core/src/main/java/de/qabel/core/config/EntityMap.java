@@ -75,7 +75,11 @@ public abstract class EntityMap<T extends Entity> extends Persistable implements
      * @return true if a mapping for the key identifier exists
      */
     public synchronized boolean contains(T entity) {
-        return entities.containsKey(entity.getKeyIdentifier());
+        return contains(entity.getKeyIdentifier());
+    }
+
+    public boolean contains(String keyIdentifier){
+        return entities.containsKey(keyIdentifier);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
+import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
@@ -20,9 +21,9 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     lateinit var identityRepo: IdentityRepository
     lateinit var contactRepo: ContactRepository
 
-    val identityA = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
-    val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()));
-    val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()));
+    val identityA : Identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
+    val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()))
+    val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()))
 
     val now = System.currentTimeMillis()
 
@@ -68,6 +69,34 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     }
 
     @Test
+    fun testFindByContactWithPaging() {
+        var time = System.currentTimeMillis()
+        val messages = mutableListOf<ChatDropMessage>().apply {
+            for(i in 0 until 100){
+                add(message.copy(payload = createTextPayload("BLUBB BLUBB" + i), createdOn = time++))
+            }
+        }
+        messages.forEach { dropRepo.persist(it) }
+
+        val resultList = mutableListOf<ChatDropMessage>()
+        val pageA = dropRepo.findByContact(contactA.id, identityA.id, 0, 20)
+        assertThat(pageA.availableRange, equalTo(100))
+        assertThat(pageA.result, hasSize(20))
+        resultList.addAll(pageA.result)
+        val pageB = dropRepo.findByContact(contactA.id, identityA.id, 20, 20)
+        assertThat(pageB.availableRange, equalTo(100))
+        assertThat(pageB.result, hasSize(20))
+        resultList.addAll(pageB.result)
+        val pageC = dropRepo.findByContact(contactA.id, identityA.id, 40, 60)
+        assertThat(pageC.availableRange, equalTo(100))
+        assertThat(pageC.result, hasSize(60))
+        resultList.addAll(pageC.result)
+
+        assertThat(resultList.size, equalTo(messages.size))
+        assertThat(messages.reversed(), equalTo(resultList.toList()))
+    }
+
+    @Test
     fun testPersist() {
         dropRepo.persist(message)
         val storedMessage = dropRepo.findById(message.id)
@@ -95,10 +124,15 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
     @Test
     fun testFindLatest() {
-        val msgA = message.copy(createdOn = System.currentTimeMillis() + 1000, payload = createTextPayload("A"));
+        val ignoredContact = Contact("ignored", emptyList(), QblECPublicKey("test".toByteArray())).apply { isIgnored = true }
+        contactRepo.save(ignoredContact, identityA)
+
+        val msgA = message.copy(createdOn = System.currentTimeMillis() + 1000, payload = createTextPayload("A"))
         val msgB = message.copy(contactId = contactB.id, createdOn = System.currentTimeMillis() + 100, payload = createTextPayload("B"))
+        val msgIgnored = message.copy(contactId = ignoredContact.id)
         dropRepo.persist(msgA)
         dropRepo.persist(msgB)
+        dropRepo.persist(msgIgnored)
         dropRepo.persist(message)
         dropRepo.persist(message.copy(contactId = contactB.id))
 

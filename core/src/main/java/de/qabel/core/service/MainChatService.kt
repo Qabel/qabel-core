@@ -28,7 +28,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         val sender = identityRepository.find(message.identityId)
         val receiver = contactRepository.find(message.contactId)
 
-        val dropMessage = message.toDropMessage(sender);
+        val dropMessage = message.toDropMessage(sender)
 
         var email = ""
         var phone = ""
@@ -47,8 +47,8 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         chatDropMessageRepository.update(message)
     }
 
-    override fun refreshMessages(): Map<Identity, List<ChatDropMessage>> {
-        val resultMap = DefaultHashMap<Identity, MutableList<ChatDropMessage>>({ mutableListOf() })
+    override fun refreshMessages(): Map<String, List<ChatDropMessage>> {
+        val resultMap = DefaultHashMap<String, MutableList<ChatDropMessage>>({ mutableListOf() })
         identityRepository.findAll().entities.forEach { identity ->
             identity.dropUrls.forEach { dropUrl ->
                 val dropState = dropStateRepository.getDropState(dropUrl)
@@ -56,7 +56,8 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
                 try {
                     val dropResult = dropConnector.receiveDropMessages(identity, dropUrl, dropState)
                     val newMessages = handleDropUpdate(identity, dropResult.dropState, dropResult.dropMessages)
-                    resultMap.getOrDefault(identity).addAll(newMessages)
+
+                    resultMap.getOrDefault(identity.keyIdentifier).addAll(newMessages)
                 } catch(ex: Throwable) {
                     logger.warn("Cannot receive messages from {}", dropState.drop, ex)
                 }
@@ -85,8 +86,18 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
     }
 
     private fun getMessageContact(dropMessage: DropMessage, identity: Identity): Contact? = try {
-        val contact = contactRepository.findByKeyId(dropMessage.senderKeyId)
-        if (contact.isIgnored) null else contact
+        val contactDetails = contactRepository.findContactWithIdentities(dropMessage.senderKeyId)
+        //Filter ignored
+        if (contactDetails.contact.isIgnored) null
+        //Dont receive messages from known identities
+        else if(contactDetails.isIdentity) null
+        //Add connection if required, TODO currently in discussion #629
+        else if(!contactDetails.identities.contains(identity)){
+            contactRepository.save(contactDetails.contact, identity)
+            contactDetails.contact
+        }else {
+            contactDetails.contact
+        }
     } catch (ex: EntityNotFoundException) {
         //If DropMessageMetadata is given, we create a new unknown contact
         dropMessage.dropMessageMetadata?.let {
