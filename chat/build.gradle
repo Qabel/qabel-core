@@ -18,7 +18,6 @@ dependencies {
     compile project(':box')
     //TODO bad include of test sources
     testCompile project(':core').sourceSets.test.output
-    testCompile project(':core')
 }
 
 tasks.withType(Test) {
