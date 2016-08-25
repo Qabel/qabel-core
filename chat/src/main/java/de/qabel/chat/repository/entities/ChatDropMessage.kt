@@ -1,10 +1,10 @@
 package de.qabel.chat.repository.entities
 
-import com.google.gson.Gson
+import de.qabel.chat.repository.entities.ChatDropMessage.MessageType.BOX_MESSAGE
+import de.qabel.chat.repository.entities.ChatDropMessage.MessageType.SHARE_NOTIFICATION
+import de.qabel.core.config.SymmetricKey
 import de.qabel.core.repository.framework.BaseEntity
-import de.qabel.qabelbox.chat.dto.SymmetricKey
 import java.net.URI
-import java.net.URL
 
 data class ChatDropMessage(val contactId: Int,
                            val identityId: Int,
@@ -23,7 +23,7 @@ data class ChatDropMessage(val contactId: Int,
                 payloadString: String,
                 createdOn: Long,
                 id: Int = 0) : this(contactId, identityId, direction, status, messageType,
-        MessagePayload.decode(messageType, payloadString), createdOn, id)
+        MessagePayload.fromString(messageType, payloadString), createdOn, id)
 
     enum class Status(val type: Int) {
         NEW(0), READ(1), PENDING(2), SENT(3);
@@ -49,33 +49,16 @@ data class ChatDropMessage(val contactId: Int,
         }
 
         companion object {
-            fun decode(messageType: MessageType, content: String): MessagePayload {
-                val gson = Gson()
-                if (messageType == MessageType.SHARE_NOTIFICATION) {
-                    return gson.fromJson(content, ShareMessage::class.java) ?: throw RuntimeException("Error decoding json " + content)
-                } else if (messageType == MessageType.BOX_MESSAGE) {
-                    return gson.fromJson(content, TextMessage::class.java) ?: throw RuntimeException("Error decoding json " + content)
+            fun fromString(messageType: MessageType, content: String): MessagePayload =
+                PayloadSerializer.gson().let {
+                    when (messageType) {
+                        SHARE_NOTIFICATION -> it.fromJson(content, ShareMessage::class.java)
+                        BOX_MESSAGE -> it.fromJson(content, TextMessage::class.java)
+                        else -> throw RuntimeException("Unknown MessageType")
+                    } ?: throw RuntimeException("Failed to decode message payload")
                 }
-                throw RuntimeException("Unknown MessageType")
-            }
-
-            fun encode(messageType: MessageType, content: MessagePayload): String {
-                val gson = Gson()
-                if (messageType == MessageType.SHARE_NOTIFICATION) {
-                    return gson.toJson(content, ShareMessage::class.java)
-                } else if (messageType == MessageType.BOX_MESSAGE) {
-                    return gson.toJson(content, TextMessage::class.java)
-                }
-                throw RuntimeException("Unknown MessageType")
-            }
         }
 
-        override fun toString(): String {
-            return when (this) {
-                is TextMessage -> encode(MessageType.BOX_MESSAGE, this)
-                is ShareMessage -> encode(MessageType.SHARE_NOTIFICATION, this)
-                else -> throw RuntimeException("Unknown MessageType")
-            }
-        }
+        override fun toString(): String = PayloadSerializer.gson().toJson(this)
     }
 }

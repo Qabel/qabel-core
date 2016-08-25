@@ -78,8 +78,7 @@ class ChatServiceTest : CoreTestCase {
 
         val received = messages.first()
         assertThat(received.contactId, equalTo(identityA.id))
-        assertThat(ChatDropMessage.MessagePayload.encode(received.messageType, received.payload),
-            equalTo(ChatDropMessage.MessagePayload.encode(message.messageType, message.payload)))
+        assertThat(received.payload.toString(), equalTo(message.payload.toString()))
         assertThat(received.messageType, equalTo(message.messageType))
         assertThat(received.status, equalTo(ChatDropMessage.Status.NEW))
     }
@@ -200,6 +199,6 @@ class ChatServiceTest : CoreTestCase {
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
-        DropMessage(identity, ChatDropMessage.MessagePayload.encode(messageType, payload), messageType.type)
+        DropMessage(identity, payload.toString(), messageType.type)
 
 }

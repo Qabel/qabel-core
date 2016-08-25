@@ -117,6 +117,6 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
-        DropMessage(identity, MessagePayload.encode(messageType, payload), messageType.type)
+        DropMessage(identity, payload.toString(), messageType.type)
 
 }

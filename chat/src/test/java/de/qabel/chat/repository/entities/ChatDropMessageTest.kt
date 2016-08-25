@@ -4,11 +4,12 @@ import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
+import org.spongycastle.util.encoders.Hex
 
 class ChatDropMessageTest {
 
     var textPayload = "{msg:\"This is a test message.\"}"
-    var shareMessagePayload = "{msg:\"This is a shareMessage.\", url:\"http://test.qabel.de\", key:[" + "thisisthekey".toByteArray().joinToString(",") + "] }"
+    var shareMessagePayload = "{msg:\"This is a shareMessage.\", url:\"http://test.qabel.de\", key:\"" + Hex.toHexString("thisisthekey".toByteArray()) + "\" }"
 
     @Test
     fun testTextPayload() {
