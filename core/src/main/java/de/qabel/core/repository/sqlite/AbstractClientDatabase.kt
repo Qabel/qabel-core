@@ -32,9 +32,10 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
 
     @Throws(MigrationException::class)
     override fun migrate(toVersion: Long, fromVersion: Long) {
+        println("migrate $fromVersion $toVersion")
         getMigrations(connection)
-            .filter { it.version > fromVersion && it.version <= toVersion }
             .sortedBy { it.version }
+            .filter { it.version > fromVersion && it.version <= toVersion }
             .forEach { migrate(it) }
     }
 
@@ -47,10 +48,10 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
                 this@AbstractClientDatabase.version = migration.version
                 logger.info("ClientDatabase now on version " + this@AbstractClientDatabase.version)
             }
-        } catch (e: PersistenceException) {
+        } catch (e: Throwable) {
+            e.printStackTrace()
             throw MigrationFailedException(migration, e.message, e)
         }
-
     }
 
     @Throws(SQLException::class)
@@ -68,8 +69,8 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
 
     @Throws(MigrationException::class)
     override fun migrate() {
-        val migrations = getMigrations(connection)
-        migrateTo(migrations[migrations.size - 1].version)
+        val maxVersion = getMigrations(connection).sortedBy { it.version }.last().version
+        migrateTo(maxVersion)
     }
 
     @Throws(SQLException::class)
