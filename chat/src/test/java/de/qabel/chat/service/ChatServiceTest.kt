@@ -1,4 +1,4 @@
-package de.qabel.core.service
+package de.qabel.chat.service
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -9,9 +9,9 @@ import de.qabel.core.extensions.createIdentity
 import de.qabel.core.http.DropConnector
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
-import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.DropState
-import de.qabel.core.repository.inmemory.InMemoryChatDropMessageRepository
+import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
 import de.qabel.core.repository.inmemory.InMemoryIdentityRepository
@@ -29,7 +29,7 @@ class ChatServiceTest : CoreTestCase {
     val contactA: Contact = createContact(identityA.alias, identityA.helloDropUrl, identityA.ecPublicKey)
     val identityARepository = InMemoryIdentityRepository()
     val contactARepository = InMemoryContactRepository()
-    val chatDropRepoA = InMemoryChatDropMessageRepository()
+    val chatDropRepoA = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceA = MainChatService(dropConnector, identityARepository,
         contactARepository, chatDropRepoA, dropStateRepo)
 
@@ -37,7 +37,7 @@ class ChatServiceTest : CoreTestCase {
     val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
     val identityBRepository = InMemoryIdentityRepository()
     val contactBRepository = InMemoryContactRepository()
-    val chatDropRepoB = InMemoryChatDropMessageRepository()
+    val chatDropRepoB = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceB = MainChatService(dropConnector, identityBRepository,
         contactBRepository, chatDropRepoB, dropStateRepo)
 

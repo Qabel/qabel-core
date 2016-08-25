@@ -1,27 +1,28 @@
-package de.qabel.core.repository.sqlite
+package de.qabel.chat.repository.sqlite
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
-import de.qabel.core.repository.ChatDropMessageRepository
+import de.qabel.chat.repository.ChatDropMessageRepository
 import de.qabel.core.repository.EntityManager
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.Direction
-import de.qabel.core.repository.entities.ChatDropMessage.Status
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage.Direction
+import de.qabel.chat.repository.entities.ChatDropMessage.Status
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.PagingResult
 import de.qabel.core.repository.framework.QueryBuilder
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.DIRECTION
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
-import de.qabel.core.repository.sqlite.schemas.ChatDropMessageDB.STATUS
+import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.DIRECTION
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
+import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.STATUS
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 
-class SqliteChatDropMessageRepository(val database: ClientDatabase,
+class SqliteChatDropMessageRepository(database: ClientDatabase,
                                       entityManager: EntityManager) :
     BaseRepository<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
@@ -40,7 +41,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
         createEntityQuery().apply {
             whereAndEquals(CONTACT_ID, contactId)
             whereAndEquals(IDENTITY_ID, identityId)
-            orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
+            orderBy(CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
         }
 
     override fun findNew(identityId: Int): List<ChatDropMessage> =
@@ -61,7 +62,7 @@ class SqliteChatDropMessageRepository(val database: ClientDatabase,
             //filter newest messages by join
             leftJoin(ChatDropMessageDB.TABLE_NAME, "cdm2", CONTACT_ID.exp(), "cdm2.contact_id AND cdm2.created_on > " + CREATED_ON.exp())
             where(" AND cdm2.id IS NULL")
-            orderBy(ChatDropMessageDB.CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
+            orderBy(CREATED_ON.exp(), QueryBuilder.Direction.DESCENDING)
             groupBy(CONTACT_ID)
 
             return getResultList(this)

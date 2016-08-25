@@ -1,8 +1,8 @@
-package de.qabel.core.repository.sqlite.schemas
+package de.qabel.chat.repository.sqlite.schemas
 
 import de.qabel.core.repository.EntityManager
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
 import java.sql.PreparedStatement

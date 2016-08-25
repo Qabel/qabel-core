@@ -1,8 +1,9 @@
-package de.qabel.core.repository.entities
+package de.qabel.chat.repository.entities
 
 import com.google.gson.Gson
 import de.qabel.core.repository.framework.BaseEntity
 import de.qabel.qabelbox.chat.dto.SymmetricKey
+import java.net.URI
 import java.net.URL
 
 data class ChatDropMessage(val contactId: Int,
@@ -39,6 +40,14 @@ data class ChatDropMessage(val contactId: Int,
 
     sealed class MessagePayload {
 
+        class TextMessage(val msg: String) : MessagePayload()
+        class ShareMessage(val msg: String, val url: URI, val key: SymmetricKey, val fileName: String,
+                           val size: Long, var status: ShareStatus = ShareMessage.ShareStatus.NEW) : MessagePayload() {
+            enum class ShareStatus(val type: Int) {
+                NEW(0), ACCEPTED(1), UNREACHABLE(2), DELETED(3)
+            }
+        }
+
         companion object {
             fun decode(messageType: MessageType, content: String): MessagePayload {
                 val gson = Gson()
@@ -68,12 +77,5 @@ data class ChatDropMessage(val contactId: Int,
                 else -> throw RuntimeException("Unknown MessageType")
             }
         }
-
-        class TextMessage(val msg: String) : MessagePayload()
-        class ShareMessage(val msg: String, private val url: String, private val key: ByteArray) : MessagePayload() {
-            fun getUrl() = URL(url)
-            fun getKey() = SymmetricKey.Factory.fromBytes(key)
-        }
     }
-
 }

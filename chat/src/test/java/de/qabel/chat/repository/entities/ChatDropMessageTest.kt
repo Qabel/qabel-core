@@ -1,4 +1,4 @@
-package de.qabel.core.repository.entities
+package de.qabel.chat.repository.entities
 
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.notNullValue
@@ -26,7 +26,7 @@ class ChatDropMessageTest {
 
         assertThat(payload as ChatDropMessage.MessagePayload.ShareMessage, notNullValue())
         assertThat(payload.msg, equalTo("This is a shareMessage."))
-        assertThat(payload.getUrl().toString(), equalTo("http://test.qabel.de"))
-        assertThat(payload.getKey().byteList, equalTo("thisisthekey".toByteArray().toList()))
+        assertThat(payload.url.toString(), equalTo("http://test.qabel.de"))
+        assertThat(payload.key.byteList, equalTo("thisisthekey".toByteArray().toList()))
     }
 }

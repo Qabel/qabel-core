@@ -1,8 +1,8 @@
-package de.qabel.core.repository
+package de.qabel.chat.repository
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
-import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.repository.framework.Repository
 import de.qabel.core.repository.framework.PagingResult
 
