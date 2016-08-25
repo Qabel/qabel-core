@@ -13,7 +13,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.meanbean.util.AssertionUtils;
 import org.slf4j.Logger;
@@ -490,11 +489,7 @@ public abstract class BoxVolumeTest {
         assertThat(index.listShares().size(), is(1));
     }
 
-    /**
-     * Currently a folder with a name conflict just disappears and all is lost.
-     */
     @Test
-    @Ignore
     public void testFolderNameConflictOnDifferentClients() throws QblStorageException, IOException {
         BoxNavigation nav = setupConflictNav1();
         BoxNavigation nav2 = setupConflictNav2();
@@ -505,7 +500,8 @@ public abstract class BoxVolumeTest {
         nav.commit();
         assertThat(nav.listFiles().size(), is(1));
         assertThat(nav.listFolders().size(), is(1));
-        assertThat(nav.listFiles().get(0).name, startsWith("foobar_conflict"));
+        // folders are merged
+        assertThat(nav.listFiles().get(0).name, equalTo("foobar"));
     }
 
     private BoxNavigation setupConflictNav2() throws QblStorageException {
@@ -642,6 +638,74 @@ public abstract class BoxVolumeTest {
         assertTrue(subnav.hasFile("file1"));
         assertTrue(subnav.hasFile("file2"));
         assertThat(subnav.listFiles(), hasSize(2));
+    }
+
+    @Test
+    public void sameFilesAreMerged() throws Exception {
+        // set up navs that would be autocommitted after they have content (and thus overwrite each other)
+        BoxNavigation nav1 = setupConflictNav1();
+        BoxNavigation nav2 = setupConflictNav2();
+
+        // add content simultaneously
+        File file = new File(testFileName);
+        nav1.upload("c", file);
+        nav2.upload("c", file);
+
+        nav1.commit();
+        nav2.commit();
+
+        // test the conflict result
+        nav1.refresh();
+        assertTrue(nav1.hasFile("c"));
+        nav2.refresh();
+        assertTrue(nav1.hasFile("c"));
+        assertFalse("Conflict file for 'c' found where none should be", nav1.hasFile("c_conflict"));
+        assertThat(nav1.listFiles(), hasSize(1));
+    }
+
+    @Test
+    public void conflictsBySameNameInSubfolders() throws Exception {
+        // set up navs that would be autocommitted after they have content (and thus overwrite each other)
+        BoxNavigation nav1 = setupConflictNav1();
+        BoxNavigation nav2 = setupConflictNav2();
+
+        // add conflicting folders simultaneously
+        BoxFolder folder1 = nav1.createFolder("a");
+        BoxFolder folder2 = nav2.createFolder("a");
+        BoxNavigation subnav1 = nav1.navigate(folder1);
+        BoxNavigation subnav2 = nav2.navigate(folder2);
+
+        BoxFolder folderB1 = subnav1.createFolder("b");
+        BoxFolder folderB2 = subnav2.createFolder("b");
+        BoxNavigation subnavB1 = subnav1.navigate(folderB1);
+        BoxNavigation subnavB2 = subnav2.navigate(folderB2);
+
+        // add content simultaneously
+        File file = new File(testFileName);
+        subnavB1.upload("c", file);
+        subnavB2.upload("c", file);
+
+        nav1.commit();
+        subnav1.commit();
+        subnavB1.commit();
+        nav2.commit();
+        subnav2.commit();
+        subnavB2.commit();
+
+        // test the conflict result
+        nav1.refresh();
+        assertThat(nav1.listFolders(), hasSize(1));
+        subnav1.refresh();
+        assertThat(subnav1.listFolders(), hasSize(1));
+
+        subnavB1.refresh();
+        assertTrue(subnavB1.hasFile("c"));
+        subnavB2.refresh();
+        assertTrue(subnavB2.hasFile("c"));
+        assertFalse("Conflict file for 'c' found where none should be", subnavB1.hasFile("c_conflict"));
+        assertFalse("Conflict file for 'c' found where none should be", subnavB2.hasFile("c_conflict"));
+        assertThat(subnavB1.listFiles(), hasSize(1));
+        assertThat(subnavB2.listFiles(), hasSize(1));
     }
 
     protected boolean blockExists(String meta) throws QblStorageException {
