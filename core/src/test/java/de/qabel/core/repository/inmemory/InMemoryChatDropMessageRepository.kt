@@ -7,7 +7,7 @@ import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.PagingResult
 
-class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
+open class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
     val messages = mutableListOf<ChatDropMessage>()
 

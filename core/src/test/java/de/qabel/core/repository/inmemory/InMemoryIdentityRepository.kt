@@ -6,7 +6,7 @@ import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 
-class InMemoryIdentityRepository : IdentityRepository {
+open class InMemoryIdentityRepository : IdentityRepository {
     override fun delete(identity: Identity?) {
         identities.remove(identity)
     }

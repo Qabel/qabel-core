@@ -11,7 +11,7 @@ import de.qabel.core.util.DefaultHashMap
 import java.util.*
 
 
-class InMemoryContactRepository : ContactRepository {
+open class InMemoryContactRepository : ContactRepository {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
     val identities: MutableMap<String, Identity> = mutableMapOf()
