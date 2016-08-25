@@ -199,7 +199,7 @@ abstract class AbstractNavigation(
         val uploadResult = uploadEncrypted(fileInput, key, "blocks/" + block, listener)
         boxFile.hashed = uploadResult.hash
 
-        execute(UpdateFileChange(oldFile, boxFile))
+        execute(UpdateFileChange(oldFile, boxFile, writeBackend))
 
         try {
             if (boxFile.isShared()) {
