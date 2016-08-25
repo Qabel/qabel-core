@@ -652,8 +652,6 @@ public abstract class BoxVolumeTest {
         nav2.upload("c", file);
 
         nav1.commit();
-        nav1.commit();
-        nav2.commit();
         nav2.commit();
 
         // test the conflict result
