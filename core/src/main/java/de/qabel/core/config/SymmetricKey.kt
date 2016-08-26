@@ -1,4 +1,4 @@
-package de.qabel.qabelbox.chat.dto
+package de.qabel.core.config
 
 import org.spongycastle.util.encoders.Hex
 

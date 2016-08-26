@@ -1,27 +1,41 @@
-package de.qabel.core.repository
+package de.qabel.chat.repository
 
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage.*
+import de.qabel.chat.repository.sqlite.SqliteChatDropMessageRepository
+import de.qabel.chat.repository.sqlite.migration.Migration1460997040ChatDropMessage
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.core.repository.AbstractSqliteRepositoryTest
+import de.qabel.core.repository.ContactRepository
+import de.qabel.core.repository.EntityManager
+import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.*
+import de.qabel.core.repository.sqlite.migration.AbstractMigration
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Test
+import java.sql.Connection
 import java.util.*
 
 class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessageRepository>() {
+
+    override fun createDatabase(connection: Connection): ClientDatabase = object : DesktopClientDatabase(connection) {
+        override fun getMigrations(connection: Connection): Array<AbstractMigration> {
+            return super.getMigrations(connection) + Migration1460997040ChatDropMessage(connection)
+        }
+    }
 
     lateinit var dropRepo: ChatDropMessageRepository
     lateinit var identityRepo: IdentityRepository
     lateinit var contactRepo: ContactRepository
 
-    val identityA : Identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
+    val identityA: Identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
     val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()))
     val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()))
 
@@ -72,7 +86,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     fun testFindByContactWithPaging() {
         var time = System.currentTimeMillis()
         val messages = mutableListOf<ChatDropMessage>().apply {
-            for(i in 0 until 100){
+            for (i in 0 until 100) {
                 add(message.copy(payload = createTextPayload("BLUBB BLUBB" + i), createdOn = time++))
             }
         }
@@ -107,7 +121,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     fun testUpdate() {
         dropRepo.persist(message)
 
-        message = message.copy(payload =  createTextPayload("barfoo"))
+        message = message.copy(payload = createTextPayload("barfoo"))
         dropRepo.update(message)
 
         val storedMessage = dropRepo.findById(message.id)
@@ -155,7 +169,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     }
 
     @Test
-    fun testMarkAsRead(){
+    fun testMarkAsRead() {
         val msgA = message.copy(status = Status.NEW)
         val msgB = message.copy(status = Status.NEW)
         dropRepo.persist(msgA)
@@ -170,7 +184,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     }
 
     @Test
-    fun testExists(){
+    fun testExists() {
         dropRepo.persist(message)
         assertTrue(dropRepo.exists(message))
         dropRepo.delete(message.id)

@@ -1,14 +1,15 @@
-package de.qabel.core.repository.entities
+package de.qabel.chat.repository.entities
 
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.notNullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
+import org.spongycastle.util.encoders.Hex
 
 class ChatDropMessageTest {
 
     var textPayload = "{msg:\"This is a test message.\"}"
-    var shareMessagePayload = "{msg:\"This is a shareMessage.\", url:\"http://test.qabel.de\", key:[" + "thisisthekey".toByteArray().joinToString(",") + "] }"
+    var shareMessagePayload = "{msg:\"This is a shareMessage.\", url:\"http://test.qabel.de\", key:\"" + Hex.toHexString("thisisthekey".toByteArray()) + "\" }"
 
     @Test
     fun testTextPayload() {
@@ -26,7 +27,7 @@ class ChatDropMessageTest {
 
         assertThat(payload as ChatDropMessage.MessagePayload.ShareMessage, notNullValue())
         assertThat(payload.msg, equalTo("This is a shareMessage."))
-        assertThat(payload.getUrl().toString(), equalTo("http://test.qabel.de"))
-        assertThat(payload.getKey().byteList, equalTo("thisisthekey".toByteArray().toList()))
+        assertThat(payload.url.toString(), equalTo("http://test.qabel.de"))
+        assertThat(payload.key.byteList, equalTo("thisisthekey".toByteArray().toList()))
     }
 }

@@ -1,2 +1,2 @@
 rootProject.name = 'qabel-core'
-include ':core', ':box'
+include ':core', ':box', ':chat'

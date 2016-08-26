@@ -1,4 +1,4 @@
-package de.qabel.core.service
+package de.qabel.chat.service
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -9,9 +9,9 @@ import de.qabel.core.extensions.createIdentity
 import de.qabel.core.http.DropConnector
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
-import de.qabel.core.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.DropState
-import de.qabel.core.repository.inmemory.InMemoryChatDropMessageRepository
+import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
 import de.qabel.core.repository.inmemory.InMemoryIdentityRepository
@@ -29,7 +29,7 @@ class ChatServiceTest : CoreTestCase {
     val contactA: Contact = createContact(identityA.alias, identityA.helloDropUrl, identityA.ecPublicKey)
     val identityARepository = InMemoryIdentityRepository()
     val contactARepository = InMemoryContactRepository()
-    val chatDropRepoA = InMemoryChatDropMessageRepository()
+    val chatDropRepoA = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceA = MainChatService(dropConnector, identityARepository,
         contactARepository, chatDropRepoA, dropStateRepo)
 
@@ -78,8 +78,7 @@ class ChatServiceTest : CoreTestCase {
 
         val received = messages.first()
         assertThat(received.contactId, equalTo(identityA.id))
-        assertThat(ChatDropMessage.MessagePayload.encode(received.messageType, received.payload),
-            equalTo(ChatDropMessage.MessagePayload.encode(message.messageType, message.payload)))
+        assertThat(received.payload.toString(), equalTo(message.payload.toString()))
         assertThat(received.messageType, equalTo(message.messageType))
         assertThat(received.status, equalTo(ChatDropMessage.Status.NEW))
     }
@@ -200,6 +199,6 @@ class ChatServiceTest : CoreTestCase {
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
-        DropMessage(identity, ChatDropMessage.MessagePayload.encode(messageType, payload), messageType.type)
+        DropMessage(identity, payload.toString(), messageType.type)
 
 }
