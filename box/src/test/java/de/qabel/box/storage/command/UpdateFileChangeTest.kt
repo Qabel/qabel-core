@@ -25,7 +25,7 @@ class UpdateFileChangeTest {
 
     @Test
     fun insertsFileByDefault() {
-        val change = UpdateFileChange(null, file, writeBackend)
+        val change = UpdateFileChange(null, file)
 
         change.execute(dm)
 
@@ -36,7 +36,7 @@ class UpdateFileChangeTest {
     fun removesExpectedFile() {
         dm.insertFile(expectedFile)
 
-        UpdateFileChange(expectedFile, file, writeBackend).execute(dm)
+        UpdateFileChange(expectedFile, file).execute(dm)
 
         assertThat(dm.listFiles(), contains((file)))
     }
@@ -45,7 +45,7 @@ class UpdateFileChangeTest {
     fun renamesUnexpectedFiles() {
         dm.insertFile(anotherFile)
 
-        UpdateFileChange(expectedFile, file, writeBackend).execute(dm)
+        UpdateFileChange(expectedFile, file).execute(dm)
 
         assertThat(dm.listFiles(), containsInAnyOrder(anotherFile, file))
         assertThat(file.name, equalTo("filename"))
@@ -57,12 +57,32 @@ class UpdateFileChangeTest {
         dm.insertFile(anotherFile)
         dm.insertFile(anotherConflictFile)
 
-        UpdateFileChange(null, file, writeBackend).execute(dm)
+        UpdateFileChange(null, file).execute(dm)
 
         assertThat(dm.listFiles(), containsInAnyOrder(anotherConflictFile, anotherFile, file))
         assertThat(file.name, equalTo("filename"))
         assertThat(anotherConflictFile.name, equalTo("filename_conflict"))
         assertThat(anotherFile.name, equalTo("filename_conflict_conflict"))
+    }
+
+    @Test
+    fun detectsNonDuplicateByHash() {
+        val hashedFile = BoxFile("p", "block1", "filename", 1, 2, ByteArray(0))
+        hashedFile.setHash(byteArrayOf(1,2,3), "foo")
+        dm.insertFile(hashedFile)
+
+        var deleted: String = ""
+        val backend: StorageWriteBackend = object: StorageWriteBackend {
+            override fun upload(name: String?, content: InputStream?) = TODO()
+            override fun delete(name: String?) {
+                deleted = name!!
+            }
+        }
+        val change = UpdateFileChange(null, file)
+        change.execute(dm)
+        change.postprocess(dm, backend)
+        assertNotEquals("Block was deleted", "blocks/" + file.block, deleted)
+        assertNotEquals("Block was deleted", "blocks/" + hashedFile.block, deleted)
     }
 
     @Test
@@ -77,12 +97,11 @@ class UpdateFileChangeTest {
                 deleted = name!!
             }
         }
-        val change = UpdateFileChange(null, hashedFile, backend)
+
+        val change = UpdateFileChange(null, hashedFile)
         change.execute(dm)
+        change.postprocess(dm, backend)
         assertEquals("Block was not deleted", "blocks/" + hashedFile.block, deleted)
-        deleted = ""
-        change.execute(dm)
-        assertEquals("Block was deleted twice", "blocks/" + hashedFile.block, deleted)
 
         assertThat(dm.listFiles(), allOf(containsInAnyOrder(hashedFile), hasSize(1)))
         assertThat(hashedFile.name, equalTo("filename"))
