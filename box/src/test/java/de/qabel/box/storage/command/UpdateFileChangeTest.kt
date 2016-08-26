@@ -77,8 +77,12 @@ class UpdateFileChangeTest {
                 deleted = name!!
             }
         }
-        UpdateFileChange(null, hashedFile, backend).execute(dm)
+        val change = UpdateFileChange(null, hashedFile, backend)
+        change.execute(dm)
         assertEquals("Block was not deleted", "blocks/" + hashedFile.block, deleted)
+        deleted = ""
+        change.execute(dm)
+        assertEquals("Block was deleted twice", "blocks/" + hashedFile.block, deleted)
 
         assertThat(dm.listFiles(), allOf(containsInAnyOrder(hashedFile), hasSize(1)))
         assertThat(hashedFile.name, equalTo("filename"))
