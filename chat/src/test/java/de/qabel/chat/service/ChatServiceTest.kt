@@ -37,7 +37,7 @@ class ChatServiceTest : CoreTestCase {
     val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
     val identityBRepository = InMemoryIdentityRepository()
     val contactBRepository = InMemoryContactRepository()
-    val chatDropRepoB = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
+    val chatDropRepoB = InMemoryChatDropMessageRepository()
     val chatServiceB = MainChatService(dropConnector, identityBRepository,
         contactBRepository, chatDropRepoB, dropStateRepo)
 

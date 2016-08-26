@@ -27,7 +27,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
 
     override fun createDatabase(connection: Connection): ClientDatabase = object : DesktopClientDatabase(connection) {
         override fun getMigrations(connection: Connection): Array<AbstractMigration> {
-            return super.getMigrations(connection).plus(Migration1460997040ChatDropMessage(connection))
+            return super.getMigrations(connection) + Migration1460997040ChatDropMessage(connection)
         }
     }
 

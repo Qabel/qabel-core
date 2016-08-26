@@ -6,7 +6,7 @@ import de.qabel.core.config.Identity
 
 private val splitRegex: Regex by lazy { " ".toRegex() }
 private fun String.toInitials(): String = split(splitRegex).let {
-    first().toUpperCase().plus(if(it.size > 1) it[1].toUpperCase() else "")
+    first().toUpperCase() + if (it.size > 1) it[1].toUpperCase() else ""
 }
 
 fun Contact.displayName(): String {

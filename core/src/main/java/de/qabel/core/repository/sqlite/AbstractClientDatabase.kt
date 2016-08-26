@@ -10,7 +10,7 @@ import java.sql.Connection
 import java.sql.PreparedStatement
 import java.sql.SQLException
 
-abstract class AbstractClientDatabase(protected val connection: Connection): ClientDatabase {
+abstract class AbstractClientDatabase(protected val connection: Connection) : ClientDatabase {
     var transactionManager: TransactionManager
         protected set
 
@@ -32,7 +32,6 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
 
     @Throws(MigrationException::class)
     override fun migrate(toVersion: Long, fromVersion: Long) {
-        println("migrate $fromVersion $toVersion")
         getMigrations(connection)
             .sortedBy { it.version }
             .filter { it.version > fromVersion && it.version <= toVersion }
@@ -48,8 +47,7 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
                 this@AbstractClientDatabase.version = migration.version
                 logger.info("ClientDatabase now on version " + this@AbstractClientDatabase.version)
             }
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        } catch (e: PersistenceException) {
             throw MigrationFailedException(migration, e.message, e)
         }
     }
@@ -57,7 +55,7 @@ abstract class AbstractClientDatabase(protected val connection: Connection): Cli
     @Throws(SQLException::class)
     fun tableExists(tableName: String): Boolean {
         connection.prepareStatement(
-                "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?").use {
+            "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name=?").use {
             it.setString(1, tableName)
             it.execute()
             it.resultSet.use({ rs ->
