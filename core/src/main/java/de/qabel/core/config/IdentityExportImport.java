@@ -14,7 +14,6 @@ import java.util.Collection;
 
 public class IdentityExportImport {
 
-    private static final String KEY_ID = "id";
     private static final String KEY_ALIAS = "alias";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_PHONE = "phone";
@@ -33,7 +32,6 @@ public class IdentityExportImport {
         JSONArray jsonDropUrls = new JSONArray();
 
         try {
-            jsonObject.put(KEY_ID, identity.getId());
             jsonObject.put(KEY_ALIAS, identity.getAlias());
             jsonObject.put(KEY_EMAIL, identity.getEmail());
             jsonObject.put(KEY_PHONE, identity.getPhone());
@@ -83,9 +81,6 @@ public class IdentityExportImport {
             for (int i = 0; i < jsonPrefixes.length(); i++) {
                 identity.getPrefixes().add(jsonPrefixes.getString(i));
             }
-        }
-        if (jsonObject.has(KEY_ID)) {
-            identity.setId(jsonObject.getInt(KEY_ID));
         }
         if (jsonObject.has(KEY_EMAIL)) {
             identity.setEmail(jsonObject.getString(KEY_EMAIL));

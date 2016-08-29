@@ -22,6 +22,7 @@ public class IdentityExportImportTest {
         dropURLs.add(new DropURL("http://localhost:6000/0000000000000000000000000000000000000000000"));
 
         Identity identity = new Identity("Identity", dropURLs, qblECKeyPair);
+        identity.setId(1);
         identity.setPhone("049111111");
         identity.setEmail("test@example.com");
         identity.getPrefixes().add("prefix1");
@@ -31,7 +32,7 @@ public class IdentityExportImportTest {
 
         Identity importedIdentity = IdentityExportImport.parseIdentity(exportedIdentity);
 
-        assertEquals(identity.getId(), importedIdentity.getId());
+        assertEquals(0, importedIdentity.getId());
         assertEquals(identity.getEmail(), importedIdentity.getEmail());
         assertEquals(identity.getPhone(), importedIdentity.getPhone());
         assertEquals(identity.getPrimaryKeyPair(), importedIdentity.getPrimaryKeyPair());
