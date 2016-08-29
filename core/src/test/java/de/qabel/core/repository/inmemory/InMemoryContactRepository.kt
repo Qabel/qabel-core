@@ -11,10 +11,10 @@ import de.qabel.core.util.DefaultHashMap
 import java.util.*
 
 
-class InMemoryContactRepository : ContactRepository {
+open class InMemoryContactRepository : ContactRepository {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
-    val identities : MutableMap<String, Identity> = mutableMapOf()
+    val identities: MutableMap<String, Identity> = mutableMapOf()
     val identityMapping: DefaultHashMap<String, MutableSet<String>> = DefaultHashMap({ key -> HashSet() })
 
     override fun find(id: Int): Contact = contacts.values.find({ it.id == id }) ?: throw EntityNotFoundException("Contact not found")
@@ -32,7 +32,7 @@ class InMemoryContactRepository : ContactRepository {
         if (contact.id == 0 && exists(contact)) {
             throw EntityExistsException("Contact already exists!")
         } else if (contact.id == 0) {
-            contact.id = contacts.size+1
+            contact.id = contacts.size + 1
         }
         contacts.put(contact.keyIdentifier, contact)
         identityMapping.getOrDefault(identity.keyIdentifier).add(contact.keyIdentifier)
@@ -50,21 +50,19 @@ class InMemoryContactRepository : ContactRepository {
         } else throw EntityNotFoundException("Contact not found for Identity!")
     }
 
-    override fun findByKeyId(keyId: String): Contact {
-        if (contacts.contains(keyId)) {
-            return contacts[keyId]!!
-        } else throw EntityNotFoundException("Contact not found!")
-    }
+    override fun findByKeyId(keyId: String): Contact =
+        contacts[keyId] ?: throw EntityNotFoundException("Contact not found!")
 
     override fun exists(contact: Contact): Boolean {
         return contacts.contains(contact.keyIdentifier)
     }
 
-    override fun findContactWithIdentities(keyId: String): ContactData {
-        if (contacts.contains(keyId)) {
-            return contacts[keyId].let { contact -> ContactData(contact!!, findContactIdentities(contact.keyIdentifier)) }
-        } else throw EntityNotFoundException("Contact is not one of the injected")
-    }
+    override fun findContactWithIdentities(keyId: String): ContactData =
+        contacts[keyId]?.let { contact ->
+            ContactData(contact, findContactIdentities(contact.keyIdentifier),
+                identities.containsKey(contact.keyIdentifier))
+        } ?: throw EntityNotFoundException("Contact is not one of the injected")
+
 
     override fun findWithIdentities(searchString: String, status: List<Contact.ContactStatus>, excludeIgnored: Boolean): Collection<ContactData> {
         return contacts.values
@@ -73,7 +71,10 @@ class InMemoryContactRepository : ContactRepository {
                     status.contains(contact.status) &&
                     if (excludeIgnored) !contact.isIgnored else true
             }
-            .map { contact -> ContactData(contact, findContactIdentities(contact.keyIdentifier)) }
+            .map { contact ->
+                ContactData(contact, findContactIdentities(contact.keyIdentifier),
+                    identities.containsKey(contact.keyIdentifier))
+            }
     }
 
     private fun findContactIdentities(key: String): List<Identity> {
@@ -89,6 +90,9 @@ class InMemoryContactRepository : ContactRepository {
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         contacts.put(contact.keyIdentifier, contact)
         identityMapping.values.forEach { it.remove(contact.keyIdentifier) }
-        activeIdentities.forEach { identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier) }
+        activeIdentities.forEach {
+            identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier);
+            identities.put(it.keyIdentifier, it)
+        }
     }
 }

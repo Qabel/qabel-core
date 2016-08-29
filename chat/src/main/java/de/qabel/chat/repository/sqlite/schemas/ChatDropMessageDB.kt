@@ -1,8 +1,8 @@
-package de.qabel.core.repository.sqlite.schemas
+package de.qabel.chat.repository.sqlite.schemas
 
 import de.qabel.core.repository.EntityManager
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
 import java.sql.PreparedStatement
@@ -39,7 +39,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             setByte(i++, model.direction.type)
             setInt(i++, model.status.type)
             setString(i++, model.messageType.type)
-            setString(i++, MessagePayload.encode(model.messageType, model.payload))
+            setString(i++, model.payload.toString())
             setTimestamp(i++, Timestamp(model.createdOn))
             return i
         }

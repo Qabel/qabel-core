@@ -1,8 +1,8 @@
-package de.qabel.core.service
+package de.qabel.chat.service
 
+import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.config.Identity
 import de.qabel.core.drop.DropMessage
-import de.qabel.core.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.DropState
 
 

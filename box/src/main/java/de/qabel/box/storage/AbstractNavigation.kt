@@ -135,15 +135,6 @@ abstract class AbstractNavigation(
     }
 
     @Throws(QblStorageException::class)
-    fun listShares(): List<BoxShare> = dm.listShares()
-
-    @Throws(QblStorageException::class)
-    fun insertShare(share: BoxShare): Unit = execute(InsertShareChange(share))
-
-    @Throws(QblStorageException::class)
-    fun deleteShare(share: BoxShare): Unit = execute(DeleteShareChange(share))
-
-    @Throws(QblStorageException::class)
     override fun listFolders(): List<BoxFolder> = dm.listFolders()
 
     @Throws(QblStorageException::class)
@@ -450,7 +441,7 @@ abstract class AbstractNavigation(
         execute(DeleteFolderChange(folder))
     }
 
-    private fun <T> execute(command: DirectoryMetadataChange<T>): T {
+    protected fun <T> execute(command: DirectoryMetadataChange<T>): T {
         val result = command.execute(dm)
         changes.add(command)
         autocommit()

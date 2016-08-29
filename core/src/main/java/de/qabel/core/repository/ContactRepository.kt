@@ -9,14 +9,23 @@ import de.qabel.core.repository.exception.PersistenceException
 
 interface ContactRepository {
 
-    @Throws(PersistenceException::class)
-    fun find(identity: Identity): Contacts
 
     @Throws(PersistenceException::class)
     fun save(contact: Contact, identity: Identity)
 
+    /**
+     * Deletes contact identity connection. Deletes contact if it is not associated with other identities.
+     */
     @Throws(PersistenceException::class)
     fun delete(contact: Contact, identity: Identity)
+
+    fun update(contact: Contact, activeIdentities: List<Identity>)
+
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    fun find(id: Int): Contact
+
+    @Throws(PersistenceException::class)
+    fun find(identity: Identity): Contacts
 
     @Throws(EntityNotFoundException::class)
     fun findByKeyId(identity: Identity, keyId: String): Contact
@@ -36,9 +45,5 @@ interface ContactRepository {
                            excludeIgnored: Boolean = true
     ): Collection<ContactData>
 
-    @Throws(PersistenceException::class, EntityNotFoundException::class)
-    fun find(id: Int): Contact
-
-    fun update(contact: Contact, activeIdentities: List<Identity>)
 
 }

@@ -1,4 +1,6 @@
-package de.qabel.core.repository.sqlite.migration;
+package de.qabel.chat.repository.sqlite.migration;
+
+import de.qabel.core.repository.sqlite.migration.AbstractMigration;
 
 import java.sql.Connection;
 import java.sql.SQLException;

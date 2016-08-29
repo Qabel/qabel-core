@@ -1,16 +1,16 @@
-package de.qabel.core.service
+package de.qabel.chat.service
 
+import de.qabel.chat.repository.ChatDropMessageRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.drop.DropMessage
 import de.qabel.core.drop.DropMessageMetadata
 import de.qabel.core.http.DropConnector
-import de.qabel.core.repository.ChatDropMessageRepository
-import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropStateRepository
 import de.qabel.core.repository.IdentityRepository
-import de.qabel.core.repository.entities.ChatDropMessage
-import de.qabel.core.repository.entities.ChatDropMessage.*
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.entities.ChatDropMessage.*
+import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.util.DefaultHashMap
@@ -86,8 +86,18 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
     }
 
     private fun getMessageContact(dropMessage: DropMessage, identity: Identity): Contact? = try {
-        val contact = contactRepository.findByKeyId(dropMessage.senderKeyId)
-        if (contact.isIgnored) null else contact
+        val contactDetails = contactRepository.findContactWithIdentities(dropMessage.senderKeyId)
+        //Filter ignored
+        if (contactDetails.contact.isIgnored) null
+        //Dont receive messages from known identities
+        else if(contactDetails.isIdentity) null
+        //Add connection if required, TODO currently in discussion #629
+        else if(!contactDetails.identities.contains(identity)){
+            contactRepository.save(contactDetails.contact, identity)
+            contactDetails.contact
+        }else {
+            contactDetails.contact
+        }
     } catch (ex: EntityNotFoundException) {
         //If DropMessageMetadata is given, we create a new unknown contact
         dropMessage.dropMessageMetadata?.let {
@@ -107,6 +117,6 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
-        DropMessage(identity, MessagePayload.encode(messageType, payload), messageType.type)
+        DropMessage(identity, payload.toString(), messageType.type)
 
 }

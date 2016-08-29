@@ -13,9 +13,9 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
                                               val client: ClientDatabase,
                                               val entityManager: EntityManager) {
 
-    internal val insertStatement = QblStatements.createInsert(relation)
-    internal val updateStatement = QblStatements.createUpdate(relation)
-    internal val deleteStatement = QblStatements.createDelete(relation)
+    protected val insertStatement = QblStatements.createInsert(relation)
+    protected val updateStatement = QblStatements.createUpdate(relation)
+    protected val deleteStatement = QblStatements.createDelete(relation)
 
     open fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
 
@@ -39,7 +39,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         })
 
 
-    internal fun executeStatement(sqlStatement: String, prepare: (PreparedStatement) -> Unit, postExecute: (PreparedStatement) -> Unit = {}) {
+    protected fun executeStatement(sqlStatement: String, prepare: (PreparedStatement) -> Unit, postExecute: (PreparedStatement) -> Unit = {}) {
         client.prepare(sqlStatement).use {
             prepare(it)
             it.execute()
@@ -58,10 +58,10 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
 
     //TODO kotlin currently require this cast, but its not really required
-    internal fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
+    protected fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
         getSingleResult(queryBuilder, relation as ResultAdapter<T>)
 
-    internal fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
+    protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
         return executeQuery(queryBuilder, { it ->
             if (it.next()) {
                 hydrator.hydrateOne(it, entityManager)
@@ -70,10 +70,10 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
     }
 
     //TODO kotlin currently require this cast, but its not really required
-    internal fun <T> getResultList(queryBuilder: QueryBuilder): List<T> =
+    protected fun <T> getResultList(queryBuilder: QueryBuilder): List<T> =
         getResultList(queryBuilder, relation as ResultAdapter<T>)
 
-    internal fun <X> getResultList(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): List<X> {
+    protected fun <X> getResultList(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): List<X> {
         return executeQuery(queryBuilder, { it ->
             val results = mutableListOf<X>()
             while (it.next()) {
@@ -83,14 +83,14 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         })
     }
 
-    internal fun <X> getPagingResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>, offset: Int, pageSize: Int): PagingResult<X> {
+    protected fun <X> getPagingResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>, offset: Int, pageSize: Int): PagingResult<X> {
         queryBuilder.setPaging(offset, pageSize)
         val results = getResultList(queryBuilder, hydrator)
         val totalSize = executeCount(queryBuilder)
         return PagingResult(totalSize, results)
     }
 
-    internal fun executeCount(queryBuilder: QueryBuilder): Int =
+    protected fun executeCount(queryBuilder: QueryBuilder): Int =
         try {
             client.prepare(queryBuilder.countQueryString()).use({ statement ->
                 addParams(queryBuilder, statement)
@@ -116,7 +116,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    internal fun <X> executeQuery(queryBuilder: QueryBuilder, resultHandler: (ResultSet) -> X): X {
+    protected fun <X> executeQuery(queryBuilder: QueryBuilder, resultHandler: (ResultSet) -> X): X {
         try {
             client.prepare(queryBuilder.queryString()).use({ statement ->
                 addParams(queryBuilder, statement)
@@ -129,7 +129,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    internal fun <T> findManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, resultAdapter: ResultAdapter<T>): List<T> {
+    protected fun <T> findManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, resultAdapter: ResultAdapter<T>): List<T> {
         with(QueryBuilder()) {
             select(targetField)
             from(sourceField.table, sourceField.tableAlias)
@@ -138,7 +138,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    internal fun <T> findManyToMany(sourceField: DBField, targetField: DBField, resultAdapter: ResultAdapter<T>, sourceValues: List<Int>): List<T> =
+    protected fun <T> findManyToMany(sourceField: DBField, targetField: DBField, resultAdapter: ResultAdapter<T>, sourceValues: List<Int>): List<T> =
         with(QueryBuilder()) {
             select(sourceField, targetField)
             from(sourceField.table, sourceField.tableAlias)
@@ -146,7 +146,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             return getResultList(this, resultAdapter)
         }
 
-    internal fun saveManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+    protected fun saveManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
         StringBuilder("INSERT OR IGNORE INTO ${sourceField.table} (${sourceField.name},${targetField.name}) VALUES ").apply {
             values.forEach { append("(?,?),") }
             executeStatement(toString().removeSuffix(","), { statement ->
@@ -159,7 +159,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    internal fun dropManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
+    protected fun dropManyToMany(sourceField: DBField, sourceValue: Int, targetField: DBField, vararg values: Any) {
         StringBuilder("DELETE FROM ${sourceField.table} WHERE ${sourceField.name}=? AND ${targetField.name} IN (").apply {
             values.forEach { append("?,") }
             executeStatement(toString().removeSuffix(",") + ")", { statement ->
@@ -172,7 +172,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
     }
 
-    internal fun dropAllManyToMany(sourceField: DBField, sourceValue: Int) {
+    protected fun dropAllManyToMany(sourceField: DBField, sourceValue: Int) {
         ("DELETE FROM ${sourceField.table} WHERE ${sourceField.name}=?").let {
             executeStatement(it, { statement ->
                 statement.setInt(1, sourceValue)

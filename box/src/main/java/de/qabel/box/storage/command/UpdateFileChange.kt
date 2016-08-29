@@ -1,14 +1,25 @@
 package de.qabel.box.storage.command
 
-import de.qabel.box.storage.BoxFile
-import de.qabel.box.storage.BoxFolder
-import de.qabel.box.storage.BoxObject
-import de.qabel.box.storage.DirectoryMetadata
+import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import org.slf4j.LoggerFactory
 
-open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: BoxFile) : DirectoryMetadataChange<Unit> {
+open class UpdateFileChange(
+    val expectedFile: BoxFile?,
+    private val newFile: BoxFile
+    ) : DirectoryMetadataChange<Unit>, Postprocessable {
+
     private val logger by lazy { LoggerFactory.getLogger(UpdateFileChange::class.java) }
+
+    private var sameFileByHash = false
+
+    private fun hasSameHash(obj: BoxObject) = obj is BoxFile && obj.isHashed() && obj.hashed == newFile.hashed
+
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend) {
+        if (sameFileByHash) {
+            writeBackend.deleteBlock(newFile.block)
+        }
+    }
 
     override fun execute(dm: DirectoryMetadata) {
         var filename = newFile.name
@@ -21,6 +32,10 @@ open class UpdateFileChange(val expectedFile: BoxFile?, private val newFile: Box
             dm.insertFile(newFile)
         } catch (e: QblStorageNameConflict) {
             with (findCurrentFileOrFolder(dm, filename)) {
+                if (hasSameHash(this)) {
+                    sameFileByHash = true
+                    return
+                }
                 deleteObject(this, dm)
                 dm.insertFile(newFile)
                 while (true) {

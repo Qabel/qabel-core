@@ -13,7 +13,6 @@ import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import org.hamcrest.Matchers.*
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
@@ -299,6 +298,22 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertThat(result.contact.nickName, equalTo("testNick"))
         assertThat(result.identities, containsInAnyOrder(identity, otherIdentity))
         assertThat(contact.dropUrls, containsInAnyOrder(dropA, dropB))
+    }
+
+    @Test
+    fun testFindContactWithIdentities() {
+        repo.save(contact, identity)
+        repo.save(contact, otherIdentity)
+
+        val contactDetails = repo.findContactWithIdentities(contact.keyIdentifier)
+        assertThat(contactDetails.contact.alias, equalTo(contact.alias))
+        assertThat(contactDetails.identities, hasSize(2))
+        assertFalse(contactDetails.isIdentity)
+
+        val identityContactDetails = repo.findContactWithIdentities(identity.keyIdentifier)
+        assertThat(identityContactDetails.contact.alias, equalTo(identity.alias))
+        assertThat(identityContactDetails.identities, hasSize(0))
+        assertTrue(identityContactDetails.isIdentity)
     }
 
 }
