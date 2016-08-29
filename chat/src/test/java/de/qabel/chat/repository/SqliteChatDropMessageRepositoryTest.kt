@@ -1,11 +1,16 @@
 package de.qabel.chat.repository
 
+import de.qabel.box.storage.Hash
+import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.entities.ChatDropMessage.*
+import de.qabel.chat.repository.entities.ShareStatus
+import de.qabel.chat.repository.sqlite.ChatClientDatabase
 import de.qabel.chat.repository.sqlite.SqliteChatDropMessageRepository
-import de.qabel.chat.repository.sqlite.migration.Migration1460997040ChatDropMessage
+import de.qabel.chat.repository.sqlite.SqliteChatShareRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
+import de.qabel.core.config.SymmetricKey
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
@@ -15,8 +20,10 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.sqlite.*
-import de.qabel.core.repository.sqlite.migration.AbstractMigration
+import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.SqliteContactRepository
+import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
+import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Test
@@ -25,13 +32,10 @@ import java.util.*
 
 class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDropMessageRepository>() {
 
-    override fun createDatabase(connection: Connection): ClientDatabase = object : DesktopClientDatabase(connection) {
-        override fun getMigrations(connection: Connection): Array<AbstractMigration> {
-            return super.getMigrations(connection) + Migration1460997040ChatDropMessage(connection)
-        }
-    }
+    override fun createDatabase(connection: Connection): ClientDatabase = ChatClientDatabase(connection)
 
     lateinit var dropRepo: ChatDropMessageRepository
+    lateinit var shareRepo : ChatShareRepository
     lateinit var identityRepo: IdentityRepository
     lateinit var contactRepo: ContactRepository
 
@@ -47,6 +51,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         identityRepo = SqliteIdentityRepository(clientDatabase, em)
         contactRepo = SqliteContactRepository(clientDatabase, em, SqliteDropUrlRepository(clientDatabase), identityRepo)
         dropRepo = SqliteChatDropMessageRepository(clientDatabase, em)
+        shareRepo = SqliteChatShareRepository(clientDatabase, em)
 
         identityRepo.save(identityA)
         contactRepo.save(contactA, identityA)
@@ -189,6 +194,27 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         assertTrue(dropRepo.exists(message))
         dropRepo.delete(message.id)
         assertFalse(dropRepo.exists(message))
+    }
+
+    @Test
+    fun testFindWithShare(){
+        dropRepo.persist(message)
+        val shareData = BoxFileChatShare(ShareStatus.NEW, "name", 100, SymmetricKey("test".toByteArray().toList()),
+            "metaUrl", Hash("someHash".toByteArray(), "test"),
+            identityId = message.identityId,
+            ownerContactId = message.contactId)
+        val shareMessage = message.copy(payload = MessagePayload.ShareMessage("some msg", shareData))
+
+        dropRepo.persist(shareMessage)
+        shareRepo.persist(shareData)
+        shareRepo.connectWithMessage(shareMessage, shareData)
+
+        val messages = dropRepo.findByContact(message.contactId, message.identityId)
+        val loadedShareMessage = messages.find { it.id == shareMessage.id }!!
+        assertMessageEquals(shareMessage, loadedShareMessage)
+        val loadedShareMsg = loadedShareMessage.payload as MessagePayload.ShareMessage
+        assertThat(loadedShareMsg.shareData, equalTo(shareData))
+        assertThat(loadedShareMsg.shareData.hashed!!.hash.toList(), equalTo("someHash".toByteArray().toList()))
     }
 
     fun assertMessageEquals(expected: ChatDropMessage, current: ChatDropMessage) {

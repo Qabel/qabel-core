@@ -20,12 +20,23 @@ import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.IDENTITY_ID
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.STATUS
+import de.qabel.chat.repository.sqlite.schemas.ChatShareDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(database: ClientDatabase,
                                       entityManager: EntityManager) :
     BaseRepository<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
     ChatDropMessageRepository {
+
+    override fun createEntityQuery(): QueryBuilder =
+        super.createEntityQuery().apply {
+            select(ChatShareDB.ID)
+            select(ChatShareDB.ENTITY_FIELDS)
+            leftJoin(ChatShareDB.Message.TABLE, ChatShareDB.Message.TABLE_ALIAS,
+                ChatShareDB.Message.CHAT_DROP_ID, ChatDropMessageDB.ID)
+            leftJoin(ChatShareDB.TABLE_NAME, ChatShareDB.TABLE_ALIAS, ChatShareDB.ID,
+                ChatShareDB.Message.SHARE_ID)
+        }
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
         createChatQuery(contactId, identityId).let {

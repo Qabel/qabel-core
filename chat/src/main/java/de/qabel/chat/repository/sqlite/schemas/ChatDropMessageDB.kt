@@ -49,12 +49,18 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
         if (entityManager.contains(ENTITY_CLASS, id)) {
             return entityManager.get(ENTITY_CLASS, id)
         }
+        val payloadType = toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias())!!, { it.type })
+        val payloadString = resultSet.getString(PAYLOAD.alias())
+        val payload = MessagePayload.fromString(payloadType, payloadString)
+        if(payload is MessagePayload.ShareMessage){
+            payload.shareData = ChatShareDB.hydrateOne(resultSet, entityManager)
+        }
         return ChatDropMessage(resultSet.getInt(CONTACT_ID.alias()),
             resultSet.getInt(IDENTITY_ID.alias()),
             toEnum(Direction.values(), resultSet.getByte(DIRECTION.alias()), { it.type }),
             toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
-            toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias()), { it.type }),
-            resultSet.getString(PAYLOAD.alias()),
+            payloadType,
+            payload,
             resultSet.getTimestamp(CREATED_ON.alias()).time,
             id)
     }

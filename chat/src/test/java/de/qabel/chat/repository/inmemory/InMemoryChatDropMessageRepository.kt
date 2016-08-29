@@ -10,6 +10,8 @@ import de.qabel.core.repository.framework.PagingResult
 open class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
     val messages = mutableListOf<ChatDropMessage>()
+    override fun findByIds(ids: List<Int>): List<ChatDropMessage> =
+        messages.filter { ids.contains(it.id) }
 
     override fun findById(id: Int): ChatDropMessage = messages.find { it.id == id } ?: throw EntityNotFoundException("ChatDropMessage not found")
 
