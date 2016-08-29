@@ -337,19 +337,15 @@ abstract class AbstractNavigation(
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
     override fun updateFileMetadata(boxFile: BoxFile) {
-        val meta = boxFile.meta
-        val metakey = boxFile.metakey
-        if (meta == null || metakey == null) {
-            throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
-        }
+        val shared = boxFile.shared ?: throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
+
         try {
-            val out = getMetadataFile(meta, metakey)
-            val fileMetadataOld = fileFactory.open(out)
+            val fileMetadataOld = getMetadataFile(shared)
             val fileMetadataNew = fileFactory.create(
                 fileMetadataOld.file?.owner ?: throw QblStorageException("No owner in old file metadata"),
                 boxFile
             )
-            uploadEncrypted(fileMetadataNew.path, KeyParameter(metakey), meta)
+            uploadEncrypted(fileMetadataNew.path, KeyParameter(shared.metaKey), shared.meta)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
             throw e
@@ -362,15 +358,10 @@ abstract class AbstractNavigation(
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun getFileMetadata(boxFile: BoxFile): FileMetadata {
-        val meta = boxFile.meta
-        val metakey = boxFile.metakey
-        if (meta == null || metakey == null) {
-            throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
-        }
+        val shared = boxFile.shared ?: throw IllegalArgumentException("BoxFile without FileMetadata cannot be loaded")
 
         try {
-            val out = getMetadataFile(meta, metakey)
-            return fileFactory.open(out)
+            return getMetadataFile(shared)
         } catch (e: QblStorageException) {
             logger.error("Could not create or upload FileMetadata", e)
             throw e
@@ -382,14 +373,12 @@ abstract class AbstractNavigation(
     }
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
-    private fun getMetadataFile(meta: String, key: ByteArray): File {
-        readBackend.download(meta).inputStream.use { encryptedMetadata ->
-
+    override fun getMetadataFile(share: Share): FileMetadata {
+        readBackend.download(share.meta).inputStream.use { encryptedMetadata ->
             val tmp = File.createTempFile("dir", "db1", tempDir)
             tmp.deleteOnExit()
-            val keyParameter = KeyParameter(key)
-            if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(encryptedMetadata, tmp, keyParameter)) {
-                return tmp
+            if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(encryptedMetadata, tmp, KeyParameter(share.metaKey))) {
+                return fileFactory.open(tmp)
             } else {
                 throw QblStorageNotFound("Invalid key")
             }
@@ -522,7 +511,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     override fun getSharesOf(`object`: BoxObject): List<BoxShare> {
         return indexNavigation.listShares()?.filter({ share -> share.ref == `object`.ref })?.toList()
-         ?: throw QblStorageException("No index navigation")
+            ?: throw QblStorageException("No index navigation")
     }
 
     @Throws(QblStorageException::class)
