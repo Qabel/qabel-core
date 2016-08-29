@@ -1,5 +1,5 @@
 package de.qabel.core.config;
 
-interface EntityObserver {
+public interface ContactObserver {
     void update();
 }
