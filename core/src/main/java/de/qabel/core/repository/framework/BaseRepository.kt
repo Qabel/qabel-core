@@ -54,7 +54,13 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
     fun findById(id: Int): T =
         with(createEntityQuery()) {
             whereAndEquals(relation.ID, id)
-            return getSingleResult(this)
+            getSingleResult(this)
+        }
+
+    fun findByIds(ids: List<Int>): List<T> =
+        with(createEntityQuery()) {
+            whereAndIn(relation.ID, ids)
+            getResultList(this)
         }
 
     //TODO kotlin currently require this cast, but its not really required
@@ -110,7 +116,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         query.params.mapIndexed { i, value ->
             val paramIndex = i + 1
             when (value) {
-                is Boolean -> statement.setInt(paramIndex, if(value) 1 else 0)
+                is Boolean -> statement.setInt(paramIndex, if (value) 1 else 0)
                 else -> statement.setObject(paramIndex, value)
             }
         }
@@ -125,6 +131,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
                 })
             })
         } catch (e: SQLException) {
+            e.printStackTrace()
             throw PersistenceException("query failed " + e.message + ")", e)
         }
     }
