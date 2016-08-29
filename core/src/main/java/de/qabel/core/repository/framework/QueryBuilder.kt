@@ -4,6 +4,7 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
+        private const val NOT_EQUALS = "!="
         private const val GREATER = ">"
         private const val WILD_CARD = "%"
     }
@@ -118,6 +119,12 @@ class QueryBuilder {
         }
         where.append(")")
     }
+
+    fun whereAndNotEquals(field: Field, otherField: Field) =
+        where(field.exp(), NOT_EQUALS, otherField.exp(), " AND ")
+
+    fun whereAndEquals(field: Field, otherField: Field) =
+        where(field.exp(), EQUALS, otherField.exp(), " AND ")
 
     private fun startWhere(concatenation: String) {
         if (where.isEmpty()) {

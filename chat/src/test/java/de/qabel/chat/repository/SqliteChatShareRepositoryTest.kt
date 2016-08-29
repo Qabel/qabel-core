@@ -129,4 +129,21 @@ class SqliteChatShareRepositoryTest : AbstractSqliteRepositoryTest<ChatShareRepo
         assertThat(messageIds, containsInAnyOrder(chatDropMessage.id, chatDropMessage2.id))
     }
 
+    @Test
+    fun testFindIncoming() {
+        val received = repo.findIncoming(identityA)
+        assertThat(received, equalTo(shares))
+    }
+
+    @Test
+    fun testFindOutgoing() {
+        val sent = shareA.copy(status = ShareStatus.SENT,
+            identityId = identityA.id,
+            ownerContactId = contactA.id)
+        repo.persist(sent)
+        val result = repo.findOutgoing(identityA)
+        assertThat(result, hasSize(1))
+        assertThat(result.first(), equalTo(sent))
+    }
+
 }

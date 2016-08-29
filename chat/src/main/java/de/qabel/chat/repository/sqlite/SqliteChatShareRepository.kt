@@ -13,6 +13,7 @@ import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
+import de.qabel.core.repository.sqlite.schemas.IdentityDB
 import org.spongycastle.util.encoders.Hex
 
 class SqliteChatShareRepository(database: ClientDatabase,
@@ -50,6 +51,22 @@ class SqliteChatShareRepository(database: ClientDatabase,
             getResultList(this)
         }
 
+    override fun findIncoming(identity: Identity): List<BoxFileChatShare> =
+        with(createEntityQuery()) {
+            joinIdentity()
+            whereAndEquals(ChatShareDB.IDENTITY_ID, identity.id)
+            whereAndNotEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
+            getResultList(this)
+        }
+
+    override fun findOutgoing(identity: Identity): List<BoxFileChatShare> =
+        with(createEntityQuery()) {
+            joinIdentity()
+            whereAndEquals(ChatShareDB.IDENTITY_ID, identity.id)
+            whereAndEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
+            getResultList(this)
+        }
+
     override fun connectWithMessage(chatDropMessage: ChatDropMessage, share: BoxFileChatShare) =
         saveManyToMany(ChatShareDB.Message.SHARE_ID, share.id, ChatShareDB.Message.CHAT_DROP_ID, chatDropMessage.id)
 
@@ -61,7 +78,10 @@ class SqliteChatShareRepository(database: ClientDatabase,
             return getResultList(this, IntResultAdapter())
         }
 
-    private fun QueryBuilder.joinMessageTable() = innerJoin(ChatShareDB.Message.TABLE,
-        ChatShareDB.Message.TABLE_ALIAS, ChatShareDB.Message.SHARE_ID, ChatShareDB.ID)
+    private fun QueryBuilder.joinMessageTable() =
+        innerJoin(ChatShareDB.Message.TABLE, ChatShareDB.Message.TABLE_ALIAS, ChatShareDB.Message.SHARE_ID, ChatShareDB.ID)
+
+    private fun QueryBuilder.joinIdentity() =
+        innerJoin(IdentityDB.TABLE, IdentityDB.ALIAS, IdentityDB.ID, ChatShareDB.IDENTITY_ID)
 
 }

@@ -58,7 +58,7 @@ object ChatShareDB : DBRelation<BoxFileChatShare> {
             setString(i++, model.hashed?.algorithm)
             setString(i++, model.hashed?.let { Hex.toHexString(it.hash) })
             setString(i++, model.prefix)
-            setLong(i++, model.modifiedOn ?: 0)
+            setLong(i++, model.modifiedOn)
             setString(i++, model.key?.toHexString())
             setString(i++, model.block)
             return i

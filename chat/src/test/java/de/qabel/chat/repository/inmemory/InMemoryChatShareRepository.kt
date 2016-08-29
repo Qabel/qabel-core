@@ -37,7 +37,7 @@ class InMemoryChatShareRepository() : ChatShareRepository {
             Unit
         }
 
-    override fun findByBoxReference(identity: Identity, metaUrl : String, metaKey : ByteArray): BoxFileChatShare? =
+    override fun findByBoxReference(identity: Identity, metaUrl: String, metaKey: ByteArray): BoxFileChatShare? =
         shares.find {
             it.identityId == identity.id &&
                 it.metaKey.byteList == metaKey.toList() &&
@@ -61,4 +61,13 @@ class InMemoryChatShareRepository() : ChatShareRepository {
     override fun findByMessage(chatDropMessage: ChatDropMessage): BoxFileChatShare =
         shareMessages[chatDropMessage] ?: throw EntityNotFoundException("")
 
+    override fun findIncoming(identity: Identity): List<BoxFileChatShare> =
+        shareMessages.filter {
+            it.value.identityId == identity.id && it.key.direction == ChatDropMessage.Direction.OUTGOING
+        }.values.toList()
+
+    override fun findOutgoing(identity: Identity): List<BoxFileChatShare> =
+        shareMessages.filter {
+            it.value.identityId == identity.id && it.key.direction == ChatDropMessage.Direction.INCOMING
+        }.values.toList()
 }

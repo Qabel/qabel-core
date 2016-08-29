@@ -15,4 +15,8 @@ interface ChatShareRepository : Repository<BoxFileChatShare> {
     fun findShareChatDropMessageIds(share: BoxFileChatShare): List<Int>
 
     fun findByMessage(chatDropMessage: ChatDropMessage): BoxFileChatShare
+
+    fun findIncoming(identity: Identity): List<BoxFileChatShare>
+    fun findOutgoing(identity: Identity): List<BoxFileChatShare>
+
 }
