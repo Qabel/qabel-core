@@ -708,6 +708,22 @@ public abstract class BoxVolumeTest {
         assertThat(subnavB2.listFiles(), hasSize(1));
     }
 
+    @Test
+    public void shareInsertedInIndexNavigationWhenSharingFromFolder() throws Exception {
+        BoxNavigation nav = volume.navigate();
+        nav.setAutocommit(false);
+        BoxFolder folder = nav.createFolder("folder");
+        BoxNavigation subNav = nav.navigate(folder);
+        File file = new File(testFileName);
+        BoxFile boxFile = subNav.upload("file1", file);
+        subNav.share(keyPair.getPub(), boxFile, contact.getKeyIdentifier());
+        subNav.commit();
+
+        BoxNavigation nav2 = volume2.navigate().navigate("folder");
+        assertThat(nav2.getSharesOf(nav2.getFile("file1")), hasSize(1));
+
+    }
+
     protected boolean blockExists(String meta) throws QblStorageException {
         try {
             getReadBackend().download(meta);
