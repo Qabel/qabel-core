@@ -43,8 +43,10 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-    compile 'com.github.Qabel.qabel-core:core:0.16.1'
-    compile 'com.github.Qabel.qabel-core:box:0.16.1'
+    compile 'com.github.Qabel.qabel-core:core:0.19.0'
+    compile 'com.github.Qabel.qabel-core:box:0.19.0'
+    compile 'com.github.Qabel.qabel-core:chat:0.19.0'
+
 }
 ```
 replace `0.16.1` with the latest release from https://jitpack.io/#Qabel/qabel-core
