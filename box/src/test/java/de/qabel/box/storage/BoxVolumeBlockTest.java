@@ -2,16 +2,19 @@ package de.qabel.box.storage;
 
 import de.qabel.box.http.BlockReadBackend;
 import de.qabel.box.http.BlockWriteBackend;
+import de.qabel.core.accounting.AccountingProfile;
 import de.qabel.core.accounting.BoxClient;
 import de.qabel.core.accounting.BoxHttpClient;
-import de.qabel.core.accounting.AccountingProfile;
 import de.qabel.core.config.AccountingServer;
-import de.qabel.core.crypto.QblECKeyPair;
 import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
 
 public class BoxVolumeBlockTest extends BoxVolumeTest {
     private BlockReadBackend readBackend;
@@ -31,7 +34,6 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
         try {
             AccountingServer server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"), "testuser", "testuser");
             accountingHTTP = new BoxHttpClient(server, new AccountingProfile());
-            QblECKeyPair keyPair = new QblECKeyPair();
 
             List<String> prefixes = accountingHTTP.getPrefixes();
             if (prefixes.isEmpty()) {
@@ -69,4 +71,5 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
     @Override
     protected void cleanVolume() throws IOException {
     }
+
 }

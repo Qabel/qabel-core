@@ -85,8 +85,11 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
             update(config.prefix.toByteArray())
             update(keyPair.privateKey)
         }.digest()
-        val firstBytes = Arrays.copyOfRange(digest, 0, 16).toLong()
-        UUID(firstBytes, firstBytes).toString()
+        val firstBytes = Arrays.copyOfRange(digest, 0, 16)
+        val bb = ByteBuffer.wrap(firstBytes)
+        val firstLong = bb.getLong()
+        val secondLong = bb.getLong()
+        UUID(firstLong, secondLong).toString()
     }
 
     /**
