@@ -104,27 +104,19 @@ class SharingServiceTest() : CoreTestCase {
     fun testGetOrCreateFileShare() {
         val boxFile = navigationA.upload(testFile.name, testFile)
 
-        val chatShare = sharingService.getOrCreateFileShare(identityA, contactB, boxFile, navigationA)
+        val chatShare = sharingService.getOrCreateOutgoingShare(identityA, contactB, boxFile, navigationA)
         assertThat(chatShare.name, equalTo(boxFile.name))
         assertThat(chatShare.size, equalTo(100L))
         assertThat(chatShare.status, equalTo(ShareStatus.CREATED))
 
-        val recreated = sharingService.getOrCreateFileShare(identityA, contactB, boxFile, navigationA)
+        val recreated = sharingService.getOrCreateOutgoingShare(identityA, contactB, boxFile, navigationA)
         assertThat(recreated.id, equalTo(chatShare.id))
-    }
-
-    @Test
-    fun testMarkShareSent() {
-        val boxFile = navigationA.upload(testFile.name, testFile)
-        val chatShare = sharingService.getOrCreateFileShare(identityA, contactB, boxFile, navigationA)
-        sharingService.markShareSent(chatShare)
-        assertThat(chatShare.status, equalTo(ShareStatus.SENT))
     }
 
     @Test
     fun testReceiveShare() {
         val boxFileA = navigationA.upload(testFile.name, testFile)
-        val chatShareA = sharingService.getOrCreateFileShare(identityA, contactB, boxFileA, navigationA)
+        val chatShareA = sharingService.getOrCreateOutgoingShare(identityA, contactB, boxFileA, navigationA)
 
         val receivedPayload = ShareMessage("newMessage", chatShareA).toString()
 
@@ -132,7 +124,7 @@ class SharingServiceTest() : CoreTestCase {
             ChatDropMessage.MessageType.SHARE_NOTIFICATION, receivedPayload, System.currentTimeMillis())
         val sharePayload = shareDropMessage.payload as ShareMessage
 
-        sharingService.receiveShare(identityB, shareDropMessage, sharePayload)
+        sharingService.getOrCreateIncomingShare(identityB, shareDropMessage, sharePayload)
         chatDropRepo.persist(shareDropMessage)
 
         val received = chatDropRepo.findByShare(sharePayload.shareData)
@@ -145,7 +137,7 @@ class SharingServiceTest() : CoreTestCase {
         val copy = ChatDropMessage(contactA.id, identityB.id, ChatDropMessage.Direction.INCOMING, ChatDropMessage.Status.NEW,
             ChatDropMessage.MessageType.SHARE_NOTIFICATION, ShareMessage("ups", chatShareA).toString(), System.currentTimeMillis())
         val copyPayload = copy.payload as ShareMessage
-        sharingService.receiveShare(identityB, copy, copyPayload)
+        sharingService.getOrCreateIncomingShare(identityB, copy, copyPayload)
         chatDropRepo.persist(copy)
         assertThat(copyPayload.shareData.id, equalTo(rMsgPayload.shareData.id))
 
@@ -162,7 +154,7 @@ class SharingServiceTest() : CoreTestCase {
         assertArrayEquals(FileUtils.readFileToByteArray(testFile), FileUtils.readFileToByteArray(sharedFile))
 
         //IdentityA revoke share
-        sharingService.revokeFileShare(contactB, chatShareA, boxFileA, navigationA)
+        sharingService.revokeFileShare(chatShareA, boxFileA, navigationA)
         try {
             sharingService.refreshShare(rMsgPayload.shareData, navigationB)
             fail("QblStorageException expected")

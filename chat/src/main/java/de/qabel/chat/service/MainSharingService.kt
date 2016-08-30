@@ -24,8 +24,8 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
                          private val boxReadBackend: StorageReadBackend,
                          private val cryptoUtils: CryptoUtils = CryptoUtils()) : SharingService {
 
-    override fun getOrCreateFileShare(identity: Identity, contact: Contact,
-                                      boxFile: BoxFile, boxNavigation: BoxNavigation): BoxFileChatShare =
+    override fun getOrCreateOutgoingShare(identity: Identity, contact: Contact,
+                                          boxFile: BoxFile, boxNavigation: BoxNavigation): BoxFileChatShare =
         (boxNavigation.getSharesOf(boxFile).find { it.recipient == contact.keyIdentifier }?.let {
             BoxExternalReference(
                 false,
@@ -40,7 +40,7 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
                 }
         }
 
-    override fun receiveShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage): BoxFileChatShare =
+    override fun getOrCreateIncomingShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage): BoxFileChatShare =
         chatShareRepository.findByBoxReference(identity, payload.shareData.metaUrl, payload.shareData.metaKey.byteList.toByteArray()) ?:
             payload.shareData.apply {
                 ownerContactId = message.contactId
@@ -48,17 +48,10 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
                 chatShareRepository.persist(payload.shareData)
             }
 
-    override fun markShareSent(share: BoxFileChatShare) = share.apply {
-        if (share.status == ShareStatus.CREATED) {
-            share.status = ShareStatus.SENT
-            chatShareRepository.update(share)
-        }
-    }
-
-    override fun revokeFileShare(contact: Contact, share: BoxFileChatShare,
+    override fun revokeFileShare(share: BoxFileChatShare,
                                  boxFile: BoxFile, boxNavigation: BoxNavigation) {
         boxNavigation.unshare(boxFile)
-        share.status = ShareStatus.DELETED
+        share.status = ShareStatus.REVOKED
         chatShareRepository.update(share)
     }
 

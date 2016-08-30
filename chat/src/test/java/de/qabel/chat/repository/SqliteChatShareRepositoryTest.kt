@@ -57,7 +57,7 @@ class SqliteChatShareRepositoryTest : AbstractSqliteRepositoryTest<ChatShareRepo
 
     private fun randomString() = UUID.randomUUID().toString()
 
-    private fun createShare(contact: Contact, identity: Identity, status: ShareStatus = ShareStatus.SENT,
+    private fun createShare(contact: Contact, identity: Identity, status: ShareStatus = ShareStatus.CREATED,
                             name: String = randomString(), size: Long = Random().nextLong(),
                             metaKey: SymmetricKey = SymmetricKey(randomString().toByteArray().toList()), metaUrl: String = randomString()) =
         BoxFileChatShare(status, name, size, metaKey, metaUrl).apply {
@@ -125,7 +125,7 @@ class SqliteChatShareRepositoryTest : AbstractSqliteRepositoryTest<ChatShareRepo
 
     @Test
     fun testFindOutgoing() {
-        val sent = shareA.copy(status = ShareStatus.SENT,
+        val sent = shareA.copy(status = ShareStatus.CREATED,
             identityId = identityA.id,
             ownerContactId = contactA.id)
         repo.persist(sent)

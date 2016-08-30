@@ -29,7 +29,7 @@ enum class ShareStatus(val type: Int) {
     ACCEPTED(1), ATTACHED(2),
     //Outgoing
     CREATED(3),
-    SENT(4),
+    REVOKED(4),
     //Both
     UNREACHABLE(5),
     DELETED(6)

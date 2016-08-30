@@ -43,14 +43,12 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
 
     override fun sendShareMessage(text: String, identity: Identity, contact: Contact, boxFile: BoxFile, boxNavigation: BoxNavigation): Observable<ChatDropMessage> =
         observable<ChatDropMessage> { subscriber ->
-            val boxShare = sharingService.getOrCreateFileShare(identity, contact, boxFile, boxNavigation)
+            val boxShare = sharingService.getOrCreateOutgoingShare(identity, contact, boxFile, boxNavigation)
             val shareMessage = createOutgoingMessage(identity, contact, MessageType.SHARE_NOTIFICATION,
                 MessagePayload.ShareMessage(text, boxShare))
             chatDropMessageRepository.persist(shareMessage)
             subscriber.onNext(shareMessage)
-
             sendMessage(shareMessage)
-            sharingService.markShareSent(boxShare)
             subscriber.onCompleted()
         }.subscribeOn(Schedulers.io())
 
@@ -114,7 +112,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
                 if (!chatDropMessageRepository.exists(message)) {
                     if (message.payload is MessagePayload.ShareMessage) {
                         message.payload.apply {
-                            shareData = sharingService.receiveShare(identity, message, message.payload)
+                            shareData = sharingService.getOrCreateIncomingShare(identity, message, message.payload)
                         }
                     }
                     chatDropMessageRepository.persist(message)
