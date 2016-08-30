@@ -131,7 +131,6 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
                 })
             })
         } catch (e: SQLException) {
-            e.printStackTrace()
             throw PersistenceException("query failed " + e.message + ")", e)
         }
     }
