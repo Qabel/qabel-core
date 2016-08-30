@@ -361,7 +361,7 @@ abstract class AbstractNavigation(
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun getFileMetadata(boxFile: BoxFile): FileMetadata {
-        val shared = boxFile.shared ?: throw QblStorageException("No owner in old file metadata"),
+        val shared = boxFile.shared ?: throw QblStorageException("No owner in old file metadata")
 
         try {
             return getMetadataFile(shared)
