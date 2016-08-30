@@ -120,10 +120,10 @@ class QueryBuilder {
         where.append(")")
     }
 
-    fun whereAndNotEquals(field: Field, otherField: Field) =
+    fun whereAndFieldsNotEquals(field: Field, otherField: Field) =
         where(field.exp(), NOT_EQUALS, otherField.exp(), " AND ")
 
-    fun whereAndEquals(field: Field, otherField: Field) =
+    fun whereAndFieldsEquals(field: Field, otherField: Field) =
         where(field.exp(), EQUALS, otherField.exp(), " AND ")
 
     private fun startWhere(concatenation: String) {

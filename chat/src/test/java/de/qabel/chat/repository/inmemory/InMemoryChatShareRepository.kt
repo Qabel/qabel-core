@@ -52,15 +52,6 @@ class InMemoryChatShareRepository() : ChatShareRepository {
             } ?: true
         }.values.toList()
 
-    override fun connectWithMessage(chatDropMessage: ChatDropMessage, share: BoxFileChatShare) =
-        shareMessages.put(chatDropMessage, share).let { Unit }
-
-    override fun findShareChatDropMessageIds(share: BoxFileChatShare): List<Int> =
-        shareMessages.filter { it.value == share }.map { it.key.id }
-
-    override fun findByMessage(chatDropMessage: ChatDropMessage): BoxFileChatShare =
-        shareMessages[chatDropMessage] ?: throw EntityNotFoundException("")
-
     override fun findIncoming(identity: Identity): List<BoxFileChatShare> =
         shareMessages.filter {
             it.value.identityId == identity.id && it.key.direction == ChatDropMessage.Direction.OUTGOING

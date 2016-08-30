@@ -1,17 +1,10 @@
 package de.qabel.chat.repository.sqlite
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Identity
 import de.qabel.chat.repository.ChatDropMessageRepository
-import de.qabel.core.repository.EntityManager
+import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.entities.ChatDropMessage.Direction
 import de.qabel.chat.repository.entities.ChatDropMessage.Status
-import de.qabel.core.repository.exception.EntityNotFoundException
-import de.qabel.core.repository.framework.BaseRepository
-import de.qabel.core.repository.framework.PagingResult
-import de.qabel.core.repository.framework.QueryBuilder
-import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
@@ -21,6 +14,14 @@ import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.PAYLOAD_TYPE
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.STATUS
 import de.qabel.chat.repository.sqlite.schemas.ChatShareDB
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Identity
+import de.qabel.core.repository.EntityManager
+import de.qabel.core.repository.exception.EntityNotFoundException
+import de.qabel.core.repository.framework.BaseRepository
+import de.qabel.core.repository.framework.PagingResult
+import de.qabel.core.repository.framework.QueryBuilder
+import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(database: ClientDatabase,
@@ -32,10 +33,8 @@ class SqliteChatDropMessageRepository(database: ClientDatabase,
         super.createEntityQuery().apply {
             select(ChatShareDB.ID)
             select(ChatShareDB.ENTITY_FIELDS)
-            leftJoin(ChatShareDB.Message.TABLE, ChatShareDB.Message.TABLE_ALIAS,
-                ChatShareDB.Message.CHAT_DROP_ID, ChatDropMessageDB.ID)
-            leftJoin(ChatShareDB.TABLE_NAME, ChatShareDB.TABLE_ALIAS, ChatShareDB.ID,
-                ChatShareDB.Message.SHARE_ID)
+            leftJoin(ChatShareDB.TABLE_NAME, ChatShareDB.TABLE_ALIAS,
+                ChatShareDB.ID, ChatDropMessageDB.SHARE_ID)
         }
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
@@ -107,6 +106,12 @@ class SqliteChatDropMessageRepository(database: ClientDatabase,
             it.setInt(4, contact.id)
         })
     }
+
+    override fun findByShare(share: BoxFileChatShare): List<ChatDropMessage> =
+        with(createEntityQuery()) {
+            whereAndEquals(ChatDropMessageDB.SHARE_ID, share.id)
+            getResultList(this)
+        }
 
 }
 

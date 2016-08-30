@@ -204,10 +204,8 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
             identityId = message.identityId,
             ownerContactId = message.contactId)
         val shareMessage = message.copy(payload = MessagePayload.ShareMessage("some msg", shareData))
-
-        dropRepo.persist(shareMessage)
         shareRepo.persist(shareData)
-        shareRepo.connectWithMessage(shareMessage, shareData)
+        dropRepo.persist(shareMessage)
 
         val messages = dropRepo.findByContact(message.contactId, message.identityId)
         val loadedShareMessage = messages.find { it.id == shareMessage.id }!!

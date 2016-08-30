@@ -31,13 +31,6 @@ object ChatShareDB : DBRelation<BoxFileChatShare> {
     val KEY = field("key")
     val BLOCK = field("block")
 
-    object Message {
-        val TABLE = "share_drop_message"
-        val TABLE_ALIAS = "sdm"
-        val SHARE_ID = DBField("share_id", TABLE, TABLE_ALIAS)
-        val CHAT_DROP_ID = DBField("chat_drop_id", TABLE, TABLE_ALIAS)
-    }
-
     override val ENTITY_CLASS: Class<BoxFileChatShare>
         get() = BoxFileChatShare::class.java
 

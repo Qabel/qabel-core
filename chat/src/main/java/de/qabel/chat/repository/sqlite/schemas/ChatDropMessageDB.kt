@@ -17,6 +17,7 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
     override val ID: DBField = field("id")
     val IDENTITY_ID: DBField = field("identity_id")
     val CONTACT_ID = field("contact_id")
+    val SHARE_ID = field("share_id")
 
     val DIRECTION = field("direction")
     val STATUS = field("status")
@@ -27,20 +28,24 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
     val CREATED_ON = field("created_on")
 
     override val ENTITY_FIELDS = listOf(CONTACT_ID, IDENTITY_ID, DIRECTION, STATUS,
-        PAYLOAD_TYPE, PAYLOAD, CREATED_ON)
+        PAYLOAD_TYPE, PAYLOAD, CREATED_ON, SHARE_ID)
 
     override val ENTITY_CLASS: Class<ChatDropMessage> = ChatDropMessage::class.java
 
     override fun applyValues(startIndex: Int, statement: PreparedStatement, model: ChatDropMessage): Int =
         with(statement) {
+            val payLoad = model.payload
             var i = startIndex
             setInt(i++, model.contactId)
             setInt(i++, model.identityId)
             setByte(i++, model.direction.type)
             setInt(i++, model.status.type)
             setString(i++, model.messageType.type)
-            setString(i++, model.payload.toString())
+            setString(i++, payLoad.toString())
             setTimestamp(i++, Timestamp(model.createdOn))
+            if(payLoad is MessagePayload.ShareMessage){
+                setInt(i++, payLoad.shareData.id)
+            }
             return i
         }
 

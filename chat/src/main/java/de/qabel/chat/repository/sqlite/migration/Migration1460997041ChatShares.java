@@ -42,11 +42,8 @@ public class Migration1460997041ChatShares extends AbstractMigration {
             ")"
         );
         execute(
-            "CREATE TABLE share_drop_message (" +
-                "chat_drop_id INTEGER REFERENCES chat_drop_message(id) ON UPDATE CASCADE," +
-                "share_id INTEGER REFERENCES chat_share(id) ON UPDATE CASCADE," +
-                "PRIMARY KEY (chat_drop_id, share_id)"+
-                ")"
+            "ALTER TABLE chat_drop_message " +
+                "ADD COLUMN share_id INTEGER REFERENCES chat_share(id) ON UPDATE CASCADE "
         );
     }
 

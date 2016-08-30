@@ -40,17 +40,13 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
                 }
         }
 
-    override fun receiveShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage) {
-        val share = chatShareRepository.findByBoxReference(identity, payload.shareData.metaUrl, payload.shareData.metaKey.byteList.toByteArray()) ?:
+    override fun receiveShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage): BoxFileChatShare =
+        chatShareRepository.findByBoxReference(identity, payload.shareData.metaUrl, payload.shareData.metaKey.byteList.toByteArray()) ?:
             payload.shareData.apply {
+                ownerContactId = message.contactId
+                identityId = identity.id
                 chatShareRepository.persist(payload.shareData)
             }
-        chatShareRepository.connectWithMessage(message, share)
-        payload.shareData = share
-    }
-
-    override fun addMessageToShare(share: BoxFileChatShare, chatDropMessage: ChatDropMessage) =
-        chatShareRepository.connectWithMessage(chatDropMessage, share)
 
     override fun markShareSent(share: BoxFileChatShare) = share.apply {
         if (share.status == ShareStatus.CREATED) {
@@ -66,11 +62,12 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
         chatShareRepository.update(share)
     }
 
-    override fun acceptShare(chatDropMessage: ChatDropMessage, boxNavigation: BoxNavigation): BoxExternalFile {
-        val share = chatShareRepository.findByMessage(chatDropMessage)
-        share.status = ShareStatus.ACCEPTED
-        return refreshShare(share, boxNavigation)
-    }
+    override fun acceptShare(chatDropMessage: ChatDropMessage, boxNavigation: BoxNavigation): BoxExternalFile =
+        if (chatDropMessage.payload is ChatDropMessage.MessagePayload.ShareMessage) {
+            val share = chatShareRepository.findById(chatDropMessage.payload.shareData.id)
+            share.status = ShareStatus.ACCEPTED
+            refreshShare(share, boxNavigation)
+        } else throw RuntimeException("No share drop message")
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun downloadShare(share: BoxFileChatShare, targetFile: File, boxNavigation: BoxNavigation) {

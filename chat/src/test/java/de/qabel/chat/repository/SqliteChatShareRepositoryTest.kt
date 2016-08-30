@@ -14,13 +14,11 @@ import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.createIdentity
 import de.qabel.core.repository.AbstractSqliteRepositoryTest
 import de.qabel.core.repository.EntityManager
-import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
-import org.junit.Assert.fail
 import org.junit.Test
 import java.sql.Connection
 import java.util.*
@@ -110,23 +108,13 @@ class SqliteChatShareRepositoryTest : AbstractSqliteRepositoryTest<ChatShareRepo
         val chatDropMessage = ChatDropMessage(contactB.id, identityA.id, ChatDropMessage.Direction.INCOMING, ChatDropMessage.Status.READ, ChatDropMessage.MessageType.SHARE_NOTIFICATION,
             ChatDropMessage.MessagePayload.ShareMessage("huhu", shareA), System.currentTimeMillis())
         chatDropRepo.persist(chatDropMessage)
-        try {
-            repo.findByMessage(chatDropMessage)
-            fail("Expected entityNotFoundException")
-        } catch (ex: EntityNotFoundException) {
-        }
-        repo.connectWithMessage(chatDropMessage, shareA)
-
-        val share = repo.findByMessage(chatDropMessage)
-        assertThat(share, equalTo(shareA))
 
         val chatDropMessage2 = ChatDropMessage(contactB.id, identityA.id, ChatDropMessage.Direction.INCOMING, ChatDropMessage.Status.READ, ChatDropMessage.MessageType.SHARE_NOTIFICATION,
             ChatDropMessage.MessagePayload.ShareMessage("huhu ups", shareA), System.currentTimeMillis())
         chatDropRepo.persist(chatDropMessage2)
-        repo.connectWithMessage(chatDropMessage2, shareA)
 
-        val messageIds = repo.findShareChatDropMessageIds(shareA)
-        assertThat(messageIds, containsInAnyOrder(chatDropMessage.id, chatDropMessage2.id))
+        val messages = chatDropRepo.findByShare(shareA)
+        assertThat(messages, containsInAnyOrder(chatDropMessage, chatDropMessage2))
     }
 
     @Test

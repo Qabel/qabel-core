@@ -47,7 +47,6 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
             val shareMessage = createOutgoingMessage(identity, contact, MessageType.SHARE_NOTIFICATION,
                 MessagePayload.ShareMessage(text, boxShare))
             chatDropMessageRepository.persist(shareMessage)
-            sharingService.addMessageToShare(boxShare, shareMessage)
             subscriber.onNext(shareMessage)
 
             sendMessage(shareMessage)
@@ -77,7 +76,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         dropMessage.dropMessageMetadata = DropMessageMetadata(sender.alias, sender.ecPublicKey,
             sender.dropUrls.first(), email, phone)
 
-        if(message.id == 0){
+        if (message.id == 0) {
             chatDropMessageRepository.persist(message)
         }
 
@@ -113,10 +112,12 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
             getMessageContact(it, identity)?.apply {
                 val message = it.toChatDropMessage(identity, this)
                 if (!chatDropMessageRepository.exists(message)) {
-                    chatDropMessageRepository.persist(message)
-                    if(message.payload is MessagePayload.ShareMessage){
-                        sharingService.receiveShare(identity, message, message.payload)
+                    if (message.payload is MessagePayload.ShareMessage) {
+                        message.payload.apply {
+                            shareData = sharingService.receiveShare(identity, message, message.payload)
+                        }
                     }
+                    chatDropMessageRepository.persist(message)
                     resultList.add(message)
                 } else {
                     logger.debug("Ignoring duplicated msg to " + identity.keyIdentifier)

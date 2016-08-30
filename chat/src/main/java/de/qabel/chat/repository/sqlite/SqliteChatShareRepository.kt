@@ -2,7 +2,6 @@ package de.qabel.chat.repository.sqlite
 
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.BoxFileChatShare
-import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.chat.repository.sqlite.schemas.ChatShareDB
 import de.qabel.core.config.Contact
@@ -12,7 +11,6 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.ClientDatabase
-import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
 import de.qabel.core.repository.sqlite.schemas.IdentityDB
 import org.spongycastle.util.encoders.Hex
 
@@ -32,20 +30,11 @@ class SqliteChatShareRepository(database: ClientDatabase,
             }
         }
 
-    override fun findByMessage(chatDropMessage: ChatDropMessage): BoxFileChatShare =
-        with(createEntityQuery()) {
-            joinMessageTable()
-            whereAndEquals(ChatShareDB.Message.CHAT_DROP_ID, chatDropMessage.id)
-            getSingleResult(this)
-        }
-
     override fun find(identity: Identity, contact: Contact?): List<BoxFileChatShare> =
         with(createEntityQuery()) {
             whereAndEquals(ChatShareDB.IDENTITY_ID, identity.id)
             contact?.let {
                 joinMessageTable()
-                innerJoin(ChatDropMessageDB.TABLE_NAME, ChatDropMessageDB.TABLE_ALIAS,
-                    ChatDropMessageDB.ID, ChatShareDB.Message.CHAT_DROP_ID)
                 whereAndEquals(ChatDropMessageDB.CONTACT_ID, contact)
             }
             getResultList(this)
@@ -55,7 +44,7 @@ class SqliteChatShareRepository(database: ClientDatabase,
         with(createEntityQuery()) {
             joinIdentity()
             whereAndEquals(ChatShareDB.IDENTITY_ID, identity.id)
-            whereAndNotEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
+            whereAndFieldsNotEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
             getResultList(this)
         }
 
@@ -63,23 +52,12 @@ class SqliteChatShareRepository(database: ClientDatabase,
         with(createEntityQuery()) {
             joinIdentity()
             whereAndEquals(ChatShareDB.IDENTITY_ID, identity.id)
-            whereAndEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
+            whereAndFieldsEquals(ChatShareDB.OWNER_CONTACT_ID, IdentityDB.CONTACT_ID)
             getResultList(this)
         }
 
-    override fun connectWithMessage(chatDropMessage: ChatDropMessage, share: BoxFileChatShare) =
-        saveManyToMany(ChatShareDB.Message.SHARE_ID, share.id, ChatShareDB.Message.CHAT_DROP_ID, chatDropMessage.id)
-
-    override fun findShareChatDropMessageIds(share: BoxFileChatShare): List<Int> =
-        with(QueryBuilder()) {
-            select(ChatShareDB.Message.CHAT_DROP_ID)
-            from(ChatShareDB.Message.TABLE, ChatShareDB.Message.TABLE_ALIAS)
-            whereAndEquals(ChatShareDB.Message.SHARE_ID, share.id)
-            return getResultList(this, IntResultAdapter())
-        }
-
     private fun QueryBuilder.joinMessageTable() =
-        innerJoin(ChatShareDB.Message.TABLE, ChatShareDB.Message.TABLE_ALIAS, ChatShareDB.Message.SHARE_ID, ChatShareDB.ID)
+        innerJoin(ChatDropMessageDB.TABLE_NAME, ChatDropMessageDB.TABLE_ALIAS, ChatDropMessageDB.SHARE_ID, ChatShareDB.ID)
 
     private fun QueryBuilder.joinIdentity() =
         innerJoin(IdentityDB.TABLE, IdentityDB.ALIAS, IdentityDB.ID, ChatShareDB.IDENTITY_ID)

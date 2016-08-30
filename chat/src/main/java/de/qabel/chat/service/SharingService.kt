@@ -14,14 +14,13 @@ interface SharingService {
     fun getOrCreateFileShare(identity: Identity, contact: Contact, boxFile: BoxFile,
                              boxNavigation: BoxNavigation): BoxFileChatShare
 
-    fun addMessageToShare(share: BoxFileChatShare, chatDropMessage: ChatDropMessage)
     fun markShareSent(share: BoxFileChatShare): BoxFileChatShare
     fun revokeFileShare(contact: Contact, share: BoxFileChatShare,
                         boxFile: BoxFile, boxNavigation: BoxNavigation)
 
     fun refreshShare(share: BoxFileChatShare, boxNavigation: BoxNavigation): BoxExternalFile
 
-    fun receiveShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage)
+    fun receiveShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage): BoxFileChatShare
     fun acceptShare(chatDropMessage: ChatDropMessage, boxNavigation: BoxNavigation): BoxExternalFile
-    fun downloadShare(share : BoxFileChatShare, targetFile : File, boxNavigation: BoxNavigation)
+    fun downloadShare(share: BoxFileChatShare, targetFile: File, boxNavigation: BoxNavigation)
 }

@@ -2,10 +2,12 @@ package de.qabel.chat.service
 
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.chat.repository.ChatDropMessageRepository
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.entities.ChatDropMessage.MessagePayload.ShareMessage
 import de.qabel.chat.repository.entities.ShareStatus
+import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -37,6 +39,7 @@ class SharingServiceTest() : CoreTestCase {
 
     lateinit var contactRepo: ContactRepository
     lateinit var shareRepo: ChatShareRepository
+    lateinit var chatDropRepo : ChatDropMessageRepository
 
 
     lateinit var deviceID: ByteArray
@@ -67,6 +70,7 @@ class SharingServiceTest() : CoreTestCase {
             save(contactB, identityA)
         }
         shareRepo = InMemoryChatShareRepository()
+        chatDropRepo = InMemoryChatDropMessageRepository()
 
         tempFolder = Files.createTempDirectory("")
         volumeTmpDir = Files.createTempDirectory("qbl_test").toFile()
@@ -110,20 +114,6 @@ class SharingServiceTest() : CoreTestCase {
     }
 
     @Test
-    fun testAddMessageToShare() {
-        val boxFile = navigationA.upload(testFile.name, testFile)
-        val chatShare = sharingService.getOrCreateFileShare(identityA, contactB, boxFile, navigationA)
-        val chatMessage = ChatDropMessage(contactB.id, identityA.id,
-            ChatDropMessage.Direction.OUTGOING, ChatDropMessage.Status.PENDING,
-            ChatDropMessage.MessageType.SHARE_NOTIFICATION, ShareMessage("message", chatShare),
-            System.currentTimeMillis())
-
-        sharingService.addMessageToShare(chatShare, chatMessage)
-
-        assertThat(shareRepo.findByMessage(chatMessage), equalTo(chatShare))
-    }
-
-    @Test
     fun testMarkShareSent() {
         val boxFile = navigationA.upload(testFile.name, testFile)
         val chatShare = sharingService.getOrCreateFileShare(identityA, contactB, boxFile, navigationA)
@@ -143,19 +133,24 @@ class SharingServiceTest() : CoreTestCase {
         val sharePayload = shareDropMessage.payload as ShareMessage
 
         sharingService.receiveShare(identityB, shareDropMessage, sharePayload)
+        chatDropRepo.persist(shareDropMessage)
 
-        val shareB = shareRepo.findByMessage(shareDropMessage)
-        assertThat(shareB, equalTo(sharePayload.shareData))
-        assertThat(shareB.status, equalTo(ShareStatus.NEW))
+        val received = chatDropRepo.findByShare(sharePayload.shareData)
+        assertThat(received, hasSize(1))
+        val receivedMsg = received.first()
+        val rMsgPayload= receivedMsg.payload as ShareMessage
+        assertThat(rMsgPayload.shareData, equalTo(sharePayload.shareData))
+        assertThat(rMsgPayload.shareData.status, equalTo(ShareStatus.NEW))
 
         val copy = ChatDropMessage(contactA.id, identityB.id, ChatDropMessage.Direction.INCOMING, ChatDropMessage.Status.NEW,
             ChatDropMessage.MessageType.SHARE_NOTIFICATION, ShareMessage("ups", chatShareA).toString(), System.currentTimeMillis())
         val copyPayload = copy.payload as ShareMessage
         sharingService.receiveShare(identityB, copy, copyPayload)
-        assertThat(copyPayload.shareData.id, equalTo(shareB.id))
+        chatDropRepo.persist(copy)
+        assertThat(copyPayload.shareData.id, equalTo(rMsgPayload.shareData.id))
 
         //Check both messages connected
-        assertThat(shareRepo.findShareChatDropMessageIds(shareB), hasSize(2))
+        assertThat(chatDropRepo.findByShare(sharePayload.shareData), hasSize(2))
 
         val boxExternalFile = sharingService.acceptShare(shareDropMessage, navigationB)
         assertThat(boxExternalFile.block, equalTo(boxFileA.block))
@@ -163,17 +158,17 @@ class SharingServiceTest() : CoreTestCase {
         assertThat(boxExternalFile.mtime, equalTo(boxFileA.mtime))
 
         val sharedFile = createTempFile()
-        sharingService.downloadShare(shareB, sharedFile, navigationB)
+        sharingService.downloadShare(rMsgPayload.shareData, sharedFile, navigationB)
         assertArrayEquals(FileUtils.readFileToByteArray(testFile), FileUtils.readFileToByteArray(sharedFile))
 
         //IdentityA revoke share
         sharingService.revokeFileShare(contactB, chatShareA, boxFileA, navigationA)
         try {
-            sharingService.refreshShare(shareB, navigationB)
+            sharingService.refreshShare(rMsgPayload.shareData, navigationB)
             fail("QblStorageException expected")
         } catch (ex: QblStorageException) {
         }
-        assertThat(shareB.status, equalTo(ShareStatus.DELETED))
+        assertThat(rMsgPayload.shareData.status, equalTo(ShareStatus.DELETED))
     }
 
 }
