@@ -264,7 +264,7 @@ abstract class AbstractNavigation(
                 } else {
                     writeBackend.upload(block, fis)
                 }
-            }
+            }.time.time
             return UploadResult(serverTime, Hash(digest.digest(), hashAlgorithm))
         } catch (e: IOException) {
             throw QblStorageException(e.message, e)

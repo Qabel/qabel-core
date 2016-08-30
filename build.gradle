@@ -27,9 +27,12 @@ subprojects {
     }
 
     dependencies {
-        testCompile group: 'junit', name: 'junit', version: '4.+'
         testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-        testCompile group: 'org.meanbean', name: 'meanbean', version: '2.+'
+        testCompile 'com.natpryce:hamkrest:1.2.1.0'
+        testCompile 'junit:junit:4.+'
+        testCompile 'org.meanbean:meanbean:2.+'
+        testCompile 'org.mockito:mockito-core:2.0.52-beta'
+        testCompile 'com.nhaarman:mockito-kotlin:0.5.0'
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     }
 

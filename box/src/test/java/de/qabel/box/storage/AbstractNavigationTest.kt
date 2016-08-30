@@ -14,6 +14,7 @@ import org.spongycastle.crypto.params.KeyParameter
 import java.io.*
 import java.nio.file.Files
 import java.security.Security
+import java.util.*
 
 abstract class AbstractNavigationTest {
     init {
@@ -41,7 +42,7 @@ abstract class AbstractNavigationTest {
     @Test
     fun catchesDMConflictsWhileUploadingDm() {
         nav.setAutocommit(false)
-        whenever(writeBackend.upload(eq("testfile"), any())).thenReturn(System.currentTimeMillis())
+        whenever(writeBackend.upload(eq("testfile"), any())).thenReturn(anyUploadResult())
 
         nav.upload("testfile", "content".byteInputStream(), 7L)
         val cPath = setupConflictingDM()
@@ -75,4 +76,6 @@ abstract class AbstractNavigationTest {
     }
 
     private fun someFile() = BoxFile("a", "b", "anotherFile", 10L, 0L, "test".toByteArray())
+
+    private fun anyUploadResult() = StorageWriteBackend.UploadResult(Date(), "etag")
 }

@@ -1,12 +1,15 @@
 package de.qabel.box.http
 
+import de.qabel.box.storage.ModifiedException
 import de.qabel.box.storage.StorageWriteBackend
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.utils.DateUtils
 import org.apache.http.entity.InputStreamEntity
+import sun.plugin.dom.exception.InvalidStateException
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
@@ -22,29 +25,44 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
     override fun upload(name: String, content: InputStream, eTag: String) = uploadIfOld(name, content, eTag)
 
     @Throws(QblStorageException::class)
-    fun uploadIfOld(name: String, content: InputStream, eTag: String?): Long {
+    fun uploadIfOld(name: String, content: InputStream, eTag: String?): StorageWriteBackend.UploadResult {
         AbstractHttpStorageBackend.logger.trace("Uploading " + name)
         val httpPost: HttpPost
         try {
             val uri = root.resolve(name)
             httpPost = HttpPost(uri)
             prepareRequest(httpPost)
+            if (eTag != null) httpPost.addHeader("If-Match", eTag)
             httpPost.entity = InputStreamEntity(content)
 
             httpclient.execute(httpPost).use { response ->
                 val status = response.statusLine.statusCode
-                if (status == 404 || status == 403) {
-                    throw QblStorageNotFound("File not found")
+                if (status == 412) {
+                    throw ModifiedException("The target file was already changed: ${response.statusLine.reasonPhrase}")
+                } else if (status == 404 || status == 403) {
+                    throw QblStorageNotFound("File not found: ${response.statusLine.reasonPhrase}")
+                } else if (status >= 300) {
+                    throw QblStorageException("Upload error: ${response.statusLine.reasonPhrase}")
                 }
-                if (status >= 300) {
-                    throw QblStorageException("Upload error")
-                }
+                return parseUploadResult(response)
             }
-            return System.currentTimeMillis()
         } catch (e: IOException) {
             throw QblStorageException(e)
         }
 
+    }
+
+    private fun parseUploadResult(response: CloseableHttpResponse): StorageWriteBackend.UploadResult {
+        checkHeader("Date", response)
+        checkHeader("Etag", response)
+        val time = DateUtils.parseDate(response.getFirstHeader("Date").value)
+        val etag = response.getFirstHeader("Etag").value
+        return StorageWriteBackend.UploadResult(time, etag)
+    }
+
+    private fun checkHeader(headerName: String, response: CloseableHttpResponse) {
+        if (!response.containsHeader(headerName))
+            throw InvalidStateException("Missing $headerName header on block server response")
     }
 
     @Throws(QblStorageException::class)
@@ -65,10 +83,10 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
         val status = response.statusLine.statusCode
         if (status == 404 || status == 403) {
-            throw QblStorageNotFound("File not found")
+            throw QblStorageNotFound("File not found: ${response.statusLine.reasonPhrase}")
         }
         if (status >= 300) {
-            throw QblStorageException("Deletion error")
+            throw QblStorageException("Deletion error: ${response.statusLine.reasonPhrase}")
         }
     }
 }

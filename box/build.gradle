@@ -17,11 +17,6 @@ repositories {
 dependencies {
     compile project(':core')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    testCompile 'junit:junit:4.+'
-    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.meanbean:meanbean:2.+'
-    testCompile 'org.mockito:mockito-core:2.0.52-beta'
-    testCompile 'com.nhaarman:mockito-kotlin:0.5.0'
 }
 
 tasks.withType(Test) {
