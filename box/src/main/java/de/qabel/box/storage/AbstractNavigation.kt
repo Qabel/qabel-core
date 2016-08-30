@@ -52,8 +52,12 @@ abstract class AbstractNavigation(
     }
 
     override var metadata: DirectoryMetadata
-        get() { return dm }
-        set(value) { dm = value }
+        get() {
+            return dm
+        }
+        set(value) {
+            dm = value
+        }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun navigate(target: BoxFolder): AbstractNavigation {
@@ -92,7 +96,7 @@ abstract class AbstractNavigation(
         val version = dm.version
         dm.commit()
         logger.info("Committing version " + String(Hex.encodeHex(dm.version))
-                + " with device id " + String(Hex.encodeHex(deviceId)))
+            + " with device id " + String(Hex.encodeHex(deviceId)))
         var updatedDM: DirectoryMetadata? = null
         try {
             updatedDM = reloadMetadata()
@@ -166,7 +170,7 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun overwrite(name: String, file: File, listener: ProgressListener?): BoxFile
-        =  uploadFile(name, file, null, listener)
+        = uploadFile(name, file, null, listener)
 
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
@@ -186,13 +190,13 @@ abstract class AbstractNavigation(
         val oldFile = dm.getFile(name)
 
         val boxFile = BoxFile(
-                prefix,
-                block,
+            prefix,
+            block,
             name,
             size,
-                0L,
-                key.key,
-                shared = Share.create(oldFile?.meta, oldFile?.metakey)
+            0L,
+            key.key,
+            shared = Share.create(oldFile?.meta, oldFile?.metakey)
         )
         boxFile.mtime = mtime
 
@@ -240,7 +244,6 @@ abstract class AbstractNavigation(
             }
         }, autocommitDelay, TimeUnit.MILLISECONDS)
     }
-
 
 
     @Throws(QblStorageException::class)
@@ -337,7 +340,7 @@ abstract class AbstractNavigation(
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
     override fun updateFileMetadata(boxFile: BoxFile) {
-        val shared = boxFile.shared ?: throw IllegalArgumentException("BoxFile without FileMetadata cannot be updated")
+        val shared = boxFile.shared ?: throw QblStorageNotFound("FileMetadata is not set")
 
         try {
             val fileMetadataOld = getMetadataFile(shared)
@@ -358,7 +361,7 @@ abstract class AbstractNavigation(
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun getFileMetadata(boxFile: BoxFile): FileMetadata {
-        val shared = boxFile.shared ?: throw IllegalArgumentException("BoxFile without FileMetadata cannot be loaded")
+        val shared = boxFile.shared ?: throw QblStorageException("No owner in old file metadata"),
 
         try {
             return getMetadataFile(shared)
