@@ -5,11 +5,7 @@ import de.qabel.core.repository.sqlite.builder.QueryBuilder
 import java.sql.PreparedStatement
 import java.sql.SQLException
 
-interface ClientDatabase {
-    /**
-     * Read the version of the last executed migration from the database
-     */
-    var version: Long
+interface ClientDatabase: HasVersion {
 
     /**
      * migrate from the current version to the maximum known version

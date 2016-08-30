@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Deprecated
 public class ContactTypeAdapter extends TypeAdapter<Contact> {
 
     @Override

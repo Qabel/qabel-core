@@ -15,5 +15,7 @@ interface DBRelation<T : BaseEntity> : ResultAdapter<T> {
 
     fun applyValues(startIndex: Int, statement: PreparedStatement, model: T) : Int
 
+    fun field(name : String) = DBField(name, TABLE_NAME, TABLE_ALIAS)
+
 }
 

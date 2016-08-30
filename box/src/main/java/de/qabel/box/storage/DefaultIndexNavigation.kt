@@ -1,5 +1,7 @@
 package de.qabel.box.storage
 
+import de.qabel.box.storage.command.DeleteShareChange
+import de.qabel.box.storage.command.InsertShareChange
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
@@ -53,6 +55,23 @@ class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, v
             throw QblStorageException(e)
         }
 
+    }
+
+    @Throws(QblStorageException::class)
+    override fun listShares(): List<BoxShare> = dm.listShares()
+
+    @Throws(QblStorageException::class)
+    override fun insertShare(share: BoxShare): Unit {
+        execute(InsertShareChange(share))
+        // forcing a commit because these changes are needed even when autocommit is disabled
+        commit()
+    }
+
+    @Throws(QblStorageException::class)
+    override fun deleteShare(share: BoxShare): Unit {
+        execute(DeleteShareChange(share))
+        // forcing a commit because these changes are needed even when autocommit is disabled
+        commit()
     }
 
     override val indexNavigation = this

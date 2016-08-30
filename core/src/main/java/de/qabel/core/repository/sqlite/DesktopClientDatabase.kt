@@ -1,10 +1,9 @@
 package de.qabel.core.repository.sqlite
 
+import de.qabel.core.repository.sqlite.migration.*
 import java.sql.Connection
 
-import de.qabel.core.repository.sqlite.migration.*
-
-class DesktopClientDatabase(connection: Connection) : AbstractClientDatabase(connection) {
+open class DesktopClientDatabase(connection: Connection) : AbstractClientDatabase(connection) {
 
     override var version by PragmaVersionAdapter(connection)
 
@@ -19,9 +18,9 @@ class DesktopClientDatabase(connection: Connection) : AbstractClientDatabase(con
             Migration1460367035Entity(connection),
             Migration1460367040DropMessage(connection),
             Migration1460987825PreventDuplicateContacts(connection),
-            Migration1460997040ChatDropMessage(connection),
             Migration1460997041RenameDropState(connection),
-            Migration1460997042ExtendContact(connection))
+            Migration1460997042ExtendContact(connection),
+            Migration1460997043ContactDefaults(connection))
     }
 
 }

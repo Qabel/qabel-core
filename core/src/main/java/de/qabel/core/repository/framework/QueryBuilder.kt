@@ -4,8 +4,8 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
-
-        private const val WILD_CARD = "%";
+        private const val GREATER = ">"
+        private const val WILD_CARD = "%"
     }
 
     enum class Direction(val sql: String) {
@@ -19,6 +19,7 @@ class QueryBuilder {
     private val where = StringBuilder()
     private val orderBy = StringBuilder()
     private val groupBy = StringBuilder()
+    private var paging = ""
     val params = mutableListOf<Any>()
 
     fun select(field: Field) = select(field.select())
@@ -47,13 +48,13 @@ class QueryBuilder {
 
     fun innerJoin(table: String, tableAlias: String,
                   joinField: String, targetField: String) {
-        joins.append("INNER ")
+        joins.append(" INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 
     fun leftJoin(table: String, tableAlias: String,
                  joinField: String, targetField: String) {
-        joins.append("LEFT ")
+        joins.append(" LEFT ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
 
@@ -72,6 +73,11 @@ class QueryBuilder {
 
     fun whereAndEquals(field: Field, value: Any) {
         where(field.exp(), EQUALS, "?", " AND ")
+        params.add(value)
+    }
+
+    fun whereAndGreater(field: Field, value: Any) {
+        where(field.exp(), GREATER, "?", " AND ")
         params.add(value)
     }
 
@@ -115,13 +121,15 @@ class QueryBuilder {
 
 
     private fun where(field: String, condition: String, valuePlaceholder: String, concatenation: String) {
-        startWhere(concatenation);
+        startWhere(concatenation)
         where.append(field)
         where.append(condition)
         where.append(valuePlaceholder)
     }
 
-    fun where(sql: String) = where.append(sql)
+    fun where(sql: String) {
+        where.append(sql)
+    }
 
     fun orderBy(field: String, direction: Direction = Direction.ASCENDING) {
         if (orderBy.isEmpty()) {
@@ -143,12 +151,15 @@ class QueryBuilder {
         groupBy.append(field.exp())
     }
 
-    fun queryString(): String = select.toString() + " " +
-        from.toString() + " " +
-        (if (!joins.isEmpty()) joins.toString() else "") + " " +
-        (if (!where.isEmpty()) where.toString() else "") + " " +
-        (if (!groupBy.isEmpty()) groupBy.toString() else "") + " " +
-        (if (!orderBy.isEmpty()) orderBy.toString() else "")
+    fun setPaging(offset: Int, pageSize: Int) {
+        paging = " LIMIT $offset, $pageSize"
+    }
+
+    private fun createQuerySelection() = listOf(from, joins, where, groupBy, orderBy).joinToString(" ")
+
+    fun queryString(): String = listOf(select, createQuerySelection(), paging).joinToString(" ")
+
+    fun countQueryString(): String = "SELECT count(*) " + createQuerySelection()
 
 }
 
