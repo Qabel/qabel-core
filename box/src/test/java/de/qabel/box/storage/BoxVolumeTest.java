@@ -63,7 +63,7 @@ public abstract class BoxVolumeTest {
         deviceID2 = utils.getRandomBytes(16);
         volumeTmpDir = Files.createTempDirectory("qbl_test").toFile();
 
-        keyPair = new QblECKeyPair();
+        keyPair = new QblECKeyPair(Hex.decode("8520f0098930a754748b7ddcb43ef75a0dbf3a0d26381af4eba4a98eaa9b4e6a"));
         contact = new Contact("contact", new LinkedList<DropURL>(), new QblECKeyPair().getPub());
 
         setUpVolume();
@@ -747,7 +747,6 @@ public abstract class BoxVolumeTest {
     public void rootRefIsCompatible() throws Exception {
         assertThat(originalRootRef(), equalTo(volume.getRootRef()));
     }
-
 
     protected boolean blockExists(String meta) throws QblStorageException {
         try {
