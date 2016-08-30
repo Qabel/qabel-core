@@ -20,6 +20,7 @@ public class BoxVolumeLocalTest extends BoxVolumeTest {
     @Override
     public void setUpVolume() throws IOException {
         tempFolder = Files.createTempDirectory("");
+        prefix = "";
 
         readBackend = new LocalReadBackend(tempFolder);
         volume = new BoxVolumeImpl(readBackend,

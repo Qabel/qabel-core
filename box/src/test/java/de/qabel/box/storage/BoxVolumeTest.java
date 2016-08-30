@@ -23,9 +23,12 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -723,6 +726,28 @@ public abstract class BoxVolumeTest {
         assertThat(nav2.getSharesOf(nav2.getFile("file1")), hasSize(1));
 
     }
+
+    private String originalRootRef() throws QblStorageException {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new QblStorageException(e);
+        }
+        md.update(prefix.getBytes());
+        md.update(keyPair.getPrivateKey());
+        byte[] digest = md.digest();
+        byte[] firstBytes = Arrays.copyOfRange(digest, 0, 16);
+        ByteBuffer bb = ByteBuffer.wrap(firstBytes);
+        UUID uuid = new UUID(bb.getLong(), bb.getLong());
+        return uuid.toString();
+    }
+
+    @Test
+    public void rootRefIsCompatible() throws Exception {
+        assertThat(originalRootRef(), equalTo(volume.getRootRef()));
+    }
+
 
     protected boolean blockExists(String meta) throws QblStorageException {
         try {

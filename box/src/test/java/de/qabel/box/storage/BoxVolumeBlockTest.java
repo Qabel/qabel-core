@@ -31,7 +31,6 @@ public class BoxVolumeBlockTest extends BoxVolumeTest {
         try {
             AccountingServer server = new AccountingServer(new URI("http://localhost:9696"), new URI("http://localhost:9697"), "testuser", "testuser");
             accountingHTTP = new BoxHttpClient(server, new AccountingProfile());
-            QblECKeyPair keyPair = new QblECKeyPair();
 
             List<String> prefixes = accountingHTTP.getPrefixes();
             if (prefixes.isEmpty()) {
