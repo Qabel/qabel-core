@@ -1,16 +1,15 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
-import de.qabel.core.config.ContactObserver
+import de.qabel.core.config.EntityObserver
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import org.hamcrest.Matchers.hasSize
-import org.junit.Assert
-import org.junit.Assert.assertThat
 import org.junit.Test
+import org.junit.Assert.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 class InMemoryContactRepositoryTest {
@@ -45,23 +44,23 @@ class InMemoryContactRepositoryTest {
         return Identity(identityName, emptyList(), identityKey)
     }
 
-    private fun attachContactObserver() {
-        repo.attach(ContactObserver { hasCalled.set(true) })
+    private fun attachEntityObserver() {
+        repo.attach(EntityObserver { hasCalled.set(true) })
     }
 
     @Test
     @Throws(Exception::class)
     fun testContactRepositorySaveObservable() {
-        attachContactObserver()
+        attachEntityObserver()
         repo.save(contact, identity)
-        Assert.assertTrue(hasCalled.get())
+        assertTrue(hasCalled.get())
     }
 
     @Test
     @Throws(Exception::class)
     fun testContactRepositoryDeleteObservable() {
-        attachContactObserver()
+        attachEntityObserver()
         repo.delete(contact, identity)
-        Assert.assertTrue(hasCalled.get())
+        assertTrue(hasCalled.get())
     }
 }

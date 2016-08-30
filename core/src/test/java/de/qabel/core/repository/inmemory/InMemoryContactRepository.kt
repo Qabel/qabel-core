@@ -1,9 +1,6 @@
 package de.qabel.core.repository.inmemory
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.ContactObserver
-import de.qabel.core.config.Contacts
-import de.qabel.core.config.Identity
+import de.qabel.core.config.*
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.exception.EntityExistsException
@@ -12,12 +9,11 @@ import de.qabel.core.util.DefaultHashMap
 import java.util.*
 
 
-open class InMemoryContactRepository : ContactRepository {
+open class InMemoryContactRepository : ContactRepository, EntityObservable by EntityDelegate() {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
     val identities: MutableMap<String, Identity> = mutableMapOf()
     val identityMapping: DefaultHashMap<String, MutableSet<String>> = DefaultHashMap({ key -> HashSet() })
-    private val observers = ArrayList<ContactObserver>()
 
     override fun find(id: Int): Contact = contacts.values.find({ it.id == id }) ?: throw EntityNotFoundException("Contact not found")
 
@@ -37,14 +33,14 @@ open class InMemoryContactRepository : ContactRepository {
             contact.id = contacts.size + 1
         }
         contacts.put(contact.keyIdentifier, contact)
-        notifyAllObservers()
+        notifyObservers()
         identityMapping.getOrDefault(identity.keyIdentifier).add(contact.keyIdentifier)
         identities.put(identity.keyIdentifier, identity)
     }
 
     override fun delete(contact: Contact, identity: Identity) {
         contacts.remove(contact.keyIdentifier)
-        notifyAllObservers()
+        notifyObservers()
         identityMapping.getOrDefault(identity.keyIdentifier).remove(contact.keyIdentifier)
     }
 
@@ -97,16 +93,6 @@ open class InMemoryContactRepository : ContactRepository {
         activeIdentities.forEach {
             identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier);
             identities.put(it.keyIdentifier, it)
-        }
-    }
-
-    fun attach(observer: ContactObserver) {
-        observers.add(observer)
-    }
-
-    fun notifyAllObservers() {
-        for (observer: ContactObserver in observers) {
-            observer.update()
         }
     }
 }

@@ -105,7 +105,6 @@ public abstract class EntityMap<T extends Entity> extends Persistable implements
         return entities.equals(other.entities);
     }
 
-    @Override
     public void addObserver(EntityObserver observer) {
         getObserverList().add(observer);
     }
@@ -116,13 +115,16 @@ public abstract class EntityMap<T extends Entity> extends Persistable implements
         getObserverList().remove(observer);
     }
 
-    private void notifyObservers() {
+    public void notifyObservers() {
         List<EntityObserver> observers = getObserverList();
-
 
         for (EntityObserver e : observers) {
             e.update();
         }
+    }
+
+     public void attach(EntityObserver observer) {
+       getObserverList().add(observer);
     }
 
     private CopyOnWriteArrayList<EntityObserver> getObserverList() {
