@@ -1,6 +1,6 @@
 package de.qabel.core.config
 
-class EntityDelegate : EntityObservable {
+class SimpleEntityObservable : EntityObservable {
 
     private val observers: MutableList<EntityObserver> = mutableListOf()
 

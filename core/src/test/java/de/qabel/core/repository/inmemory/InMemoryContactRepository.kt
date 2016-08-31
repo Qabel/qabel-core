@@ -9,7 +9,7 @@ import de.qabel.core.util.DefaultHashMap
 import java.util.*
 
 
-open class InMemoryContactRepository : ContactRepository, EntityObservable by EntityDelegate() {
+open class InMemoryContactRepository : ContactRepository, EntityObservable by SimpleEntityObservable() {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
     val identities: MutableMap<String, Identity> = mutableMapOf()
