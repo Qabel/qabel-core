@@ -8,9 +8,8 @@ import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import org.apache.commons.lang3.RandomStringUtils
-import org.junit.Assert
-import org.junit.Assert.*
-import org.junit.rules.ExpectedException
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import kotlin.reflect.KClass
 
 interface CoreTestCase {
