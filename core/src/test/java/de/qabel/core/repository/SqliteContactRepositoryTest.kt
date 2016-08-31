@@ -167,7 +167,19 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
             fail("entity was not deleted")
         } catch (ignored: EntityNotFoundException) {
         }
+    }
 
+    @Test
+    fun deletesContactComplete() {
+        repo.save(contact, identity)
+        repo.save(contact, otherIdentity)
+        repo.delete(contact)
+
+        try {
+            repo.findByKeyId(contact.keyIdentifier)
+            fail("entity was not deleted")
+        } catch (ignored: EntityNotFoundException) {
+        }
     }
 
     @Test

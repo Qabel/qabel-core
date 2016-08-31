@@ -89,6 +89,8 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         }
     }
 
+    override fun delete(contact : Contact) = delete(contact.id)
+
     override fun delete(id: Int) {
         val contact = findById(id)
         removeIdentityConnections(contact)
