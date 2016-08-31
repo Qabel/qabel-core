@@ -17,7 +17,6 @@ import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Test
 import java.util.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRepository>() {
 
@@ -30,7 +29,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
     private lateinit var dropUrlGenerator: DropUrlGenerator
-    private val hasCalled = AtomicBoolean()
+    private var hasCalled: Boolean = false
 
     override fun setUp() {
         super.setUp()
@@ -320,24 +319,22 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     }
 
     private fun attachEntityObserver() {
-        repo.attach(EntityObserver { hasCalled.set(true) })
+        repo.attach(EntityObserver { hasCalled = true })
     }
 
     @Test
-    @Throws(Exception::class)
     fun testSqliteContactRepositorySaveObservable() {
         attachEntityObserver()
         repo.save(contact, identity)
-        assertTrue(hasCalled.get())
+        assertTrue(hasCalled)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testSqliteContactRepositoryDeleteObservable() {
         repo.save(contact, identity)
         attachEntityObserver()
         repo.delete(contact, identity)
-        assertTrue(hasCalled.get())
+        assertTrue(hasCalled)
     }
 
 }

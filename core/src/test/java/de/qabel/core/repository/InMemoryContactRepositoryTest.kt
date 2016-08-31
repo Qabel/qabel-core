@@ -10,12 +10,11 @@ import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import org.hamcrest.Matchers.hasSize
 import org.junit.Test
 import org.junit.Assert.*
-import java.util.concurrent.atomic.AtomicBoolean
 
 class InMemoryContactRepositoryTest {
 
     val repo = InMemoryContactRepository()
-    val hasCalled = AtomicBoolean()
+    var hasCalled: Boolean = false
     val identityKey = QblECKeyPair()
     val identityName = "Identity"
     val identity = createIdentity(identityName, identityKey)
@@ -45,22 +44,20 @@ class InMemoryContactRepositoryTest {
     }
 
     private fun attachEntityObserver() {
-        repo.attach(EntityObserver { hasCalled.set(true) })
+        repo.attach(EntityObserver { hasCalled = true })
     }
 
     @Test
-    @Throws(Exception::class)
     fun testContactRepositorySaveObservable() {
         attachEntityObserver()
         repo.save(contact, identity)
-        assertTrue(hasCalled.get())
+        assertTrue(hasCalled)
     }
 
     @Test
-    @Throws(Exception::class)
     fun testContactRepositoryDeleteObservable() {
         attachEntityObserver()
         repo.delete(contact, identity)
-        assertTrue(hasCalled.get())
+        assertTrue(hasCalled)
     }
 }
