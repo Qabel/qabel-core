@@ -59,14 +59,42 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
         if (chatDropMessage.payload is ChatDropMessage.MessagePayload.ShareMessage) {
             val share = chatShareRepository.findById(chatDropMessage.payload.shareData.id)
             share.status = ShareStatus.ACCEPTED
-            refreshShare(share, boxNavigation)
+            updateShare(share, boxNavigation)
+            getBoxExternalFile(share, boxNavigation)
         } else throw RuntimeException("No share drop message")
+
+    override fun getBoxExternalFile(share: BoxFileChatShare,
+                                    boxNavigation: BoxNavigation,
+                                    forceReload: Boolean): BoxExternalFile {
+        if (share.status == ShareStatus.DELETED) {
+            throw QblStorageNotFound("Share has been deleted!")
+        } else if (share.status == ShareStatus.NEW || forceReload) {
+            val fileMetadata = boxNavigation.getMetadataFile(Share(share.metaUrl, share.metaKey.toByteArray()))
+            return fileMetadata.file!!
+        } else {
+            val owner = contactRepository.find(share.ownerContactId)
+            return BoxExternalFile(owner.ecPublicKey, share.prefix!!, share.block!!,
+                share.name, share.size, share.modifiedOn, share.key!!.toByteArray(), share.hashed)
+        }
+    }
+
+    override fun updateShare(share: BoxFileChatShare, boxNavigation: BoxNavigation) {
+        try {
+            val external = getBoxExternalFile(share, boxNavigation, true)
+            applyBoxFile(share, external)
+        } catch (deleted: QblStorageNotFound) {
+            share.status = ShareStatus.DELETED
+        } catch (notReachable: QblStorageException) {
+            share.status = ShareStatus.UNREACHABLE
+        }
+        chatShareRepository.update(share)
+    }
 
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     override fun downloadShare(share: BoxFileChatShare, targetFile: File, boxNavigation: BoxNavigation) {
         try {
             if (share.key == null) {
-                refreshShare(share, boxNavigation)
+                updateShare(share, boxNavigation)
             }
             val rootUri = URI(share.metaUrl)
             val url = rootUri.resolve("blocks/").resolve(share.block).toString()
@@ -77,26 +105,6 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
         } catch (e: URISyntaxException) {
             throw QblStorageException("no valid uri: " + share.metaUrl)
         }
-    }
-
-    override fun refreshShare(share: BoxFileChatShare, boxNavigation: BoxNavigation): BoxExternalFile =
-        tryRefreshShare(share, boxNavigation) ?: throw QblStorageException("ExternalRef not accessible")
-
-    private fun tryRefreshShare(share: BoxFileChatShare, boxNavigation: BoxNavigation): BoxExternalFile? {
-        val boxExternalFile = try {
-            val fileMetadata = boxNavigation.getMetadataFile(Share(share.metaUrl, share.metaKey.byteList.toByteArray()))
-            val fileRef = fileMetadata.file!! //TODO
-            applyBoxFile(share, fileRef)
-            fileRef
-        } catch (deleted: QblStorageNotFound) {
-            share.status = ShareStatus.DELETED
-            null
-        } catch (notReachable: QblStorageException) {
-            share.status = ShareStatus.UNREACHABLE
-            null
-        }
-        chatShareRepository.update(share)
-        return boxExternalFile
     }
 
     private fun applyBoxFile(share: BoxFileChatShare, boxFile: BoxFile) {

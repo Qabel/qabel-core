@@ -156,10 +156,11 @@ class SharingServiceTest() : CoreTestCase {
         //IdentityA revoke share
         sharingService.revokeFileShare(chatShareA, boxFileA, navigationA)
         try {
-            sharingService.refreshShare(rMsgPayload.shareData, navigationB)
+            sharingService.getBoxExternalFile(rMsgPayload.shareData, navigationB, true)
             fail("QblStorageException expected")
         } catch (ex: QblStorageException) {
         }
+        sharingService.updateShare(rMsgPayload.shareData, navigationB)
         assertThat(rMsgPayload.shareData.status, equalTo(ShareStatus.DELETED))
     }
 

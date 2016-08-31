@@ -9,5 +9,6 @@ data class SymmetricKey(val byteList: List<Byte>) {
     }
 
     fun toHexString(): String = Hex.toHexString(byteList.toByteArray())
+    fun toByteArray(): ByteArray = byteList.toByteArray()
 }
 
