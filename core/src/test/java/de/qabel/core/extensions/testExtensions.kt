@@ -9,6 +9,7 @@ import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.Assert
+import org.junit.Assert.*
 import org.junit.rules.ExpectedException
 import kotlin.reflect.KClass
 
@@ -29,7 +30,7 @@ fun CoreTestCase.createContact(alias: String,
 fun <T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> Any?) =
     try {
         operation()
-        Assert.fail("Expected exception ${expectedException.simpleName} not thrown.")
+        fail("Expected exception ${expectedException.simpleName} not thrown.")
     } catch (ex: Throwable) {
-        Assert.assertEquals(ex.javaClass, expectedException.java)
+        assertEquals(ex.javaClass, expectedException.java)
     }
