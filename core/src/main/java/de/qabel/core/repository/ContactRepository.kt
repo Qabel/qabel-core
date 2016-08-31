@@ -19,7 +19,13 @@ interface ContactRepository {
     @Throws(PersistenceException::class)
     fun delete(contact: Contact, identity: Identity)
 
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun update(contact: Contact, activeIdentities: List<Identity>)
+    /**
+     * Deletes contact with its identity connection
+     */
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    fun delete(contact: Contact)
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun find(id: Int): Contact

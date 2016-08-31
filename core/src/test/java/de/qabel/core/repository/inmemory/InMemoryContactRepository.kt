@@ -40,8 +40,10 @@ open class InMemoryContactRepository : ContactRepository {
     }
 
     override fun delete(contact: Contact, identity: Identity) {
-        contacts.remove(contact.keyIdentifier)
         identityMapping.getOrDefault(identity.keyIdentifier).remove(contact.keyIdentifier)
+        if (!identityMapping.any { it.value.contains(contact.keyIdentifier) }) {
+            contacts.remove(contact.keyIdentifier)
+        }
     }
 
     override fun findByKeyId(identity: Identity, keyId: String): Contact {
@@ -94,5 +96,10 @@ open class InMemoryContactRepository : ContactRepository {
             identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier);
             identities.put(it.keyIdentifier, it)
         }
+    }
+
+    override fun delete(contact: Contact) {
+        contacts.remove(contact.keyIdentifier)
+        identityMapping.values.forEach { it.remove(contact.keyIdentifier) }
     }
 }
