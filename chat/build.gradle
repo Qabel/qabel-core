@@ -17,9 +17,6 @@ compileTestJava.dependsOn tasks.getByPath(':core:testClasses')
 dependencies {
     compile project(':core')
     compile project(':box')
-    // First dependency is for IDEA
-    testCompile files { project(':core').sourceSets.test.java.srcDirs }
-    // Second is for Gradle
     testCompile project(':core').sourceSets.test.output
 }
 
