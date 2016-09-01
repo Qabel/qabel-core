@@ -5,6 +5,7 @@ import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.extensions.assertThrows
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
@@ -162,11 +163,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(contact, identity)
         repo.delete(contact, identity)
 
-        try {
-            repo.findByKeyId(identity, contact.keyIdentifier)
-            fail("entity was not deleted")
-        } catch (ignored: EntityNotFoundException) {
-        }
+        assertThrows(EntityNotFoundException::class, { repo.findByKeyId(identity, contact.keyIdentifier) })
     }
 
     @Test
@@ -175,11 +172,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(contact, otherIdentity)
         repo.delete(contact)
 
-        try {
-            repo.findByKeyId(contact.keyIdentifier)
-            fail("entity was not deleted")
-        } catch (ignored: EntityNotFoundException) {
-        }
+        assertThrows(EntityNotFoundException::class, { repo.findByKeyId(contact.keyIdentifier) })
     }
 
     @Test
