@@ -41,12 +41,7 @@ data class ChatDropMessage(val contactId: Int,
     sealed class MessagePayload {
 
         class TextMessage(val msg: String) : MessagePayload()
-        class ShareMessage(val msg: String, val url: URI, val key: SymmetricKey, val fileName: String,
-                           val size: Long, var status: ShareStatus = ShareMessage.ShareStatus.NEW) : MessagePayload() {
-            enum class ShareStatus(val type: Int) {
-                NEW(0), ACCEPTED(1), UNREACHABLE(2), DELETED(3)
-            }
-        }
+        class ShareMessage(val msg: String, var shareData: BoxFileChatShare) : MessagePayload()
 
         companion object {
             fun fromString(messageType: MessageType, content: String): MessagePayload =

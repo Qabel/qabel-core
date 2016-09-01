@@ -1,5 +1,6 @@
 package de.qabel.chat.repository
 
+import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.chat.repository.entities.ChatDropMessage
@@ -10,11 +11,13 @@ interface ChatDropMessageRepository : Repository<ChatDropMessage> {
 
     fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage>
 
-    open fun findNew(identityId: Int): List<ChatDropMessage>
-    open fun findLatest(identityId: Int): List<ChatDropMessage>
+    fun findNew(identityId: Int): List<ChatDropMessage>
+    fun findLatest(identityId: Int): List<ChatDropMessage>
 
     fun exists(chatDropMessage : ChatDropMessage): Boolean
 
-    open fun markAsRead(contact: Contact, identity: Identity)
-    open fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage>
+    fun markAsRead(contact: Contact, identity: Identity)
+    fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage>
+
+    open fun findByShare(share: BoxFileChatShare): List<ChatDropMessage>
 }

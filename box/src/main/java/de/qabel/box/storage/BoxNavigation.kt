@@ -166,6 +166,9 @@ interface BoxNavigation : ReadableBoxNavigation {
     @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
     fun getFileMetadata(boxFile: BoxFile): FileMetadata
 
+    @Throws(IOException::class, InvalidKeyException::class, QblStorageException::class)
+    fun getMetadataFile(share: Share): FileMetadata
+
     /**
      * Create a subfolder in the current folder. You should commit
      * after creating a new subfolder to minimize conflict potential.
@@ -259,4 +262,5 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     @Throws(QblStorageException::class)
     fun hasVersionChanged(dm: DirectoryMetadata): Boolean
+
 }
