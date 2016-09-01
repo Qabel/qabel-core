@@ -27,7 +27,7 @@ class ExtensionsTest() {
         val initials = Contact("Eine kleiner Test", emptyList(), null).initials()
         assertThat(initials.length, equalTo(2))
         assertThat(initials, equalTo("EK"))
-        val zwo = Contact("E", emptyList(), null).initials()
+        val zwo = Contact("E  ", emptyList(), null).initials()
         assertThat(zwo.length, equalTo(1))
         assertThat(zwo, equalTo("E"))
     }

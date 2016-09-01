@@ -5,11 +5,9 @@ import de.qabel.core.config.Entity
 import de.qabel.core.config.Identity
 
 private val splitRegex: Regex by lazy { " ".toRegex() }
-private fun String.toInitials(): String = split(splitRegex).mapIndexed { i, s ->
-    if (i < 2 && s.length > 0) {
-        s.first().toUpperCase()
-    } else null
-}.filterNotNull().joinToString("")
+private fun String.toInitials(): String = split(splitRegex).take(2).map {
+    it.take(1).toUpperCase()
+}.joinToString("")
 
 fun Contact.displayName(): String {
     if (nickName != null && !nickName.isEmpty()) {
