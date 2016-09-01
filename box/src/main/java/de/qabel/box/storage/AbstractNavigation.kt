@@ -345,7 +345,7 @@ abstract class AbstractNavigation(
         try {
             val fileMetadataOld = getMetadataFile(shared)
             val fileMetadataNew = fileFactory.create(
-                fileMetadataOld.file?.owner ?: throw QblStorageException("No owner in old file metadata"),
+                fileMetadataOld.file.owner,
                 boxFile
             )
             uploadEncrypted(fileMetadataNew.path, KeyParameter(shared.metaKey), shared.meta)

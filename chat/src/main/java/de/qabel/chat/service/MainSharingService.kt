@@ -69,8 +69,7 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
         if (share.status == ShareStatus.DELETED) {
             throw QblStorageNotFound("Share has been deleted!")
         } else if (share.status == ShareStatus.NEW || forceReload) {
-            val fileMetadata = boxNavigation.getMetadataFile(Share(share.metaUrl, share.metaKey.toByteArray()))
-            return fileMetadata.file!!
+            return boxNavigation.getMetadataFile(Share(share.metaUrl, share.metaKey.toByteArray())).file
         } else {
             val owner = contactRepository.find(share.ownerContactId)
             return BoxExternalFile(owner.ecPublicKey, share.prefix!!, share.block!!,

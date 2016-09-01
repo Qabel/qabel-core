@@ -26,7 +26,7 @@ data class BoxFileChatShare(
 enum class ShareStatus(val type: Int) {
     //Incoming
     NEW(0),
-    ACCEPTED(1), ATTACHED(2),
+    ACCEPTED(1),
     //Outgoing
     CREATED(3),
     REVOKED(4),
