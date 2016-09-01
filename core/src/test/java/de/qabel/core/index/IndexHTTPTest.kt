@@ -4,6 +4,7 @@ import de.qabel.core.config.Identity
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.extensions.assertThrows
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Test
@@ -60,14 +61,10 @@ class IndexHTTPTest {
         val outdatedKey = OutdatedKey(3, ServerPublicKeyEndpointImpl(server))
         val index = IndexHTTP(server, key = outdatedKey)
         val testParts = UpdateTestParts(index)
-        try {
-            testParts.publishTest()
-            fail()
-        } catch (e: APIError) {
-            assertEquals(3, outdatedKey.numCalls)
-            assertEquals(2, e.retries)
-            assertEquals(400, e.code)
-        }
+        val exception = assertThrows(APIError::class) { testParts.publishTest() }
+        assertEquals(3, outdatedKey.numCalls)
+        assertEquals(2, exception.retries)
+        assertEquals(400, exception.code)
     }
 
     private class UpdateTestParts(private val index: IndexHTTP) {

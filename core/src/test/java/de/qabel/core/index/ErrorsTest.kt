@@ -1,5 +1,6 @@
 package de.qabel.core.index
 
+import de.qabel.core.extensions.assertThrows
 import org.apache.http.HttpResponse
 import org.apache.http.ProtocolVersion
 import org.apache.http.entity.StringEntity
@@ -35,14 +36,12 @@ class ErrorsTest {
 
     @Test
     fun testCheckError() {
-        try {
+        val exception = assertThrows(APIError::class) {
             APIError.checkResponse(getResponse("""{"error": "some error"}""", 400))
-            fail()
-        } catch (e: APIError) {
-            assertEquals("HTTP Status 400, 0 retries, some error", e.message)
-            assertEquals(400, e.code)
-            assertEquals(0, e.retries)
         }
+        assertEquals("HTTP Status 400, 0 retries, some error", exception.message)
+        assertEquals(400, exception.code)
+        assertEquals(0, exception.retries)
     }
 
     @Test

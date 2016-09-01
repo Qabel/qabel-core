@@ -1,5 +1,6 @@
 package de.qabel.core.index
 
+import de.qabel.core.extensions.assertThrows
 import org.junit.Test
 import org.junit.Assert.*
 
@@ -27,16 +28,10 @@ class SearchEndpointTest {
             "{}",
             "{\"1identity\": []}"
         )
-        fun assertBrokenResponse(json: String) {
-            try {
-                search.parseResponse(json, dummyStatusLine())
-                fail("Did not raise MalformedResponseException, input:\n" + json)
-            } catch (e: MalformedResponseException) {
-                return
-            }
-        }
         for (brokenResponse in brokenResponses) {
-            assertBrokenResponse(brokenResponse)
+            assertThrows(MalformedResponseException::class) {
+                search.parseResponse(brokenResponse, dummyStatusLine())
+            }
         }
     }
 
