@@ -1,5 +1,6 @@
 package de.qabel.core.index
 
+import de.qabel.core.extensions.assertThrows
 import org.apache.http.message.BasicStatusLine
 import org.junit.Test
 import org.junit.Assert.*
@@ -28,16 +29,10 @@ class ServerPublicKeyEndpointTest {
             {"public_key": ["0f82b0018d1140a37b9cf3EZEZ570bbdd415c8bbbcfc7efe7ef8aa912ce37605"]}
             """
         )
-        fun assertBrokenResponse(json: String) {
-            try {
-                key.parseResponse(json, dummyStatusLine())
-                fail("Did not raise MalformedResponseException, input:\n" + json)
-            } catch (e: MalformedResponseException) {
-                return
-            }
-        }
         for (brokenResponse in brokenResponses) {
-            assertBrokenResponse(brokenResponse)
+            assertThrows(MalformedResponseException::class) {
+                key.parseResponse(brokenResponse, dummyStatusLine())
+            }
         }
     }
 

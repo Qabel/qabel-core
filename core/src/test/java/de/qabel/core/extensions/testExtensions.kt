@@ -26,10 +26,12 @@ fun CoreTestCase.createContact(alias: String,
                                publicKey: QblECPublicKey = QblECPublicKey(RandomStringUtils.random(32).toByteArray())) =
     Contact(alias, mutableListOf(dropURL), publicKey)
 
-fun <T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> Any?) =
+fun <T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> Any?): T =
     try {
         operation()
         fail("Expected exception ${expectedException.simpleName} not thrown.")
+        throw IllegalStateException("fail()")  /* Kotlin doesn't know that fail() always throws */
     } catch (ex: Throwable) {
         assertEquals(ex.javaClass, expectedException.java)
+        ex as T
     }
