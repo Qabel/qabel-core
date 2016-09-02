@@ -4,6 +4,7 @@ class QueryBuilder {
 
     companion object {
         private const val EQUALS = "="
+        private const val NOT_EQUALS = "!="
         private const val GREATER = ">"
         private const val WILD_CARD = "%"
     }
@@ -47,10 +48,18 @@ class QueryBuilder {
     }
 
     fun innerJoin(table: String, tableAlias: String,
+                  joinField: Field, targetField: Field) =
+        innerJoin(table, tableAlias, joinField.exp(), targetField.exp())
+
+    fun innerJoin(table: String, tableAlias: String,
                   joinField: String, targetField: String) {
         joins.append(" INNER ")
         appendJoin(table, tableAlias, joinField, targetField)
     }
+
+    fun leftJoin(table: String, tableAlias: String,
+                 joinField: Field, targetField: Field) =
+        leftJoin(table, tableAlias, joinField.exp(), targetField.exp())
 
     fun leftJoin(table: String, tableAlias: String,
                  joinField: String, targetField: String) {
@@ -110,6 +119,12 @@ class QueryBuilder {
         }
         where.append(")")
     }
+
+    fun whereAndFieldsNotEquals(field: Field, otherField: Field) =
+        where(field.exp(), NOT_EQUALS, otherField.exp(), " AND ")
+
+    fun whereAndFieldsEquals(field: Field, otherField: Field) =
+        where(field.exp(), EQUALS, otherField.exp(), " AND ")
 
     private fun startWhere(concatenation: String) {
         if (where.isEmpty()) {
