@@ -15,10 +15,10 @@ import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.createContact
 import de.qabel.core.extensions.createIdentity
+import de.qabel.core.extensions.randomFile
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import org.apache.commons.io.FileUtils
-import org.apache.commons.io.IOUtils
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
@@ -26,7 +26,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import java.io.File
-import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -57,11 +56,6 @@ class SharingServiceTest() : CoreTestCase {
     lateinit var sharingService: SharingService
 
     lateinit var testFile: File
-
-    private fun randomFile(size: Long): File =
-        Files.createTempFile("qabel_", ".tmp").apply {
-            IOUtils.write(CryptoUtils().getRandomBytes(size.toInt()), FileOutputStream(this.toFile()))
-        }.toFile()
 
     @Before
     fun setUp() {

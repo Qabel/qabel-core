@@ -1,19 +1,23 @@
 package de.qabel.chat.service
 
+import de.qabel.box.storage.BoxVolumeImpl
 import de.qabel.box.storage.LocalReadBackend
+import de.qabel.box.storage.LocalWriteBackend
+import de.qabel.chat.repository.entities.ChatDropMessage
+import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
+import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
+import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.drop.DropMessage
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.createContact
 import de.qabel.core.extensions.createIdentity
+import de.qabel.core.extensions.randomFile
 import de.qabel.core.http.DropConnector
 import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
-import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.repository.entities.DropState
-import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
-import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import de.qabel.core.repository.inmemory.InMemoryDropStateRepository
 import de.qabel.core.repository.inmemory.InMemoryIdentityRepository
@@ -202,5 +206,38 @@ class ChatServiceTest : CoreTestCase {
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
         DropMessage(identity, payload.toString(), messageType.type)
+
+    @Test
+    fun testSendTxtMsg() {
+        val result = chatServiceA.sendTextMessage("Hello", identityA, contactB).toBlocking().first()
+        assert(result.payload is ChatDropMessage.MessagePayload.TextMessage)
+        val payload = result.payload as ChatDropMessage.MessagePayload.TextMessage
+        assertThat(payload.msg, equalTo("Hello"))
+        assertThat(result.contactId, equalTo(contactB.id))
+        assertThat(result.identityId, equalTo(identityA.id))
+    }
+
+    @Test
+    fun testSendShareMsg() {
+        val tempFolder = createTempDir("share_test")
+        val volumeA = BoxVolumeImpl(LocalReadBackend(tempFolder.toPath()), LocalWriteBackend(tempFolder.toPath()),
+            identityA.primaryKeyPair, CryptoUtils().getRandomBytes(16), tempFolder, "").apply {
+            createIndex("qabel", "test123")
+        }
+        val navigationA = volumeA.navigate()
+        val testFile = randomFile(100)
+        val boxFile = navigationA.upload("TestFile", testFile)
+
+        //This is required, because sharing uses the contact_id of an identity as ownerContactId
+        contactARepository.save(contactA.apply { id == 0 }, identityA)
+
+        val resultMsg = chatServiceA.sendShareMessage("Here a file", identityA, contactB, boxFile, navigationA)
+            .toBlocking().first()
+
+        assert(resultMsg.payload is ChatDropMessage.MessagePayload.ShareMessage)
+        val sharePayload = resultMsg.payload as ChatDropMessage.MessagePayload.ShareMessage
+        assertThat(sharePayload.msg, equalTo("Here a file"))
+        assertThat(sharePayload.shareData.name, equalTo("TestFile"))
+    }
 
 }
