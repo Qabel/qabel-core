@@ -5,8 +5,8 @@ import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
-import de.qabel.core.util.QblLogger
-import de.qabel.core.util.info
+import de.qabel.core.logging.QblLogger
+import de.qabel.core.logging.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
