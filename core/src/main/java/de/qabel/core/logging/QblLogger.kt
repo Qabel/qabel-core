@@ -2,11 +2,19 @@ package de.qabel.core.logging
 
 import org.slf4j.LoggerFactory
 
+object QblLoggerManager {
+    var factory: QblLoggerFactory = object : QblLoggerFactory {}
+}
+
+interface QblLoggerFactory {
+    fun <T> createLogger(clazz: Class<T>) =
+        DefaultLogger(LoggerFactory.getLogger(clazz))
+}
+
 interface QblLogger {
 
     open val logger: LoggerWrapper
-        get() = DefaultLogger(LoggerFactory.getLogger(javaClass))
-
+        get() = QblLoggerManager.factory.createLogger(javaClass)
 }
 
 fun QblLogger.trace(message: Any, vararg args: Any) =
