@@ -229,7 +229,7 @@ class ChatServiceTest : CoreTestCase {
         val boxFile = navigationA.upload("TestFile", testFile)
 
         //This is required, because sharing uses the contact_id of an identity as ownerContactId
-        contactARepository.save(contactA.apply { id == 0 }, identityA)
+        contactARepository.save(contactA, identityA)
 
         val resultMsg = chatServiceA.sendShareMessage("Here a file", identityA, contactB, boxFile, navigationA)
             .toBlocking().first()
