@@ -7,13 +7,12 @@ object QblLoggerManager {
 }
 
 interface QblLoggerFactory {
-    fun <T> createLogger(clazz: Class<T>) =
-        DefaultLogger(LoggerFactory.getLogger(clazz))
+    fun <T> createLogger(clazz: Class<T>): QblLoggerWrapper =
+        DefaultQblLogger(LoggerFactory.getLogger(clazz))
 }
 
 interface QblLogger {
-
-    open val logger: LoggerWrapper
+    val logger: QblLoggerWrapper
         get() = QblLoggerManager.factory.createLogger(javaClass)
 }
 

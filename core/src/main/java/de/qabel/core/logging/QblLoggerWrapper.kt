@@ -1,6 +1,6 @@
 package de.qabel.core.logging
 
-interface LoggerWrapper {
+interface QblLoggerWrapper {
 
     fun trace(msg : Any, vararg args : Any)
     fun info(msg : Any, vararg args : Any)

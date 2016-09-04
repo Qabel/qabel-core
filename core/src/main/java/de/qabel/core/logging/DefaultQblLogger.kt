@@ -3,7 +3,7 @@ package de.qabel.core.logging
 import org.slf4j.Logger
 
 
-class DefaultLogger(val logger: Logger) : LoggerWrapper {
+class DefaultQblLogger(val logger: Logger) : QblLoggerWrapper {
 
     override fun trace(msg: Any, vararg args: Any) =
         logger.trace(msg.toString(), *args)
