@@ -1,6 +1,7 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
+import de.qabel.core.config.EntityObserver
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
@@ -29,6 +30,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
     private lateinit var dropUrlGenerator: DropUrlGenerator
+    private var hasCalled: Boolean = false
 
     override fun setUp() {
         super.setUp()
@@ -319,6 +321,25 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertThat(identityContactDetails.contact.alias, equalTo(identity.alias))
         assertThat(identityContactDetails.identities, hasSize(0))
         assertTrue(identityContactDetails.isIdentity)
+    }
+
+    private fun attachEntityObserver() {
+        repo.attach(EntityObserver { hasCalled = true })
+    }
+
+    @Test
+    fun testSqliteContactRepositorySaveObservable() {
+        attachEntityObserver()
+        repo.save(contact, identity)
+        assertTrue(hasCalled)
+    }
+
+    @Test
+    fun testSqliteContactRepositoryDeleteObservable() {
+        repo.save(contact, identity)
+        attachEntityObserver()
+        repo.delete(contact, identity)
+        assertTrue(hasCalled)
     }
 
 }
