@@ -1,6 +1,5 @@
 package de.qabel.core.index
 
-import de.qabel.core.config.Identity
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
@@ -9,7 +8,6 @@ import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Test
 import org.junit.Assert.*
-import java.lang.reflect.Field
 import java.util.*
 
 class IndexHTTPTest {
@@ -141,4 +139,17 @@ class IndexHTTPTest {
         }
     }
 
+    @Test
+    fun testConfirmCodeInvalid() {
+        assertThrows(CodeInvalidException::class) {
+            index.confirmVerificationCode("12345")
+        }
+    }
+
+    @Test
+    fun testDenyCodeInvalid() {
+        assertThrows(CodeInvalidException::class) {
+            index.denyVerificationCode("12345")
+        }
+    }
 }

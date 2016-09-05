@@ -51,4 +51,20 @@ interface IndexServer {
      */
     @Throws(IOException::class)
     fun updateIdentity(identity: UpdateIdentity): UpdateResult
+
+    /**
+     * Confirm a verification code.
+     *
+     * Additional exceptions: [CodeInvalidException], [CodeExpiredException]
+     */
+    @Throws(IOException::class)
+    fun confirmVerificationCode(code: String)
+
+    /**
+     * Deny a verification code.
+     *
+     * See [confirmVerificationCode]
+     */
+    @Throws(IOException::class)
+    fun denyVerificationCode(code: String)
 }
