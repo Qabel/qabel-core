@@ -4,8 +4,9 @@ object QabelLoggerManager {
 
     interface QabelLoggerFactory {
         fun <T> createLogger(clazz: Class<T>): QabelLoggerWrapper =
-            DefaultQabelLogger(clazz)
+            DefaultQabelLoggerWrapper(clazz)
     }
 
     var factory: QabelLoggerFactory = object : QabelLoggerFactory {}
+
 }

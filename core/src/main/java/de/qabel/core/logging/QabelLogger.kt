@@ -1,8 +1,10 @@
 package de.qabel.core.logging
 
 interface QabelLogger {
+
     val logger: QabelLoggerWrapper
         get() = QabelLoggerManager.factory.createLogger(javaClass)
+
 }
 
 fun QabelLogger.trace(message: Any, vararg args: Any) =

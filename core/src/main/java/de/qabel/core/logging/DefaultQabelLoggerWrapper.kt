@@ -4,9 +4,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
-class DefaultQabelLogger(clazz: Class<*>) : QabelLoggerWrapper {
+class DefaultQabelLoggerWrapper(clazz: Class<*>) : QabelLoggerWrapper {
 
-    val logger: Logger = LoggerFactory.getLogger(clazz)
+    val logger: Logger by lazy { LoggerFactory.getLogger(clazz) }
 
     override fun trace(msg: Any, vararg args: Any) =
         logger.trace(msg.toString(), *args)
