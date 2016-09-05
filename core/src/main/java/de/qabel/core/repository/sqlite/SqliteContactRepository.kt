@@ -29,6 +29,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
                               private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
     BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QabelLogger, EntityObservable by SimpleEntityObservable() {
+
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
 
