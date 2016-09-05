@@ -3,6 +3,7 @@ package de.qabel.chat.service
 import de.qabel.box.storage.BoxExternalFile
 import de.qabel.box.storage.BoxFile
 import de.qabel.box.storage.BoxNavigation
+import de.qabel.box.storage.StorageReadBackend
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.chat.repository.entities.BoxFileChatShare
@@ -18,10 +19,10 @@ interface SharingService {
     fun revokeFileShare(share: BoxFileChatShare, boxFile: BoxFile, boxNavigation: BoxNavigation)
 
     @Throws(QblStorageNotFound::class, QblStorageException::class)
-    fun getBoxExternalFile(share: BoxFileChatShare, boxNavigation: BoxNavigation, forceReload: Boolean = false) : BoxExternalFile
-    fun updateShare(share: BoxFileChatShare, boxNavigation: BoxNavigation)
+    fun getBoxExternalFile(share: BoxFileChatShare, boxReadBackend: StorageReadBackend, forceReload: Boolean = false) : BoxExternalFile
+    fun updateShare(share: BoxFileChatShare, boxReadBackend: StorageReadBackend)
 
     fun getOrCreateIncomingShare(identity: Identity, message: ChatDropMessage, payload: ChatDropMessage.MessagePayload.ShareMessage): BoxFileChatShare
-    fun acceptShare(chatDropMessage: ChatDropMessage, boxNavigation: BoxNavigation): BoxExternalFile
-    fun downloadShare(share: BoxFileChatShare, targetFile: File, boxNavigation: BoxNavigation)
+    fun acceptShare(chatDropMessage: ChatDropMessage, boxReadBackend: StorageReadBackend): BoxExternalFile
+    fun downloadShare(share: BoxFileChatShare, targetFile: File, boxReadBackend: StorageReadBackend)
 }

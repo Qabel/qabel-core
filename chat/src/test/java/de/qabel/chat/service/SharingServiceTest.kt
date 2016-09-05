@@ -2,6 +2,7 @@ package de.qabel.chat.service
 
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.chat.repository.ChatDropMessageRepository
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.ChatDropMessage
@@ -12,10 +13,7 @@ import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.CryptoUtils
-import de.qabel.core.extensions.CoreTestCase
-import de.qabel.core.extensions.createContact
-import de.qabel.core.extensions.createIdentity
-import de.qabel.core.extensions.randomFile
+import de.qabel.core.extensions.*
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
 import org.apache.commons.io.FileUtils
@@ -39,7 +37,6 @@ class SharingServiceTest() : CoreTestCase {
     lateinit var contactRepo: ContactRepository
     lateinit var shareRepo: ChatShareRepository
     lateinit var chatDropRepo : ChatDropMessageRepository
-
 
     lateinit var deviceID: ByteArray
     lateinit var volumeA: BoxVolume
@@ -83,7 +80,7 @@ class SharingServiceTest() : CoreTestCase {
         volumeB.createIndex("qabel", "test456")
         navigationB = volumeB.navigate()
 
-        sharingService = MainSharingService(shareRepo, contactRepo, readBackend)
+        sharingService = MainSharingService(shareRepo, contactRepo, tempFolder.toFile())
 
         testFile = randomFile(100)
     }
@@ -138,23 +135,22 @@ class SharingServiceTest() : CoreTestCase {
         //Check both messages connected
         assertThat(chatDropRepo.findByShare(sharePayload.shareData), hasSize(2))
 
-        val boxExternalFile = sharingService.acceptShare(shareDropMessage, navigationB)
+        val boxExternalFile = sharingService.acceptShare(shareDropMessage, readBackend)
         assertThat(boxExternalFile.block, equalTo(boxFileA.block))
         assertThat(boxExternalFile.hashed, equalTo(boxFileA.hashed))
         assertThat(boxExternalFile.mtime, equalTo(boxFileA.mtime))
 
         val sharedFile = createTempFile()
-        sharingService.downloadShare(rMsgPayload.shareData, sharedFile, navigationB)
+        sharingService.downloadShare(rMsgPayload.shareData, sharedFile, readBackend)
         assertArrayEquals(FileUtils.readFileToByteArray(testFile), FileUtils.readFileToByteArray(sharedFile))
 
         //IdentityA revoke share
         sharingService.revokeFileShare(chatShareA, boxFileA, navigationA)
-        try {
-            sharingService.getBoxExternalFile(rMsgPayload.shareData, navigationB, true)
-            fail("QblStorageException expected")
-        } catch (ex: QblStorageException) {
+        assertThrows(QblStorageNotFound::class){
+            sharingService.getBoxExternalFile(rMsgPayload.shareData, readBackend, true)
         }
-        sharingService.updateShare(rMsgPayload.shareData, navigationB)
+
+        sharingService.updateShare(rMsgPayload.shareData, readBackend)
         assertThat(rMsgPayload.shareData.status, equalTo(ShareStatus.DELETED))
     }
 

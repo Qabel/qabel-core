@@ -1,8 +1,6 @@
 package de.qabel.chat.service
 
-import de.qabel.box.storage.BoxVolumeImpl
-import de.qabel.box.storage.LocalReadBackend
-import de.qabel.box.storage.LocalWriteBackend
+import de.qabel.box.storage.*
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
@@ -37,7 +35,7 @@ class ChatServiceTest : CoreTestCase {
     val contactARepository = InMemoryContactRepository()
     val chatDropRepoA = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceA = MainChatService(dropConnector, identityARepository,
-        contactARepository, chatDropRepoA, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactARepository, LocalReadBackend(createTempDir().toPath())))
+        contactARepository, chatDropRepoA, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactARepository, createTempDir()))
 
     val identityB: Identity = createIdentity("Identity B")
     val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
@@ -45,7 +43,7 @@ class ChatServiceTest : CoreTestCase {
     val contactBRepository = InMemoryContactRepository()
     val chatDropRepoB = InMemoryChatDropMessageRepository()
     val chatServiceB = MainChatService(dropConnector, identityBRepository,
-        contactBRepository, chatDropRepoB, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactBRepository, LocalReadBackend(createTempDir().toPath())))
+        contactBRepository, chatDropRepoB, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactBRepository, createTempDir()))
 
 
     @Before
@@ -219,6 +217,21 @@ class ChatServiceTest : CoreTestCase {
 
     @Test
     fun testSendShareMsg() {
+        val (navigationA, boxFile) = prepareShareFileEnv()
+        val resultMsg = chatServiceA.sendShareMessage("Here a file", identityA, contactB, boxFile, navigationA)
+            .toBlocking().first()
+
+        assert(resultMsg.payload is ChatDropMessage.MessagePayload.ShareMessage)
+        val sharePayload = resultMsg.payload as ChatDropMessage.MessagePayload.ShareMessage
+        assertThat(sharePayload.msg, equalTo("Here a file"))
+        assertThat(sharePayload.shareData.name, equalTo("TestFile"))
+    }
+
+    /**
+     * Creates a volume and uploads a file.
+     * Returns a Pair of the [BoxNavigation] and the uploaded [BoxFile]
+     */
+    private fun prepareShareFileEnv(): Pair<BoxNavigation, BoxFile> {
         val tempFolder = createTempDir("share_test")
         val volumeA = BoxVolumeImpl(LocalReadBackend(tempFolder.toPath()), LocalWriteBackend(tempFolder.toPath()),
             identityA.primaryKeyPair, CryptoUtils().getRandomBytes(16), tempFolder, "").apply {
@@ -231,13 +244,7 @@ class ChatServiceTest : CoreTestCase {
         //This is required, because sharing uses the contact_id of an identity as ownerContactId
         contactARepository.save(contactA, identityA)
 
-        val resultMsg = chatServiceA.sendShareMessage("Here a file", identityA, contactB, boxFile, navigationA)
-            .toBlocking().first()
-
-        assert(resultMsg.payload is ChatDropMessage.MessagePayload.ShareMessage)
-        val sharePayload = resultMsg.payload as ChatDropMessage.MessagePayload.ShareMessage
-        assertThat(sharePayload.msg, equalTo("Here a file"))
-        assertThat(sharePayload.shareData.name, equalTo("TestFile"))
+        return Pair(navigationA, boxFile)
     }
 
 }
