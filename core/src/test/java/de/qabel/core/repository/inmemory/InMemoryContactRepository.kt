@@ -1,8 +1,6 @@
 package de.qabel.core.repository.inmemory
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Contacts
-import de.qabel.core.config.Identity
+import de.qabel.core.config.*
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.exception.EntityExistsException
@@ -11,7 +9,7 @@ import de.qabel.core.util.DefaultHashMap
 import java.util.*
 
 
-open class InMemoryContactRepository : ContactRepository {
+open class InMemoryContactRepository : ContactRepository, EntityObservable by SimpleEntityObservable() {
 
     val contacts: MutableMap<String, Contact> = mutableMapOf()
     val identities: MutableMap<String, Identity> = mutableMapOf()
@@ -35,6 +33,7 @@ open class InMemoryContactRepository : ContactRepository {
             contact.id = contacts.size + 1
         }
         contacts.put(contact.keyIdentifier, contact)
+        notifyObservers()
         identityMapping.getOrDefault(identity.keyIdentifier).add(contact.keyIdentifier)
         identities.put(identity.keyIdentifier, identity)
     }
@@ -43,6 +42,7 @@ open class InMemoryContactRepository : ContactRepository {
         identityMapping.getOrDefault(identity.keyIdentifier).remove(contact.keyIdentifier)
         if (!identityMapping.any { it.value.contains(contact.keyIdentifier) }) {
             contacts.remove(contact.keyIdentifier)
+            notifyObservers()
         }
     }
 
