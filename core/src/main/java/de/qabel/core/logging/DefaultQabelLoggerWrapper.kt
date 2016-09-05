@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 
-class DefaultQabelLoggerWrapper(clazz: Class<*>) : QabelLoggerWrapper {
+internal class DefaultQabelLoggerWrapper(clazz: Class<*>) : QabelLoggerWrapper {
 
     val logger: Logger by lazy { LoggerFactory.getLogger(clazz) }
 
