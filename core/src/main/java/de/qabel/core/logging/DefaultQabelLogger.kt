@@ -1,9 +1,12 @@
 package de.qabel.core.logging
 
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 
-class DefaultQblLogger(val logger: Logger) : QblLoggerWrapper {
+class DefaultQabelLogger(clazz: Class<*>) : QabelLoggerWrapper {
+
+    val logger: Logger = LoggerFactory.getLogger(clazz)
 
     override fun trace(msg: Any, vararg args: Any) =
         logger.trace(msg.toString(), *args)

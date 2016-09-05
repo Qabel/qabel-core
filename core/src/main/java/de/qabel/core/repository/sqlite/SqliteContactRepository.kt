@@ -5,7 +5,7 @@ import de.qabel.core.config.Contacts
 import de.qabel.core.config.Identity
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
-import de.qabel.core.logging.QblLogger
+import de.qabel.core.logging.QabelLogger
 import de.qabel.core.logging.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
@@ -30,7 +30,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
                               private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QblLogger {
+    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QabelLogger {
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
