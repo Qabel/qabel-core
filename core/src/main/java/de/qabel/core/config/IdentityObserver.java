@@ -1,6 +1,6 @@
 package de.qabel.core.config;
 
-interface IdentityObserver {
+public interface IdentityObserver {
     void update();
 }
 
