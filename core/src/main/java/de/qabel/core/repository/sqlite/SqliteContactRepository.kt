@@ -9,7 +9,6 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
-import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
@@ -44,11 +43,19 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
             }
         }
 
-    override fun save(contact: Contact, identity: Identity) {
-        val exists = exists(contact)
-        if (contact.id == 0 && exists) {
-            throw EntityExistsException()
-        } else if (contact.id == 0 || !exists) {
+    override fun save(newContact: Contact, identity: Identity) {
+        val exists = exists(newContact)
+        val contact = if (newContact.id == 0 && exists) {
+            var existingContact = findByKeyId(newContact.keyIdentifier);
+            existingContact.alias = newContact.alias
+            existingContact.email = newContact.email
+            existingContact.phone = newContact.phone
+            existingContact
+        } else {
+            newContact
+        }
+
+        if (contact.id == 0 || !exists) {
             persist(contact)
         } else {
             update(contact)
@@ -88,7 +95,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         }
     }
 
-    override fun delete(contact : Contact) = delete(contact.id)
+    override fun delete(contact: Contact) = delete(contact.id)
 
     override fun delete(id: Int) {
         val contact = findById(id)

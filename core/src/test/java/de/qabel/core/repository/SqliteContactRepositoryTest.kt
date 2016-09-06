@@ -7,7 +7,6 @@ import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.extensions.assertThrows
-import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
@@ -203,7 +202,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertSame(contact, loaded)
     }
 
-    @Test(expected = EntityExistsException::class)
+    @Test
     fun addsRelationshipIfContactIsAlreadyPresent() {
         repo.save(contact, identity)
 
