@@ -8,9 +8,20 @@ import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.util.EntityUtils
 
 internal interface EndpointBase<out T> {
+    /**
+     * This can be used to map specific errors to exceptions that are more clear than a generic APIError.
+     */
+    fun rethrowAPIError(error: APIError) {
+        throw error
+    }
+
     fun handleResponse(response: CloseableHttpResponse): T {
         response.use {
-            APIError.checkResponse(response)
+            try {
+                APIError.checkResponse(response)
+            } catch (e: APIError) {
+                rethrowAPIError(e)
+            }
             val body = getBody(response)
             return parseResponse(body, response.statusLine)
         }

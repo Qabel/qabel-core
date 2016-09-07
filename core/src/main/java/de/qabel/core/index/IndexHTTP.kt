@@ -11,7 +11,8 @@ internal constructor (
     private val httpClient: CloseableHttpClient = HttpClients.createMinimal(),
     private val key: ServerPublicKeyEndpoint = ServerPublicKeyEndpointImpl(location),
     private val search: SearchEndpoint = SearchEndpointImpl(location),
-    private val update: UpdateEndpoint = UpdateEndpointImpl(location)
+    private val update: UpdateEndpoint = UpdateEndpointImpl(location),
+    private val verificationCode: VerificationCodeEndpoint = VerificationCodeEndpointImpl(location)
 ): IndexServer {
     constructor (location: IndexHTTPLocation, httpClient: CloseableHttpClient)
     : this(location, httpClient, ServerPublicKeyEndpointImpl(location))
@@ -50,5 +51,19 @@ internal constructor (
         val request = key.buildRequest()
         val response = httpClient.execute(request)
         return key.handleResponse(response)
+    }
+
+    override fun confirmVerificationCode(code: String) {
+        doVerificationCodeRequest(code, confirm=true)
+    }
+
+    override fun denyVerificationCode(code: String) {
+        doVerificationCodeRequest(code, confirm=false)
+    }
+
+    internal fun doVerificationCodeRequest(code: String, confirm: Boolean) {
+        val request = verificationCode.buildRequest(code, confirm)
+        val response = httpClient.execute(request)
+        verificationCode.handleResponse(response)
     }
 }
