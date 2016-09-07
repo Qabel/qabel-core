@@ -12,5 +12,6 @@ class VerificationCodeEndpointTest {
     fun testBuildRequestMethod() {
         val request = verification.buildRequest("1234", confirm=true)
         assertEquals("GET", request.method)
+        assertEquals("/1234/confirm/", request.uri.path)
     }
 }

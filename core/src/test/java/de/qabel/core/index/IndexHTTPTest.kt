@@ -139,17 +139,13 @@ class IndexHTTPTest {
         }
     }
 
-    @Test
+    @Test(expected = CodeInvalidException::class)
     fun testConfirmCodeInvalid() {
-        assertThrows(CodeInvalidException::class) {
-            index.confirmVerificationCode("12345")
-        }
+        index.confirmVerificationCode("12345")
     }
 
-    @Test
+    @Test(expected = CodeInvalidException::class)
     fun testDenyCodeInvalid() {
-        assertThrows(CodeInvalidException::class) {
-            index.denyVerificationCode("12345")
-        }
+        index.denyVerificationCode("12345")
     }
 }
