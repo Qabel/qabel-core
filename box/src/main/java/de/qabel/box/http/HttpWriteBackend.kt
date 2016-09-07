@@ -5,7 +5,6 @@ import de.qabel.box.storage.StorageWriteBackend
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.logging.QabelLog
-import de.qabel.core.logging.trace
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpPost

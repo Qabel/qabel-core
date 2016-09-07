@@ -2,7 +2,6 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.logging.QabelLog
-import de.qabel.core.logging.debug
 import de.qabel.core.util.DefaultHashMap
 
 class StubReadBackend : StorageReadBackend, QabelLog {

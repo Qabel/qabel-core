@@ -1,6 +1,7 @@
 package de.qabel.box.http
 
 import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.isNullOrEmptyString
 import com.natpryce.hamkrest.should.shouldMatch
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
@@ -10,6 +11,7 @@ import de.qabel.core.accounting.AccountingProfile
 import de.qabel.core.accounting.BoxHttpClient
 import de.qabel.core.accounting.CloseableHttpResponseStub
 import de.qabel.core.config.AccountingServer
+import de.qabel.core.extensions.shouldNotMatch
 import org.apache.commons.io.IOUtils
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -39,6 +41,7 @@ class HttpWriteBackendTest {
         writeBackend.upload("file", fakeDataStream("new"), upload.etag)
 
         loadFileContent("file") shouldMatch equalTo("new")
+        upload.etag shouldNotMatch isNullOrEmptyString
     }
 
     @Test

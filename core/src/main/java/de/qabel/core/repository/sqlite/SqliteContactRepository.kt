@@ -4,7 +4,6 @@ import de.qabel.core.config.*
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
 import de.qabel.core.logging.QabelLog
-import de.qabel.core.logging.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager

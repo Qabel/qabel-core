@@ -20,9 +20,9 @@ internal class DefaultQabelLoggerWrapper(clazz: Class<*>) : QabelLoggerWrapper {
     override fun warn(msg: Any, vararg args: Any) =
         logger.warn(msg.toString(), *args)
 
-    override fun error(msg: Any, exception: Throwable?) =
+    override fun error(msg: Any?, exception: Throwable?) =
         exception?.let {
-            logger.error(msg.toString(), exception)
-        } ?: logger.error(msg.toString())
+            logger.error(msg?.toString() ?: exception.javaClass.simpleName, exception)
+        } ?: logger.error(msg?.toString() ?: "")
 
 }
