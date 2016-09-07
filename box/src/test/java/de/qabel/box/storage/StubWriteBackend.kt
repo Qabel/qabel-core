@@ -5,11 +5,12 @@ import java.io.InputStream
 import java.util.*
 
 class StubWriteBackend : StorageWriteBackend {
-    val handlers = DefaultHashMap<String, List<(name: String?) -> StorageWriteBackend.UploadResult>>({listOf<(name: String?) -> StorageWriteBackend.UploadResult>()})
+    val handlers = DefaultHashMap<String, MutableList<(name: String?) -> StorageWriteBackend.UploadResult>>({
+        mutableListOf<(name: String?) -> StorageWriteBackend.UploadResult>()
+    })
 
-    fun respond(fileName: String, uploadHandler: (name: String?) -> StorageWriteBackend.UploadResult) {
-        handlers[fileName]!!.plus(uploadHandler)
-    }
+    fun respond(fileName: String, uploadHandler: (name: String?) -> StorageWriteBackend.UploadResult)
+        = handlers[fileName]!!.add(uploadHandler)
 
     private fun pop(name: String?) = handlers[name]!!.drop(1).first()
 
@@ -21,13 +22,9 @@ class StubWriteBackend : StorageWriteBackend {
         return pop(name).invoke(name)
     }
 
-    override fun upload(name: String, content: InputStream, eTag: String?): StorageWriteBackend.UploadResult {
-        return upload(name, content)
-    }
+    override fun upload(name: String, content: InputStream, eTag: String?) = upload(name, content)
 
-    override fun delete(name: String) {
-        throw UnsupportedOperationException("not implemented")
-    }
+    override fun delete(name: String) = throw UnsupportedOperationException("not implemented")
 
     private fun generateSomeResponse() = StorageWriteBackend.UploadResult(Date(), "etag");
 }

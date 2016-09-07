@@ -38,36 +38,35 @@ abstract class AbstractNavigationTest {
     @Test
     fun catchesDMConflictsWhileUploadingDm() {
         nav.setAutocommit(false)
-        // we don't care for files / blocks but only for DMs
         nav.upload("testfile", "content".byteInputStream(), 7L)
-        val cPath = setupConflictingDM()
+        val cPath = setupConflictingDM() { it.insertFile(someFile("anotherFile")) }
 
-        println("matching fileName '" + dm.fileName + "' on " + dm)
-
-        // arrange
-        var finalUpload = false;
+        var dmWasUploaded = false;
+        // on commit, AbstractNavigation will check if the dm has changed remotely, let's assume it has not
         readBackend.respond(dm.fileName) { throw UnmodifiedException("dm not modified") }
-        // imagine the dm was modified here remotely
+
+        // but before our new dm is uploaded, somebody else finished a commit remotely
         writeBackend.respond(dm.fileName) { throw ModifiedException("dm was modified")}
-        // then the new download should happen
+
+        // after detecting the conflict, the new download should happen
         readBackend.respond(dm.fileName) { StorageDownload(encryptAndStream(cPath), "another hash", cPath.length()) }
+
         // and then we can cleanly re-upload the dm
         writeBackend.respond(dm.fileName) {
-            finalUpload = true;
+            dmWasUploaded = true;
             StorageWriteBackend.UploadResult(Date(), "new etag")
         }
 
-        // act
         nav.commit()
 
-        // assert
         assertTrue(nav.hasFile("testfile"))
         assertTrue(nav.hasFile("anotherFile"))
+        assertTrue(dmWasUploaded)
     }
 
-    private fun setupConflictingDM(): File {
+    private fun setupConflictingDM(action: ((DirectoryMetadata) -> Unit)? = null): File {
         val conflictingDM = dmFactory.create()
-        conflictingDM.insertFile(someFile())
+        action?.invoke(conflictingDM)
         conflictingDM.commit()
         val cPath = conflictingDM.path
         return cPath
@@ -79,7 +78,7 @@ abstract class AbstractNavigationTest {
         return ByteArrayInputStream(baos.toByteArray())
     }
 
-    private fun someFile() = BoxFile("a", "b", "anotherFile", 10L, 0L, "test".toByteArray())
+    private fun someFile(name: String = "file") = BoxFile("a", "b", name, 10L, 0L, "test".toByteArray())
 
     private fun anyUploadResult() = StorageWriteBackend.UploadResult(Date(), "etag")
 }
