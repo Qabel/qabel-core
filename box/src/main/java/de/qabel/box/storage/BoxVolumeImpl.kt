@@ -72,7 +72,7 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
     @Throws(QblStorageException::class)
     override fun navigate(): IndexNavigation {
         with(config) {
-            val dm = indexDmDownloader.loadDirectoryMetadata(rootRef).dm
+            val dm = indexDmDownloader.loadDirectoryMetadata(rootRef)
             return DefaultIndexNavigation(dm, keyPair, config)
         }
     }

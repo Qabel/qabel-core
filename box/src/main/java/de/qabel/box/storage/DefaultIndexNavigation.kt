@@ -29,8 +29,8 @@ class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, v
 
         try {
             val download = indexDmDownloader.loadDirectoryMetadata(rootRef)
-            directoryMetadataMHashes.put(Arrays.hashCode(download.dm.version), download.etag)
-            return download.dm
+            directoryMetadataMHashes.put(Arrays.hashCode(download.version), download.etag)
+            return download
         } catch (e: UnmodifiedException) {
             return dm
         } catch (e: IOException) {

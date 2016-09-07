@@ -9,14 +9,10 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
 
 dependencies {
     compile project(':core')
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile project(':core').sourceSets.test.output
 }
 
 tasks.withType(Test) {

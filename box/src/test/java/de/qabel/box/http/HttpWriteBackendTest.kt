@@ -2,14 +2,20 @@ package de.qabel.box.http
 
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.should.shouldMatch
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.whenever
 import de.qabel.box.storage.ModifiedException
 import de.qabel.core.accounting.AccountingProfile
 import de.qabel.core.accounting.BoxHttpClient
+import de.qabel.core.accounting.CloseableHttpResponseStub
 import de.qabel.core.config.AccountingServer
 import org.apache.commons.io.IOUtils
 import org.junit.Test
 import java.io.ByteArrayInputStream
 import java.net.URI
+import java.text.SimpleDateFormat
+import java.util.*
 
 class HttpWriteBackendTest {
     val boxClient = BoxHttpClient(
@@ -33,6 +39,23 @@ class HttpWriteBackendTest {
         writeBackend.upload("file", fakeDataStream("new"), upload.etag)
 
         loadFileContent("file") shouldMatch equalTo("new")
+    }
+
+    @Test
+    fun parsesHeaders() {
+        val format = SimpleDateFormat("dd.MM.yyyy HH:mm:ss zzz")
+        format.timeZone = TimeZone.getTimeZone("GMT")
+
+        writeBackend.httpclient = mock()
+        whenever(writeBackend.httpclient.execute(any())).then {
+                CloseableHttpResponseStub().apply {
+                    addHeader("Date", "Fri, 01 Jan 2016 01:02:03 GMT")
+                    addHeader("Etag", "e t a g")
+                }}
+
+        val upload = writeBackend.upload("file", fakeDataStream())
+        upload.etag shouldMatch equalTo("e t a g")
+        format.format(upload.time) shouldMatch equalTo("01.01.2016 01:02:03 GMT")
     }
 
     private fun loadFileContent(filename: String): String {

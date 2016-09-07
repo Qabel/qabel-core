@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class Md5Hasher : Hasher {
-    override fun getMHash(file: Path): String {
-        return String(DigestUtils.md5(Files.newInputStream(file)))
+    override fun getHash(file: Path) = Files.newInputStream(file).use {
+        DigestUtils.md5Hex(it)
     }
 }

@@ -9,9 +9,6 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     compile project(':core')

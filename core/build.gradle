@@ -11,10 +11,6 @@ jar {
     }
 }
 
-repositories {
-	mavenCentral()
-}
-
 dependencies {
 	compile 'com.google.code.gson:gson:2.+'
 	compile 'com.github.salomonbrys.kotson:kotson:2.3.0'

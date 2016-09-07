@@ -5,5 +5,5 @@ import java.nio.file.Path
 
 interface Hasher {
     @Throws(IOException::class)
-    fun getMHash(file: Path): String
+    fun getHash(file: Path): String
 }

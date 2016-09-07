@@ -73,7 +73,7 @@ class UpdateFileChangeTest {
 
         var deleted: String = ""
         val backend: StorageWriteBackend = object: StorageWriteBackend {
-            override fun upload(name: String, content: InputStream, eTag: String) = TODO()
+            override fun upload(name: String, content: InputStream, eTag: String?) = TODO()
             override fun upload(name: String, content: InputStream) = TODO()
             override fun delete(name: String) {
                 deleted = name
@@ -93,7 +93,7 @@ class UpdateFileChangeTest {
         dm.insertFile(hashedFile)
         var deleted: String = ""
         val backend: StorageWriteBackend = object: StorageWriteBackend {
-            override fun upload(name: String, content: InputStream, eTag: String) = TODO()
+            override fun upload(name: String, content: InputStream, eTag: String?) = TODO()
             override fun upload(name: String, content: InputStream) = TODO()
             override fun delete(name: String) {
                 deleted = name

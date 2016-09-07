@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.Date;
 
 public class LocalWriteBackend implements StorageWriteBackend {
 
@@ -27,7 +28,7 @@ public class LocalWriteBackend implements StorageWriteBackend {
     }
 
     @Override
-    public long upload(@NotNull String name, InputStream content) throws QblStorageException {
+    public UploadResult upload(@NotNull String name, InputStream content) throws QblStorageException {
         return upload(name, content, null);
     }
 
@@ -45,17 +46,17 @@ public class LocalWriteBackend implements StorageWriteBackend {
     }
 
     @Override
-    public long upload(@NotNull String name, @NotNull InputStream content, String eTag) throws QblStorageException, ModifiedException {
+    public UploadResult upload(@NotNull String name, @NotNull InputStream content, String eTag) throws QblStorageException, ModifiedException {
         Path file = root.resolve(name);
         logger.trace("Uploading file path " + file);
         try {
-            if (Files.exists(file) && eTag != null && !hasher.getMHash(file).equals(eTag)) {
+            if (Files.exists(file) && eTag != null && !hasher.getHash(file).equals(eTag)) {
                 throw new ModifiedException("file has changed");
             }
             Files.createDirectories(root.resolve("blocks"));
             OutputStream output = Files.newOutputStream(file);
             output.write(IOUtils.toByteArray(content));
-            return Files.getLastModifiedTime(file).toMillis();
+            return new UploadResult(new Date(), hasher.getHash(file));
         } catch (IOException e) {
             throw new QblStorageException(e.getMessage(), e);
         }

@@ -22,7 +22,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
     override fun upload(name: String, content: InputStream) = uploadIfOld(name, content, null)
 
     @Throws(QblStorageException::class)
-    override fun upload(name: String, content: InputStream, eTag: String) = uploadIfOld(name, content, eTag)
+    override fun upload(name: String, content: InputStream, eTag: String?) = uploadIfOld(name, content, eTag)
 
     @Throws(QblStorageException::class)
     fun uploadIfOld(name: String, content: InputStream, eTag: String?): StorageWriteBackend.UploadResult {

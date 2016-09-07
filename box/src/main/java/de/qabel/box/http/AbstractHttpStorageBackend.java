@@ -16,7 +16,7 @@ public class AbstractHttpStorageBackend {
     // The default was too low, 20 works. Further testing may be required
     // to find the best amount of connections.
     protected static final int CONNECTIONS = 50;
-    protected final CloseableHttpClient httpclient;
+    CloseableHttpClient httpclient;
     URI root;
 
     public AbstractHttpStorageBackend(String root) throws URISyntaxException {

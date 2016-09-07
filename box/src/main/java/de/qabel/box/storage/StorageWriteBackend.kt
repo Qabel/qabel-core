@@ -16,7 +16,7 @@ interface StorageWriteBackend {
      * Throws ModifiedException if the file exists and the eTag does not match the existing one.
      */
     @Throws(QblStorageException::class, ModifiedException::class)
-    fun upload(name: String, content: InputStream, eTag: String): UploadResult
+    fun upload(name: String, content: InputStream, eTag: String?): UploadResult
 
     /**
      * Delete a file on the storage. Will not fail if the file was not found
