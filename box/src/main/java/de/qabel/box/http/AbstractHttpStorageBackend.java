@@ -4,14 +4,11 @@ import org.apache.http.HttpRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 public class AbstractHttpStorageBackend {
-    protected static final Logger logger = LoggerFactory.getLogger(AbstractHttpStorageBackend.class);
     // Number of http connections to S3
     // The default was too low, 20 works. Further testing may be required
     // to find the best amount of connections.

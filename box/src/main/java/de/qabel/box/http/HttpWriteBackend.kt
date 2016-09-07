@@ -4,6 +4,8 @@ import de.qabel.box.storage.ModifiedException
 import de.qabel.box.storage.StorageWriteBackend
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
+import de.qabel.core.logging.QabelLog
+import de.qabel.core.logging.trace
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpPost
@@ -16,7 +18,7 @@ import java.net.URI
 import java.net.URISyntaxException
 
 open class HttpWriteBackend @Throws(URISyntaxException::class)
-constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBackend {
+constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBackend, QabelLog {
 
     @Throws(QblStorageException::class)
     override fun upload(name: String, content: InputStream) = uploadIfOld(name, content, null)
@@ -26,7 +28,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
     @Throws(QblStorageException::class)
     fun uploadIfOld(name: String, content: InputStream, eTag: String?): StorageWriteBackend.UploadResult {
-        AbstractHttpStorageBackend.logger.trace("Uploading " + name)
+        trace("Uploading " + name)
         val httpPost: HttpPost
         try {
             val uri = root.resolve(name)
@@ -38,11 +40,11 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
             httpclient.execute(httpPost).use { response ->
                 val status = response.statusLine.statusCode
                 if (status == 412) {
-                    throw ModifiedException("The target file was already changed: ${response.statusLine.reasonPhrase}")
+                    throw ModifiedException("The target file was already changed: ${statusToMessage(response)}")
                 } else if (status == 404 || status == 403) {
-                    throw QblStorageNotFound("File not found: ${response.statusLine.reasonPhrase}")
+                    throw QblStorageNotFound("File not found: ${statusToMessage(response)}")
                 } else if (status >= 300) {
-                    throw QblStorageException("Upload error: ${response.statusLine.reasonPhrase}")
+                    throw QblStorageException("Upload error: ${statusToMessage(response)}")
                 }
                 return parseUploadResult(response)
             }
@@ -50,6 +52,10 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
             throw QblStorageException(e)
         }
 
+    }
+
+    private fun statusToMessage(response: CloseableHttpResponse): String = with (response.statusLine) {
+        return "${statusCode} '${reasonPhrase}'"
     }
 
     private fun parseUploadResult(response: CloseableHttpResponse): StorageWriteBackend.UploadResult {
@@ -67,7 +73,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
     @Throws(QblStorageException::class)
     override fun delete(name: String) {
-        AbstractHttpStorageBackend.logger.trace("Deleting " + name)
+        trace("Deleting " + name)
         val uri: URI
         val response: CloseableHttpResponse
 
@@ -83,10 +89,10 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
         val status = response.statusLine.statusCode
         if (status == 404 || status == 403) {
-            throw QblStorageNotFound("File not found: ${response.statusLine.reasonPhrase}")
+            throw QblStorageNotFound("File not found: ${statusToMessage(response)}")
         }
         if (status >= 300) {
-            throw QblStorageException("Deletion error: ${response.statusLine.reasonPhrase}")
+            throw QblStorageException("Deletion error: ${statusToMessage(response)}")
         }
     }
 }
