@@ -9,6 +9,7 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
@@ -44,40 +45,52 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
             }
         }
 
-    override fun save(newContact: Contact, identity: Identity) {
-        val exists = exists(newContact)
-        val contact = if (newContact.id == 0 && exists) {
-            var existingContact = findByKeyId(newContact.keyIdentifier);
-            existingContact.alias = newContact.alias
-            existingContact.email = newContact.email
-            existingContact.phone = newContact.phone
+    override fun save(contact: Contact, identity: Identity) {
+        val exists = exists(contact)
+        val affectedContact = if (contact.id == 0 && exists) {
+            val existingContact = findByKeyId(contact.keyIdentifier)
+            existingContact.alias = contact.alias
+            existingContact.email = contact.email
+            existingContact.phone = contact.phone
             existingContact
         } else {
-            newContact
+            contact
         }
 
-        if (contact.id == 0 || !exists) {
-            persist(contact)
+        if (affectedContact.id == 0 || !exists) {
+            persist(affectedContact)
         } else {
-            update(contact)
+            update(affectedContact)
         }
 
-        addIdentityConnection(contact, identity)
-    }
-
-    override fun persist(model: Contact) {
-        super.persist(model)
-        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
-        info("Contact ${model.alias} persisted with id ${model.id}")
+        addIdentityConnection(affectedContact, identity)
         notifyObservers()
     }
 
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         update(contact)
         removeIdentityConnections(contact)
-        if (activeIdentities.size > 0) {
+        if (activeIdentities.isNotEmpty()) {
             addIdentityConnections(contact, activeIdentities)
         }
+        notifyObservers()
+    }
+
+    override fun persist(contact: Contact, identities: List<Identity>) {
+        if (exists(contact)) {
+            throw EntityExistsException("Contact already exists!")
+        }
+        persist(contact)
+        if (identities.isNotEmpty()) {
+            addIdentityConnections(contact, identities)
+        }
+        notifyObservers()
+    }
+
+    override fun persist(model: Contact) {
+        super.persist(model)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+        info("Contact ${model.alias} persisted with id ${model.id}")
     }
 
     override fun update(model: Contact) {
@@ -85,7 +98,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
         model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
         info("Contact ${model.alias} (${model.id}) updated ")
-        notifyObservers()
     }
 
     override fun delete(contact: Contact, identity: Identity) {
