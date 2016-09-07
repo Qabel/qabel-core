@@ -10,9 +10,9 @@ public class Contact extends Entity {
 
     private String alias;
 
-    private String email;
+    private String email = "";
 
-    private String phone;
+    private String phone = "";
 
     //Internal nick given by user. Do not export anywhere!
     private String nickName;

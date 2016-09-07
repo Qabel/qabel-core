@@ -13,9 +13,9 @@ public class Identity extends Entity {
 
     private String alias;
 
-    private String email;
+    private String email = "";
 
-    private String phone;
+    private String phone = "";
 
     private List<String> prefixes;
 
