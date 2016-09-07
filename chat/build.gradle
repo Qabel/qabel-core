@@ -10,10 +10,10 @@ jar {
 }
 
 
+compileTestJava.dependsOn tasks.getByPath(':core:testClasses')
 dependencies {
     compile project(':core')
     compile project(':box')
-    //TODO bad include of test sources
     testCompile project(':core').sourceSets.test.output
 }
 

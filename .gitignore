@@ -1,6 +1,6 @@
 *~
 .gradle
-/build
+build/
 /out
 /intTestHomeDir
 /subprojects/*/out

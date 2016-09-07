@@ -3,6 +3,7 @@ package de.qabel.chat.repository.inmemory
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.chat.repository.ChatDropMessageRepository
+import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.PagingResult
@@ -10,6 +11,8 @@ import de.qabel.core.repository.framework.PagingResult
 open class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
 
     val messages = mutableListOf<ChatDropMessage>()
+    override fun findByIds(ids: List<Int>): List<ChatDropMessage> =
+        messages.filter { ids.contains(it.id) }
 
     override fun findById(id: Int): ChatDropMessage = messages.find { it.id == id } ?: throw EntityNotFoundException("ChatDropMessage not found")
 
@@ -65,6 +68,13 @@ open class InMemoryChatDropMessageRepository : ChatDropMessageRepository {
     override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
         findByContact(contactId, identityId).let {
             PagingResult(it.size, it.filterIndexed { i, chatDropMessage -> i >= offset && i < (offset + pageSize) })
+        }
+
+    override fun findByShare(share: BoxFileChatShare): List<ChatDropMessage> =
+        messages.filter {
+            it.payload is ChatDropMessage.MessagePayload.ShareMessage &&
+                it.identityId == share.identityId &&
+                (it.payload as ChatDropMessage.MessagePayload.ShareMessage).shareData.metaUrl == share.metaUrl
         }
 
 }

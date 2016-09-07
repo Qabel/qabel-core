@@ -23,7 +23,7 @@ class JdbcFileMetadataTest {
         JdbcFileMetadataFactory(File(System.getProperty("java.io.tmpdir"))).create(owner, savedFile)
     }
 
-    private val file by lazy { fm.file!! }
+    private val file by lazy { fm.file }
 
     @Test
     fun fileContainsHash() {

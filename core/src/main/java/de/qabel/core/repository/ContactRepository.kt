@@ -1,13 +1,11 @@
 package de.qabel.core.repository
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Contacts
-import de.qabel.core.config.Identity
+import de.qabel.core.config.*
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 
-interface ContactRepository {
+interface ContactRepository: EntityObservable {
 
 
     @Throws(PersistenceException::class)
@@ -19,7 +17,13 @@ interface ContactRepository {
     @Throws(PersistenceException::class)
     fun delete(contact: Contact, identity: Identity)
 
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun update(contact: Contact, activeIdentities: List<Identity>)
+    /**
+     * Deletes contact with its identity connection
+     */
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    fun delete(contact: Contact)
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun find(id: Int): Contact

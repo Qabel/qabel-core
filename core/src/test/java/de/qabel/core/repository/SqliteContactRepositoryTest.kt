@@ -1,11 +1,12 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
+import de.qabel.core.config.EntityObserver
 import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
-import de.qabel.core.repository.exception.EntityExistsException
+import de.qabel.core.extensions.assertThrows
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.SqliteContactRepository
@@ -28,6 +29,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
     private lateinit var dropUrlGenerator: DropUrlGenerator
+    private var hasCalled: Boolean = false
 
     override fun setUp() {
         super.setUp()
@@ -162,12 +164,16 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         repo.save(contact, identity)
         repo.delete(contact, identity)
 
-        try {
-            repo.findByKeyId(identity, contact.keyIdentifier)
-            fail("entity was not deleted")
-        } catch (ignored: EntityNotFoundException) {
-        }
+        assertThrows(EntityNotFoundException::class, { repo.findByKeyId(identity, contact.keyIdentifier) })
+    }
 
+    @Test
+    fun deletesContactComplete() {
+        repo.save(contact, identity)
+        repo.save(contact, otherIdentity)
+        repo.delete(contact)
+
+        assertThrows(EntityNotFoundException::class, { repo.findByKeyId(contact.keyIdentifier) })
     }
 
     @Test
@@ -196,7 +202,7 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertSame(contact, loaded)
     }
 
-    @Test(expected = EntityExistsException::class)
+    @Test
     fun addsRelationshipIfContactIsAlreadyPresent() {
         repo.save(contact, identity)
 
@@ -314,6 +320,25 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertThat(identityContactDetails.contact.alias, equalTo(identity.alias))
         assertThat(identityContactDetails.identities, hasSize(0))
         assertTrue(identityContactDetails.isIdentity)
+    }
+
+    private fun attachEntityObserver() {
+        repo.attach(EntityObserver { hasCalled = true })
+    }
+
+    @Test
+    fun testSqliteContactRepositorySaveObservable() {
+        attachEntityObserver()
+        repo.save(contact, identity)
+        assertTrue(hasCalled)
+    }
+
+    @Test
+    fun testSqliteContactRepositoryDeleteObservable() {
+        repo.save(contact, identity)
+        attachEntityObserver()
+        repo.delete(contact, identity)
+        assertTrue(hasCalled)
     }
 
 }

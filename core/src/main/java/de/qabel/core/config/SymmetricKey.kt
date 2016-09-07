@@ -7,5 +7,8 @@ data class SymmetricKey(val byteList: List<Byte>) {
         fun fromBytes(byteArray: ByteArray): SymmetricKey = SymmetricKey(byteArray.asList())
         fun fromHex(hexKey: String): SymmetricKey = SymmetricKey(Hex.decode(hexKey).asList())
     }
+
+    fun toHexString(): String = Hex.toHexString(byteList.toByteArray())
+    fun toByteArray(): ByteArray = byteList.toByteArray()
 }
 

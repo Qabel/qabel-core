@@ -1,17 +1,14 @@
 package de.qabel.core.repository.sqlite
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Contacts
-import de.qabel.core.config.Identity
+import de.qabel.core.config.*
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.extensions.findById
-import de.qabel.core.util.QblLogger
-import de.qabel.core.util.info
+import de.qabel.core.logging.QabelLog
+import de.qabel.core.logging.info
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
-import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
@@ -30,7 +27,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
                               private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
                               private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QblLogger {
+    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
 
     constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
                 identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
@@ -47,11 +44,19 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
             }
         }
 
-    override fun save(contact: Contact, identity: Identity) {
-        val exists = exists(contact)
-        if (contact.id == 0 && exists) {
-            throw EntityExistsException()
-        } else if (contact.id == 0 || !exists) {
+    override fun save(newContact: Contact, identity: Identity) {
+        val exists = exists(newContact)
+        val contact = if (newContact.id == 0 && exists) {
+            var existingContact = findByKeyId(newContact.keyIdentifier);
+            existingContact.alias = newContact.alias
+            existingContact.email = newContact.email
+            existingContact.phone = newContact.phone
+            existingContact
+        } else {
+            newContact
+        }
+
+        if (contact.id == 0 || !exists) {
             persist(contact)
         } else {
             update(contact)
@@ -64,6 +69,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         super.persist(model)
         model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
         info("Contact ${model.alias} persisted with id ${model.id}")
+        notifyObservers()
     }
 
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
@@ -79,6 +85,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
         model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
         info("Contact ${model.alias} (${model.id}) updated ")
+        notifyObservers()
     }
 
     override fun delete(contact: Contact, identity: Identity) {
@@ -89,12 +96,15 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         }
     }
 
+    override fun delete(contact: Contact) = delete(contact.id)
+
     override fun delete(id: Int) {
         val contact = findById(id)
         removeIdentityConnections(contact)
         dropAllManyToMany(ContactDropUrls.CONTACT_ID, id)
         super.delete(id)
         info("Contact ${contact.alias} ($id) deleted")
+        notifyObservers()
     }
 
     private fun joinIdentityContacts(queryBuilder: QueryBuilder) =

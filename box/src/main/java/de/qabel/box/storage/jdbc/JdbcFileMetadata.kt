@@ -2,6 +2,7 @@ package de.qabel.box.storage.jdbc
 
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.tryWith
@@ -34,7 +35,7 @@ class JdbcFileMetadata(connection: ClientDatabase, path: File) : AbstractMetadat
         }
     }
 
-    override val file: BoxExternalFile?
+    override val file: BoxExternalFile
         @Throws(QblStorageException::class)
         get() = try {
             tryWith(connection.prepare("""
@@ -56,7 +57,7 @@ class JdbcFileMetadata(connection: ClientDatabase, path: File) : AbstractMetadat
                             hashed = Hash.create(hash = getBytes(++i), algorithm = getString(++i))
                         )
                     }
-                    return null
+                    throw QblStorageNotFound("No file stored in fileMetadata")
                 }
             }
         } catch (e: SQLException) {
