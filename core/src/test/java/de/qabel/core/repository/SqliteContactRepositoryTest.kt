@@ -307,6 +307,16 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     }
 
     @Test
+    fun testPersist() {
+        repo.persist(contact, listOf(identity, otherIdentity))
+
+        val result = repo.findContactWithIdentities(contact.keyIdentifier)
+        assertThat(result.contact.alias, equalTo(contact.alias))
+        assertThat(result.contact.id, notNullValue())
+        assertThat(result.identities, containsInAnyOrder(identity, otherIdentity))
+    }
+
+    @Test
     fun testFindContactWithIdentities() {
         repo.save(contact, identity)
         repo.save(contact, otherIdentity)
