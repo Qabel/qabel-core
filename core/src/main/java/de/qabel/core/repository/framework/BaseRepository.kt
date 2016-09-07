@@ -17,7 +17,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
     protected val updateStatement = QblStatements.createUpdate(relation)
     protected val deleteStatement = QblStatements.createDelete(relation)
 
-    open fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
+    open protected fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
 
     open fun persist(model: T) =
         executeStatement(insertStatement, {
