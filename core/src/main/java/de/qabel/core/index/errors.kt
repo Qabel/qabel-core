@@ -13,6 +13,10 @@ open class IndexServerException @JvmOverloads constructor(message: String, cause
 
 class MalformedResponseException @JvmOverloads constructor(message: String, cause: Throwable? = null): IndexServerException(message, cause)
 
+class CodeInvalidException @JvmOverloads constructor(message: String, cause: Throwable? = null): IndexServerException(message, cause)
+
+class CodeExpiredException @JvmOverloads constructor(message: String, cause: Throwable? = null): IndexServerException(message, cause)
+
 class APIError(val code: Int, message: String, var retries: Int = 0): IndexServerException(message) {
     constructor(response: HttpResponse, retries: Int = 0)
     : this(

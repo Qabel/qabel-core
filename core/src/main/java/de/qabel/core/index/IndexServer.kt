@@ -51,4 +51,21 @@ interface IndexServer {
      */
     @Throws(IOException::class)
     fun updateIdentity(identity: UpdateIdentity): UpdateResult
+
+    /**
+     * Confirm a verification code.
+     *
+     * These are sent to the user to verify eg. mail addresses or phone numbers.
+     * See [Index spec](http://qabel.github.io/docs/Qabel-Index/#verification-confirmation) for details.
+     */
+    @Throws(IOException::class, CodeInvalidException::class, CodeExpiredException::class)
+    fun confirmVerificationCode(code: String)
+
+    /**
+     * Deny a verification code.
+     *
+     * See [confirmVerificationCode]
+     */
+    @Throws(IOException::class, CodeInvalidException::class, CodeExpiredException::class)
+    fun denyVerificationCode(code: String)
 }
