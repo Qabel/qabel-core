@@ -2,18 +2,16 @@ package de.qabel.core.repository;
 
 import de.qabel.core.config.Identities;
 import de.qabel.core.config.Identity;
+import de.qabel.core.config.VerificationStatus;
+import de.qabel.core.config.factory.DropUrlGenerator;
+import de.qabel.core.config.factory.IdentityBuilder;
 import de.qabel.core.drop.DropURL;
+import de.qabel.core.repository.exception.EntityNotFoundException;
 import de.qabel.core.repository.sqlite.ClientDatabase;
 import de.qabel.core.repository.sqlite.SqliteDropUrlRepository;
 import de.qabel.core.repository.sqlite.SqliteIdentityRepository;
 import de.qabel.core.repository.sqlite.SqlitePrefixRepository;
-import de.qabel.core.config.factory.DefaultIdentityFactory;
-import de.qabel.core.config.factory.DropUrlGenerator;
-import de.qabel.core.config.factory.IdentityBuilder;
-import de.qabel.core.repository.EntityManager;
-import de.qabel.core.repository.exception.EntityNotFoundException;
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator;
-import de.qabel.core.repository.sqlite.hydrator.IdentityHydrator;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,6 +33,7 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
     protected SqliteIdentityRepository createRepo(ClientDatabase clientDatabase, EntityManager em) {
         SqliteDropUrlRepository dropUrlRepository = new SqliteDropUrlRepository(clientDatabase, new DropURLHydrator());
         SqlitePrefixRepository prefixRepository = new SqlitePrefixRepository(clientDatabase);
+
         return new SqliteIdentityRepository(clientDatabase, em, prefixRepository, dropUrlRepository);
     }
 
@@ -64,7 +63,9 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
     public void findsSavedIdentitiesFromPreviousSession() throws Exception {
         Identity identity = identityBuilder.build();
         identity.setEmail("email");
+        identity.setEmailStatus(VerificationStatus.PENDING);
         identity.setPhone("phone");
+        identity.setPhoneStatus(VerificationStatus.VERIFIED);
         identity.getPrefixes().add("my prefix");
         repo.save(identity);
         em.clear();
@@ -79,7 +80,9 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
         ));
         assertEquals(identity.getAlias(), loaded.getAlias());
         assertEquals(identity.getEmail(), loaded.getEmail());
+        assertEquals(identity.getEmailStatus(), loaded.getEmailStatus());
         assertEquals(identity.getPhone(), loaded.getPhone());
+        assertEquals(identity.getPhoneStatus(), loaded.getPhoneStatus());
         Set<DropURL> oldUrls = identity.getDropUrls();
         Set<DropURL> newUrls = loaded.getDropUrls();
         assertTrue(

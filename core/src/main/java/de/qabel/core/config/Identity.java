@@ -207,4 +207,20 @@ public class Identity extends Entity {
         }
         return true;
     }
+
+    public VerificationStatus getEmailStatus() {
+        return emailStatus;
+    }
+
+    public void setEmailStatus(VerificationStatus emailStatus) {
+        this.emailStatus = emailStatus;
+    }
+
+    public VerificationStatus getPhoneStatus() {
+        return phoneStatus;
+    }
+
+    public void setPhoneStatus(VerificationStatus phoneStatus) {
+        this.phoneStatus = phoneStatus;
+    }
 }

@@ -1,6 +1,7 @@
 package de.qabel.core.repository.sqlite.hydrator
 
 import de.qabel.core.config.Identity
+import de.qabel.core.config.VerificationStatus
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.drop.DropURL
 import de.qabel.core.repository.DropUrlRepository
@@ -16,27 +17,34 @@ class IdentityAdapter(private val dropURLRepository: DropUrlRepository,
                       private val prefixRepository: SqlitePrefixRepository) : ResultAdapter<Identity> {
 
     override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Identity {
-        val identityId = resultSet.getInt(IdentityDB.ID.alias())
-        val contactId = resultSet.getInt(IdentityDB.CONTACT_ID.alias())
+        with(resultSet) {
+            val identityId = getInt(IdentityDB.ID.alias())
+            val contactId = getInt(IdentityDB.CONTACT_ID.alias())
 
-        if (entityManager.contains(Identity::class.java, identityId)) {
-            return entityManager.get(Identity::class.java, identityId)
-        }
-        val privateKey = Hex.decode(resultSet.getString(IdentityDB.PRIVATE_KEY.alias()))
-        val identity =  Identity(resultSet.getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(),
-            QblECKeyPair(privateKey)).apply {
-            id = identityId
-            phone = resultSet.getString(ContactDB.PHONE.alias())
-            email = resultSet.getString(ContactDB.EMAIL.alias())
-            prefixes = prefixRepository.findAll(this).toMutableList()
-            dropURLRepository.findDropUrls(listOf(contactId)).forEach {
-                if (it.key == contactId) {
-                    it.value.forEach { addDrop(it) }
+            if (entityManager.contains(Identity::class.java, identityId)) {
+                return entityManager.get(Identity::class.java, identityId)
+            }
+            val privateKey = Hex.decode(getString(IdentityDB.PRIVATE_KEY.alias()))
+            val identity = Identity(getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(),
+                QblECKeyPair(privateKey)).apply {
+                id = identityId
+
+                phone = getString(ContactDB.PHONE.alias())
+                phoneStatus = enumValue(getInt(IdentityDB.PHONE_STATUS.alias()), VerificationStatus.values())
+
+                email = getString(ContactDB.EMAIL.alias())
+                emailStatus = enumValue(getInt(IdentityDB.EMAIL_STATUS.alias()), VerificationStatus.values())
+
+                prefixes = prefixRepository.findAll(this).toMutableList()
+                dropURLRepository.findDropUrls(listOf(contactId)).forEach {
+                    if (it.key == contactId) {
+                        it.value.forEach { addDrop(it) }
+                    }
                 }
             }
+            entityManager.put(Identity::class.java, identity)
+            return identity
         }
-        entityManager.put(Identity::class.java, identity)
-        return identity
     }
 
 }
