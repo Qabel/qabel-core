@@ -35,13 +35,7 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
     protected SqliteIdentityRepository createRepo(ClientDatabase clientDatabase, EntityManager em) {
         SqliteDropUrlRepository dropUrlRepository = new SqliteDropUrlRepository(clientDatabase, new DropURLHydrator());
         SqlitePrefixRepository prefixRepository = new SqlitePrefixRepository(clientDatabase);
-        IdentityHydrator hydrator = new IdentityHydrator(
-            new DefaultIdentityFactory(),
-            em,
-            dropUrlRepository,
-            prefixRepository
-        );
-        return new SqliteIdentityRepository(clientDatabase, hydrator, dropUrlRepository, prefixRepository);
+        return new SqliteIdentityRepository(clientDatabase, em, prefixRepository, dropUrlRepository);
     }
 
     @Test

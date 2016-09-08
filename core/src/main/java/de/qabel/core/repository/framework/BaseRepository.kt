@@ -20,9 +20,14 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
 
     open protected fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
 
+    open protected fun beforePersist(currentIndex: Int, statement: PreparedStatement, model: T): Int {
+        return currentIndex
+    }
+
     open fun persist(model: T) =
         executeStatement(insertStatement, {
-            relation.applyValues(1, it, model)
+            val i = relation.applyValues(1, it, model)
+            beforePersist(i, it, model)
         }, {
             it.generatedKeys.use {
                 it.next()
@@ -31,11 +36,19 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             entityManager.put(model.javaClass, model, model.id)
         })
 
+    open protected fun beforeUpdate(currentIndex: Int, statement: PreparedStatement, model: T): Int {
+        return currentIndex
+    }
+
     open fun update(model: T) =
         executeStatement(updateStatement, {
-            val i = relation.applyValues(1, it, model)
+            var i = relation.applyValues(1, it, model)
+            i = beforeUpdate(i, it, model)
             it.setInt(i, model.id)
         }, {
+            if (it.updateCount == 0) {
+                throw PersistenceException("Update failed!")
+            }
             entityManager.put(model.javaClass, model, model.id)
         })
 
