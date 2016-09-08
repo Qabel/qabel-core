@@ -14,8 +14,10 @@ public class Identity extends Entity {
     private String alias;
 
     private String email = "";
+    private VerificationStatus emailStatus = VerificationStatus.NONE;
 
     private String phone = "";
+    private VerificationStatus phoneStatus = VerificationStatus.NONE;
 
     private List<String> prefixes;
 
