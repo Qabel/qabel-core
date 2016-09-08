@@ -10,6 +10,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
+                                              val resultAdapter: ResultAdapter<T>,
                                               val client: ClientDatabase,
                                               val entityManager: EntityManager) {
 
@@ -65,7 +66,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
 
     //TODO kotlin currently require this cast, but its not really required
     protected fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
-        getSingleResult(queryBuilder, relation as ResultAdapter<T>)
+        getSingleResult(queryBuilder, resultAdapter as ResultAdapter<T>)
 
     protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
         return executeQuery(queryBuilder, { it ->
@@ -77,7 +78,7 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
 
     //TODO kotlin currently require this cast, but its not really required
     protected fun <T> getResultList(queryBuilder: QueryBuilder): List<T> =
-        getResultList(queryBuilder, relation as ResultAdapter<T>)
+        getResultList(queryBuilder, resultAdapter as ResultAdapter<T>)
 
     protected fun <X> getResultList(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): List<X> {
         return executeQuery(queryBuilder, { it ->

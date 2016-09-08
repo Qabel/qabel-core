@@ -14,6 +14,7 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.framework.ResultAdapter
+import de.qabel.core.repository.sqlite.hydrator.ContactAdapter
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
 import de.qabel.core.repository.sqlite.schemas.ContactDB
@@ -26,12 +27,8 @@ import java.util.*
 
 class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
-                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
-                              private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
-
-    constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
-                identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
+                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em)) :
+    BaseRepository<Contact>(ContactDB, ContactAdapter(dropUrlRepository), db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
 
     override fun find(id: Int): Contact = findById(id)
 
@@ -121,7 +118,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
 
     private fun joinIdentityContacts(queryBuilder: QueryBuilder) =
         queryBuilder.innerJoin(IdentityContacts.TABLE, IdentityContacts.TABLE_ALIAS,
-            IdentityContacts.CONTACT_ID.exp(), contactRelation.ID.exp())
+            IdentityContacts.CONTACT_ID.exp(), ContactDB.ID.exp())
 
     private fun addIdentityConnection(contact: Contact, identity: Identity) =
         saveManyToMany(IdentityContacts.IDENTITY_ID, identity.id, IdentityContacts.CONTACT_ID, contact.id)

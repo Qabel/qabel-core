@@ -13,25 +13,20 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 
-class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<Contact> {
+object ContactDB : DBRelation<Contact> {
 
-    override val TABLE_NAME = TABLE
+    override val TABLE_NAME = "contact"
     override val TABLE_ALIAS = "c"
-    override val ID: DBField = ContactDB.ID
+    override val ID: DBField = field("id")
 
-    companion object {
-        const val TABLE = "contact"
-        const val T_ALIAS = "c"
-        val ID = DBField("id", TABLE, T_ALIAS)
-        val ALIAS = DBField("alias", TABLE, T_ALIAS)
-        val PUBLIC_KEY = DBField("publicKey", TABLE, T_ALIAS)
-        val PHONE = DBField("phone", TABLE, T_ALIAS)
-        val EMAIL = DBField("email", TABLE, T_ALIAS)
+    val ALIAS = field("alias")
+    val PUBLIC_KEY = field("publicKey")
+    val PHONE = field("phone")
+    val EMAIL = field("email")
 
-        val STATUS = DBField("status", TABLE, T_ALIAS)
-        val IGNORED = DBField("ignored", TABLE, T_ALIAS)
-        val NICKNAME = DBField("nickname", TABLE, T_ALIAS)
-    }
+    val STATUS = field("status")
+    val IGNORED = field("ignored")
+    val NICKNAME = field("nickname")
 
     override val ENTITY_CLASS: Class<Contact> = Contact::class.java
     override val ENTITY_FIELDS = listOf(ALIAS, PUBLIC_KEY, PHONE, EMAIL, STATUS, IGNORED, NICKNAME)
@@ -73,25 +68,4 @@ class ContactDB(private val dropUrlRepository: DropUrlRepository) : DBRelation<C
             setString(i++, model.nickName)
             return i
         }
-
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Contact {
-        val contactId = resultSet.getInt(ID.alias())
-
-        if (entityManager.contains(Contact::class.java, contactId)) {
-            return entityManager.get(Contact::class.java, contactId)
-        }
-
-        return Contact(resultSet.getString(ALIAS.alias()), mutableListOf<DropURL>(),
-            QblECPublicKey(Hex.decode(resultSet.getString(PUBLIC_KEY.alias())))).apply {
-            id = contactId
-            phone = resultSet.getString(PHONE.alias())
-            email = resultSet.getString(EMAIL.alias())
-            val statusInt = resultSet.getInt(STATUS.alias())
-            status = Contact.ContactStatus.values().find { it.status == statusInt }
-            isIgnored = resultSet.getBoolean(IGNORED.alias())
-            nickName = resultSet.getString(NICKNAME.alias()) ?: ""
-            dropUrlRepository.findAll(this).forEach { addDrop(it) }
-        }
-    }
-
 }
