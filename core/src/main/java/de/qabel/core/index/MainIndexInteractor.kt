@@ -3,6 +3,7 @@ package de.qabel.core.index
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
+import de.qabel.core.config.VerificationStatus
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.util.DefaultHashMap
@@ -11,63 +12,69 @@ class MainIndexInteractor(private val indexServer: IndexServer,
                           private val contactRepository: ContactRepository,
                           private val identityRepository: IdentityRepository) : IndexInteractor {
 
-    /**
-     * TODO How to handle verifications?
-     * 1. save as Not verified -> Save update action? (simple way : add phoneVerified and emailVerified with Enum to identity)
-     * 2. trigger updateVerifyFlags on accept verification by received code -> Add inputCode, resendVerification Dialog on AppStartUp
-     * 3. Poll for verification updates while local data is not verified, work with verification timeouts?
-     */
     override fun updateIdentity(identity: Identity) {
-        UpdateIdentity.fromIdentity(identity, UpdateAction.CREATE).let {
-            indexServer.updateIdentity(it).name
-        }
+        identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email)
+        identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone)
+        identityRepository.save(identity)
     }
 
     override fun updateIdentityPhone(identity: Identity, oldPhone: String) {
-        createFieldUpdate(identity, FieldType.PHONE, oldPhone).let {
-            indexServer.updateIdentity(it).name
-        }
+        identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone, oldPhone)
+        identityRepository.save(identity)
     }
 
     override fun updateIdentityEmail(identity: Identity, oldEmail: String) {
-        createFieldUpdate(identity, FieldType.EMAIL, oldEmail).let {
-            indexServer.updateIdentity(it).name
+        identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email, oldEmail)
+        identityRepository.save(identity)
+    }
+
+    private fun updateFieldValueIfRequired(identity: Identity, fieldType: FieldType, newValue: String?,
+                                           oldValue: String? = null): VerificationStatus {
+        //Delete old value if exists and is set on server
+        if (findStateForValue(identity, oldValue, fieldType) == VerificationStatus.VERIFIED) {
+            UpdateIdentity(identity, listOf(UpdateField(UpdateAction.DELETE, fieldType, oldValue!!))).let {
+                if (indexServer.updateIdentity(it) == UpdateResult.ACCEPTED_IMMEDIATE) {
+                    throw IndexServerException("Failed to delete old field value!")
+                }
+            }
+        }
+        val currentStatus = findStateForValue(identity, newValue, fieldType)
+        return when (currentStatus) {
+            VerificationStatus.NOT_VERIFIED ->
+                UpdateIdentity(identity, listOf(UpdateField(UpdateAction.CREATE, fieldType, oldValue!!))).let {
+                    handleUpdateIdentity(it)
+                }
+            else -> currentStatus
         }
     }
 
-    private fun createFieldUpdate(identity: Identity, fieldType: FieldType, oldValue: String): UpdateIdentity {
-        val fields = mutableListOf<UpdateField>(UpdateField(UpdateAction.DELETE, fieldType, oldValue))
-        if (!identity.email.isNullOrBlank()) {
-            fields += UpdateField(UpdateAction.CREATE, FieldType.EMAIL, identity.email)
+    private fun handleUpdateIdentity(update: UpdateIdentity): VerificationStatus =
+        when (indexServer.updateIdentity(update)) {
+            UpdateResult.ACCEPTED_IMMEDIATE -> VerificationStatus.VERIFIED
+            else -> VerificationStatus.NOT_VERIFIED
         }
-        if (!identity.phone.isNullOrBlank()) {
-            fields += UpdateField(UpdateAction.CREATE, FieldType.PHONE, identity.phone)
-        }
-        return UpdateIdentity(
-            keyPair = identity.primaryKeyPair,
-            dropURL = identity.helloDropUrl,
-            alias = identity.alias,
-            fields = fields
-        )
-    }
 
-    /**
-     * TODO current way to see is verified. Just understatement implementation...
-     * TODO WIP
-     */
+    private fun findStateForValue(identity: Identity, value: String?, fieldType: FieldType): VerificationStatus =
+        if (value.isNullOrBlank()) {
+            VerificationStatus.NONE
+        } else if (indexServer.search(mapOf(Pair(fieldType, value!!))).any {
+            it.publicKey.equals(identity.ecPublicKey)
+        }) {
+            //Identity found by field
+            VerificationStatus.VERIFIED
+        } else {
+            VerificationStatus.NOT_VERIFIED
+        }
+
     override fun updateIdentityVerifications() {
         val identities = identityRepository.findAll()
-        identities.identities.forEach { identity ->
-            val phoneNumberVerified: Boolean =
-                indexServer.searchForPhone(identity.phone).any {
-                    it.publicKey.equals(identity.ecPublicKey)
-                }
-            val emailVerified: Boolean =
-                indexServer.searchForMail(identity.email).any {
-                    it.publicKey.equals(identity.ecPublicKey)
-                }
-            //TODO Update new fields
-        }
+        identities.identities.forEach { updateIdentityVerificationFlags(it) }
+    }
+
+    private fun updateIdentityVerificationFlags(identity: Identity) {
+        identity.emailStatus = findStateForValue(identity, identity.email, FieldType.EMAIL)
+        identity.phoneStatus = findStateForValue(identity, identity.phone, FieldType.PHONE)
+        identityRepository.save(identity)
     }
 
     override fun deleteIdentity(identity: Identity) {
@@ -76,12 +83,16 @@ class MainIndexInteractor(private val indexServer: IndexServer,
         }
     }
 
+    override fun confirmVerification(code: String) {
+        indexServer.confirmVerificationCode(code)
+        updateIdentityVerifications()
+    }
+
     /**
      * Search the index for the external contacts and updates the local contact repository.
      * Returns a list of new contacts.
      *
      * TODO With my last android researches my phone would requires 265 HttpRequests (265 values, 237 contacts)
-     * We need an interface to search for multiple values with "OR"
      *
      */
     override fun syncContacts(externalContactsAccessor: ExternalContactsAccessor): List<IndexSyncResult> {

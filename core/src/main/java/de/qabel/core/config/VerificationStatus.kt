@@ -1,18 +1,18 @@
 package de.qabel.core.config
 
-import de.qabel.core.repository.framework.PersistenceEnum
+import de.qabel.core.repository.framework.PersistableEnum
 
 /**
  * [VerificationStatus] for email-address and phone number of [Identity]s
  */
-enum class VerificationStatus(override val type: Int) : PersistenceEnum {
+enum class VerificationStatus(override val type: Int) : PersistableEnum {
+
     //Field not set (default for existing)
     NONE(0),
-    //Field has been modified
-    MODIFIED(1),
-    //Update request has been sent
-    PENDING(2),
+    //Field locally set but not on index
+    NOT_VERIFIED(1),
     //Index is updated
-    VERIFIED(3)
+    VERIFIED(2)
+
 }
 

@@ -8,7 +8,7 @@ interface ResultAdapter<out T> {
 
     fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): T
 
-    fun <T : PersistenceEnum> enumValue(value: Int, values: Array<T>): T =
+    fun <T : PersistableEnum> enumValue(value: Int, values: Array<T>): T =
         values.find { it.type == value } ?: throw PersistenceException("Invalid enum value!")
 
 }

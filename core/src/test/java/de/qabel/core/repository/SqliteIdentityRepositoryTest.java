@@ -63,7 +63,7 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
     public void findsSavedIdentitiesFromPreviousSession() throws Exception {
         Identity identity = identityBuilder.build();
         identity.setEmail("email");
-        identity.setEmailStatus(VerificationStatus.PENDING);
+        identity.setEmailStatus(VerificationStatus.NOT_VERIFIED);
         identity.setPhone("phone");
         identity.setPhoneStatus(VerificationStatus.VERIFIED);
         identity.getPrefixes().add("my prefix");

@@ -42,6 +42,10 @@ data class UpdateIdentity(
     val alias: String,
     val fields: List<UpdateField>
 ) {
+
+    constructor(identity: Identity, fields: List<UpdateField>) :
+    this(identity.primaryKeyPair, identity.helloDropUrl, identity.alias, fields)
+
     companion object {
         fun fromIdentity(identity: Identity, action: UpdateAction): UpdateIdentity {
             val fields = ArrayList<UpdateField>()
@@ -145,7 +149,7 @@ enum class IndexSyncAction {
     CREATE, UPDATE
 }
 
-data class IndexSyncResult(val contact: Contact, val action : IndexSyncAction)
+data class IndexSyncResult(val contact: Contact, val action: IndexSyncAction)
 
 /**
  * Representing a external contact

@@ -6,7 +6,7 @@ interface Field {
     fun select(): String
 }
 
-interface PersistenceEnum {
+interface PersistableEnum {
     val type: Int
 }
 
