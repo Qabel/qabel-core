@@ -35,7 +35,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
                                            oldValue: String? = null): VerificationStatus {
         //Delete old value if exists and is set on server
         if (findStateForValue(identity, oldValue, fieldType) == VerificationStatus.VERIFIED) {
-            info("Removing field from index $fieldType $oldValue")
+            info("Removing field from index $fieldType")
             UpdateIdentity(identity, listOf(UpdateField(UpdateAction.DELETE, fieldType, oldValue!!))).let {
                 indexServer.updateIdentity(it).let {
                     if (it == UpdateResult.ACCEPTED_DEFERRED) {
