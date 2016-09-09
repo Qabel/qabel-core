@@ -9,7 +9,7 @@ import java.sql.Connection
 
 import de.qabel.core.repository.sqlite.migration.*
 
-class ChatClientDatabase(connection: Connection) : DesktopClientDatabase(connection) {
+open class ChatClientDatabase(connection: Connection) : DesktopClientDatabase(connection) {
 
     override var version by PragmaVersionAdapter(connection)
 
