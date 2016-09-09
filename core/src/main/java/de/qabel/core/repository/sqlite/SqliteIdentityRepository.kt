@@ -4,6 +4,7 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.repository.ContactRepository
+import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.framework.BaseRepository
@@ -15,7 +16,7 @@ import java.sql.PreparedStatement
 
 class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
                                private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db),
-                               dropUrlRepository: SqliteDropUrlRepository = SqliteDropUrlRepository(db)) :
+                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)) :
     BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository {
 
     private val contactRepository: ContactRepository = SqliteContactRepository(db, em, dropUrlRepository, this)
