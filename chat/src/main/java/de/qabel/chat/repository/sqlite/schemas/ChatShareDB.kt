@@ -1,15 +1,10 @@
 package de.qabel.chat.repository.sqlite.schemas
 
-import de.qabel.box.storage.Hash
 import de.qabel.chat.repository.entities.BoxFileChatShare
-import de.qabel.chat.repository.entities.ShareStatus
-import de.qabel.core.config.SymmetricKey
-import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
 import org.spongycastle.util.encoders.Hex
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 
 object ChatShareDB : DBRelation<BoxFileChatShare> {
 
@@ -56,28 +51,4 @@ object ChatShareDB : DBRelation<BoxFileChatShare> {
             setString(i++, model.block)
             return i
         }
-
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): BoxFileChatShare {
-        val status = resultSet.getInt(STATUS.alias())
-        val hash = resultSet.getString(HASH_TYPE.alias())?.let {
-            Hash(Hex.decode(resultSet.getString(HASH.alias())), it)
-        }
-        val key = resultSet.getString(KEY.alias())?.let {
-            SymmetricKey.Factory.fromHex(it)
-        }
-        return BoxFileChatShare(
-            ShareStatus.values().find { it.type == status }!!,
-            resultSet.getString(NAME.alias()),
-            resultSet.getLong(SIZE.alias()),
-            SymmetricKey.Factory.fromHex(resultSet.getString(META_KEY.alias())),
-            resultSet.getString(META_URL.alias()),
-            hash,
-            resultSet.getString(PREFIX.alias()),
-            resultSet.getLong(MODIFIED_ON.alias()),
-            key,
-            resultSet.getString(BLOCK.alias()),
-            resultSet.getInt(OWNER_CONTACT_ID.alias()),
-            resultSet.getInt(IDENTITY_ID.alias()),
-            resultSet.getInt(ID.alias()))
-    }
 }

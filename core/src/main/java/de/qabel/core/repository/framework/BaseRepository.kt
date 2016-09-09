@@ -47,9 +47,6 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             i = beforeUpdate(i, it, model)
             it.setInt(i, model.id)
         }, {
-            if (it.updateCount == 0) {
-                throw PersistenceException("Update failed!")
-            }
             entityManager.put(model.javaClass, model, model.id)
         })
 
