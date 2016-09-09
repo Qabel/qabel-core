@@ -79,6 +79,9 @@ class IndexInteractorTest() : CoreTestCase {
 
     @Test
     fun testUpdateIdentityPhone() {
+        //With verified phone
+        indexInteractor.updateIdentity(exampleIdentity)
+
         val oldPhone = exampleIdentity.phone
         exampleIdentity.phone = "9876543210"
         indexInteractor.updateIdentityPhone(exampleIdentity, oldPhone)
