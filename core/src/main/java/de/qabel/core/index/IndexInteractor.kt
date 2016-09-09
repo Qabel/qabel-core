@@ -4,21 +4,29 @@ import de.qabel.core.config.Identity
 
 interface IndexInteractor {
 
+    /**
+     * Syncs the current [Identity.email] and [Identity.email]
+     * with the [IndexServer]. Updates [Identity.emailStatus] and [Identity.phoneStatus].
+     */
     fun updateIdentity(identity: Identity)
+
+    /**
+     * Deletes the current [Identity.email] and [Identity.email] from [IndexServer].
+     */
     fun deleteIdentity(identity: Identity)
 
     /**
-     * Replaces oldPhone with current [Identity]s phone
+     * Replaces oldPhone with current [Identity.phone]
      */
     fun updateIdentityPhone(identity: Identity, oldPhone: String)
 
     /**
-     * Replaces oldEmail with current [Identity]s email
+     * Replaces oldEmail with current [Identity.email]
      */
     fun updateIdentityEmail(identity: Identity, oldEmail: String)
 
     /**
-     * Updates the emailStatus and phoneStatus for all identities
+     * Updates [Identity.emailStatus] and [Identity.phoneStatus] for all identities
      */
     fun updateIdentityVerifications()
 

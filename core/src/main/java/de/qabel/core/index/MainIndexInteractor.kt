@@ -4,13 +4,16 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.config.VerificationStatus
+import de.qabel.core.logging.QabelLog
+import de.qabel.core.logging.info
+import de.qabel.core.logging.warn
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.util.DefaultHashMap
 
 class MainIndexInteractor(private val indexServer: IndexServer,
                           private val contactRepository: ContactRepository,
-                          private val identityRepository: IdentityRepository) : IndexInteractor {
+                          private val identityRepository: IdentityRepository) : IndexInteractor, QabelLog {
 
     override fun updateIdentity(identity: Identity) {
         identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email)
@@ -32,33 +35,37 @@ class MainIndexInteractor(private val indexServer: IndexServer,
                                            oldValue: String? = null): VerificationStatus {
         //Delete old value if exists and is set on server
         if (findStateForValue(identity, oldValue, fieldType) == VerificationStatus.VERIFIED) {
+            info("Removing field from index $fieldType $oldValue")
             UpdateIdentity(identity, listOf(UpdateField(UpdateAction.DELETE, fieldType, oldValue!!))).let {
-                if (indexServer.updateIdentity(it) == UpdateResult.ACCEPTED_IMMEDIATE) {
-                    throw IndexServerException("Failed to delete old field value!")
+                indexServer.updateIdentity(it).let {
+                    if (it == UpdateResult.ACCEPTED_DEFERRED) {
+                        warn("Received unexpected UpdateResult[${it.name}] for delete action!")
+                        throw IndexServerException("Failed to delete old field value!")
+                    }
                 }
             }
         }
         val currentStatus = findStateForValue(identity, newValue, fieldType)
         return when (currentStatus) {
             VerificationStatus.NOT_VERIFIED ->
-                UpdateIdentity(identity, listOf(UpdateField(UpdateAction.CREATE, fieldType, oldValue!!))).let {
-                    handleUpdateIdentity(it)
+                UpdateIdentity(identity, listOf(UpdateField(UpdateAction.CREATE, fieldType, newValue!!))).let {
+                    info("Updating index with field $fieldType")
+                    when (indexServer.updateIdentity(it)) {
+                        UpdateResult.ACCEPTED_IMMEDIATE -> VerificationStatus.VERIFIED
+                        else -> VerificationStatus.NOT_VERIFIED
+                    }.apply {
+                        info("Index updated. New VerificationStatus ${this.name}")
+                    }
                 }
             else -> currentStatus
         }
     }
 
-    private fun handleUpdateIdentity(update: UpdateIdentity): VerificationStatus =
-        when (indexServer.updateIdentity(update)) {
-            UpdateResult.ACCEPTED_IMMEDIATE -> VerificationStatus.VERIFIED
-            else -> VerificationStatus.NOT_VERIFIED
-        }
-
     private fun findStateForValue(identity: Identity, value: String?, fieldType: FieldType): VerificationStatus =
         if (value.isNullOrBlank()) {
             VerificationStatus.NONE
         } else if (indexServer.search(mapOf(Pair(fieldType, value!!))).any {
-            it.publicKey.equals(identity.ecPublicKey)
+            it.publicKey.readableKeyIdentifier == identity.keyIdentifier
         }) {
             //Identity found by field
             VerificationStatus.VERIFIED
@@ -72,8 +79,16 @@ class MainIndexInteractor(private val indexServer: IndexServer,
     }
 
     private fun updateIdentityVerificationFlags(identity: Identity) {
-        identity.emailStatus = findStateForValue(identity, identity.email, FieldType.EMAIL)
-        identity.phoneStatus = findStateForValue(identity, identity.phone, FieldType.PHONE)
+        val emailStatus = findStateForValue(identity, identity.email, FieldType.EMAIL)
+        if (emailStatus != identity.emailStatus) {
+            identity.emailStatus = emailStatus
+            info("EmailStatus changed to ${identity.emailStatus.name} for identity ${identity.keyIdentifier}")
+        }
+        val phoneStatus = findStateForValue(identity, identity.phone, FieldType.PHONE)
+        if (emailStatus != identity.phoneStatus) {
+            identity.phoneStatus = phoneStatus
+            info("PhoneStatus changed to ${identity.phoneStatus.name} for identity ${identity.keyIdentifier}")
+        }
         identityRepository.save(identity)
     }
 
@@ -90,10 +105,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
 
     /**
      * Search the index for the external contacts and updates the local contact repository.
-     * Returns a list of new contacts.
-     *
-     * TODO With my last android researches my phone would requires 265 HttpRequests (265 values, 237 contacts)
-     *
+     * @Returns a list of [IndexSyncResult] for created and updated [Contact]s
      */
     override fun syncContacts(externalContactsAccessor: ExternalContactsAccessor): List<IndexSyncResult> {
         val externalContacts: List<RawContact> = externalContactsAccessor.getContacts()
