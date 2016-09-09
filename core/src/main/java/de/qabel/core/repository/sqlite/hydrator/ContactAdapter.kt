@@ -10,18 +10,12 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 import org.spongycastle.util.encoders.Hex
 import java.sql.ResultSet
 
-class ContactAdapter(private val dropUrlRepository: DropUrlRepository) : ResultAdapter<Contact> {
+class ContactAdapter(private val dropUrlRepository: DropUrlRepository) : BaseEntityResultAdapter<Contact>(ContactDB) {
 
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Contact {
-        val contactId = resultSet.getInt(ContactDB.ID.alias())
-
-        if (entityManager.contains(Contact::class.java, contactId)) {
-            return entityManager.get(Contact::class.java, contactId)
-        }
-
+    override fun hydrateEntity(entityId: Int, resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): Contact {
         return Contact(resultSet.getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(),
             QblECPublicKey(Hex.decode(resultSet.getString(ContactDB.PUBLIC_KEY.alias())))).apply {
-            id = contactId
+            id = entityId
             phone = resultSet.getString(ContactDB.PHONE.alias())
             email = resultSet.getString(ContactDB.EMAIL.alias())
             val statusInt = resultSet.getInt(ContactDB.STATUS.alias())
@@ -31,5 +25,4 @@ class ContactAdapter(private val dropUrlRepository: DropUrlRepository) : ResultA
             dropUrlRepository.findAll(this).forEach { addDrop(it) }
         }
     }
-
 }

@@ -6,7 +6,6 @@ import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.drop.DropURL
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
-import de.qabel.core.repository.framework.ResultAdapter
 import de.qabel.core.repository.sqlite.SqlitePrefixRepository
 import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.IdentityDB
@@ -14,21 +13,14 @@ import org.spongycastle.util.encoders.Hex
 import java.sql.ResultSet
 
 class IdentityAdapter(private val dropURLRepository: DropUrlRepository,
-                      private val prefixRepository: SqlitePrefixRepository) : ResultAdapter<Identity> {
+                      private val prefixRepository: SqlitePrefixRepository) : BaseEntityResultAdapter<Identity>(IdentityDB) {
 
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Identity {
+    override fun hydrateEntity(entityId: Int, resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): Identity {
         with(resultSet) {
-            val identityId = getInt(IdentityDB.ID.alias())
             val contactId = getInt(IdentityDB.CONTACT_ID.alias())
-
-            if (entityManager.contains(Identity::class.java, identityId)) {
-                return entityManager.get(Identity::class.java, identityId)
-            }
             val privateKey = Hex.decode(getString(IdentityDB.PRIVATE_KEY.alias()))
-            val identity = Identity(getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(),
-                QblECKeyPair(privateKey)).apply {
-                id = identityId
-
+            return Identity(getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(), QblECKeyPair(privateKey)).apply {
+                id = entityId
                 phone = getString(ContactDB.PHONE.alias())
                 phoneStatus = enumValue(getInt(IdentityDB.PHONE_STATUS.alias()), VerificationStatus.values())
 
@@ -42,8 +34,6 @@ class IdentityAdapter(private val dropURLRepository: DropUrlRepository,
                     }
                 }
             }
-            entityManager.put(Identity::class.java, identity)
-            return identity
         }
     }
 

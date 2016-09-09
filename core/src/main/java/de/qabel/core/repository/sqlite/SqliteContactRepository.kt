@@ -170,7 +170,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
 
         findManyToMany(IdentityContacts.CONTACT_ID, IdentityContacts.IDENTITY_ID,
             object : ResultAdapter<Unit> {
-                override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager) {
+                override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager, detached : Boolean) {
                     val contactId = resultSet.getInt(1)
                     val identityId = resultSet.getInt(2)
                     getOrDefault(contactId).add(identityId)

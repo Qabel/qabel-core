@@ -114,6 +114,11 @@ public class SqliteIdentityRepositoryTest extends AbstractSqliteRepositoryTest<S
         Identity instance1 = repo.find(identity.getKeyIdentifier());
         Identity instance2 = repo.find(identity.getKeyIdentifier());
         assertSame(instance1, instance2);
+
+        Identity instance3 = repo.find(identity.getKeyIdentifier(), true);
+        assertNotSame(instance1, instance3);
+        Identity instance4 = repo.find(identity.getKeyIdentifier(), false);
+        assertSame(instance1, instance4);
     }
 
     @Test

@@ -52,7 +52,7 @@ object ContactDB : DBRelation<Contact> {
         val CONTACT_ID = DBField("contact_id", TABLE, TABLE_ALIAS)
         val DROP_URL = DBField("url", TABLE, TABLE_ALIAS)
 
-        override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropURL =
+        override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): DropURL =
             DropURL(resultSet.getString(1))
     }
 

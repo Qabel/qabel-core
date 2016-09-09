@@ -7,6 +7,7 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 
 open class InMemoryIdentityRepository : IdentityRepository {
+
     override fun delete(identity: Identity?) {
         identities.remove(identity)
     }
@@ -19,6 +20,13 @@ open class InMemoryIdentityRepository : IdentityRepository {
             throw EntityNotFoundException("id $id not found")
         }
         return identities.getByKeyIdentifier(id)
+    }
+
+    override fun find(keyId: String, detached: Boolean): Identity {
+        if(!detached){
+            return find(keyId)
+        }
+        TODO("Detached operations not support by inmemoryRepos!")
     }
 
     @Throws(EntityNotFoundException::class, PersistenceException::class)

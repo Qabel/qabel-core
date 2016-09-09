@@ -15,7 +15,7 @@ import java.sql.PreparedStatement
 
 class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
                                private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db),
-                               private val dropUrlRepository: SqliteDropUrlRepository = SqliteDropUrlRepository(db)) :
+                               dropUrlRepository: SqliteDropUrlRepository = SqliteDropUrlRepository(db)) :
     BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository {
 
     private val contactRepository: ContactRepository = SqliteContactRepository(db, em, dropUrlRepository, this)
@@ -64,9 +64,12 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
     }
 
     override fun find(keyId: String): Identity =
+        find(keyId, false)
+
+    override fun find(keyId: String, detached: Boolean): Identity =
         with(createEntityQuery()) {
             whereAndEquals(ContactDB.PUBLIC_KEY, keyId)
-            return getSingleResult(this)
+            return getSingleResult(this, resultAdapter, detached)
         }
 
     override fun find(id: Int): Identity =

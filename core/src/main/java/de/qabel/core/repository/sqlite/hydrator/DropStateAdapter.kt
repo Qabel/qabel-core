@@ -6,15 +6,9 @@ import de.qabel.core.repository.framework.ResultAdapter
 import de.qabel.core.repository.sqlite.schemas.DropStateDB
 import java.sql.ResultSet
 
-class DropStateAdapter() : ResultAdapter<DropState> {
+class DropStateAdapter() : BaseEntityResultAdapter<DropState>(DropStateDB) {
 
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropState {
-        val id = resultSet.getInt(DropStateDB.ID.alias())
-        if (entityManager.contains(DropStateDB.ENTITY_CLASS, id)) {
-            return entityManager.get(DropStateDB.ENTITY_CLASS, id)
-        }
-        return DropState(resultSet.getString(DropStateDB.DROP.alias()),
-            resultSet.getString(DropStateDB.E_TAG.alias()), id)
-    }
+    override fun hydrateEntity(entityId: Int, resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): DropState =
+        DropState(resultSet.getString(DropStateDB.DROP.alias()), resultSet.getString(DropStateDB.E_TAG.alias()), entityId)
 
 }

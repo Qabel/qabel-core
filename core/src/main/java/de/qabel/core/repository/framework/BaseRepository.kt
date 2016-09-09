@@ -1,5 +1,6 @@
 package de.qabel.core.repository.framework
 
+import de.qabel.core.config.Identity
 import de.qabel.core.extensions.use
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
@@ -78,13 +79,13 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
 
     //TODO kotlin currently require this cast, but its not really required
-    protected fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
-        getSingleResult(queryBuilder, resultAdapter as ResultAdapter<T>)
+    protected fun <T> getSingleResult(queryBuilder: QueryBuilder, detached : Boolean = false): T =
+        getSingleResult(queryBuilder, resultAdapter as ResultAdapter<T>, detached)
 
-    protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
+    protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>, detached: Boolean = false): X {
         return executeQuery(queryBuilder, { it ->
             if (it.next()) {
-                hydrator.hydrateOne(it, entityManager)
+                hydrator.hydrateOne(it, entityManager, detached)
             } else throw EntityNotFoundException("Cannot find single result")
         })
     }
@@ -199,4 +200,5 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             })
         }
     }
+
 }
