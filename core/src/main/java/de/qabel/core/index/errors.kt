@@ -8,7 +8,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.util.EntityUtils
 import java.io.IOException
-import java.util.*
+import java.util.NoSuchElementException
 
 open class IndexServerException @JvmOverloads constructor(message: String, cause: Throwable? = null): IOException(message, cause)
 
