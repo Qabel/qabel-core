@@ -7,6 +7,7 @@ import de.qabel.core.config.VerificationStatus
 import de.qabel.core.index.server.ExternalContactsAccessor
 import de.qabel.core.index.server.IndexServer
 import de.qabel.core.logging.QabelLog
+import de.qabel.core.logging.debug
 import de.qabel.core.logging.info
 import de.qabel.core.logging.warn
 import de.qabel.core.repository.ContactRepository
@@ -130,9 +131,9 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             val (contact, values) = it
             values.forEach {
                 val search = it
-                info("IndexSearch for ${contact.displayName} with ${search.value} (${search.fieldType.name})")
+                debug("IndexSearch for ${contact.displayName} with ${search.value} (${search.fieldType.name})")
                 indexServer.search(search.toMap()).forEach { indexContact ->
-                    info("Received IndexContact for ${contact.displayName} with ${search.value}. Received ${indexContact.alias} ${indexContact.publicKey.readableKeyIdentifier}")
+                    debug("Received IndexContact for ${contact.displayName} with ${search.value}. Received ${indexContact.alias} ${indexContact.publicKey.readableKeyIdentifier}")
                     searchResults.getOrDefault(indexContact).apply {
                         find({ it.rawContact == contact })?.let {
                             it.search.add(search)
@@ -149,7 +150,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             val receivedContact = prepareIndexResults(indexContact, matchedSearches)
 
             handleIndexContact(receivedContact, identities)?.let {
-                info("Handled IndexResult Contact ${it.contact.alias} ${it.action.name}" )
+                debug("IndexResult Contact ${it.contact.alias} ${it.action.name}" )
                 results.add(it)
             }
         }
