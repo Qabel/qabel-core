@@ -1,9 +1,10 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.index.*
 import de.qabel.core.index.server.IndexHTTPLocation
 import de.qabel.core.index.server.UpdateEndpointImpl
 import org.apache.http.client.methods.HttpPut
