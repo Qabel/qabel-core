@@ -42,6 +42,6 @@ internal interface EndpointBase<out T> {
         if (entity == null) {
             return ""
         }
-        return EntityUtils.toString(entity, Charsets.UTF_8)
+        return EntityUtils.toString(entity, "UTF-8")
     }
 }
