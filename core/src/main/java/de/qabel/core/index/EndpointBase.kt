@@ -6,6 +6,7 @@ import org.apache.http.HttpStatus
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.util.EntityUtils
+import java.nio.charset.Charset
 
 internal interface EndpointBase<out T> {
     /**
@@ -42,6 +43,6 @@ internal interface EndpointBase<out T> {
         if (entity == null) {
             return ""
         }
-        return EntityUtils.toString(entity, "UTF-8")
+        return EntityUtils.toString(entity, Charsets.UTF_8.name())
     }
 }
