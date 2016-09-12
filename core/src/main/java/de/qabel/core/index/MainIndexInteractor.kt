@@ -128,7 +128,9 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             val (contact, values) = it
             values.forEach {
                 val search = it
+                info("IndexSearch for ${contact.displayName} with ${search.value} (${search.fieldType.name})")
                 indexServer.search(search.toMap()).forEach { indexContact ->
+                    info("Received IndexContact for ${contact.displayName} with ${search.value}. Received ${indexContact.alias} ${indexContact.publicKey.readableKeyIdentifier}")
                     searchResults.getOrDefault(indexContact).apply {
                         find({ it.rawContact == contact })?.let {
                             it.search.add(search)
@@ -145,6 +147,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             val receivedContact = prepareIndexResults(indexContact, matchedSearches)
 
             handleIndexContact(receivedContact, identities)?.let {
+                info("Handled IndexResult Contact ${it.contact.alias} ${it.action.name}" )
                 results.add(it)
             }
         }
@@ -221,7 +224,6 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             }
 
             //TODO Force update for alias, email, phone?
-
             if (localContact.phone.isNullOrEmpty() && !receivedContact.phone.isNullOrEmpty()) {
                 localContact.phone = receivedContact.phone
                 updated = true
