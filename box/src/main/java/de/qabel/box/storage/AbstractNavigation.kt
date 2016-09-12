@@ -11,6 +11,8 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.NotImplementedException
 import org.slf4j.LoggerFactory
 import org.spongycastle.crypto.params.KeyParameter
+import rx.lang.kotlin.PublishSubject
+import rx.subjects.Subject
 import java.io.*
 import java.nio.file.Files
 import java.security.InvalidKeyException
@@ -38,7 +40,9 @@ abstract class AbstractNavigation(
     private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils by lazy { CryptoUtils() }
 
-    private val changes = LinkedList<DirectoryMetadataChange<*>>()
+    private val pendingChanges = LinkedList<DirectoryMetadataChange<*>>()
+    override val changes: Subject<DirectoryMetadataChange<Any>, DirectoryMetadataChange<Any>>
+        = PublishSubject<DirectoryMetadataChange<Any>>()/*publish().apply { connect() }*/
 
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
@@ -109,24 +113,29 @@ abstract class AbstractNavigation(
         if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
             logger.info("Conflicting version")
             // ignore our local directory metadata
-            // all changes that are not inserted in the new dm are _lost_!
+            // all pendingChanges that are not inserted in the new dm are _lost_!
             dm = updatedDM
-            changes.execute(dm)
+            pendingChanges.execute(dm)
             dm.commit()
         }
         uploadDirectoryMetadata()
-        changes.postprocess(dm, writeBackend)
+        pendingChanges.postprocess(dm, writeBackend)
 
-        changes.clear()
+        pendingChanges.clear()
     }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun refresh() {
-        dm = reloadMetadata().apply { changes.execute(this) }
+        refresh(false)
+    }
+
+    @Synchronized @Throws(QblStorageException::class)
+    override fun refresh(recursive: Boolean) {
+        dm = reloadMetadata().apply { pendingChanges.execute(this) }
     }
 
     override val isUnmodified: Boolean
-        get() = changes.isEmpty()
+        get() = pendingChanges.isEmpty()
 
     @Throws(QblStorageException::class)
     protected abstract fun uploadDirectoryMetadata()
@@ -435,7 +444,7 @@ abstract class AbstractNavigation(
 
     protected fun <T> execute(command: DirectoryMetadataChange<T>): T {
         val result = command.execute(dm)
-        changes.add(command)
+        pendingChanges.add(command)
         autocommit()
         return result
     }
