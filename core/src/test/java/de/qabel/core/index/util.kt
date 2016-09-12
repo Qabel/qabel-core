@@ -1,11 +1,11 @@
 package de.qabel.core.index
 
-import de.qabel.core.extensions.use
 import org.apache.http.ProtocolVersion
 import org.apache.http.StatusLine
 import org.apache.http.message.BasicStatusLine
 import java.util.*
 
+private val random by lazy { Random() }
 
 fun dummyStatusLine(statusCode: Int = 200): StatusLine {
     return BasicStatusLine(
@@ -15,12 +15,17 @@ fun dummyStatusLine(statusCode: Int = 200): StatusLine {
     )
 }
 
-fun randomMail() = "test-%s@example.net".format(UUID.randomUUID())
-fun randomPhone() = "+49 1578 " + Random().ints(6).use { stream ->
-    val values = mutableListOf<Int>()
-    stream.forEach {
-        values.add(it)
-    }
-    return values.joinToString("")
-}
+fun randomMail(): String = "test-%s@example.net".format(UUID.randomUUID())
+
+//Uses german cc + ndc
+fun randomPhone(): String = "+491578" +
+    mutableListOf<Int>().apply {
+        while (size < 7) {
+            var number = random.nextInt().mod(10)
+            if (number < 0) {
+                number = number.inv()
+            }
+            add(number)
+        }
+    }.joinToString("")
 
