@@ -17,7 +17,7 @@ import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert.*
 
-class IndexInteractorTest() : CoreTestCase {
+open class IndexInteractorTest() : CoreTestCase {
 
     companion object {
         private val ALICE = RawContact("Alice", mutableListOf(randomPhone()), mutableListOf(randomMail(), randomMail()), "1")
