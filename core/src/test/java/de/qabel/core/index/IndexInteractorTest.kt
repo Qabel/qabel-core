@@ -30,6 +30,8 @@ open class IndexInteractorTest() : CoreTestCase {
         override fun getContacts(): List<RawContact> = EXTERNAL_CONTACTS
     }
 
+    open val testServerLocation : IndexHTTPLocation by lazy { IndexHTTPLocation(TestServer.INDEX) }
+
     lateinit var contactRepository: ContactRepository
     lateinit var identityRepository: IdentityRepository
     lateinit var indexServer: IndexServer
@@ -59,7 +61,7 @@ open class IndexInteractorTest() : CoreTestCase {
         identityRepository = InMemoryIdentityRepository().apply {
             save(exampleIdentity)
         }
-        indexServer = IndexHTTP(IndexHTTPLocation(TestServer.INDEX))
+        indexServer = IndexHTTP(testServerLocation)
         indexInteractor = MainIndexInteractor(indexServer, contactRepository, identityRepository)
 
         //Setup test contacts
