@@ -14,23 +14,18 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.util.DefaultHashMap
 
-class MainIndexInteractor(private val indexServer: IndexServer,
-                          private val contactRepository: ContactRepository,
-                          private val identityRepository: IdentityRepository) : IndexInteractor, QabelLog {
+class MainIndexService(private val indexServer: IndexServer,
+                       private val contactRepository: ContactRepository,
+                       private val identityRepository: IdentityRepository) : IndexService, QabelLog {
 
-    override fun updateIdentity(identity: Identity) {
-        identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email)
-        identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone)
-        identityRepository.save(identity)
-    }
-
-    override fun updateIdentityPhone(identity: Identity, oldPhone: String) {
-        identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone, oldPhone)
-        identityRepository.save(identity)
-    }
-
-    override fun updateIdentityEmail(identity: Identity, oldEmail: String) {
-        identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email, oldEmail)
+    override fun updateIdentity(identity: Identity, oldIdentity: Identity?) {
+        oldIdentity?.let {
+            if (it.alias != identity.alias) {
+                deleteIdentity(it)
+            }
+        }
+        identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email, oldIdentity?.email)
+        identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone, oldIdentity?.phone)
         identityRepository.save(identity)
     }
 
@@ -48,6 +43,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
                 }
             }
         }
+
         val currentStatus = findStateForValue(identity, newValue, fieldType)
         return when (currentStatus) {
             VerificationStatus.NOT_VERIFIED ->
@@ -150,7 +146,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
             val receivedContact = prepareIndexResults(indexContact, matchedSearches)
 
             handleIndexContact(receivedContact, identities)?.let {
-                debug("IndexResult Contact ${it.contact.alias} ${it.action.name}" )
+                debug("IndexResult Contact ${it.contact.alias} ${it.action.name}")
                 results.add(it)
             }
         }

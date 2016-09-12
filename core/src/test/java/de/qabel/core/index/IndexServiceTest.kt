@@ -1,7 +1,9 @@
 package de.qabel.core.index
 
 import de.qabel.core.TestServer
+import de.qabel.core.config.Identity
 import de.qabel.core.extensions.CoreTestCase
+import de.qabel.core.extensions.copy
 import de.qabel.core.extensions.createIdentity
 import de.qabel.core.index.server.ExternalContactsAccessor
 import de.qabel.core.index.server.IndexHTTP
@@ -17,7 +19,7 @@ import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert.*
 
-open class IndexInteractorTest() : CoreTestCase {
+open class IndexServiceTest() : CoreTestCase {
 
     companion object {
         private val ALICE = RawContact("Alice", mutableListOf(randomPhone()), mutableListOf(randomMail(), randomMail()), "1")
@@ -30,12 +32,12 @@ open class IndexInteractorTest() : CoreTestCase {
         override fun getContacts(): List<RawContact> = EXTERNAL_CONTACTS
     }
 
-    open val testServerLocation : IndexHTTPLocation by lazy { IndexHTTPLocation(TestServer.INDEX) }
+    open val testServerLocation: IndexHTTPLocation by lazy { IndexHTTPLocation(TestServer.INDEX) }
 
     lateinit var contactRepository: ContactRepository
     lateinit var identityRepository: IdentityRepository
     lateinit var indexServer: IndexServer
-    lateinit var indexInteractor: IndexInteractor
+    lateinit var indexInteractor: IndexService
 
     val exampleMail = randomMail()
     val examplePhone = randomPhone()
@@ -62,9 +64,10 @@ open class IndexInteractorTest() : CoreTestCase {
             save(exampleIdentity)
         }
         indexServer = IndexHTTP(testServerLocation)
-        indexInteractor = MainIndexInteractor(indexServer, contactRepository, identityRepository)
+        indexInteractor = MainIndexService(indexServer, contactRepository, identityRepository)
 
         //Setup test contacts
+        println(identityAlice.helloDropUrl)
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityAlice, UpdateAction.CREATE))
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityBob, UpdateAction.CREATE))
     }
@@ -80,33 +83,60 @@ open class IndexInteractorTest() : CoreTestCase {
     fun testUpdateIdentity() {
         indexInteractor.updateIdentity(exampleIdentity)
         val resultMail = indexServer.searchForMail(exampleMail)
-        assertThat(resultMail, hasSize(1))
-        assertThat(resultMail.first().publicKey, equalTo(exampleIdentity.ecPublicKey))
+        matchIndexResult(resultMail, exampleIdentity)
+        val resultPhone = indexServer.searchForPhone(examplePhone)
+        matchIndexResult(resultPhone, exampleIdentity)
+    }
+
+    @Test
+    fun testUpdateIdentityAlias() {
+        indexInteractor.updateIdentity(exampleIdentity)
+
+        val changedIdentity = copy(exampleIdentity).apply {
+            alias = "ChangedAlias"
+        }
+        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+        val changedResult = indexServer.searchForMail(exampleMail)
+        matchIndexResult(changedResult, changedIdentity)
     }
 
     @Test
     fun testUpdateIdentityPhone() {
-        //With verified phone
         indexInteractor.updateIdentity(exampleIdentity)
+        val changedIdentity = copy(exampleIdentity)
+        val newPhone = randomPhone()
+        changedIdentity.phone = newPhone
 
-        val oldPhone = exampleIdentity.phone
-        exampleIdentity.phone = randomPhone()
-        indexInteractor.updateIdentityPhone(exampleIdentity, oldPhone)
-        assertThat(indexServer.searchForPhone(oldPhone), hasSize(0))
-        val received = indexServer.searchForPhone(exampleIdentity.phone)
-        assertThat(received, hasSize(1))
-        assertThat(received.first().publicKey, equalTo(exampleIdentity.ecPublicKey))
+        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+        matchIndexResult(indexServer.searchForPhone(newPhone), changedIdentity)
+
+        //Check old phone removed
+        matchIndexResult(indexServer.searchForPhone(examplePhone))
     }
 
     @Test
     fun testUpdateIdentityEmail() {
-        val oldMail = exampleIdentity.email
-        exampleIdentity.email = randomMail()
-        indexInteractor.updateIdentityEmail(exampleIdentity, oldMail)
-        assertThat(indexServer.searchForMail(oldMail), hasSize(0))
-        val received = indexServer.searchForMail(exampleIdentity.email)
-        assertThat(received, hasSize(1))
-        assertThat(received.first().publicKey, equalTo(exampleIdentity.ecPublicKey))
+        indexInteractor.updateIdentity(exampleIdentity)
+        val changedIdentity = copy(exampleIdentity)
+        val newMail = randomMail()
+        changedIdentity.email = newMail
+
+        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+
+        val resultMail = indexServer.searchForMail(newMail)
+        matchIndexResult(resultMail, changedIdentity)
+
+        //Check old mail removed
+        matchIndexResult(indexServer.searchForMail(exampleMail))
+    }
+
+    fun matchIndexResult(result: List<IndexContact>, vararg identities: Identity) {
+        assertThat(result, hasSize(identities.size))
+        identities.forEach { identity ->
+            assert(result.any {
+                it.alias == identity.alias && it.publicKey.readableKeyIdentifier == identity.keyIdentifier
+            })
+        }
     }
 
     @Test
