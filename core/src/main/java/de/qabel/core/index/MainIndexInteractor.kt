@@ -203,7 +203,6 @@ class MainIndexInteractor(private val indexServer: IndexServer,
     /**
      * Handles [Contact] created by [IndexContact] from server. Creates IndexSyncResult if a new qabel contact found or contact is updated.
      *
-     * TODO We updating our identity contact if we modified the identity on another device. Bug or Feature? :D Easy fix -> contactData knows if contact is an an identity.
      */
     private fun handleIndexContact(receivedContact: Contact, identities: Identities): IndexSyncResult? {
         if (contactRepository.exists(receivedContact)) {
@@ -223,7 +222,7 @@ class MainIndexInteractor(private val indexServer: IndexServer,
                 updated = true
             }
 
-            //TODO Force update for alias, email, phone?
+            //Apply matched data
             if (localContact.phone.isNullOrEmpty() && !receivedContact.phone.isNullOrEmpty()) {
                 localContact.phone = receivedContact.phone
                 updated = true
