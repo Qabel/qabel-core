@@ -20,9 +20,9 @@ import org.junit.Assert.*
 class IndexInteractorTest() : CoreTestCase {
 
     companion object {
-        private val ALICE = RawContact("Alice", mutableListOf("0134531233"), mutableListOf("alice@qabel.de", "alice@al.com"), "1")
-        private val BOB = RawContact("Bob", mutableListOf(), mutableListOf("bob@qabel.de", "bob@bo.com"), "2")
-        private val RICHARD = RawContact("Richard X.", mutableListOf("2325446787"), mutableListOf("richard@xxx.de"), "3")
+        private val ALICE = RawContact("Alice", mutableListOf(randomPhone()), mutableListOf(randomMail(), randomMail()), "1")
+        private val BOB = RawContact("Bob", mutableListOf(), mutableListOf(randomMail(), randomMail()), "2")
+        private val RICHARD = RawContact("Richard X.", mutableListOf(randomPhone()), mutableListOf(randomMail()), "3")
         private val EXTERNAL_CONTACTS: List<RawContact> = listOf(ALICE, BOB, RICHARD)
     }
 
@@ -35,8 +35,9 @@ class IndexInteractorTest() : CoreTestCase {
     lateinit var indexServer: IndexServer
     lateinit var indexInteractor: IndexInteractor
 
-    val exampleMail = "cindyB@mail.de"
-    val examplePhone = "0123456711"
+    val exampleMail = randomMail()
+    val examplePhone = randomPhone()
+
     private val exampleIdentity = createIdentity("Cindy").apply {
         email = exampleMail
         phone = examplePhone
@@ -87,7 +88,7 @@ class IndexInteractorTest() : CoreTestCase {
         indexInteractor.updateIdentity(exampleIdentity)
 
         val oldPhone = exampleIdentity.phone
-        exampleIdentity.phone = "9876543210"
+        exampleIdentity.phone = randomPhone()
         indexInteractor.updateIdentityPhone(exampleIdentity, oldPhone)
         assertThat(indexServer.searchForPhone(oldPhone), hasSize(0))
         val received = indexServer.searchForPhone(exampleIdentity.phone)
@@ -98,7 +99,7 @@ class IndexInteractorTest() : CoreTestCase {
     @Test
     fun testUpdateIdentityEmail() {
         val oldMail = exampleIdentity.email
-        exampleIdentity.email = "ab@c.de"
+        exampleIdentity.email = randomMail()
         indexInteractor.updateIdentityEmail(exampleIdentity, oldMail)
         assertThat(indexServer.searchForMail(oldMail), hasSize(0))
         val received = indexServer.searchForMail(exampleIdentity.email)
