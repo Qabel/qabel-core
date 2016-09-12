@@ -4,6 +4,8 @@ import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.UpdateEndpointImpl
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.util.EntityUtils
 import org.junit.Test

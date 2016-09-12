@@ -1,9 +1,10 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import com.google.gson.Gson
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.index.*
 import org.apache.http.HttpStatus
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpPut

@@ -4,6 +4,8 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.config.VerificationStatus
+import de.qabel.core.index.server.ExternalContactsAccessor
+import de.qabel.core.index.server.IndexServer
 import de.qabel.core.logging.QabelLog
 import de.qabel.core.logging.info
 import de.qabel.core.logging.warn

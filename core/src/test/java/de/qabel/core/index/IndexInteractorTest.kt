@@ -3,6 +3,10 @@ package de.qabel.core.index
 import de.qabel.core.TestServer
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.createIdentity
+import de.qabel.core.index.server.ExternalContactsAccessor
+import de.qabel.core.index.server.IndexHTTP
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.IndexServer
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.inmemory.InMemoryContactRepository

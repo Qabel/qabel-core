@@ -1,6 +1,8 @@
 package de.qabel.core.index
 
 import de.qabel.core.extensions.assertThrows
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.SearchEndpointImpl
 import org.junit.Test
 import org.junit.Assert.*
 

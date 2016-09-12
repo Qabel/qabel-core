@@ -1,6 +1,7 @@
 package de.qabel.core.index
 
 import de.qabel.core.config.Identity
+import de.qabel.core.index.server.ExternalContactsAccessor
 
 interface IndexInteractor {
 

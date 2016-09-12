@@ -1,4 +1,4 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.crypto.QblECPublicKey
 import org.apache.http.client.methods.HttpUriRequest

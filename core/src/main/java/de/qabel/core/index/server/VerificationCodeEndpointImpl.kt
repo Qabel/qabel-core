@@ -1,5 +1,8 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
+import de.qabel.core.index.APIError
+import de.qabel.core.index.CodeExpiredException
+import de.qabel.core.index.CodeInvalidException
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpUriRequest

@@ -1,5 +1,7 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
+import de.qabel.core.index.APIError
+import de.qabel.core.index.MalformedResponseException
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus

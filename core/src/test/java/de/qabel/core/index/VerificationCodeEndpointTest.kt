@@ -1,5 +1,7 @@
 package de.qabel.core.index
 
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.VerificationCodeEndpointImpl
 import org.junit.Test
 import org.junit.Assert.*
 
