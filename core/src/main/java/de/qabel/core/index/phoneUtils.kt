@@ -13,12 +13,12 @@ private fun parse(phone: String): Phonenumber.PhoneNumber =
     phoneUtil.parse(phone, localCountry)
 
 /**
- * Parse [phone] and format to [PhoneNumberFormat.E164]
- * [1..3 country code][15 national number (destination code + subscriber number]
+ * Parse [phone] and format to [PhoneNumberFormat.INTERNATIONAL]
+ * [1..3 country code] [12 (+spaces) national number (destination code + subscriber number]
  */
 @Throws(NumberParseException::class)
 fun formatPhoneNumber(phone: String): String =
-    phoneUtil.format(parse(phone), PhoneNumberFormat.E164)
+    phoneUtil.format(parse(phone), PhoneNumberFormat.INTERNATIONAL)
 
 /**
  * Checks [phone] is a valid phone number with [PhoneNumberUtil]
