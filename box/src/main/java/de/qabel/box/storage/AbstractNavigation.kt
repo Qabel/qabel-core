@@ -7,9 +7,9 @@ import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.logging.QabelLog
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.NotImplementedException
-import org.slf4j.LoggerFactory
 import org.spongycastle.crypto.params.KeyParameter
 import java.io.*
 import java.nio.file.Files
@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 abstract class AbstractNavigation(
     open protected var dm: DirectoryMetadata,
     volumeConfig: BoxVolumeConfig
-) : BoxNavigation {
+) : BoxNavigation, QabelLog {
 
     protected val readBackend = volumeConfig.readBackend
     protected val writeBackend = volumeConfig.writeBackend
@@ -33,8 +33,6 @@ abstract class AbstractNavigation(
     protected val defaultHashAlgorithm = volumeConfig.defaultHashAlgorithm
     protected val tempDir = volumeConfig.tempDir
     protected val folderNavigationFactory by lazy { FolderNavigationFactory(indexNavigation, volumeConfig) }
-
-    private val logger by lazy { LoggerFactory.getLogger(AbstractNavigation::class.java) }
     private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils by lazy { CryptoUtils() }
 
@@ -52,12 +50,8 @@ abstract class AbstractNavigation(
     }
 
     override var metadata: DirectoryMetadata
-        get() {
-            return dm
-        }
-        set(value) {
-            dm = value
-        }
+        get() { return dm }
+        set(value) { dm = value }
 
     @Synchronized @Throws(QblStorageException::class)
     override fun navigate(target: BoxFolder): AbstractNavigation {
@@ -95,26 +89,33 @@ abstract class AbstractNavigation(
     override fun commit() {
         val version = dm.version
         dm.commit()
-        logger.info("Committing version " + String(Hex.encodeHex(dm.version))
+        info("Committing version " + String(Hex.encodeHex(dm.version))
             + " with device id " + String(Hex.encodeHex(deviceId)))
-        var updatedDM: DirectoryMetadata? = null
-        try {
-            updatedDM = reloadMetadata()
-            logger.info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
-        } catch (e: QblStorageNotFound) {
-            logger.trace("Could not reload metadata, none exists yet")
-        }
+        while (true) {
+            var updatedDM: DirectoryMetadata? = null
+            try {
+                updatedDM = reloadMetadata()
+                info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
+            } catch (e: QblStorageNotFound) {
+                trace("Could not reload metadata, none exists yet")
+            }
 
-        // the remote version has changed from the _old_ version
-        if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
-            logger.info("Conflicting version")
-            // ignore our local directory metadata
-            // all changes that are not inserted in the new dm are _lost_!
-            dm = updatedDM
-            changes.execute(dm)
-            dm.commit()
+            // the remote version has changed from the _old_ version
+            if (dm !== updatedDM && updatedDM != null && !Arrays.equals(version, updatedDM.version)) {
+                info("Conflicting version")
+                // ignore our local directory metadata
+                // all changes that are not inserted in the new dm are _lost_!
+                dm = updatedDM
+                changes.execute(dm)
+                dm.commit()
+            }
+            try {
+                uploadDirectoryMetadata()
+                break
+            } catch (e: ModifiedException) {
+                info("DM conflicted while uploading, will retry merge and upload")
+            }
         }
-        uploadDirectoryMetadata()
         changes.postprocess(dm, writeBackend)
 
         changes.clear()
@@ -223,7 +224,7 @@ abstract class AbstractNavigation(
         val autocommitStart = System.currentTimeMillis()
         lastAutocommitStart = autocommitStart
 
-        logger.trace("delaying autocommit by " + autocommitDelay + "ms")
+        trace("delaying autocommit by " + autocommitDelay + "ms")
         scheduler.schedule(Runnable {
             try {
                 if (lastAutocommitStart != autocommitStart) {
@@ -231,11 +232,10 @@ abstract class AbstractNavigation(
                 }
                 this@AbstractNavigation.commitIfChanged()
             } catch (e: QblStorageException) {
-                logger.error("failed late commit: " + e.message, e)
+                error("failed late commit: " + e.message, e)
             }
         }, autocommitDelay, TimeUnit.MILLISECONDS)
     }
-
 
     @Throws(QblStorageException::class)
     @JvmOverloads protected fun uploadEncrypted(file: File, key: KeyParameter, block: String, listener: ProgressListener? = null)
@@ -262,7 +262,7 @@ abstract class AbstractNavigation(
                 } else {
                     writeBackend.upload(block, fis)
                 }
-            }
+            }.time.time
             return UploadResult(serverTime, Hash(digest.digest(), hashAlgorithm))
         } catch (e: IOException) {
             throw QblStorageException(e.message, e)
@@ -341,10 +341,10 @@ abstract class AbstractNavigation(
             )
             uploadEncrypted(fileMetadataNew.path, KeyParameter(shared.metaKey), shared.meta)
         } catch (e: QblStorageException) {
-            logger.error("Could not create or upload FileMetadata", e)
+            error("Could not create or upload FileMetadata", e)
             throw e
         } catch (e: FileNotFoundException) {
-            logger.error("Could not create or upload FileMetadata", e)
+            error("Could not create or upload FileMetadata", e)
             throw e
         }
 
@@ -357,10 +357,10 @@ abstract class AbstractNavigation(
         try {
             return getMetadataFile(shared)
         } catch (e: QblStorageException) {
-            logger.error("Could not create or upload FileMetadata", e)
+            error("Could not create or upload FileMetadata", e)
             throw e
         } catch (e: FileNotFoundException) {
-            logger.error("Could not create or upload FileMetadata", e)
+            error("Could not create or upload FileMetadata", e)
             throw e
         }
 
@@ -396,7 +396,7 @@ abstract class AbstractNavigation(
             try {
                 indexNavigation.deleteShare(share)
             } catch (e: QblStorageException) {
-                logger.error(e.message, e)
+                error(e.message, e)
             }
         }
         if (boxObject !is BoxFile) {
@@ -421,11 +421,11 @@ abstract class AbstractNavigation(
     override fun delete(folder: BoxFolder) {
         val folderNav = navigate(folder)
         for (file in folderNav.listFiles()) {
-            logger.info("Deleting file " + file.getName())
+            info("Deleting file " + file.getName())
             folderNav.delete(file)
         }
         for (subFolder in folderNav.listFolders()) {
-            logger.info("Deleting folder " + folder.getName())
+            info("Deleting folder " + folder.getName())
             folderNav.delete(subFolder)
         }
         folderNav.commit()
@@ -524,7 +524,7 @@ abstract class AbstractNavigation(
                 return false
             }
 
-            writeBackend.delete(boxFile.meta)
+            writeBackend.delete(boxFile.meta!!)
             boxFile.shared = null
 
             // Overwrite = delete old file, upload new file

@@ -1,5 +1,7 @@
 package de.qabel.core.extensions
 
+import com.natpryce.hamkrest.Matcher
+import com.natpryce.hamkrest.should.shouldMatch
 import de.qabel.core.TestServer
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -46,3 +48,5 @@ fun <T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> 
         assertEquals(ex.javaClass, expectedException.java)
         ex as T
     }
+
+infix fun <T> T.shouldNotMatch(matcher: Matcher<T>) = this shouldMatch Matcher.Negation<T>(matcher)

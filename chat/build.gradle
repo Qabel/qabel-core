@@ -9,9 +9,6 @@ jar {
     }
 }
 
-repositories {
-    mavenCentral()
-}
 
 compileTestJava.dependsOn tasks.getByPath(':core:testClasses')
 dependencies {

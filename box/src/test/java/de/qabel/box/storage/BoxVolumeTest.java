@@ -52,12 +52,16 @@ public abstract class BoxVolumeTest {
     protected QblECKeyPair keyPair;
     protected final String bucket = "qabel";
     protected String prefix = UUID.randomUUID().toString();
-    private final String testFileName = "src/test/java/de/qabel/box/storage/testFile.txt";
+    private String testFileName = "src/test/java/de/qabel/box/storage/testFile.txt";
     protected Contact contact;
     protected File volumeTmpDir;
 
     @Before
     public void setUp() throws IOException, QblStorageException {
+        if (!new File(testFileName).exists()) {
+            testFileName = "box/" + testFileName;
+        }
+
         CryptoUtils utils = new CryptoUtils();
         deviceID = utils.getRandomBytes(16);
         deviceID2 = utils.getRandomBytes(16);

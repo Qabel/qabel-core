@@ -7,6 +7,6 @@ interface QabelLoggerWrapper {
     fun info(msg: Any, vararg args: Any)
     fun warn(msg: Any, vararg args: Any)
 
-    fun error(msg: Any, exception: Throwable?)
+    fun error(msg: Any?, exception: Throwable?)
 
 }
