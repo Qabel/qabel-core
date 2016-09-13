@@ -2,6 +2,7 @@ package de.qabel.core.index
 
 import de.qabel.core.TestServer
 import de.qabel.core.config.Identity
+import de.qabel.core.config.VerificationStatus
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.copy
 import de.qabel.core.extensions.createIdentity
@@ -57,6 +58,15 @@ open class IndexServiceTest() : CoreTestCase {
 
     private val identities = listOf(exampleIdentity, identityAlice, identityBob)
 
+    fun matchIndexResult(result: List<IndexContact>, vararg identities: Identity) {
+        assertThat(result, hasSize(identities.size))
+        identities.forEach { identity ->
+            assert(result.any {
+                it.alias == identity.alias && it.publicKey.readableKeyIdentifier == identity.keyIdentifier
+            })
+        }
+    }
+
     @Before
     fun setUp() {
         contactRepository = InMemoryContactRepository()
@@ -67,7 +77,6 @@ open class IndexServiceTest() : CoreTestCase {
         indexService = MainIndexService(indexServer, contactRepository, identityRepository)
 
         //Setup test contacts
-        println(identityAlice.helloDropUrl)
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityAlice, UpdateAction.CREATE))
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityBob, UpdateAction.CREATE))
     }
@@ -130,23 +139,14 @@ open class IndexServiceTest() : CoreTestCase {
         matchIndexResult(indexServer.searchForMail(exampleMail))
     }
 
-    fun matchIndexResult(result: List<IndexContact>, vararg identities: Identity) {
-        assertThat(result, hasSize(identities.size))
-        identities.forEach { identity ->
-            assert(result.any {
-                it.alias == identity.alias && it.publicKey.readableKeyIdentifier == identity.keyIdentifier
-            })
-        }
-    }
-
     @Test
-    fun testDeleteIdentity() {
+    fun testRemoveIdentity() {
         indexService.updateIdentity(exampleIdentity)
 
         val resultMail = indexServer.searchForMail(exampleMail)
         assertThat(resultMail, hasSize(1))
 
-        indexService.deleteIdentity(exampleIdentity)
+        indexService.removeIdentity(exampleIdentity)
 
         assertThat(indexServer.searchForMail(exampleMail), hasSize(0))
         assertThat(indexServer.searchForPhone(examplePhone), hasSize(0))
@@ -232,5 +232,36 @@ open class IndexServiceTest() : CoreTestCase {
         assertThat(found.phone, equalTo(identityAlice.phone))
     }
 
+    @Test
+    fun testUpdateIdentities() {
+        identityRepository.save(identityAlice)
+
+        indexService.updateIdentities()
+
+        val resultAlice = indexServer.searchForMail(identityAlice.email)
+        matchIndexResult(resultAlice, identityAlice)
+
+        val resultExample = indexServer.searchForPhone(examplePhone)
+        matchIndexResult(resultExample, exampleIdentity)
+    }
+
+    @Test
+    fun testRemoveIdentities() {
+        identityRepository.save(identityAlice)
+        indexService.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(identityAlice)
+
+        indexService.removeIdentities()
+
+        val resultAlice = indexServer.searchForMail(identityAlice.email)
+        matchIndexResult(resultAlice)
+        assertThat(identityAlice.emailStatus, equalTo(VerificationStatus.NOT_VERIFIED))
+        assertThat(identityAlice.phoneStatus, equalTo(VerificationStatus.NOT_VERIFIED))
+
+        val resultExample = indexServer.searchForPhone(examplePhone)
+        matchIndexResult(resultExample)
+        assertThat(exampleIdentity.emailStatus, equalTo(VerificationStatus.NOT_VERIFIED))
+        assertThat(exampleIdentity.phoneStatus, equalTo(VerificationStatus.NOT_VERIFIED))
+    }
 
 }

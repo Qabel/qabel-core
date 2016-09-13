@@ -11,12 +11,22 @@ interface IndexService {
      * with the [IndexServer].
      * Updates [Identity.emailStatus] and [Identity.phoneStatus].
      */
-    fun updateIdentity(identity: Identity, oldIdentity : Identity? = null)
+    fun updateIdentity(identity: Identity, oldIdentity: Identity? = null)
+
+    /**
+     * Syncs all [Identity]s with valid fields to Index.
+     */
+    fun updateIdentities()
 
     /**
      * Deletes the current [Identity.email] and [Identity.email] from [IndexServer].
      */
-    fun deleteIdentity(identity: Identity)
+    fun removeIdentity(identity: Identity)
+
+    /**
+     * Removes all [Identity]s from index.
+     */
+    fun removeIdentities()
 
     /**
      * Updates [Identity.emailStatus] and [Identity.phoneStatus] for all identities
@@ -32,7 +42,7 @@ interface IndexService {
      * Search the IndexServer for [email] and [phone].
      * @Returns a list of unique [Contact]s with email and phone set by search values they found for.
      */
-    fun searchContacts(email : String, phone : String) : List<Contact>
+    fun searchContacts(email: String, phone: String): List<Contact>
 
     /**
      * Matches external contacts with IndexServer and

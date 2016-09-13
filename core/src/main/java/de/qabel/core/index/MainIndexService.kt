@@ -22,12 +22,18 @@ class MainIndexService(private val indexServer: IndexServer,
     override fun updateIdentity(identity: Identity, oldIdentity: Identity?) {
         oldIdentity?.let {
             if (it.alias != identity.alias) {
-                deleteIdentity(it)
+                removeIdentity(it)
             }
         }
         identity.emailStatus = updateFieldValueIfRequired(identity, FieldType.EMAIL, identity.email, oldIdentity?.email)
         identity.phoneStatus = updateFieldValueIfRequired(identity, FieldType.PHONE, identity.phone, oldIdentity?.phone)
         identityRepository.save(identity)
+    }
+
+    override fun updateIdentities() {
+        identityRepository.findAll().identities.forEach {
+            updateIdentity(it)
+        }
     }
 
     private fun updateFieldValueIfRequired(identity: Identity, fieldType: FieldType, newValue: String?,
@@ -92,9 +98,16 @@ class MainIndexService(private val indexServer: IndexServer,
         identityRepository.save(identity)
     }
 
-    override fun deleteIdentity(identity: Identity) {
+    override fun removeIdentity(identity: Identity) {
         UpdateIdentity.fromIdentity(identity, UpdateAction.DELETE).let {
             indexServer.updateIdentity(it)
+            updateIdentityVerificationFlags(identity)
+        }
+    }
+
+    override fun removeIdentities() {
+        identityRepository.findAll().identities.forEach {
+            removeIdentity(it)
         }
     }
 
