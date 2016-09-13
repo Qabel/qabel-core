@@ -22,15 +22,24 @@ class PhoneUtilTest {
     @Test
     fun testFormat() {
         val randomPhone = randomPhone()
-        assertValidAndFormatted(formatPhoneNumber(randomPhone))
+        assertValidAndFormatted(formatPhoneNumber(randomPhone), (10..15), 0)
 
         val phone = "+49 511 96 94 98 400"
-        assertValidAndFormatted(formatPhoneNumber(phone))
+        assertValidAndFormatted(formatPhoneNumber(phone), (10..15), 0)
     }
 
-    private fun assertValidAndFormatted(phone: String) {
-        assert(phone.length in (13..17), { "Phone number not match valid size ${phone.length}" })
-        assertThat(phone.count { it.isWhitespace() }, equalTo(2))
+    @Test
+    fun testFormatReadable() {
+        val randomPhone = randomPhone()
+        assertValidAndFormatted(formatPhoneNumberReadable(randomPhone), (10..17), 2)
+
+        val phone = "+49 511 96 94 98 400"
+        assertValidAndFormatted(formatPhoneNumberReadable(phone), (10..17), 2)
+    }
+
+    private fun assertValidAndFormatted(phone: String, range: IntRange, spaces: Int) {
+        assert(phone.length in range, { "Phone number not match valid size ${phone.length}" })
+        assertThat(phone.count { it.isWhitespace() }, equalTo(spaces))
         assert(isValidPhoneNumber(phone), { "Phone number is not valid $phone" })
     }
 
