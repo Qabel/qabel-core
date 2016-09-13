@@ -37,7 +37,7 @@ open class IndexServiceTest() : CoreTestCase {
     lateinit var contactRepository: ContactRepository
     lateinit var identityRepository: IdentityRepository
     lateinit var indexServer: IndexServer
-    lateinit var indexInteractor: IndexService
+    lateinit var indexService: IndexService
 
     val exampleMail = randomMail()
     val examplePhone = randomPhone()
@@ -64,7 +64,7 @@ open class IndexServiceTest() : CoreTestCase {
             save(exampleIdentity)
         }
         indexServer = IndexHTTP(testServerLocation)
-        indexInteractor = MainIndexService(indexServer, contactRepository, identityRepository)
+        indexService = MainIndexService(indexServer, contactRepository, identityRepository)
 
         //Setup test contacts
         println(identityAlice.helloDropUrl)
@@ -81,7 +81,7 @@ open class IndexServiceTest() : CoreTestCase {
 
     @Test
     fun testUpdateIdentity() {
-        indexInteractor.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity)
         val resultMail = indexServer.searchForMail(exampleMail)
         matchIndexResult(resultMail, exampleIdentity)
         val resultPhone = indexServer.searchForPhone(examplePhone)
@@ -90,24 +90,24 @@ open class IndexServiceTest() : CoreTestCase {
 
     @Test
     fun testUpdateIdentityAlias() {
-        indexInteractor.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity)
 
         val changedIdentity = copy(exampleIdentity).apply {
             alias = "ChangedAlias"
         }
-        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+        indexService.updateIdentity(changedIdentity, exampleIdentity)
         val changedResult = indexServer.searchForMail(exampleMail)
         matchIndexResult(changedResult, changedIdentity)
     }
 
     @Test
     fun testUpdateIdentityPhone() {
-        indexInteractor.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity)
         val changedIdentity = copy(exampleIdentity)
         val newPhone = randomPhone()
         changedIdentity.phone = newPhone
 
-        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+        indexService.updateIdentity(changedIdentity, exampleIdentity)
         matchIndexResult(indexServer.searchForPhone(newPhone), changedIdentity)
 
         //Check old phone removed
@@ -116,12 +116,12 @@ open class IndexServiceTest() : CoreTestCase {
 
     @Test
     fun testUpdateIdentityEmail() {
-        indexInteractor.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity)
         val changedIdentity = copy(exampleIdentity)
         val newMail = randomMail()
         changedIdentity.email = newMail
 
-        indexInteractor.updateIdentity(changedIdentity, exampleIdentity)
+        indexService.updateIdentity(changedIdentity, exampleIdentity)
 
         val resultMail = indexServer.searchForMail(newMail)
         matchIndexResult(resultMail, changedIdentity)
@@ -141,12 +141,12 @@ open class IndexServiceTest() : CoreTestCase {
 
     @Test
     fun testDeleteIdentity() {
-        indexInteractor.updateIdentity(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity)
 
         val resultMail = indexServer.searchForMail(exampleMail)
         assertThat(resultMail, hasSize(1))
 
-        indexInteractor.deleteIdentity(exampleIdentity)
+        indexService.deleteIdentity(exampleIdentity)
 
         assertThat(indexServer.searchForMail(exampleMail), hasSize(0))
         assertThat(indexServer.searchForPhone(examplePhone), hasSize(0))
@@ -163,7 +163,7 @@ open class IndexServiceTest() : CoreTestCase {
         }
         contactRepository.save(contactBob, exampleIdentity)
 
-        val syncResults = indexInteractor.syncContacts(externals)
+        val syncResults = indexService.syncContacts(externals)
         assertThat(syncResults, hasSize(2))
         val aliceContact = syncResults.find { it.action == IndexSyncAction.CREATE }!!.contact
         assertEquals(aliceContact.nickName, ALICE.displayName)
@@ -181,7 +181,7 @@ open class IndexServiceTest() : CoreTestCase {
         //Check no other contacts added
         assertThat(contactRepository.findWithIdentities(), hasSize(2))
 
-        val reSyncResults = indexInteractor.syncContacts(externals)
+        val reSyncResults = indexService.syncContacts(externals)
 
         //Check resync dont updates anything
         assertThat(reSyncResults, hasSize(0))
@@ -190,7 +190,7 @@ open class IndexServiceTest() : CoreTestCase {
     @Test
     fun testSyncWithMultipleIdentities() {
         identityRepository.save(createIdentity("Dirk"))
-        val syncResult = indexInteractor.syncContacts(MockContactsAccessor())
+        val syncResult = indexService.syncContacts(MockContactsAccessor())
         assertThat(syncResult, hasSize(2))
         assert(syncResult.all { it.action == IndexSyncAction.CREATE })
 
@@ -198,5 +198,39 @@ open class IndexServiceTest() : CoreTestCase {
         assertThat(storedContacts, hasSize(2))
         assert(storedContacts.all { it.identities.isEmpty() })
     }
+
+    @Test
+    fun testSearchMail() {
+        val results = indexService.searchContacts(identityAlice.email, "")
+        assertThat(results, hasSize(1))
+        val found = results.first()
+        assertThat(found.keyIdentifier, equalTo(identityAlice.keyIdentifier))
+        assertThat(found.alias, equalTo(identityAlice.alias))
+        assertThat(found.email, equalTo(identityAlice.email))
+        assert(found.phone.isNullOrBlank())
+    }
+
+    @Test
+    fun testSearchPhone() {
+        val results = indexService.searchContacts("", identityAlice.phone)
+        assertThat(results, hasSize(1))
+        val found = results.first()
+        assertThat(found.keyIdentifier, equalTo(identityAlice.keyIdentifier))
+        assertThat(found.alias, equalTo(identityAlice.alias))
+        assertThat(found.phone, equalTo(identityAlice.phone))
+        assert(found.email.isNullOrBlank())
+    }
+
+    @Test
+    fun testSearch() {
+        val results = indexService.searchContacts(identityAlice.email, identityAlice.phone)
+        assertThat(results, hasSize(1))
+        val found = results.first()
+        assertThat(found.keyIdentifier, equalTo(identityAlice.keyIdentifier))
+        assertThat(found.alias, equalTo(identityAlice.alias))
+        assertThat(found.email, equalTo(identityAlice.email))
+        assertThat(found.phone, equalTo(identityAlice.phone))
+    }
+
 
 }

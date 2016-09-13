@@ -1,5 +1,6 @@
 package de.qabel.core.index
 
+import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.index.server.ExternalContactsAccessor
 
@@ -26,6 +27,12 @@ interface IndexService {
      * Sends verificationCode to index and updates local identities.
      */
     fun confirmVerification(code: String)
+
+    /**
+     * Search the IndexServer for [email] and [phone].
+     * @Returns a list of unique [Contact]s with email and phone set by search values their found for.
+     */
+    fun searchContacts(email : String, phone : String) : List<Contact>
 
     /**
      * Matches external contacts with IndexServer and

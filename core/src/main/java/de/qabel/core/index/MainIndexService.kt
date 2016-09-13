@@ -4,6 +4,7 @@ import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.config.VerificationStatus
+import de.qabel.core.extensions.letApply
 import de.qabel.core.index.server.ExternalContactsAccessor
 import de.qabel.core.index.server.IndexServer
 import de.qabel.core.logging.QabelLog
@@ -100,6 +101,37 @@ class MainIndexService(private val indexServer: IndexServer,
     override fun confirmVerification(code: String) {
         indexServer.confirmVerificationCode(code)
         updateIdentityVerifications()
+    }
+
+    override fun searchContacts(email: String, phone: String): List<Contact> {
+        val data = mutableListOf<IndexSearch>().apply {
+            if (email.isNotBlank()) {
+                add(IndexSearch(FieldType.EMAIL, email))
+            }
+            if (phone.isNotBlank()) {
+                add(IndexSearch(FieldType.PHONE, phone))
+            }
+        }
+
+        if (data.isEmpty()) {
+            return emptyList()
+        }
+
+        return mutableMapOf<String, Contact>().apply {
+            data.forEach { search ->
+                val indexResult = indexServer.search(search.toMap())
+                indexResult.forEach { indexIdentity ->
+                    getOrPut(indexIdentity.publicKey.readableKeyIdentifier, { indexIdentity.toContact() }).
+                        letApply { contact ->
+                            val searchValue = search.value
+                            when (search.fieldType) {
+                                FieldType.EMAIL -> contact.email = searchValue
+                                FieldType.PHONE -> contact.phone = searchValue
+                            }
+                        }
+                }
+            }
+        }.values.toList()
     }
 
     /**
