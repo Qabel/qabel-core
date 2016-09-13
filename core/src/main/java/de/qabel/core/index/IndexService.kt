@@ -30,7 +30,7 @@ interface IndexService {
 
     /**
      * Search the IndexServer for [email] and [phone].
-     * @Returns a list of unique [Contact]s with email and phone set by search values their found for.
+     * @Returns a list of unique [Contact]s with email and phone set by search values they found for.
      */
     fun searchContacts(email : String, phone : String) : List<Contact>
 
