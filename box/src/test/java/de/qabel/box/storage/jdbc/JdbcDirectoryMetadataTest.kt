@@ -125,4 +125,11 @@ class JdbcDirectoryMetadataTest {
         val loadedFile = dm.getFile("n")!!
         assertTrue(loadedFile.isHashed())
     }
+
+    @Test
+    fun migratioFrom0Version() {
+        dm.connection.version = 0
+        dm.connection.migrate()
+        assertNotEquals(0, dm.connection.version)
+    }
 }
