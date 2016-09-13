@@ -1,6 +1,8 @@
 package de.qabel.core.index
 
 import org.junit.Test
+import org.hamcrest.Matchers.*
+import org.junit.Assert.*
 
 class PhoneUtilTest {
 
@@ -27,9 +29,9 @@ class PhoneUtilTest {
     }
 
     private fun assertValidAndFormatted(phone: String) {
-        assert(phone.length in (13..15))
-        assert(!phone.contains(" "))
-        assert(isValidPhoneNumber(phone))
+        assert(phone.length in (13..17), { "Phone number not match valid size ${phone.length}" })
+        assertThat(phone.count { it.isWhitespace() }, equalTo(2))
+        assert(isValidPhoneNumber(phone), { "Phone number is not valid $phone" })
     }
 
 }
