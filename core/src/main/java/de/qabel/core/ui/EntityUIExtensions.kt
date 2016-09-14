@@ -20,18 +20,27 @@ fun Contact.initials(): String = displayName().toInitials()
 
 fun Identity.initials() = alias.toInitials()
 
-fun Entity.readableKey() = keyIdentifier.foldIndexed(StringBuilder(), { i, text, char ->
-    text.append(char)
-    if (i > 0) {
-        val current = i.inc()
-        if (current % 16 == 0) {
-            text.append("\n")
-        } else if (current % 4 == 0) {
-            text.append(" ")
+private fun Entity.formatKey(maxLines: Int = 5,
+                             spaceAfter: Int = 4,
+                             breakAfter: Int = 20) =
+    keyIdentifier.foldIndexed(StringBuilder(), { i, text, char ->
+        text.append(char)
+        if (i > 0) {
+            val current = i.inc()
+            if (current == maxLines * breakAfter) {
+                return text
+            }
+            if (current % breakAfter == 0) {
+                text.append("\n")
+            } else if (current % spaceAfter == 0) {
+                text.append(" ")
+            }
         }
-    }
-    text
-})
+        text
+    })
+
+fun Entity.readableKey() = formatKey(5)
+fun Entity.readableKeyShort() = formatKey(2)
 
 fun Entity.readableUrl(): String {
     val dropUrlString = dropUrls.first().toString()
