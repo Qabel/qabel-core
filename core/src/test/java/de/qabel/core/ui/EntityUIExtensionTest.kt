@@ -22,14 +22,13 @@ class EntityUIExtensionTest() : CoreTestCase {
     @Test
     fun testReadableKey(){
         val readableKey = contact.readableKey()
-        println(readableKey)
         val lines = readableKey.lines()
-        assertThat(lines, hasSize(5))
+        assertThat(lines, hasSize(4))
         lines.forEach {
             if(lines.last() != it){
-                assertThat(it.length, equalTo(24))
+                assertThat(it.length, equalTo(19))
                 val spaces = it.count { it.isWhitespace() }
-                assertThat(spaces, equalTo(4))
+                assertThat(spaces, equalTo(3))
             }
         }
     }
@@ -37,13 +36,12 @@ class EntityUIExtensionTest() : CoreTestCase {
     @Test
     fun testReadableKeyShort(){
         val readableKey = contact.readableKeyShort()
-        println(readableKey)
         val lines = readableKey.lines()
         assertThat(lines, hasSize(2))
         lines.forEach {
-            assertThat(it.length, equalTo(24))
+            assertThat(it.length, equalTo(19))
             val spaces = it.count { it.isWhitespace() }
-            assertThat(spaces, equalTo(4))
+            assertThat(spaces, equalTo(3))
         }
     }
 

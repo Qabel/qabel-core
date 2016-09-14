@@ -20,9 +20,9 @@ fun Contact.initials(): String = displayName().toInitials()
 
 fun Identity.initials() = alias.toInitials()
 
-private fun Entity.formatKey(maxLines: Int = 5,
+private fun Entity.formatKey(maxLines: Int = 4,
                              spaceAfter: Int = 4,
-                             breakAfter: Int = 20) =
+                             breakAfter: Int = 16) =
     keyIdentifier.foldIndexed(StringBuilder(), { i, text, char ->
         text.append(char)
         if (i > 0) {
@@ -39,7 +39,13 @@ private fun Entity.formatKey(maxLines: Int = 5,
         text
     })
 
-fun Entity.readableKey() = formatKey(5)
+/**
+ * Show 64 chars grouped to 4 chars and 4 groups per row.
+ */
+fun Entity.readableKey() = formatKey(4)
+/**
+ * Show 32 chars grouped to 4 chars 4 and groups per row.
+ */
 fun Entity.readableKeyShort() = formatKey(2)
 
 fun Entity.readableUrl(): String {
