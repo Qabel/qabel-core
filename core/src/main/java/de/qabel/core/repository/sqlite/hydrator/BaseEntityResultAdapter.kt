@@ -21,6 +21,6 @@ abstract class BaseEntityResultAdapter<T : BaseEntity>(val relation: DBRelation<
         }
     }
 
-    abstract fun hydrateEntity(entityId : Int, resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): T
+    abstract protected fun hydrateEntity(entityId : Int, resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): T
 
 }
