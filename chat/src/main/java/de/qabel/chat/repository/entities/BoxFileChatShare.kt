@@ -3,6 +3,7 @@ package de.qabel.chat.repository.entities
 import de.qabel.box.storage.Hash
 import de.qabel.core.config.SymmetricKey
 import de.qabel.core.repository.framework.BaseEntity
+import de.qabel.core.repository.framework.PersistableEnum
 
 data class BoxFileChatShare(
     var status: ShareStatus,
@@ -23,7 +24,7 @@ data class BoxFileChatShare(
     override var id: Int = 0) : BaseEntity {
 }
 
-enum class ShareStatus(val type: Int) {
+enum class ShareStatus(override val type: Int) : PersistableEnum<Int> {
     //Incoming
     NEW(0),
     ACCEPTED(1),

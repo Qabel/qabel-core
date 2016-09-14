@@ -6,7 +6,6 @@ interface Field {
     fun select(): String
 }
 
-interface PersistableEnum {
-    val type: Int
+interface PersistableEnum<out T> {
+    val type: T
 }
-
