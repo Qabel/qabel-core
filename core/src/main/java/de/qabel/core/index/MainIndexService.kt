@@ -1,13 +1,12 @@
 package de.qabel.core.index
 
-import de.qabel.core.config.*
-import de.qabel.core.extensions.letApply
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Identities
+import de.qabel.core.config.Identity
+import de.qabel.core.config.VerificationStatus
 import de.qabel.core.index.server.ExternalContactsAccessor
 import de.qabel.core.index.server.IndexServer
 import de.qabel.core.logging.QabelLog
-import de.qabel.core.logging.debug
-import de.qabel.core.logging.info
-import de.qabel.core.logging.warn
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.util.DefaultHashMap
