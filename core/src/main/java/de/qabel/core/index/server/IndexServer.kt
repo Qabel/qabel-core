@@ -1,5 +1,6 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
+import de.qabel.core.index.*
 import java.io.IOException
 
 

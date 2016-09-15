@@ -53,8 +53,10 @@ public class ConfigHashCodeTest {
             .overrideFactory("drops", new DropUrlListTestFactory())
             .ignoreProperty("serialVersionUID")
             .ignoreProperty("alias")
+            .ignoreProperty("emailStatus")
             .ignoreProperty("email")
             .ignoreProperty("phone")
+            .ignoreProperty("phoneStatus")
             .ignoreProperty("observers")
             .ignoreProperty("prefixes")
             .build();

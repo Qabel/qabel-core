@@ -2,9 +2,8 @@ package de.qabel.chat.repository.entities
 
 import de.qabel.chat.repository.entities.ChatDropMessage.MessageType.BOX_MESSAGE
 import de.qabel.chat.repository.entities.ChatDropMessage.MessageType.SHARE_NOTIFICATION
-import de.qabel.core.config.SymmetricKey
 import de.qabel.core.repository.framework.BaseEntity
-import java.net.URI
+import de.qabel.core.repository.framework.PersistableEnum
 
 data class ChatDropMessage(val contactId: Int,
                            val identityId: Int,
@@ -25,16 +24,16 @@ data class ChatDropMessage(val contactId: Int,
                 id: Int = 0) : this(contactId, identityId, direction, status, messageType,
         MessagePayload.fromString(messageType, payloadString), createdOn, id)
 
-    enum class Status(val type: Int) {
+    enum class Status(override val type: Int) : PersistableEnum<Int> {
         NEW(0), READ(1), PENDING(2), SENT(3);
     }
 
-    enum class MessageType(val type: String) {
+    enum class MessageType(override val type: String) : PersistableEnum<String> {
         SHARE_NOTIFICATION("box_share_notification"),
         BOX_MESSAGE("box_message")
     }
 
-    enum class Direction(val type: Byte) {
+    enum class Direction(override val type: Int) : PersistableEnum<Int> {
         INCOMING(0), OUTGOING(1)
     }
 

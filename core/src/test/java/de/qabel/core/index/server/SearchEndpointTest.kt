@@ -1,6 +1,12 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.extensions.assertThrows
+import de.qabel.core.index.FieldType
+import de.qabel.core.index.MalformedResponseException
+import de.qabel.core.index.createGson
+import de.qabel.core.index.dummyStatusLine
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.SearchEndpointImpl
 import org.junit.Test
 import org.junit.Assert.*
 

@@ -1,4 +1,4 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import org.apache.http.client.utils.URIBuilder
 import java.net.URI

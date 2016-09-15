@@ -1,6 +1,7 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.index.*
 import org.apache.http.HttpStatus
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients

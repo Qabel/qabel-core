@@ -3,7 +3,7 @@ package de.qabel.core.repository.framework
 import java.sql.PreparedStatement
 
 
-interface DBRelation<T : BaseEntity> : ResultAdapter<T> {
+interface DBRelation<T : BaseEntity> {
 
     val TABLE_NAME: String
     val TABLE_ALIAS: String

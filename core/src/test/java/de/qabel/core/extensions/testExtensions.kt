@@ -30,8 +30,18 @@ fun CoreTestCase.createIdentity(alias: String,
 
 fun CoreTestCase.createContact(alias: String,
                                dropURL: DropURL = dropGenerator.generateUrl(),
-                               publicKey: QblECPublicKey = QblECPublicKey(RandomStringUtils.random(32).toByteArray())) =
+                               publicKey: QblECPublicKey = QblECKeyPair().pub) =
     Contact(alias, mutableListOf(dropURL), publicKey)
+
+fun CoreTestCase.copy(identity : Identity) : Identity =
+    createIdentity(identity.alias, identity.helloDropUrl, identity.primaryKeyPair).apply {
+        id = identity.id
+        email = identity.email
+        emailStatus = identity.emailStatus
+        phone = identity.phone
+        phoneStatus = identity.phoneStatus
+        prefixes = identity.prefixes
+    }
 
 fun CoreTestCase.randomFile(size: Long): File =
     Files.createTempFile("qabel_", ".tmp").apply {

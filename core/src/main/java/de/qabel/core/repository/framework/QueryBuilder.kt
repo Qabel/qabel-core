@@ -47,6 +47,10 @@ class QueryBuilder {
         from.append(alias)
     }
 
+    fun innerJoin(otherRelation: DBRelation<*>, onField: Field) =
+        innerJoin(otherRelation.TABLE_NAME, otherRelation.TABLE_ALIAS,
+            otherRelation.ID, onField)
+
     fun innerJoin(table: String, tableAlias: String,
                   joinField: Field, targetField: Field) =
         innerJoin(table, tableAlias, joinField.exp(), targetField.exp())

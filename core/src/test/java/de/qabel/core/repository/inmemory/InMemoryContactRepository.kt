@@ -93,9 +93,16 @@ open class InMemoryContactRepository : ContactRepository, EntityObservable by Si
         contacts.put(contact.keyIdentifier, contact)
         identityMapping.values.forEach { it.remove(contact.keyIdentifier) }
         activeIdentities.forEach {
-            identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier);
+            identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier)
             identities.put(it.keyIdentifier, it)
         }
+    }
+
+    override fun persist(contact: Contact, identities: List<Identity>) {
+        if (contacts.containsKey(contact.keyIdentifier)) {
+            throw EntityExistsException()
+        }
+        update(contact, identities)
     }
 
     override fun delete(contact: Contact) {

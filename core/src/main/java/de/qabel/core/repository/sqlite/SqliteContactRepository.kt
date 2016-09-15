@@ -8,10 +8,12 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.framework.ResultAdapter
+import de.qabel.core.repository.sqlite.hydrator.ContactAdapter
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import de.qabel.core.repository.sqlite.hydrator.IntResultAdapter
 import de.qabel.core.repository.sqlite.schemas.ContactDB
@@ -24,12 +26,8 @@ import java.util.*
 
 class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
-                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em),
-                              private val contactRelation: ContactDB = ContactDB(dropUrlRepository)) :
-    BaseRepository<Contact>(contactRelation, db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
-
-    constructor(db: ClientDatabase, em: EntityManager, dropUrlRepository: DropUrlRepository,
-                identityRepository: IdentityRepository) : this(db, em, dropUrlRepository, identityRepository, ContactDB(dropUrlRepository))
+                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em)) :
+    BaseRepository<Contact>(ContactDB, ContactAdapter(dropUrlRepository), db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
 
     override fun find(id: Int): Contact = findById(id)
 
@@ -43,40 +41,52 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
             }
         }
 
-    override fun save(newContact: Contact, identity: Identity) {
-        val exists = exists(newContact)
-        val contact = if (newContact.id == 0 && exists) {
-            var existingContact = findByKeyId(newContact.keyIdentifier);
-            existingContact.alias = newContact.alias
-            existingContact.email = newContact.email
-            existingContact.phone = newContact.phone
+    override fun save(contact: Contact, identity: Identity) {
+        val exists = exists(contact)
+        val affectedContact = if (contact.id == 0 && exists) {
+            val existingContact = findByKeyId(contact.keyIdentifier)
+            existingContact.alias = contact.alias
+            existingContact.email = contact.email
+            existingContact.phone = contact.phone
             existingContact
         } else {
-            newContact
+            contact
         }
 
-        if (contact.id == 0 || !exists) {
-            persist(contact)
+        if (affectedContact.id == 0 || !exists) {
+            persist(affectedContact)
         } else {
-            update(contact)
+            update(affectedContact)
         }
 
-        addIdentityConnection(contact, identity)
-    }
-
-    override fun persist(model: Contact) {
-        super.persist(model)
-        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
-        info("Contact ${model.alias} persisted with id ${model.id}")
+        addIdentityConnection(affectedContact, identity)
         notifyObservers()
     }
 
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
         update(contact)
         removeIdentityConnections(contact)
-        if (activeIdentities.size > 0) {
+        if (activeIdentities.isNotEmpty()) {
             addIdentityConnections(contact, activeIdentities)
         }
+        notifyObservers()
+    }
+
+    override fun persist(contact: Contact, identities: List<Identity>) {
+        if (exists(contact)) {
+            throw EntityExistsException("Contact already exists!")
+        }
+        persist(contact)
+        if (identities.isNotEmpty()) {
+            addIdentityConnections(contact, identities)
+        }
+        notifyObservers()
+    }
+
+    override fun persist(model: Contact) {
+        super.persist(model)
+        model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
+        info("Contact ${model.alias} persisted with id ${model.id}")
     }
 
     override fun update(model: Contact) {
@@ -84,7 +94,6 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
         dropAllManyToMany(ContactDropUrls.CONTACT_ID, model.id)
         model.dropUrls.forEach { saveManyToMany(ContactDropUrls.CONTACT_ID, model.id, ContactDropUrls.DROP_URL, it.toString()) }
         info("Contact ${model.alias} (${model.id}) updated ")
-        notifyObservers()
     }
 
     override fun delete(contact: Contact, identity: Identity) {
@@ -108,7 +117,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
 
     private fun joinIdentityContacts(queryBuilder: QueryBuilder) =
         queryBuilder.innerJoin(IdentityContacts.TABLE, IdentityContacts.TABLE_ALIAS,
-            IdentityContacts.CONTACT_ID.exp(), contactRelation.ID.exp())
+            IdentityContacts.CONTACT_ID.exp(), ContactDB.ID.exp())
 
     private fun addIdentityConnection(contact: Contact, identity: Identity) =
         saveManyToMany(IdentityContacts.IDENTITY_ID, identity.id, IdentityContacts.CONTACT_ID, contact.id)
@@ -160,7 +169,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
 
         findManyToMany(IdentityContacts.CONTACT_ID, IdentityContacts.IDENTITY_ID,
             object : ResultAdapter<Unit> {
-                override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager) {
+                override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager, detached : Boolean) {
                     val contactId = resultSet.getInt(1)
                     val identityId = resultSet.getInt(2)
                     getOrDefault(contactId).add(identityId)

@@ -1,5 +1,6 @@
 package de.qabel.core.repository.framework
 
+import de.qabel.core.config.Identity
 import de.qabel.core.extensions.use
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.exception.EntityNotFoundException
@@ -10,6 +11,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 
 abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
+                                              val resultAdapter: ResultAdapter<T>,
                                               val client: ClientDatabase,
                                               val entityManager: EntityManager) {
 
@@ -17,11 +19,16 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
     protected val updateStatement = QblStatements.createUpdate(relation)
     protected val deleteStatement = QblStatements.createDelete(relation)
 
-    open fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
+    open protected fun createEntityQuery(): QueryBuilder = QblStatements.createEntityQuery(relation)
+
+    open protected fun beforePersist(currentIndex: Int, statement: PreparedStatement, model: T): Int {
+        return currentIndex
+    }
 
     open fun persist(model: T) =
         executeStatement(insertStatement, {
-            relation.applyValues(1, it, model)
+            val i = relation.applyValues(1, it, model)
+            beforePersist(i, it, model)
         }, {
             it.generatedKeys.use {
                 it.next()
@@ -30,9 +37,14 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             entityManager.put(model.javaClass, model, model.id)
         })
 
+    open protected fun beforeUpdate(currentIndex: Int, statement: PreparedStatement, model: T): Int {
+        return currentIndex
+    }
+
     open fun update(model: T) =
         executeStatement(updateStatement, {
-            val i = relation.applyValues(1, it, model)
+            var i = relation.applyValues(1, it, model)
+            i = beforeUpdate(i, it, model)
             it.setInt(i, model.id)
         }, {
             entityManager.put(model.javaClass, model, model.id)
@@ -64,20 +76,20 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
         }
 
     //TODO kotlin currently require this cast, but its not really required
-    protected fun <T> getSingleResult(queryBuilder: QueryBuilder): T =
-        getSingleResult(queryBuilder, relation as ResultAdapter<T>)
+    protected fun <T> getSingleResult(queryBuilder: QueryBuilder, detached : Boolean = false): T =
+        getSingleResult(queryBuilder, resultAdapter as ResultAdapter<T>, detached)
 
-    protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): X {
+    protected fun <X> getSingleResult(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>, detached: Boolean = false): X {
         return executeQuery(queryBuilder, { it ->
             if (it.next()) {
-                hydrator.hydrateOne(it, entityManager)
+                hydrator.hydrateOne(it, entityManager, detached)
             } else throw EntityNotFoundException("Cannot find single result")
         })
     }
 
     //TODO kotlin currently require this cast, but its not really required
     protected fun <T> getResultList(queryBuilder: QueryBuilder): List<T> =
-        getResultList(queryBuilder, relation as ResultAdapter<T>)
+        getResultList(queryBuilder, resultAdapter as ResultAdapter<T>)
 
     protected fun <X> getResultList(queryBuilder: QueryBuilder, hydrator: ResultAdapter<X>): List<X> {
         return executeQuery(queryBuilder, { it ->
@@ -185,4 +197,5 @@ abstract class BaseRepository<T : BaseEntity>(val relation: DBRelation<T>,
             })
         }
     }
+
 }

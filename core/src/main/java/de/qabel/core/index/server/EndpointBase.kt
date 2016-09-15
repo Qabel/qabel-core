@@ -1,11 +1,14 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
+import de.qabel.core.index.APIError
+import de.qabel.core.index.MalformedResponseException
 import org.apache.http.HttpEntity
 import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.util.EntityUtils
+import java.nio.charset.Charset
 
 internal interface EndpointBase<out T> {
     /**
@@ -42,6 +45,6 @@ internal interface EndpointBase<out T> {
         if (entity == null) {
             return ""
         }
-        return EntityUtils.toString(entity, Charsets.UTF_8)
+        return EntityUtils.toString(entity, Charsets.UTF_8.name())
     }
 }

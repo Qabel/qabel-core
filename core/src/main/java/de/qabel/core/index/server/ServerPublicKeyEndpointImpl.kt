@@ -1,4 +1,4 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import com.github.salomonbrys.kotson.fromJson
 import com.github.salomonbrys.kotson.get
@@ -7,6 +7,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.index.MalformedResponseException
+import de.qabel.core.index.createGson
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpUriRequest

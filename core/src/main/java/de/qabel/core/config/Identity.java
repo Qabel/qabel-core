@@ -13,9 +13,11 @@ public class Identity extends Entity {
 
     private String alias;
 
-    private String email;
+    private String email = "";
+    private VerificationStatus emailStatus = VerificationStatus.NONE;
 
-    private String phone;
+    private String phone = "";
+    private VerificationStatus phoneStatus = VerificationStatus.NONE;
 
     private List<String> prefixes;
 
@@ -204,5 +206,21 @@ public class Identity extends Entity {
             return false;
         }
         return true;
+    }
+
+    public VerificationStatus getEmailStatus() {
+        return emailStatus;
+    }
+
+    public void setEmailStatus(VerificationStatus emailStatus) {
+        this.emailStatus = emailStatus;
+    }
+
+    public VerificationStatus getPhoneStatus() {
+        return phoneStatus;
+    }
+
+    public void setPhoneStatus(VerificationStatus phoneStatus) {
+        this.phoneStatus = phoneStatus;
     }
 }

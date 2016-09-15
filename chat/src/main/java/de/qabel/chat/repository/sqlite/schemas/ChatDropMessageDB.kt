@@ -5,6 +5,7 @@ import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.entities.ChatDropMessage.*
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
+import de.qabel.core.repository.sqlite.hydrator.BaseEntityResultAdapter
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Timestamp
@@ -38,37 +39,16 @@ object ChatDropMessageDB : DBRelation<ChatDropMessage> {
             var i = startIndex
             setInt(i++, model.contactId)
             setInt(i++, model.identityId)
-            setByte(i++, model.direction.type)
+            setInt(i++, model.direction.type)
             setInt(i++, model.status.type)
             setString(i++, model.messageType.type)
             setString(i++, payLoad.toString())
             setTimestamp(i++, Timestamp(model.createdOn))
-            if(payLoad is MessagePayload.ShareMessage){
+            if (payLoad is MessagePayload.ShareMessage) {
                 setInt(i++, payLoad.shareData.id)
             }
             return i
         }
-
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): ChatDropMessage {
-        val id = resultSet.getInt(ID.alias())
-        if (entityManager.contains(ENTITY_CLASS, id)) {
-            return entityManager.get(ENTITY_CLASS, id)
-        }
-        val payloadType = toEnum(MessageType.values(), resultSet.getString(PAYLOAD_TYPE.alias())!!, { it.type })
-        val payloadString = resultSet.getString(PAYLOAD.alias())
-        val payload = MessagePayload.fromString(payloadType, payloadString)
-        if(payload is MessagePayload.ShareMessage){
-            payload.shareData = ChatShareDB.hydrateOne(resultSet, entityManager)
-        }
-        return ChatDropMessage(resultSet.getInt(CONTACT_ID.alias()),
-            resultSet.getInt(IDENTITY_ID.alias()),
-            toEnum(Direction.values(), resultSet.getByte(DIRECTION.alias()), { it.type }),
-            toEnum(Status.values(), resultSet.getInt(STATUS.alias()), { it.type }),
-            payloadType,
-            payload,
-            resultSet.getTimestamp(CREATED_ON.alias()).time,
-            id)
-    }
 
     fun <X : Enum<X>, S : Any> toEnum(enum: Array<X>, value: S, extract: (enum: X) -> S) =
         enum.find {

@@ -1,8 +1,12 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import com.github.salomonbrys.kotson.*
 import com.google.gson.*
 import de.qabel.core.exceptions.QblDropInvalidURL
+import de.qabel.core.index.FieldType
+import de.qabel.core.index.IndexContact
+import de.qabel.core.index.MalformedResponseException
+import de.qabel.core.index.createGson
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpGet
 import org.apache.http.client.methods.HttpUriRequest

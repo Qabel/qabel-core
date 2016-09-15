@@ -1,6 +1,8 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.extensions.assertThrows
+import de.qabel.core.index.APIError
+import de.qabel.core.index.errorMessageFromResponse
 import org.apache.http.HttpResponse
 import org.apache.http.ProtocolVersion
 import org.apache.http.entity.StringEntity

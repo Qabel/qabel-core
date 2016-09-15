@@ -1,9 +1,14 @@
-package de.qabel.core.index
+package de.qabel.core.index.server
 
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.assertThrows
+import de.qabel.core.index.*
+import de.qabel.core.index.server.IndexHTTP
+import de.qabel.core.index.server.IndexHTTPLocation
+import de.qabel.core.index.server.ServerPublicKeyEndpoint
+import de.qabel.core.index.server.ServerPublicKeyEndpointImpl
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Test

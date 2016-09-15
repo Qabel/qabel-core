@@ -1,10 +1,13 @@
 package de.qabel.chat.repository.sqlite
 
 import de.qabel.chat.repository.ChatDropMessageRepository
+import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.entities.ChatDropMessage.Direction
 import de.qabel.chat.repository.entities.ChatDropMessage.Status
+import de.qabel.chat.repository.sqlite.adapter.ChatDropMessageAdapter
+import de.qabel.chat.repository.sqlite.adapter.ChatShareAdapter
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CONTACT_ID
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB.CREATED_ON
@@ -26,7 +29,7 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 
 class SqliteChatDropMessageRepository(database: ClientDatabase,
                                       entityManager: EntityManager) :
-    BaseRepository<ChatDropMessage>(ChatDropMessageDB, database, entityManager),
+    BaseRepository<ChatDropMessage>(ChatDropMessageDB, ChatDropMessageAdapter(), database, entityManager),
     ChatDropMessageRepository {
 
     override fun createEntityQuery(): QueryBuilder =
@@ -39,12 +42,12 @@ class SqliteChatDropMessageRepository(database: ClientDatabase,
 
     override fun findByContact(contactId: Int, identityId: Int): List<ChatDropMessage> =
         createChatQuery(contactId, identityId).let {
-            return getResultList(it, relation)
+            return getResultList(it)
         }
 
     override fun findByContact(contactId: Int, identityId: Int, offset: Int, pageSize: Int): PagingResult<ChatDropMessage> =
         createChatQuery(contactId, identityId).let {
-            return getPagingResult(it, relation, offset, pageSize)
+            return getPagingResult(it, resultAdapter, offset, pageSize)
         }
 
     private fun createChatQuery(contactId: Int, identityId: Int): QueryBuilder =
@@ -66,7 +69,7 @@ class SqliteChatDropMessageRepository(database: ClientDatabase,
         with(createEntityQuery()) {
             whereAndEquals(IDENTITY_ID, identityId)
 
-            innerJoin(ContactDB.TABLE, ContactDB.T_ALIAS, ContactDB.ID.exp(), CONTACT_ID.exp())
+            innerJoin(ContactDB, CONTACT_ID)
             whereAndEquals(ContactDB.IGNORED, false)
 
             //filter newest messages by join
@@ -101,7 +104,7 @@ class SqliteChatDropMessageRepository(database: ClientDatabase,
             " AND " + CONTACT_ID.name + "=?"
         executeStatement(statement, {
             it.setInt(1, Status.READ.type)
-            it.setByte(2, Direction.INCOMING.type)
+            it.setInt(2, Direction.INCOMING.type)
             it.setInt(3, identity.id)
             it.setInt(4, contact.id)
         })

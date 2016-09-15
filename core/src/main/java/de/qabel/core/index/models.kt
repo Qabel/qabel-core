@@ -42,13 +42,17 @@ data class UpdateIdentity(
     val alias: String,
     val fields: List<UpdateField>
 ) {
+
+    constructor(identity: Identity, fields: List<UpdateField>) :
+    this(identity.primaryKeyPair, identity.helloDropUrl, identity.alias, fields)
+
     companion object {
         fun fromIdentity(identity: Identity, action: UpdateAction): UpdateIdentity {
             val fields = ArrayList<UpdateField>()
-            if (identity.email != null) {
+            if (!identity.email.isNullOrBlank()) {
                 fields += UpdateField(action, FieldType.EMAIL, identity.email)
             }
-            if (identity.phone != null) {
+            if (!identity.phone.isNullOrBlank()) {
                 fields += UpdateField(action, FieldType.PHONE, identity.phone)
             }
             return UpdateIdentity(
@@ -127,9 +131,31 @@ private val IndexContactDeserializer = jsonDeserializer {
  * Return Gson instance with necessary TypeAdapters to serdes JSON according to the spec
  * http://qabel.github.io/docs/Qabel-Index/
  */
-internal fun createGson() : Gson {
+internal fun createGson(): Gson {
     return GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .registerTypeAdapter<IndexContact> (IndexContactDeserializer)
+        .registerTypeAdapter<IndexContact>(IndexContactDeserializer)
         .create()
 }
+
+/**
+ * Interactor Models
+ */
+data class IndexSearch(val fieldType: FieldType, val value: String) {
+    fun toMap(): Map<FieldType, String> = mapOf(Pair(fieldType, value))
+}
+
+enum class IndexSyncAction {
+    CREATE, UPDATE
+}
+
+data class IndexSyncResult(val contact: Contact, val action: IndexSyncAction)
+
+/**
+ * Representing a external contact
+ */
+data class RawContact(val displayName: String,
+                      val mobilePhoneNumbers: MutableList<String>,
+                      val emailAddresses: MutableList<String>,
+                      val identifier: String //external identifier
+)
