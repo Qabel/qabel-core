@@ -28,7 +28,7 @@ fun CoreTestCase.createIdentity(alias: String,
 
 fun CoreTestCase.createContact(alias: String,
                                dropURL: DropURL = dropGenerator.generateUrl(),
-                               publicKey: QblECPublicKey = QblECPublicKey(RandomStringUtils.random(32).toByteArray())) =
+                               publicKey: QblECPublicKey = QblECKeyPair().pub) =
     Contact(alias, mutableListOf(dropURL), publicKey)
 
 fun CoreTestCase.copy(identity : Identity) : Identity =
