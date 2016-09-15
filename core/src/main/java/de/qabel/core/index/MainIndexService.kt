@@ -1,9 +1,6 @@
 package de.qabel.core.index
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Identities
-import de.qabel.core.config.Identity
-import de.qabel.core.config.VerificationStatus
+import de.qabel.core.config.*
 import de.qabel.core.extensions.letApply
 import de.qabel.core.index.server.ExternalContactsAccessor
 import de.qabel.core.index.server.IndexServer
@@ -128,21 +125,20 @@ class MainIndexService(private val indexServer: IndexServer,
             return emptyList()
         }
 
-        return mutableMapOf<String, Contact>().apply {
-            data.forEach { search ->
-                val indexResult = indexServer.search(search.toMap())
-                indexResult.forEach { indexIdentity ->
-                    getOrPut(indexIdentity.publicKey.readableKeyIdentifier, { indexIdentity.toContact() }).
-                        letApply { contact ->
-                            val searchValue = search.value
-                            when (search.fieldType) {
-                                FieldType.EMAIL -> contact.email = searchValue
-                                FieldType.PHONE -> contact.phone = searchValue
-                            }
-                        }
+        val resultMap = mutableMapOf<String, Contact>()
+        data.forEach { search ->
+            val indexResult = indexServer.search(search.toMap())
+            indexResult.forEach { indexIdentity ->
+                val contact = resultMap.getOrPut(indexIdentity.publicKey.readableKeyIdentifier,
+                    { indexIdentity.toContact() })
+                when (search.fieldType) {
+                    FieldType.EMAIL -> contact.email = search.value
+                    FieldType.PHONE -> contact.phone = search.value
                 }
             }
-        }.values.toList()
+        }
+
+        return resultMap.values.toList()
     }
 
     /**
