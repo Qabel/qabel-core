@@ -11,6 +11,7 @@ import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.hydrator.IdentityAdapter
 import de.qabel.core.repository.sqlite.schemas.ContactDB
+import de.qabel.core.repository.sqlite.schemas.ContactDB.IdentityContacts.IDENTITY_ID
 import de.qabel.core.repository.sqlite.schemas.IdentityDB
 import java.sql.PreparedStatement
 
@@ -92,11 +93,13 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
     }
 
     override fun delete(identity: Identity) {
+        prefixRepository.delete(identity)
+        //Remove contact associations
+        dropAllManyToMany(IDENTITY_ID, identity.id)
+        delete(identity.id)
         contactRepository.findByKeyId(identity.keyIdentifier).let {
             contactRepository.delete(it)
         }
-        prefixRepository.delete(identity)
-        delete(identity.id)
     }
 
 }

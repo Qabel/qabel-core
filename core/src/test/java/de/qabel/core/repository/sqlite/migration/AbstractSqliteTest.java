@@ -24,9 +24,6 @@ public class AbstractSqliteTest {
 
     public void connect() throws SQLException {
         connection = DriverManager.getConnection("jdbc:sqlite://" + dbFile.toAbsolutePath());
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("PRAGMA FOREIGN_KEYS = ON");
-        }
     }
 
     public void reconnect() throws SQLException {

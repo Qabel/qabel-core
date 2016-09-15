@@ -20,9 +20,6 @@ public abstract class AbstractSqliteRepositoryTest<T> {
     @Before
     public void setUp() throws Exception {
         connection = DriverManager.getConnection("jdbc:sqlite::memory:");
-        try (Statement statement = connection.createStatement()) {
-            statement.execute("PRAGMA FOREIGN_KEYS = ON");
-        }
         clientDatabase = createDatabase(connection);
         clientDatabase.migrate();
         em = new EntityManager();
