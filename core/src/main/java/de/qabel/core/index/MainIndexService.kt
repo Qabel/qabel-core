@@ -52,19 +52,17 @@ class MainIndexService(private val indexServer: IndexServer,
         }
 
         val currentStatus = findStateForValue(identity, newValue, fieldType)
-        return when (currentStatus) {
-            VerificationStatus.NOT_VERIFIED ->
-                UpdateIdentity(identity, listOf(UpdateField(UpdateAction.CREATE, fieldType, newValue!!))).let {
-                    info("Updating index with field $fieldType")
-                    when (indexServer.updateIdentity(it)) {
-                        UpdateResult.ACCEPTED_IMMEDIATE -> VerificationStatus.VERIFIED
-                        else -> VerificationStatus.NOT_VERIFIED
-                    }.apply {
-                        info("Index updated. New VerificationStatus ${this.name}")
-                    }
+        return if (currentStatus == VerificationStatus.NOT_VERIFIED)
+            UpdateIdentity(identity, listOf(UpdateField(UpdateAction.CREATE, fieldType, newValue!!))).let {
+                info("Updating index with field $fieldType")
+                when (indexServer.updateIdentity(it)) {
+                    UpdateResult.ACCEPTED_IMMEDIATE -> VerificationStatus.VERIFIED
+                    else -> VerificationStatus.NOT_VERIFIED
+                }.apply {
+                    info("Index updated. New VerificationStatus ${this.name}")
                 }
-            else -> currentStatus
-        }
+            }
+        else currentStatus
     }
 
     private fun findStateForValue(identity: Identity, value: String?, fieldType: FieldType): VerificationStatus =
@@ -170,16 +168,15 @@ class MainIndexService(private val indexServer: IndexServer,
         val searchResults = DefaultHashMap<IndexContact, MutableList<IndexResult>>({ mutableListOf() })
         searchValues.forEach {
             val (contact, values) = it
-            values.forEach {
-                val search = it
+            values.forEach { search ->
                 debug("IndexSearch for ${contact.displayName} with ${search.value} (${search.fieldType.name})")
                 indexServer.search(search.toMap()).forEach { indexContact ->
                     debug("Received IndexContact for ${contact.displayName} with ${search.value}. Received ${indexContact.alias} ${indexContact.publicKey.readableKeyIdentifier}")
-                    searchResults.getOrDefault(indexContact).apply {
-                        find({ it.rawContact == contact })?.let {
-                            it.search.add(search)
-                        } ?: add(IndexResult(contact, mutableListOf(it)))
-                    }
+                    val indexResults = searchResults.getOrDefault(indexContact)
+                    indexResults.find({ it.rawContact == contact })?.let {
+                        it.search.add(search)
+                    } ?: indexResults.add(IndexResult(contact, mutableListOf(search)))
+                    Unit
                 }
             }
         }
