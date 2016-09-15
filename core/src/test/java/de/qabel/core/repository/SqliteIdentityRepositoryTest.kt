@@ -32,10 +32,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         val dropUrlRepository = SqliteDropUrlRepository(clientDatabase, DropURLHydrator())
         val prefixRepository = SqlitePrefixRepository(clientDatabase)
         contactRepo = SqliteContactRepository(clientDatabase, em)
-        clientDatabase.prepare("PRAGMA foreign_keys").executeQuery().use {
-            it.next()
-            println(it.getInt(1))
-        }
+
         return SqliteIdentityRepository(clientDatabase, em, prefixRepository, dropUrlRepository)
     }
 
