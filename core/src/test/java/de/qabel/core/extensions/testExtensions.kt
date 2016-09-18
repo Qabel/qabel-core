@@ -1,5 +1,7 @@
 package de.qabel.core.extensions
 
+import com.natpryce.hamkrest.Matcher
+import com.natpryce.hamkrest.should.shouldMatch
 import de.qabel.core.TestServer
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
@@ -28,8 +30,18 @@ fun CoreTestCase.createIdentity(alias: String,
 
 fun CoreTestCase.createContact(alias: String,
                                dropURL: DropURL = dropGenerator.generateUrl(),
-                               publicKey: QblECPublicKey = QblECPublicKey(RandomStringUtils.random(32).toByteArray())) =
+                               publicKey: QblECPublicKey = QblECKeyPair().pub) =
     Contact(alias, mutableListOf(dropURL), publicKey)
+
+fun CoreTestCase.copy(identity : Identity) : Identity =
+    createIdentity(identity.alias, identity.helloDropUrl, identity.primaryKeyPair).apply {
+        id = identity.id
+        email = identity.email
+        emailStatus = identity.emailStatus
+        phone = identity.phone
+        phoneStatus = identity.phoneStatus
+        prefixes = identity.prefixes
+    }
 
 fun CoreTestCase.randomFile(size: Long): File =
     Files.createTempFile("qabel_", ".tmp").apply {
@@ -47,3 +59,5 @@ inline fun <reified T : Throwable> assertThrows(expectedException: KClass<T>, op
     fail("Expected exception ${expectedException.simpleName} not thrown.")
     throw IllegalStateException("fail()")  /* Kotlin doesn't know that fail() always throws */
 }
+
+infix fun <T> T.shouldNotMatch(matcher: Matcher<T>) = this shouldMatch Matcher.Negation<T>(matcher)

@@ -1,11 +1,9 @@
 package de.qabel.core.repository.sqlite.schemas
 
-import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.framework.DBField
 import de.qabel.core.repository.framework.DBRelation
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 
 object DropStateDB : DBRelation<DropState> {
 
@@ -28,13 +26,5 @@ object DropStateDB : DBRelation<DropState> {
             return i
         }
 
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): DropState {
-        val id = resultSet.getInt(ID.alias())
-        if (entityManager.contains(ENTITY_CLASS, id)) {
-            return entityManager.get(ENTITY_CLASS, id)
-        }
-        return DropState(resultSet.getString(DROP.alias()),
-            resultSet.getString(E_TAG.alias()), id)
-    }
 
 }

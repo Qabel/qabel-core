@@ -8,6 +8,7 @@ import org.apache.http.HttpResponse
 import org.apache.http.HttpStatus
 import org.apache.http.util.EntityUtils
 import java.io.IOException
+import java.util.NoSuchElementException
 
 open class IndexServerException @JvmOverloads constructor(message: String, cause: Throwable? = null): IOException(message, cause)
 
@@ -45,7 +46,7 @@ internal fun errorMessageFromResponse(response: HttpResponse): String {
         JsonParser().parse(json)["error"].string
     } catch (e: Exception) {
         var msg = "No error message available (%s)".format(e)
-        if (e is JsonSyntaxException) {
+        if (e is JsonSyntaxException || e is NoSuchElementException) {
             msg += ", offending JSON: %s".format(json)
         }
         msg

@@ -6,11 +6,12 @@ import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.framework.BaseRepository
+import de.qabel.core.repository.sqlite.hydrator.DropStateAdapter
 import de.qabel.core.repository.sqlite.schemas.DropStateDB
 
 class SqliteDropStateRepository(database: ClientDatabase,
                                 entityManager: EntityManager) :
-    BaseRepository<DropState>(DropStateDB, database, entityManager), DropStateRepository {
+    BaseRepository<DropState>(DropStateDB, DropStateAdapter(), database, entityManager), DropStateRepository {
 
     override fun getDropState(drop: String) = findByDropId(drop).eTag
 

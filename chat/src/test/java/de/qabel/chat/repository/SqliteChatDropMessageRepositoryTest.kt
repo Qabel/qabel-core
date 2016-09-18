@@ -127,6 +127,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
         dropRepo.persist(message)
 
         message = message.copy(payload = createTextPayload("barfoo"))
+
         dropRepo.update(message)
 
         val storedMessage = dropRepo.findById(message.id)

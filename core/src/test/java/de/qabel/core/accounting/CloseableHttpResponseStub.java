@@ -2,11 +2,14 @@ package de.qabel.core.accounting;
 
 import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicStatusLine;
 import org.apache.http.params.HttpParams;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class CloseableHttpResponseStub implements CloseableHttpResponse {
     public boolean closed;
@@ -74,22 +77,22 @@ public class CloseableHttpResponseStub implements CloseableHttpResponse {
 
     @Override
     public boolean containsHeader(String name) {
-        return false;
+        return headers.containsKey(name);
     }
 
     @Override
     public Header[] getHeaders(String name) {
-        return new Header[0];
+        return new Header[]{ new BasicHeader(name, headers.get(name)) };
     }
 
     @Override
     public Header getFirstHeader(String name) {
-        return null;
+        return new BasicHeader(name, headers.get(name));
     }
 
     @Override
     public Header getLastHeader(String name) {
-        return null;
+        return getFirstHeader(name);
     }
 
     @Override
@@ -97,39 +100,43 @@ public class CloseableHttpResponseStub implements CloseableHttpResponse {
         return new Header[0];
     }
 
+    private Map<String, String> headers = new HashMap<>();
+
     @Override
     public void addHeader(Header header) {
-
+        headers.put(header.getName(), header.getValue());
     }
 
     @Override
     public void addHeader(String name, String value) {
-
+        headers.put(name, value);
     }
 
     @Override
     public void setHeader(Header header) {
-
+        addHeader(header);
     }
 
     @Override
     public void setHeader(String name, String value) {
-
+        addHeader(name, value);
     }
 
     @Override
     public void setHeaders(Header[] headers) {
-
+        for (Header header : headers) {
+            setHeader(header);
+        }
     }
 
     @Override
     public void removeHeader(Header header) {
-
+        headers.remove(header.getName());
     }
 
     @Override
     public void removeHeaders(String name) {
-
+        headers.remove(name);
     }
 
     @Override

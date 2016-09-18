@@ -1,6 +1,6 @@
 package de.qabel.core.crypto;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.spongycastle.crypto.InvalidCipherTextException;
 import org.spongycastle.crypto.params.KeyParameter;
@@ -15,7 +15,14 @@ import static org.junit.Assert.*;
 
 public class CryptoUtilsTest {
     final CryptoUtils cu = new CryptoUtils();
-    String testFileName = "src/test/java/de/qabel/core/crypto/testFile";
+    private String testFileName = "src/test/java/de/qabel/core/crypto/testFile";
+
+    @Before
+    public void setUp() throws Exception {
+        if (!new File(testFileName).exists()) {
+            testFileName = "core/" + testFileName;
+        }
+    }
 
     @Test
     public void fileDecryptionTest() throws IOException, InvalidKeyException {

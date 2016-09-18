@@ -7,6 +7,6 @@ import java.sql.ResultSet
 
 class IntResultAdapter : ResultAdapter<Int> {
 
-    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager): Int = resultSet.getInt(1)
+    override fun hydrateOne(resultSet: ResultSet, entityManager: EntityManager, detached: Boolean): Int = resultSet.getInt(1)
 
 }

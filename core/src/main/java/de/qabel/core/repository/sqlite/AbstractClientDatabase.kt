@@ -16,6 +16,8 @@ abstract class AbstractClientDatabase(protected val connection: Connection) : Cl
 
     init {
         transactionManager = SqliteTransactionManager(connection)
+        //Enable foreign keys
+        connection.createStatement().use { statement -> statement.execute("PRAGMA FOREIGN_KEYS = ON") }
     }
 
     @Synchronized @Throws(MigrationException::class)

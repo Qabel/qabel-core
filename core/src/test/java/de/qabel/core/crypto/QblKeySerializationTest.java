@@ -20,9 +20,7 @@ public class QblKeySerializationTest {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(QblECKeyPair.class, new QblEcKeyPairTypeAdapter());
         Gson gson = builder.setPrettyPrinting().create();
-        System.out.println("Serialized key: " + gson.toJson(ecKeyPair));
         QblECKeyPair deserializedEcKeyPair = gson.fromJson(gson.toJson(ecKeyPair), QblECKeyPair.class);
-        System.out.println("Deserialized key: " + gson.toJson(deserializedEcKeyPair));
 
         assertEquals(ecKeyPair, deserializedEcKeyPair);
     }
@@ -34,9 +32,7 @@ public class QblKeySerializationTest {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(QblECPublicKey.class, new QblEcPublicKeyTypeAdapter());
         Gson gson = builder.setPrettyPrinting().create();
-        System.out.println("Serialized key: " + gson.toJson(ecPublicKey));
         QblECPublicKey deserializedQppk = gson.fromJson(gson.toJson(ecPublicKey), QblECPublicKey.class);
-        System.out.println("Deserialized key: " + gson.toJson(deserializedQppk));
 
         assertEquals(ecPublicKey, deserializedQppk);
     }

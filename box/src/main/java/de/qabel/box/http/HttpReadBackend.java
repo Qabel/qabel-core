@@ -32,8 +32,8 @@ public class HttpReadBackend extends AbstractHttpStorageBackend implements Stora
 
     @Override
     public StorageDownload download(String name, String ifModifiedVersion) throws QblStorageException, UnmodifiedException {
-        logger.info("Downloading " + name);
-        URI uri = root.resolve(name);
+        info("Downloading " + name);
+        URI uri = getRoot().resolve(name);
         HttpGet httpGet = new HttpGet(uri);
         if (ifModifiedVersion != null) {
             httpGet.addHeader(HttpHeaders.IF_NONE_MATCH, ifModifiedVersion);
@@ -41,7 +41,7 @@ public class HttpReadBackend extends AbstractHttpStorageBackend implements Stora
         prepareRequest(httpGet);
 
         try {
-            CloseableHttpResponse response = httpclient.execute(httpGet);
+            CloseableHttpResponse response = getHttpclient().execute(httpGet);
             try {
                 int status = response.getStatusLine().getStatusCode();
                 if (status == HttpStatus.SC_NOT_FOUND || status == HttpStatus.SC_FORBIDDEN) {
@@ -75,6 +75,6 @@ public class HttpReadBackend extends AbstractHttpStorageBackend implements Stora
 
     @Override
     public String getUrl(String meta) {
-        return root.resolve(meta).toString();
+        return getRoot().resolve(meta).toString();
     }
 }

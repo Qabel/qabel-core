@@ -11,6 +11,8 @@ public interface IdentityRepository {
      */
     Identity find(String keyId) throws EntityNotFoundException, PersistenceException;
 
+    Identity find(String keyId, boolean detached) throws EntityNotFoundException, PersistenceException;
+
     Identity find(int id) throws EntityNotFoundException, PersistenceException;
 
     Identities findAll() throws PersistenceException;

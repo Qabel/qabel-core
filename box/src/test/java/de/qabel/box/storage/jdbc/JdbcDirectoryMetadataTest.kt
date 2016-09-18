@@ -5,6 +5,7 @@ import de.qabel.box.storage.BoxFolder
 import de.qabel.box.storage.BoxShare
 import de.qabel.box.storage.Hash
 import de.qabel.box.storage.exceptions.QblStorageException
+import de.qabel.box.storage.jdbc.migration.DMMigration1468245565Hash
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Test
@@ -124,5 +125,15 @@ class JdbcDirectoryMetadataTest {
 
         val loadedFile = dm.getFile("n")!!
         assertTrue(loadedFile.isHashed())
+    }
+
+    @Test
+    fun migratioFrom0Version() {
+        dm.connection.version = 0
+        // Only that migration needs to be tested because
+        // that is the schema out there with version = 0
+        dm.connection.migrateTo(1467796453L)
+        // the migration should run as a noop, except that now a version is set.
+        assertNotEquals(0, dm.connection.version)
     }
 }

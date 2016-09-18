@@ -44,12 +44,16 @@ abstract class BoxVolumeTest {
     protected lateinit var keyPair: QblECKeyPair
     protected val bucket = "qabel"
     protected var prefix = UUID.randomUUID().toString()
-    private val testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
+    private var testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
     protected lateinit var contact: Contact
     protected lateinit var volumeTmpDir: File
 
     @Before
     open fun setUp() {
+        if (!File(testFileName).exists()) {
+            testFileName = "box/" + testFileName
+        }
+
         val utils = CryptoUtils()
         deviceID = utils.getRandomBytes(16)
         deviceID2 = utils.getRandomBytes(16)

@@ -53,8 +53,8 @@ class ContactExchangeFormatsTest {
         assertThat("DropUrls dont match", contact1.dropUrls.equals(contact2.dropUrls))
         assertThat("PubKey doesnt match", contact1.ecPublicKey.readableKeyIdentifier.
             equals(contact2.ecPublicKey.readableKeyIdentifier))
-        assertThat("Phone doesnt match", contact1.phone?.equals(contact2.phone) ?: contact2.phone == null)
-        assertThat("Email doesnt match", contact1.email?.equals(contact2.email) ?: contact2.email == null)
+        assertThat("Phone doesnt match", contact1.phone == contact2.phone)
+        assertThat("Email doesnt match", contact1.email == contact2.email)
     }
 
     @Test

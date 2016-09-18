@@ -44,5 +44,5 @@ abstract class IndexDMDownloader(
 
     abstract fun startDownload(rootRef: String): StorageDownload
 
-    class DownloadedDirectoryMetadata(val dm: DirectoryMetadata, val etag: String)
+    class DownloadedDirectoryMetadata(dm: DirectoryMetadata, val etag: String): DirectoryMetadata by dm
 }

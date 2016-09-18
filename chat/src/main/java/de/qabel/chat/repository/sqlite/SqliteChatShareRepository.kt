@@ -2,6 +2,7 @@ package de.qabel.chat.repository.sqlite
 
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.BoxFileChatShare
+import de.qabel.chat.repository.sqlite.adapter.ChatShareAdapter
 import de.qabel.chat.repository.sqlite.schemas.ChatDropMessageDB
 import de.qabel.chat.repository.sqlite.schemas.ChatShareDB
 import de.qabel.core.config.Contact
@@ -16,7 +17,7 @@ import org.spongycastle.util.encoders.Hex
 
 class SqliteChatShareRepository(database: ClientDatabase,
                                 entityManager: EntityManager) :
-    BaseRepository<BoxFileChatShare>(ChatShareDB, database, entityManager), ChatShareRepository {
+    BaseRepository<BoxFileChatShare>(ChatShareDB, ChatShareAdapter(), database, entityManager), ChatShareRepository {
 
     override fun findByBoxReference(identity: Identity, metaUrl: String, metaKey: ByteArray): BoxFileChatShare? =
         with(createEntityQuery()) {
@@ -60,6 +61,6 @@ class SqliteChatShareRepository(database: ClientDatabase,
         innerJoin(ChatDropMessageDB.TABLE_NAME, ChatDropMessageDB.TABLE_ALIAS, ChatDropMessageDB.SHARE_ID, ChatShareDB.ID)
 
     private fun QueryBuilder.joinIdentity() =
-        innerJoin(IdentityDB.TABLE, IdentityDB.ALIAS, IdentityDB.ID, ChatShareDB.IDENTITY_ID)
+        innerJoin(IdentityDB, ChatShareDB.IDENTITY_ID)
 
 }
