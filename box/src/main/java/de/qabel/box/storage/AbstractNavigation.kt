@@ -80,9 +80,11 @@ abstract class AbstractNavigation(
                 val key = KeyParameter(target.key)
                 if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
                     val dm = directoryFactory.open(tmp, target.ref)
+                    val parent = this
                     return folderNavigationFactory.fromDirectoryMetadata(dm, target).apply {
                         setAutocommit(autocommit)
                         setAutocommitDelay(autocommitDelay)
+                        changes.subscribe { parent.changes.onNext(it) }
                     }
                 } else {
                     throw QblStorageNotFound("Invalid key")
@@ -151,6 +153,11 @@ abstract class AbstractNavigation(
         dm = reloadMetadata().apply {
             originalDm = clone(DirectoryMetadata@this)
             pendingChanges.execute(DirectoryMetadata@this)
+        }
+        if (recursive) {
+            listFolders().forEach {
+                navigate(it).refresh(true)
+            }
         }
     }
 

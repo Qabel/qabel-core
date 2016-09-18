@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory
 import org.spongycastle.util.encoders.Hex
 import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.file.Files
@@ -47,6 +48,7 @@ abstract class BoxVolumeTest {
     private var testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
     protected lateinit var contact: Contact
     protected lateinit var volumeTmpDir: File
+    val changes = mutableListOf<DirectoryMetadataChangeNotification>()
 
     @Before
     open fun setUp() {
@@ -77,6 +79,7 @@ abstract class BoxVolumeTest {
         FileUtils.deleteDirectory(volumeTmpDir)
     }
 
+    @Throws(IOException::class)
     protected abstract fun cleanVolume()
 
     @Test
@@ -143,6 +146,7 @@ abstract class BoxVolumeTest {
         nav.download(boxFile)
     }
 
+    @Throws(Exception::class)
     @Test
     open fun uploadsStreams() {
         val `in` = ByteArrayInputStream("testContent".toByteArray())
@@ -748,7 +752,6 @@ abstract class BoxVolumeTest {
         }
     }
 
-    val changes = mutableListOf<DirectoryMetadataChangeNotification>()
     fun subscribeChanges(nav: BoxNavigation) = nav.changes.subscribe { changes.add(it) }!!
 
     @Test
@@ -788,7 +791,7 @@ abstract class BoxVolumeTest {
                 subscribeChanges(this)
             }
         volume2.navigate().apply { remoteChange.invoke(this) }
-        return nav.apply { refresh() }
+        return nav.apply { refresh(true) }
     }
 
     @Test
@@ -877,6 +880,32 @@ abstract class BoxVolumeTest {
         assertThat(changes, hasSize(2))
         assertThat(changes.get(0).change, instanceOf(UpdateFileChange::class.java))
         assertThat(changes.get(1).change, instanceOf(UpdateFileChange::class.java))
+        changes.forEach { assertThat(it.navigation, sameInstance(nav)) }
+    }
+
+    @Test
+    open fun notifiesAboutSubfolderChanges() {
+        /*val nav = remoteChange(
+            localChange = { createFolder("subfolder") },
+            remoteChange = { navigate("subfolder").createFolder("subsubfolder") }
+        )*/
+        val nav = volume.navigate()
+        nav.createFolder("subfolder")
+        nav.commit()
+        subscribeChanges(nav)
+
+        val nav2 = volume2.navigate()
+        nav2.navigate("subfolder").apply {
+            createFolder("subsubfolder")
+            commit()
+        }
+
+        nav.refresh()
+
+        assertChange(CreateFolderChange::class.java) { change, changedNav ->
+            assertThat(change.name, equalTo("subsubfolder"))
+            assertThat(changedNav, sameInstance(nav.navigate("subfolder")))
+        }
     }
 
     private fun <T> assertChange(expectedClass: Class<T>, assert: (T, BoxNavigation) -> Unit) {
