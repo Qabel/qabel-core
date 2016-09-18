@@ -20,6 +20,13 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
                                dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)) :
     BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository {
 
+    constructor(db: ClientDatabase, em: EntityManager): this(
+        db,
+        em,
+        SqlitePrefixRepository(db),
+        SqliteDropUrlRepository(db)
+    )
+
     private val contactRepository: ContactRepository = SqliteContactRepository(db, em, dropUrlRepository, this)
 
     override fun createEntityQuery(): QueryBuilder =
