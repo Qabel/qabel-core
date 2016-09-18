@@ -71,6 +71,7 @@ abstract class BoxVolumeTest {
 
     protected abstract val readBackend: StorageReadBackend
 
+    @Throws(IOException::class)
     protected abstract fun setUpVolume()
 
     @After
