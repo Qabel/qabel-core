@@ -15,6 +15,7 @@ repositories {
 
 dependencies {
 	compile project(':core')
+    testCompile project(':core').sourceSets.test.output
 }
 
 tasks.withType(Test) {

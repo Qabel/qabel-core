@@ -6,7 +6,9 @@ import de.qabel.core.repository.sqlite.ClientDatabase
 import de.qabel.core.repository.sqlite.tryWith
 import org.apache.commons.codec.DecoderException
 import org.apache.commons.codec.binary.Hex
+import org.apache.commons.io.IOUtils
 import java.io.File
+import java.nio.file.Files
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 import java.sql.SQLException
@@ -399,12 +401,6 @@ class JdbcDirectoryMetadata(
         }
 
     }
-
-    @Throws(QblStorageException::class)
-    fun hasFile(name: String): Boolean = getFile(name) != null
-
-    @Throws(QblStorageException::class)
-    fun hasFolder(name: String): Boolean = getFolder(name) != null
 
     @Throws(QblStorageException::class)
     internal fun isA(name: String): Int {

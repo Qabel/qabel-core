@@ -37,12 +37,13 @@ fun CoreTestCase.randomFile(size: Long): File =
     }.toFile()
 
 
-fun <T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> Any?): T =
+inline fun <reified T : Throwable> assertThrows(expectedException: KClass<T>, operation: () -> Any?): T {
     try {
         operation()
-        fail("Expected exception ${expectedException.simpleName} not thrown.")
-        throw IllegalStateException("fail()")  /* Kotlin doesn't know that fail() always throws */
     } catch (ex: Throwable) {
-        assertEquals(ex.javaClass, expectedException.java)
-        ex as T
+        assertEquals(expectedException.java, ex.javaClass)
+        return ex as T
     }
+    fail("Expected exception ${expectedException.simpleName} not thrown.")
+    throw IllegalStateException("fail()")  /* Kotlin doesn't know that fail() always throws */
+}

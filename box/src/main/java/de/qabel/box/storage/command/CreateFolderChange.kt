@@ -8,7 +8,7 @@ import de.qabel.core.crypto.CryptoUtils
 import org.spongycastle.crypto.params.KeyParameter
 
 class CreateFolderChange(
-    private val name: String,
+    val name: String,
     val navigationFactory: FolderNavigationFactory,
     val directoryFactory: DirectoryMetadataFactory
 ) : DirectoryMetadataChange<ChangeResult<BoxFolder>> {

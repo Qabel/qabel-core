@@ -1,6 +1,7 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.command.*
+import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
@@ -41,8 +42,8 @@ abstract class AbstractNavigation(
     protected val cryptoUtils by lazy { CryptoUtils() }
 
     private val pendingChanges = LinkedList<DirectoryMetadataChange<*>>()
-    override val changes: Subject<DirectoryMetadataChange<Any>, DirectoryMetadataChange<Any>>
-        = PublishSubject<DirectoryMetadataChange<Any>>()/*publish().apply { connect() }*/
+    override val changes: Subject<DirectoryMetadataChangeNotification, DirectoryMetadataChangeNotification>
+        = PublishSubject<DirectoryMetadataChangeNotification>()
 
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
@@ -50,6 +51,19 @@ abstract class AbstractNavigation(
     var time: () -> Long = { System.currentTimeMillis() }
 
     abstract val indexNavigation: IndexNavigation
+
+    private var originalDm = clone(dm)
+        set(value) {
+            detectDmChanges(value)
+            field = value
+        }
+
+    protected fun clone(directoryMetadata: DirectoryMetadata): DirectoryMetadata {
+        val tmp = File.createTempFile("dir", "db", tempDir)
+        tmp.deleteOnExit()
+        directoryMetadata.path.copyTo(tmp, true)
+        return directoryFactory.open(tmp, directoryMetadata.fileName)
+    }
 
     override fun setAutocommitDelay(delay: Long) {
         autocommitDelay = delay
@@ -104,6 +118,7 @@ abstract class AbstractNavigation(
         var updatedDM: DirectoryMetadata? = null
         try {
             updatedDM = reloadMetadata()
+            originalDm = clone(updatedDM)
             logger.info("Remote version is " + String(Hex.encodeHex(updatedDM.version)))
         } catch (e: QblStorageNotFound) {
             logger.trace("Could not reload metadata, none exists yet")
@@ -122,6 +137,7 @@ abstract class AbstractNavigation(
         pendingChanges.postprocess(dm, writeBackend)
 
         pendingChanges.clear()
+        originalDm = clone(dm)
     }
 
     @Synchronized @Throws(QblStorageException::class)
@@ -131,7 +147,57 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun refresh(recursive: Boolean) {
-        dm = reloadMetadata().apply { pendingChanges.execute(this) }
+        dm = reloadMetadata().apply {
+            originalDm = clone(DirectoryMetadata@this)
+            pendingChanges.execute(DirectoryMetadata@this)
+        }
+    }
+
+    private fun detectDmChanges(newDm: DirectoryMetadata) {
+        if (Arrays.equals(originalDm.version, newDm.version)) {
+            return
+        }
+
+        // remote folder adds
+        newDm.listFolders()
+            .filter { !originalDm.hasFolder(it.name) }
+            .map { CreateFolderChange(it.name, folderNavigationFactory, directoryFactory) }
+            .forEach { push(it) }
+
+        // remote folder deletes
+        originalDm.listFolders()
+            .filter { !newDm.hasFolder(it.name) }
+            .map { DeleteFolderChange(it) }
+            .forEach { push(it) }
+
+        // local file adds
+        newDm.listFiles()
+            .filter { !originalDm.hasFile(it.name) }
+            .map { UpdateFileChange(null, it) }
+            .forEach { push(it) }
+
+        // local file deletes
+        originalDm.listFiles()
+            .filter { !newDm.hasFile(it.name) }
+            .map { DeleteFileChange(it, indexNavigation, writeBackend) }
+            .forEach { push(it) }
+
+        // remote file changes (update, neither add nor delete)
+        newDm.listFiles()
+            .filter { originalDm.hasFile(it.name) && !hashEquals(originalDm.getFile(it.name)!!, it) }
+            .map { UpdateFileChange(originalDm.getFile(it.name)!!, it) }
+            .forEach { push(it) }
+    }
+
+    private fun push(change: DirectoryMetadataChange<*>)
+        = changes.onNext(DirectoryMetadataChangeNotification(change, this))
+
+    private fun hashEquals(oneFile: BoxFile, otherFile: BoxFile): Boolean {
+        if (!oneFile.isHashed() || !otherFile.isHashed()) {
+            return false
+        }
+
+        return oneFile.hashed == otherFile.hashed
     }
 
     override val isUnmodified: Boolean

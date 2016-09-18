@@ -1,6 +1,11 @@
 package de.qabel.box.storage
 
 
+import de.qabel.box.storage.command.CreateFolderChange
+import de.qabel.box.storage.command.DeleteFileChange
+import de.qabel.box.storage.command.DeleteFolderChange
+import de.qabel.box.storage.command.UpdateFileChange
+import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import de.qabel.box.storage.exceptions.QblStorageNotFound
@@ -20,7 +25,6 @@ import org.slf4j.LoggerFactory
 import org.spongycastle.util.encoders.Hex
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.IOException
 import java.io.InputStream
 import java.nio.ByteBuffer
 import java.nio.file.Files
@@ -33,8 +37,8 @@ import java.util.concurrent.Callable
 abstract class BoxVolumeTest {
     private val DEFAULT_UPLOAD_FILENAME = "foobar"
 
-    protected var volume: BoxVolume? = null
-    protected var volume2: BoxVolume? = null
+    protected lateinit var volume: BoxVolume
+    protected lateinit var volume2: BoxVolume
     protected lateinit var deviceID: ByteArray
     protected lateinit var deviceID2: ByteArray
     protected lateinit var keyPair: QblECKeyPair
@@ -45,7 +49,6 @@ abstract class BoxVolumeTest {
     protected lateinit var volumeTmpDir: File
 
     @Before
-    @Throws(IOException::class, QblStorageException::class)
     open fun setUp() {
         val utils = CryptoUtils()
         deviceID = utils.getRandomBytes(16)
@@ -62,23 +65,19 @@ abstract class BoxVolumeTest {
 
     protected abstract val readBackend: StorageReadBackend
 
-    @Throws(IOException::class)
     protected abstract fun setUpVolume()
 
     @After
-    @Throws(IOException::class)
     open fun cleanUp() {
         cleanVolume()
         FileUtils.deleteDirectory(volumeTmpDir)
     }
 
-    @Throws(IOException::class)
     protected abstract fun cleanVolume()
 
     @Test
-    @Throws(Exception::class)
     open fun testCleansUpTmpUploads() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         uploadFile(nav)
 
         assertNoTmpFiles()
@@ -103,9 +102,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testCleansUpTmpDownloads() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val upload = uploadFile(nav)
         nav.download(upload).close()
 
@@ -113,22 +111,19 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class)
     open fun testCreateIndex() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         assertThat(nav.listFiles().size, `is`(0))
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testUploadFile() {
-        uploadFile(volume!!.navigate())
+        uploadFile(volume.navigate())
     }
 
     @Test
-    @Throws(Exception::class)
     open fun modifiedStateIsClearedOnCommit() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.setAutocommit(false)
         uploadFile(nav)
         assertFalse(nav.isUnmodified)
@@ -137,21 +132,19 @@ abstract class BoxVolumeTest {
     }
 
     @Test(expected = QblStorageNotFound::class)
-    @Throws(QblStorageException::class, IOException::class)
     open fun testDeleteFile() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val boxFile = uploadFile(nav)
         nav.delete(boxFile)
         nav.download(boxFile)
     }
 
     @Test
-    @Throws(Exception::class)
     open fun uploadsStreams() {
         val `in` = ByteArrayInputStream("testContent".toByteArray())
         val size = 11L
 
-        val nav = volume!!.navigate() as DefaultIndexNavigation
+        val nav = volume.navigate() as DefaultIndexNavigation
         nav.time = fun(): Long {
             return 1234567890L
         } // imagine lambda
@@ -164,29 +157,33 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun hasUsefulDefaultTimeProvider() {
-        val file = volume!!.navigate().upload("a", ByteArrayInputStream("x".toByteArray()), 1L)
+        val file = volume.navigate().upload("a", ByteArrayInputStream("x".toByteArray()), 1L)
         assertThat(System.currentTimeMillis() - file.mtime, lessThan(10000L))
         assertThat(System.currentTimeMillis() - file.mtime, greaterThanOrEqualTo(0L))
     }
 
-    @Throws(QblStorageException::class, IOException::class)
     private fun uploadFile(nav: BoxNavigation): BoxFile {
         val filename = DEFAULT_UPLOAD_FILENAME
         return uploadFile(nav, filename)
     }
 
-    @Throws(QblStorageException::class, IOException::class)
     private fun uploadFile(nav: BoxNavigation, filename: String): BoxFile {
         val file = File(testFileName)
         val boxFile = nav.upload(filename, file)
-        val nav_new = volume!!.navigate()
-        checkFile(boxFile, nav_new)
+        val newNav = volume.navigate()
+        checkFile(boxFile, newNav)
         return boxFile
     }
 
-    @Throws(QblStorageException::class, IOException::class)
+    private fun uploadFile(nav: BoxNavigation, filename: String, content: String): BoxFile {
+        content.toByteArray().let {
+            val boxFile = nav.upload(filename, ByteArrayInputStream(it), it.size.toLong())
+            val newNav = volume.navigate()
+            return boxFile
+        }
+    }
+
     private fun checkFile(boxFile: BoxFile, nav: BoxNavigation) {
         nav.download(boxFile).use { dlStream ->
             assertNotNull("Download stream is null", dlStream)
@@ -197,19 +194,17 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun hashIsCalculatedOnUpload() {
         volume!!.config.defaultHashAlgorithm = "SHA-1"
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = uploadFile(nav, "testfile")
         assertTrue(file.isHashed())
         assertEquals("a23818f6a36f37ded50028f8fe008b0473cc7416", Hex.toHexString(file.hashed!!.hash))
     }
 
     @Test
-    @Throws(Exception::class)
     open fun defaultsToBlake2bInDm() {
-        uploadFile(volume!!.navigate(), "testfile")
+        uploadFile(volume.navigate(), "testfile")
         val hash = volume2!!.navigate().getFile("testfile").hashed
         assertEquals(
                 "0f23d0a7f6ed44055ccf2e6cd4e088211659699640bc25de5f99dbfe082410bd632dca3e35925d9dffa20ca9f99ea55c63c1b21591eccde907bd3de275c74147",
@@ -218,9 +213,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testCreateFolder() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val boxFolder = nav.createFolder("foobdir")
 
         val folder = nav.navigate(boxFolder)
@@ -230,16 +224,15 @@ abstract class BoxVolumeTest {
         val folder_new = nav.navigate(boxFolder)
         checkFile(boxFile, folder_new)
 
-        val nav_new = volume!!.navigate()
+        val nav_new = volume.navigate()
         val folders = nav_new.listFolders()
         assertThat(folders.size, `is`(1))
         assertThat(boxFolder, equalTo(folders[0]))
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testAutocommitDelay() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.setAutocommit(true)
         nav.setAutocommitDelay(1000)
         val file = uploadFile(nav, "testfile")
@@ -254,17 +247,15 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun simpleDeleteFolder() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val boxFolder = nav.createFolder("newfolder")
         nav.delete(boxFolder)
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testDeleteFolder() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val boxFolder = nav.createFolder("foobdir")
 
         val folder = nav.navigate(boxFolder)
@@ -272,12 +263,11 @@ abstract class BoxVolumeTest {
         val subfolder = folder.createFolder("subfolder")
 
         nav.delete(boxFolder)
-        val nav_after = volume!!.navigate()
+        val nav_after = volume.navigate()
         assertThat(nav_after.listFolders().isEmpty(), `is`(true))
         checkDeleted(boxFolder, subfolder, boxFile, nav_after)
     }
 
-    @Throws(QblStorageException::class)
     private fun checkDeleted(boxFolder: BoxFolder, subfolder: BoxFolder, boxFile: BoxFile, nav: BoxNavigation) {
         try {
             nav.download(boxFile)
@@ -300,17 +290,15 @@ abstract class BoxVolumeTest {
     }
 
     @Test(expected = QblStorageNameConflict::class)
-    @Throws(QblStorageException::class, IOException::class)
     open fun testOverwriteFileError() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         uploadFile(nav)
         uploadFile(nav)
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testOverwriteFile() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = File(testFileName)
         nav.upload(DEFAULT_UPLOAD_FILENAME, file)
         nav.overwrite(DEFAULT_UPLOAD_FILENAME, file)
@@ -318,7 +306,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testConflictFileUpdate() {
         val nav = setupConflictNav1()
         val nav2 = setupConflictNav2()
@@ -337,7 +324,6 @@ abstract class BoxVolumeTest {
         }
     }
 
-    @Throws(IOException::class)
     private fun tmpFileWithSize(size: Long): File {
         val file = Files.createTempFile("qbltmp", ".deleteme")
         val content = StringBuffer()
@@ -349,7 +335,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testSuccessiveConflictFileUpdate() {
         val nav = setupConflictNav1()
         val nav2 = setupConflictNav2()
@@ -374,7 +359,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testFoldersAreMergedOnConflict() {
         val nav = setupConflictNav1()
         val nav2 = setupConflictNav2()
@@ -388,15 +372,13 @@ abstract class BoxVolumeTest {
         assertThat(nav.listFolders().size, `is`(2))
     }
 
-    @Throws(QblStorageException::class)
     private fun setupConflictNav1(): BoxNavigation {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.setAutocommit(false)
         return nav
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testDeletedFoldersAreMergedOnConflict() {
         var nav = setupConflictNav1()
         val folder1 = nav.createFolder("folder1")
@@ -418,7 +400,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testDeletedFilesAreMergedOnConflict() {
         var nav = setupConflictNav1()
         val file1 = uploadFile(nav, "file1")
@@ -444,7 +425,6 @@ abstract class BoxVolumeTest {
         assertFileBlockDeleted(file2)
     }
 
-    @Throws(IOException::class, QblStorageException::class)
     private fun assertFileBlockDeleted(file2: BoxFile) {
         try {
             readBackend.download("blocks/" + file2.block).close()
@@ -455,9 +435,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class)
     open fun testFileNameConflict() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.createFolder(DEFAULT_UPLOAD_FILENAME)
         nav.upload(DEFAULT_UPLOAD_FILENAME, File(testFileName))
         assertTrue(nav.hasFolder(DEFAULT_UPLOAD_FILENAME + "_conflict"))
@@ -465,15 +444,13 @@ abstract class BoxVolumeTest {
     }
 
     @Test(expected = QblStorageNameConflict::class)
-    @Throws(QblStorageException::class)
     open fun testFolderNameConflict() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.upload(DEFAULT_UPLOAD_FILENAME, File(testFileName))
         nav.createFolder(DEFAULT_UPLOAD_FILENAME)
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testNameConflictOnDifferentClients() {
         val nav = setupConflictNav1()
         val nav2 = setupConflictNav2()
@@ -489,9 +466,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testAddsShareToIndexWhenShareIsCreated() {
-        val index = volume!!.navigate()
+        val index = volume.navigate()
         index.createFolder("subfolder")
         val nav = index.navigate("subfolder")
         val file = nav.upload(DEFAULT_UPLOAD_FILENAME, File(testFileName))
@@ -502,7 +478,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(QblStorageException::class, IOException::class)
     open fun testFolderNameConflictOnDifferentClients() {
         val nav = setupConflictNav1()
         val nav2 = setupConflictNav2()
@@ -517,7 +492,6 @@ abstract class BoxVolumeTest {
         assertThat(nav.listFiles()[0].name, equalTo("foobar"))
     }
 
-    @Throws(QblStorageException::class)
     private fun setupConflictNav2(): BoxNavigation {
         val nav2 = volume2!!.navigate()
         nav2.setAutocommit(false)
@@ -525,9 +499,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testShare() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
@@ -546,9 +519,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testShareUpdate() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
@@ -573,7 +545,6 @@ abstract class BoxVolumeTest {
         assertEquals("the file metadata have not been updated", updatedBoxFile.block, externalFile.block)
     }
 
-    @Throws(IOException::class)
     private fun download(`in`: InputStream): File {
         val path = Files.createTempFile(Paths.get(System.getProperty("java.io.tmpdir")), "tmpdownload", "")
         Files.write(path, IOUtils.toByteArray(`in`))
@@ -581,9 +552,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun testUnshare() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
@@ -598,9 +568,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun deleteCleansShares() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
@@ -623,7 +592,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun folderConflictsArePreventedByPessimisticCommits() {
         // set up navs that would be autocommitted after they have content (and thus overwrite each other)
         val nav1 = setupConflictNav1()
@@ -661,7 +629,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun sameFilesAreMerged() {
         // set up navs that would be autocommitted after they have content (and thus overwrite each other)
         val nav1 = setupConflictNav1()
@@ -685,7 +652,6 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun conflictsBySameNameInSubfolders() {
         // set up navs that would be autocommitted after they have content (and thus overwrite each other)
         val nav1 = setupConflictNav1()
@@ -731,9 +697,8 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun shareInsertedInIndexNavigationWhenSharingFromFolder() {
-        val nav = volume!!.navigate()
+        val nav = volume.navigate()
         nav.setAutocommit(false)
         val folder = nav.createFolder("folder")
         val subNav = nav.navigate(folder)
@@ -746,7 +711,6 @@ abstract class BoxVolumeTest {
         assertThat(nav2.getSharesOf(nav2.getFile("file1")), hasSize<Any>(1))
     }
 
-    @Throws(QblStorageException::class)
     private fun originalRootRef(): String {
         val md: MessageDigest
         try {
@@ -765,12 +729,158 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    @Throws(Exception::class)
     open fun rootRefIsCompatible() {
-        assertThat(originalRootRef(), equalTo(volume!!.rootRef))
+        assertThat(originalRootRef(), equalTo(volume.rootRef))
     }
 
-    @Throws(QblStorageException::class)
+    @Test
+    open fun notifiesAboutChanges() {
+        val nav = volume.navigate()
+        subscribeChanges(nav)
+
+        nav.createFolder("test")
+        assertChange(CreateFolderChange::class.java) { it, nav ->
+            assertEquals("test", it.name)
+        }
+    }
+
+    val changes = mutableListOf<DirectoryMetadataChangeNotification>()
+    fun subscribeChanges(nav: BoxNavigation) = nav.changes.subscribe { changes.add(it) }!!
+
+    @Test
+    open fun onlyNotifiesAboutNewChanges() {
+
+        val nav = volume.navigate()
+        val folder = nav.createFolder("test")
+
+        subscribeChanges(nav)
+
+        nav.delete(folder)
+        assertThat(changes, hasSize(1))
+        assertThat(changes.first().change, instanceOf(DeleteFolderChange::class.java))
+    }
+
+    @Test
+    open fun notifiesAboutRemoteChanges() {
+        val nav = volume.navigate()
+        val folder = nav.createFolder("test")
+        subscribeChanges(nav)
+
+        val nav2 = volume2.navigate()
+        nav2.delete(folder)
+        nav.refresh()
+
+        assertThat(changes, hasSize(1))
+        assertThat(changes.first().change, instanceOf(DeleteFolderChange::class.java))
+    }
+
+    fun remoteChange(
+        localChange: (BoxNavigation.() -> Unit)? = null,
+        remoteChange: BoxNavigation.() -> Unit
+    ): BoxNavigation {
+        val nav = volume.navigate()
+            .apply {
+                localChange?.invoke(this)
+                subscribeChanges(this)
+            }
+        volume2.navigate().apply { remoteChange.invoke(this) }
+        return nav.apply { refresh() }
+    }
+
+    @Test
+    open fun notifiesAboutRemoteAdds() {
+        remoteChange { createFolder("test") }
+
+        assertChange(CreateFolderChange::class.java) { it, nav ->
+            assertThat(it.name, equalTo("test"))
+        }
+    }
+
+    @Test
+    open fun notifiesAboutRemoteFileAdds() {
+        remoteChange { uploadFile(BoxNavigation@this, "testfile") }
+
+        assertChange(UpdateFileChange::class.java) { it, nav ->
+            assertEquals("testfile", it.newFile.name)
+        }
+    }
+
+    @Test
+    open fun notifiesAboutRemoteFileDeletes() {
+        var newFile: BoxFile? = null
+        remoteChange(
+            localChange = { newFile = uploadFile(this, "testfile") },
+            remoteChange = { delete(newFile!!) }
+        )
+
+        assertChange(DeleteFileChange::class.java) { it, nav ->
+            assertEquals("testfile", it.file.name)
+        }
+    }
+
+    @Test
+    open fun notifiesAboutRemoteFolderDeletes() {
+        remoteChange(
+            localChange = { createFolder("newfolder") },
+            remoteChange = { delete(getFolder("newfolder")) }
+        )
+
+        assertChange(DeleteFolderChange::class.java) { it, nav ->
+            assertEquals("newfolder", it.folder.name)
+        }
+    }
+
+    @Test
+    open fun doesNotNotifyAboutUndoneChanges() {
+        val nav = volume.navigate()
+        nav.setAutocommit(false)
+        val testfile = uploadFile(nav, "testfile")
+        nav.commit()
+
+        nav.delete(testfile)
+        subscribeChanges(nav)
+
+        nav.refresh()
+
+        assertThat(changes, hasSize(0))
+    }
+
+    @Test
+    open fun notifiesAboutUpdates() {
+        remoteChange(
+            localChange = { uploadFile(BoxNavigation@this, "testfile", "1") },
+            remoteChange = { uploadFile(BoxNavigation@this, "testfile", "12") }
+        )
+
+        assertChange(UpdateFileChange::class.java) { it, nav ->
+            assertEquals(2, it.newFile.size)
+        }
+    }
+
+    @Test
+    open fun notifiesAboutAllUpdates() {
+        val nav = remoteChange(
+            localChange = { uploadFile(BoxNavigation@this, "testfile", "1") },
+            remoteChange = { uploadFile(BoxNavigation@this, "testfile", "12") }
+        )
+
+        nav.refresh()
+        nav.setAutocommit(false)
+        uploadFile(nav, "testfile", "123")
+        nav.refresh()
+        nav.commit()
+
+        assertThat(changes, hasSize(2))
+        assertThat(changes.get(0).change, instanceOf(UpdateFileChange::class.java))
+        assertThat(changes.get(1).change, instanceOf(UpdateFileChange::class.java))
+    }
+
+    private fun <T> assertChange(expectedClass: Class<T>, assert: (T, BoxNavigation) -> Unit) {
+        assertThat(changes, hasSize(1))
+        assertThat(changes.first().change, instanceOf(expectedClass))
+        assert.invoke(changes.first().change as T, changes.first().navigation)
+    }
+
     protected fun blockExists(meta: String): Boolean {
         try {
             readBackend.download(meta)

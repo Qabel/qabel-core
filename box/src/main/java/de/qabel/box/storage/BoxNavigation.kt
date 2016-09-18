@@ -1,10 +1,9 @@
 package de.qabel.box.storage
 
-import de.qabel.box.storage.command.DirectoryMetadataChange
+import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
 import rx.Observable
-
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -44,7 +43,7 @@ interface BoxNavigation : ReadableBoxNavigation {
     @Throws(QblStorageException::class)
     fun refresh(recursive: Boolean = false)
 
-    val changes: Observable<DirectoryMetadataChange<Any>>
+    val changes: Observable<DirectoryMetadataChangeNotification>
 
     /**
      * commits the DM if it has been changed (uploads or deletes)
