@@ -1,5 +1,7 @@
 package de.qabel.box.storage
 
+import de.qabel.box.storage.cache.BoxNavigationCache
+import de.qabel.box.storage.cache.CachedFolderNavigationFactory
 import de.qabel.box.storage.command.*
 import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
@@ -35,7 +37,11 @@ abstract class AbstractNavigation(
     protected val fileFactory = volumeConfig.fileFactory
     protected val defaultHashAlgorithm = volumeConfig.defaultHashAlgorithm
     protected val tempDir = volumeConfig.tempDir
-    protected val folderNavigationFactory by lazy { FolderNavigationFactory(indexNavigation, volumeConfig) }
+    private val navCache = BoxNavigationCache<FolderNavigation>()
+
+    protected val folderNavigationFactory by lazy {
+        CachedFolderNavigationFactory(indexNavigation, volumeConfig, navCache)
+    }
     private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils by lazy { CryptoUtils() }
 
@@ -74,26 +80,35 @@ abstract class AbstractNavigation(
     @Synchronized @Throws(QblStorageException::class)
     override fun navigate(target: BoxFolder): AbstractNavigation {
         try {
-            readBackend.download(target.ref).inputStream.use { indexDl ->
-                val tmp = File.createTempFile("dir", "db2", tempDir)
-                tmp.deleteOnExit()
-                val key = KeyParameter(target.key)
-                if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
-                    val dm = directoryFactory.open(tmp, target.ref)
-                    val parent = this
-                    return folderNavigationFactory.fromDirectoryMetadata(dm, target).apply {
-                        setAutocommit(autocommit)
-                        setAutocommitDelay(autocommitDelay)
-                        changes.subscribe { parent.changes.onNext(it) }
+            return navCache.get(target) {
+                readBackend.download(target.ref).inputStream.use { indexDl ->
+                    val tmp = File.createTempFile("dir", "db2", tempDir)
+                    tmp.deleteOnExit()
+                    val key = KeyParameter(target.key)
+                    if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
+                        val dm = directoryFactory.open(tmp, target.ref)
+                        folderNavigationFactory.fromDirectoryMetadata(dm, target).apply {
+                            setAutocommit(autocommit)
+                            setAutocommitDelay(autocommitDelay)
+                        }
+                    } else {
+                        throw QblStorageNotFound("Invalid key")
                     }
-                } else {
-                    throw QblStorageNotFound("Invalid key")
                 }
-            }
+            }.apply { subscribe(this) }
         } catch (e: IOException) {
             throw QblStorageException(e)
         } catch (e: InvalidKeyException) {
             throw QblStorageException(e)
+        }
+    }
+
+    private val subscribedNavs = WeakHashMap<FolderNavigation, Subject<*, *>>()
+    @Synchronized
+    private fun subscribe(nav: FolderNavigation) {
+        if (!subscribedNavs.containsKey(nav)) {
+            nav.changes.subscribe { changes.onNext(it) }
+            subscribedNavs.put(nav, nav.changes)
         }
     }
 

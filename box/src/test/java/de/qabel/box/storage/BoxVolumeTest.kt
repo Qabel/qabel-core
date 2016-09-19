@@ -631,10 +631,10 @@ abstract class BoxVolumeTest {
         nav1.refresh()
         assertThat(nav1.listFolders(), hasSize<Any>(1))
 
-        val subnav = nav1.navigate(folder1)
-        assertTrue(subnav.hasFile("file1"))
-        assertTrue(subnav.hasFile("file2"))
-        assertThat(subnav.listFiles(), hasSize<Any>(2))
+        subnav1.refresh()
+        assertTrue(subnav1.hasFile("file1"))
+        assertTrue(subnav1.hasFile("file2"))
+        assertThat(subnav1.listFiles(), hasSize<Any>(2))
     }
 
     @Test
@@ -886,22 +886,10 @@ abstract class BoxVolumeTest {
 
     @Test
     open fun notifiesAboutSubfolderChanges() {
-        /*val nav = remoteChange(
+        val nav = remoteChange(
             localChange = { createFolder("subfolder") },
             remoteChange = { navigate("subfolder").createFolder("subsubfolder") }
-        )*/
-        val nav = volume.navigate()
-        nav.createFolder("subfolder")
-        nav.commit()
-        subscribeChanges(nav)
-
-        val nav2 = volume2.navigate()
-        nav2.navigate("subfolder").apply {
-            createFolder("subsubfolder")
-            commit()
-        }
-
-        nav.refresh()
+        )
 
         assertChange(CreateFolderChange::class.java) { change, changedNav ->
             assertThat(change.name, equalTo("subsubfolder"))
