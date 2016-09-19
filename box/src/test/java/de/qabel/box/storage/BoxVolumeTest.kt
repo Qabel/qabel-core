@@ -272,9 +272,10 @@ abstract class BoxVolumeTest {
         val subfolder = folder.createFolder("subfolder")
 
         nav.delete(boxFolder)
-        val nav_after = volume.navigate()
-        assertThat(nav_after.listFolders().isEmpty(), `is`(true))
-        checkDeleted(boxFolder, subfolder, boxFile, nav_after)
+
+        val navAfter = volume2.navigate()
+        assertThat(navAfter.listFolders().isEmpty(), `is`(true))
+        checkDeleted(boxFolder, subfolder, boxFile, navAfter)
     }
 
     private fun checkDeleted(boxFolder: BoxFolder, subfolder: BoxFolder, boxFile: BoxFile, nav: BoxNavigation) {
@@ -901,6 +902,18 @@ abstract class BoxVolumeTest {
         assertThat(changes, hasSize(1))
         assertThat(changes.first().change, instanceOf(expectedClass))
         assert.invoke(changes.first().change as T, changes.first().navigation)
+    }
+
+    @Test
+    open fun sameInstancesAreReturnedReliably() {
+        val navA = volume.navigate()
+        val navB = volume.navigate()
+
+        val subNavA = navA.apply { createFolder("testfolder") }.navigate("testfolder")
+        val subNavB = navB.apply { refresh() }.navigate("testfolder")
+
+        assertThat(navA, sameInstance(navB))
+        assertThat(subNavA, sameInstance(subNavB))
     }
 
     protected fun blockExists(meta: String): Boolean {

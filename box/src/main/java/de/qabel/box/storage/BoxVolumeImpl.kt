@@ -33,6 +33,13 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
 
     override fun getReadBackend() = config.readBackend
 
+    val indexNavigation: IndexNavigation by lazy {
+        with(config) {
+            val dm = indexDmDownloader.loadDirectoryMetadata(rootRef)
+            DefaultIndexNavigation(dm, keyPair, config)
+        }
+    }
+
     init {
         try {
             loadDriver()
@@ -70,12 +77,7 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
      * @throws QblStorageIOFailure        if the temporary files could not be accessed
      */
     @Throws(QblStorageException::class)
-    override fun navigate(): IndexNavigation {
-        with(config) {
-            val dm = indexDmDownloader.loadDirectoryMetadata(rootRef)
-            return DefaultIndexNavigation(dm, keyPair, config)
-        }
-    }
+    override fun navigate(): IndexNavigation = indexNavigation
 
     /**
      * Calculate the filename of the index metadata file
