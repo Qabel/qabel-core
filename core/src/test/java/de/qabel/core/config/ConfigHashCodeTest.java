@@ -59,6 +59,7 @@ public class ConfigHashCodeTest {
             .ignoreProperty("phoneStatus")
             .ignoreProperty("observers")
             .ignoreProperty("prefixes")
+            .ignoreProperty("uploadEnabled")
             .build();
         tester.testHashCodeMethod(new IdentityEquivalentTestFactory(), config);
     }
