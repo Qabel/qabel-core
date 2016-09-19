@@ -401,12 +401,6 @@ class JdbcDirectoryMetadata(
     }
 
     @Throws(QblStorageException::class)
-    fun hasFile(name: String): Boolean = getFile(name) != null
-
-    @Throws(QblStorageException::class)
-    fun hasFolder(name: String): Boolean = getFolder(name) != null
-
-    @Throws(QblStorageException::class)
     internal fun isA(name: String): Int {
         val types = arrayOf("files", "folders", "externals")
         for (type in 0..2) {

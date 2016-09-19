@@ -1,11 +1,11 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
+import de.qabel.box.storage.exceptions.QblStorageNotFound
 import java.io.File
 import java.util.*
 
 class InMemoryDirectoryMetadata : DirectoryMetadata {
-
     override val path: File get() = throw UnsupportedOperationException()
     override val fileName by lazy { UUID.randomUUID().toString() }
 
@@ -42,6 +42,9 @@ class InMemoryDirectoryMetadata : DirectoryMetadata {
     }
 
     override fun deleteFile(file: BoxFile) {
+        if (!files.containsKey(file.name))
+            throw QblStorageNotFound("file not found: ${file.name}")
+
         files.remove(file.name)
     }
 

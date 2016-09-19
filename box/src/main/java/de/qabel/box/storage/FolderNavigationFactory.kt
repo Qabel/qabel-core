@@ -1,11 +1,18 @@
 package de.qabel.box.storage
 
-class FolderNavigationFactory(
+import de.qabel.box.storage.dto.BoxPath
+
+open class FolderNavigationFactory(
     val indexNavigation: IndexNavigation,
     val volumeConfig: BoxVolumeConfig
 ) {
-    fun fromDirectoryMetadata(dm: DirectoryMetadata, folder: BoxFolder): FolderNavigation {
+    open fun fromDirectoryMetadata(
+        path: BoxPath.FolderLike,
+        dm: DirectoryMetadata,
+        folder: BoxFolder
+    ): FolderNavigation {
         val newFolder = FolderNavigation(
+            path,
             dm,
             folder.key,
             indexNavigation,

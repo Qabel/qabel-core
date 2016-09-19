@@ -20,6 +20,12 @@ interface DirectoryMetadata {
     fun getFile(name: String): BoxFile?
 
     @Throws(QblStorageException::class)
+    fun hasFolder(name: String) = getFolder(name) !== null
+
+    @Throws(QblStorageException::class)
+    fun hasFile(name: String): Boolean = getFile(name) != null
+
+    @Throws(QblStorageException::class)
     fun getFolder(name: String): BoxFolder?
 
     @Throws(QblStorageException::class)

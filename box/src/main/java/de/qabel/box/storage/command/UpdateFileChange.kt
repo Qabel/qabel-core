@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
 
 open class UpdateFileChange(
     val expectedFile: BoxFile?,
-    private val newFile: BoxFile
+    val newFile: BoxFile
     ) : DirectoryMetadataChange<Unit>, Postprocessable {
 
     private val logger by lazy { LoggerFactory.getLogger(UpdateFileChange::class.java) }

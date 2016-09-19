@@ -1,5 +1,6 @@
 package de.qabel.box.storage
 
+import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import org.slf4j.LoggerFactory
@@ -10,11 +11,12 @@ import java.security.InvalidKeyException
 import java.util.*
 
 class FolderNavigation(
+        override val path: BoxPath.FolderLike,
         dm: DirectoryMetadata,
         private val key: ByteArray,
         override val indexNavigation: IndexNavigation,
         volumeConfig: BoxVolumeConfig
-) : AbstractNavigation(dm, volumeConfig) {
+) : AbstractNavigation(path, dm, volumeConfig) {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
     private val logger by lazy { LoggerFactory.getLogger(FolderNavigation::class.java) }
 

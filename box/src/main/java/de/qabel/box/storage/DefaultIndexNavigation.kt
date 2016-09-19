@@ -2,6 +2,7 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.command.DeleteShareChange
 import de.qabel.box.storage.command.InsertShareChange
+import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
@@ -14,7 +15,7 @@ import java.security.InvalidKeyException
 import java.util.*
 
 class DefaultIndexNavigation(dm: DirectoryMetadata, val keyPair: QblECKeyPair, volumeConfig: BoxVolumeConfig)
-    : AbstractNavigation(dm, volumeConfig), IndexNavigation {
+    : AbstractNavigation(BoxPath.Root, dm, volumeConfig), IndexNavigation {
     private val directoryMetadataMHashes = WeakHashMap<Int, String>()
     private val logger by lazy { LoggerFactory.getLogger(DefaultIndexNavigation::class.java) }
     private val indexDmDownloader = object : IndexDMDownloader(readBackend, keyPair, tempDir, directoryFactory) {

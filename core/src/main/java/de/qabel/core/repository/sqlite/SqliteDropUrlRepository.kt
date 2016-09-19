@@ -17,6 +17,8 @@ import java.util.*
 class SqliteDropUrlRepository(database: ClientDatabase, hydrator: Hydrator<DropURL> = DropURLHydrator()) :
     AbstractSqliteRepository<DropURL>(database, hydrator, SqliteDropUrlRepository.TABLE_NAME), DropUrlRepository {
 
+    constructor(database: ClientDatabase): this(database, DropURLHydrator())
+
     companion object {
         val TABLE_NAME = "drop_url"
     }
