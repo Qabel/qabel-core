@@ -29,10 +29,7 @@ class CreateFolderChange(
         val folder = BoxFolder(childDM.fileName, name, secretKey.key)
         childDM.commit()
 
-        with(navigationFactory.fromDirectoryMetadata(parentNav.path / folder.name, childDM, folder)) {
-            setAutocommit(false)
-            commit()
-        }
+        navigationFactory.fromDirectoryMetadata(parentNav.path / folder.name, childDM, folder).commit()
 
         return ChangeResult(childDM, folder)
     }
