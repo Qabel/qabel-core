@@ -18,6 +18,7 @@ import org.spongycastle.crypto.params.KeyParameter
 import rx.lang.kotlin.PublishSubject
 import rx.subjects.Subject
 import java.io.*
+import java.nio.file.Files
 import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.util.*
@@ -264,7 +265,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val mtime = try {
-            file.lastModified()
+            Files.getLastModifiedTime(file.toPath()).toMillis()
         } catch (e: IOException) {
             throw IllegalArgumentException("invalid source file " + file.absolutePath)
         }
