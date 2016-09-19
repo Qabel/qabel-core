@@ -21,6 +21,7 @@ class IdentityAdapter(private val dropURLRepository: DropUrlRepository,
             val privateKey = Hex.decode(getString(IdentityDB.PRIVATE_KEY.alias()))
             return Identity(getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(), QblECKeyPair(privateKey)).apply {
                 id = entityId
+                isUploadEnabled = getBoolean(IdentityDB.UPLOAD_ENABLED.alias())
                 phone = getString(ContactDB.PHONE.alias())
                 phoneStatus = enumValue(getInt(IdentityDB.PHONE_STATUS.alias()), VerificationStatus.values())
 

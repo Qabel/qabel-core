@@ -49,7 +49,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
 
     @Test
     fun findsSavedIdentities() {
-        val identity = identityBuilder!!.build()
+        val identity = identityBuilder.build()
         identity.email = "email"
         identity.phone = "phone"
         repo.save(identity)
@@ -60,7 +60,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
 
     @Test
     fun findsSavedIdentitiesFromPreviousSession() {
-        val identity = identityBuilder!!.build()
+        val identity = identityBuilder.build()
         identity.email = "email"
         identity.emailStatus = VerificationStatus.NOT_VERIFIED
         identity.phone = "phone"
@@ -91,21 +91,23 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
 
     @Test
     fun findsSavedIdentitiesCollection() {
-        val identity = identityBuilder!!.build()
+        val identity = identityBuilder.build()
         identity.email = "email"
         identity.phone = "phone"
+        identity.isUploadEnabled = true
         repo.save(identity)
         val loaded = repo.findAll()
 
         assertNotNull(loaded)
         assertEquals(1, loaded.identities.size.toLong())
         assertSame(identity, loaded.identities.toTypedArray()[0])
+        assertTrue(identity.isUploadEnabled)
     }
 
     @Test
-
     fun alwaysLoadsTheSameInstance() {
-        val identity = identityBuilder!!.build()
+        val identity = identityBuilder.build()
+        identity.isUploadEnabled = true
         repo.save(identity)
         em.clear()
 
@@ -117,13 +119,16 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         assertNotSame(instance1, instance3)
         val instance4 = repo.find(identity.keyIdentifier, false)
         assertSame(instance1, instance4)
+
+        assertEquals(instance1.isUploadEnabled, true)
     }
 
     @Test
     fun findsSavedIdentitiesCollectionFromPreviousSession() {
-        val identity = identityBuilder!!.build()
+        val identity = identityBuilder.build()
         identity.email = "email"
         identity.phone = "phone"
+        identity.isUploadEnabled = false
         repo.save(identity)
         em.clear()
 
@@ -141,6 +146,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         assertEquals(identity.alias, loadedIdentity.alias)
         assertEquals(identity.email, loadedIdentity.email)
         assertEquals(identity.phone, loadedIdentity.phone)
+        assertEquals(identity.isUploadEnabled, false)
         assertTrue(Arrays.equals(identity.dropUrls.toTypedArray(), loadedIdentity.dropUrls.toTypedArray()))
     }
 
