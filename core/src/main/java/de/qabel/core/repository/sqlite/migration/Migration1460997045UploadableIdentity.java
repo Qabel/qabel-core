@@ -11,7 +11,7 @@ public class Migration1460997045UploadableIdentity extends AbstractMigration {
 
     @Override
     public long getVersion() {
-        return 1460997044L;
+        return 1460997045L;
     }
 
     @Override
