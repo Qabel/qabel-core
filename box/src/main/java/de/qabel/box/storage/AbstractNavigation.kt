@@ -18,7 +18,6 @@ import org.spongycastle.crypto.params.KeyParameter
 import rx.lang.kotlin.PublishSubject
 import rx.subjects.Subject
 import java.io.*
-import java.nio.file.Files
 import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.util.*
@@ -44,7 +43,6 @@ abstract class AbstractNavigation(
     protected val folderNavigationFactory by lazy {
         CachedFolderNavigationFactory(indexNavigation, volumeConfig, navCache)
     }
-    private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils by lazy { CryptoUtils() }
 
     private val pendingChanges = LinkedList<DirectoryMetadataChange<*>>()
@@ -266,7 +264,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val mtime = try {
-            Files.getLastModifiedTime(file.toPath()).toMillis()
+            file.lastModified()
         } catch (e: IOException) {
             throw IllegalArgumentException("invalid source file " + file.absolutePath)
         }
@@ -612,6 +610,8 @@ abstract class AbstractNavigation(
 
     companion object {
         val BLOCKS_PREFIX = "blocks/"
+
+        private val scheduler = Executors.newScheduledThreadPool(1)
 
         @JvmField
         @Deprecated("")
