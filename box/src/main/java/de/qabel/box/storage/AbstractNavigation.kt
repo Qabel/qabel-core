@@ -12,7 +12,6 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.NotImplementedException
 import org.spongycastle.crypto.params.KeyParameter
 import java.io.*
-import java.nio.file.Files
 import java.security.InvalidKeyException
 import java.security.MessageDigest
 import java.util.*
@@ -166,7 +165,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     private fun uploadFile(name: String, file: File, expectedFile: BoxFileState?, listener: ProgressListener?): BoxFile {
         val mtime = try {
-            Files.getLastModifiedTime(file.toPath()).toMillis()
+            file.lastModified()
         } catch (e: IOException) {
             throw IllegalArgumentException("invalid source file " + file.absolutePath)
         }
