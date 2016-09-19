@@ -9,7 +9,7 @@ import java.io.IOException
 import java.nio.file.Path
 
 class BoxVolumeLocalTest : BoxVolumeTest() {
-    private val tempFolder: Path by lazy { createTempDir("").toPath() }
+    private val tempFolder: Path by lazy { createTempDir("longerPrefix").toPath() }
 
     override val readBackend: StorageReadBackend by lazy { LocalReadBackend(tempFolder) }
 
