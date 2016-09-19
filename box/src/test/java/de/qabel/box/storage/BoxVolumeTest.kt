@@ -5,6 +5,7 @@ import de.qabel.box.storage.command.CreateFolderChange
 import de.qabel.box.storage.command.DeleteFileChange
 import de.qabel.box.storage.command.DeleteFolderChange
 import de.qabel.box.storage.command.UpdateFileChange
+import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
@@ -66,7 +67,7 @@ abstract class BoxVolumeTest {
 
         setUpVolume()
 
-        volume!!.createIndex(bucket, prefix)
+        volume.createIndex(bucket, prefix)
     }
 
     protected abstract val readBackend: StorageReadBackend
@@ -158,7 +159,7 @@ abstract class BoxVolumeTest {
             return 1234567890L
         } // imagine lambda
         val file = nav.upload("streamedFile", `in`, size)
-        val out = volume2!!.navigate().download("streamedFile")
+        val out = volume2.navigate().download("streamedFile")
 
         assertEquals(11L.toLong(), file.size)
         assertEquals(1234567890L.toLong(), file.mtime)
@@ -188,7 +189,7 @@ abstract class BoxVolumeTest {
     private fun uploadFile(nav: BoxNavigation, filename: String, content: String): BoxFile {
         content.toByteArray().let {
             val boxFile = nav.upload(filename, ByteArrayInputStream(it), it.size.toLong())
-            val newNav = volume.navigate()
+            volume.navigate()
             return boxFile
         }
     }
@@ -204,7 +205,7 @@ abstract class BoxVolumeTest {
 
     @Test
     open fun hashIsCalculatedOnUpload() {
-        volume!!.config.defaultHashAlgorithm = "SHA-1"
+        volume.config.defaultHashAlgorithm = "SHA-1"
         val nav = volume.navigate()
         val file = uploadFile(nav, "testfile")
         assertTrue(file.isHashed())
@@ -214,7 +215,7 @@ abstract class BoxVolumeTest {
     @Test
     open fun defaultsToBlake2bInDm() {
         uploadFile(volume.navigate(), "testfile")
-        val hash = volume2!!.navigate().getFile("testfile").hashed
+        val hash = volume2.navigate().getFile("testfile").hashed
         assertEquals(
                 "0f23d0a7f6ed44055ccf2e6cd4e088211659699640bc25de5f99dbfe082410bd632dca3e35925d9dffa20ca9f99ea55c63c1b21591eccde907bd3de275c74147",
                 Hex.toHexString(hash!!.hash))
@@ -244,12 +245,12 @@ abstract class BoxVolumeTest {
         val nav = volume.navigate()
         nav.setAutocommit(true)
         nav.setAutocommitDelay(1000)
-        val file = uploadFile(nav, "testfile")
+        uploadFile(nav, "testfile")
 
-        val nav2 = volume2!!.navigate()
+        val nav2 = volume2.navigate()
         assertFalse(nav2.hasFile("testfile"))
         waitUntil(Callable {
-            val nav3 = volume2!!.navigate()
+            val nav3 = volume2.navigate()
             nav3.refresh()
             nav3.hasFile("testfile")
         }, 2000L)
@@ -503,7 +504,7 @@ abstract class BoxVolumeTest {
     }
 
     private fun setupConflictNav2(): BoxNavigation {
-        val nav2 = volume2!!.navigate()
+        val nav2 = volume2.navigate()
         nav2.setAutocommit(false)
         return nav2
     }
@@ -515,7 +516,7 @@ abstract class BoxVolumeTest {
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
 
-        val nav2 = volume2!!.navigate()
+        val nav2 = volume2.navigate()
         val boxFile2 = nav2.getFile("file1")
         assertNotNull(boxFile2.meta)
         assertNotNull(boxFile2.metakey)
@@ -539,7 +540,7 @@ abstract class BoxVolumeTest {
         assertEquals(boxFile.meta, updatedBoxFile.meta)
         assertArrayEquals(boxFile.metakey, updatedBoxFile.metakey)
 
-        val nav2 = volume2!!.navigate()
+        val nav2 = volume2.navigate()
         val boxFile2 = nav2.getFile("file1")
         assertNotNull(boxFile2.meta)
         assertNotNull(boxFile2.metakey)
@@ -569,7 +570,7 @@ abstract class BoxVolumeTest {
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
         nav.unshare(boxFile)
 
-        val nav2 = volume2!!.navigate()
+        val nav2 = volume2.navigate()
         val boxFile2 = nav2.getFile("file1")
         assertNull(boxFile2.meta)
         assertNull(boxFile2.metakey)
@@ -594,7 +595,7 @@ abstract class BoxVolumeTest {
         assertNull(boxFile.metakey)
 
         // file metadata has been deleted
-        assertFalse(blockExists(meta!!))
+        assertFalse(blockExists(meta))
 
         // share has been removed from index
         boxFile.shared = Share.create(meta, metakey)
@@ -717,7 +718,7 @@ abstract class BoxVolumeTest {
         subNav.share(keyPair.pub, boxFile, contact.keyIdentifier)
         subNav.commit()
 
-        val nav2 = volume2!!.navigate().navigate("folder")
+        val nav2 = volume2.navigate().navigate("folder")
         assertThat(nav2.getSharesOf(nav2.getFile("file1")), hasSize<Any>(1))
     }
 
@@ -797,7 +798,7 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    open fun notifiesAboutRemoteAdds() {
+    open fun notifiesAboutRemoteFolderAdds() {
         remoteChange { createFolder("test") }
 
         assertChange(CreateFolderChange::class.java) { it, nav ->
@@ -905,7 +906,7 @@ abstract class BoxVolumeTest {
     }
 
     @Test
-    open fun sameInstancesAreReturnedReliably() {
+    open fun sameNavigationInstancesAreReturnedReliably() {
         val navA = volume.navigate()
         val navB = volume.navigate()
 
@@ -916,6 +917,14 @@ abstract class BoxVolumeTest {
         assertThat(subNavA, sameInstance(subNavB))
     }
 
+    @Test
+    open fun navigationKnowsItsPath() {
+        val root = volume.navigate().apply { createFolder("subdir") }
+
+        assertEquals(BoxPath.Root, root.path)
+        assertEquals(BoxPath.Root / "subdir", root.navigate("subdir").path)
+    }
+
     protected fun blockExists(meta: String): Boolean {
         try {
             readBackend.download(meta)
@@ -923,7 +932,6 @@ abstract class BoxVolumeTest {
         } catch (e: QblStorageNotFound) {
             return false
         }
-
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package de.qabel.box.storage
 
+import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
@@ -10,6 +11,10 @@ import java.io.InputStream
 import java.security.InvalidKeyException
 
 interface BoxNavigation : ReadableBoxNavigation {
+    /**
+     * Absolute remote path to this navigation instance.
+     */
+    val path: BoxPath.FolderLike
 
     /**
      *  Fetches and returns the remote metadata file.
@@ -273,5 +278,4 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     @Throws(QblStorageException::class)
     fun hasVersionChanged(dm: DirectoryMetadata): Boolean
-
 }

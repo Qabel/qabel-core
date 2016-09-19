@@ -3,6 +3,7 @@ package de.qabel.box.storage
 import de.qabel.box.storage.cache.BoxNavigationCache
 import de.qabel.box.storage.cache.CachedFolderNavigationFactory
 import de.qabel.box.storage.command.*
+import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
@@ -25,6 +26,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 abstract class AbstractNavigation(
+    override val path: BoxPath.FolderLike,
     open protected var dm: DirectoryMetadata,
     volumeConfig: BoxVolumeConfig
 ) : BoxNavigation, QabelLog {
@@ -87,7 +89,7 @@ abstract class AbstractNavigation(
                     val key = KeyParameter(target.key)
                     if (cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(indexDl, tmp, key)) {
                         val dm = directoryFactory.open(tmp, target.ref)
-                        folderNavigationFactory.fromDirectoryMetadata(dm, target).apply {
+                        folderNavigationFactory.fromDirectoryMetadata(path / target.name, dm, target).apply {
                             setAutocommit(autocommit)
                             setAutocommitDelay(autocommitDelay)
                         }
@@ -184,7 +186,7 @@ abstract class AbstractNavigation(
         // remote folder adds
         newDm.listFolders()
             .filter { !originalDm.hasFolder(it.name) }
-            .map { CreateFolderChange(it.name, folderNavigationFactory, directoryFactory) }
+            .map { CreateFolderChange(this, it.name, folderNavigationFactory, directoryFactory) }
             .forEach { push(it) }
 
         // remote folder deletes
@@ -478,7 +480,7 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun createFolder(name: String): BoxFolder {
-        execute(CreateFolderChange(name, folderNavigationFactory, directoryFactory))
+        execute(CreateFolderChange(this, name, folderNavigationFactory, directoryFactory))
         commit()
         refresh()
         return getFolder(name)

@@ -1,13 +1,11 @@
 package de.qabel.box.storage.command
 
-import de.qabel.box.storage.BoxFolder
-import de.qabel.box.storage.DirectoryMetadata
-import de.qabel.box.storage.DirectoryMetadataFactory
-import de.qabel.box.storage.FolderNavigationFactory
+import de.qabel.box.storage.*
 import de.qabel.core.crypto.CryptoUtils
 import org.spongycastle.crypto.params.KeyParameter
 
 class CreateFolderChange(
+    val parentNav: BoxNavigation,
     val name: String,
     val navigationFactory: FolderNavigationFactory,
     val directoryFactory: DirectoryMetadataFactory
@@ -31,7 +29,7 @@ class CreateFolderChange(
         val folder = BoxFolder(childDM.fileName, name, secretKey.key)
         childDM.commit()
 
-        with(navigationFactory.fromDirectoryMetadata(childDM, folder)) {
+        with(navigationFactory.fromDirectoryMetadata(parentNav.path / folder.name, childDM, folder)) {
             setAutocommit(false)
             commit()
         }
