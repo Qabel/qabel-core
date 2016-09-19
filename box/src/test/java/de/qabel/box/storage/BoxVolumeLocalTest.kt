@@ -6,12 +6,10 @@ import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Test
 import java.io.File
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
 
 class BoxVolumeLocalTest : BoxVolumeTest() {
-
-    private val tempFolder: Path by lazy { Files.createTempDirectory("") }
+    private val tempFolder: Path by lazy { createTempDir("").toPath() }
 
     override val readBackend: StorageReadBackend by lazy { LocalReadBackend(tempFolder) }
 
