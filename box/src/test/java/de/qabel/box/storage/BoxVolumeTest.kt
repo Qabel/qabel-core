@@ -16,6 +16,8 @@ import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.drop.DropURL
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.IOUtils
+import org.hamcrest.Matcher
+import org.hamcrest.Matchers
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert.*
@@ -883,7 +885,7 @@ abstract class BoxVolumeTest {
         assertThat(changes, hasSize(2))
         assertThat(changes.get(0).change, instanceOf(UpdateFileChange::class.java))
         assertThat(changes.get(1).change, instanceOf(UpdateFileChange::class.java))
-        changes.forEach { assertThat(it.navigation, sameInstance(nav)) }
+        changes.forEach { assertThat(it.navigation, this.sameInstance(nav)) }
     }
 
     @Test
@@ -895,7 +897,7 @@ abstract class BoxVolumeTest {
 
         assertChange(CreateFolderChange::class.java) { change, changedNav ->
             assertThat(change.name, equalTo("subsubfolder"))
-            assertThat(changedNav, sameInstance(nav.navigate("subfolder")))
+            assertThat(changedNav, this.sameInstance(nav.navigate("subfolder")))
         }
     }
 
@@ -913,9 +915,11 @@ abstract class BoxVolumeTest {
         val subNavA = navA.apply { createFolder("testfolder") }.navigate("testfolder")
         val subNavB = navB.apply { refresh() }.navigate("testfolder")
 
-        assertThat(navA, sameInstance(navB))
-        assertThat(subNavA, sameInstance(subNavB))
+        assertThat(navA, this.sameInstance(navB))
+        assertThat(subNavA, this.sameInstance(subNavB))
     }
+
+    open fun <T> sameInstance(target: T): Matcher<T> = Matchers.sameInstance(target)
 
     @Test
     open fun navigationKnowsItsPath() {
