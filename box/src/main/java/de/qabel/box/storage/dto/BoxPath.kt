@@ -16,6 +16,12 @@ sealed class BoxPath() {
         operator fun div(path: Folder) = Folder(path.name, this)
 
         operator fun times(name: String) = File(name, this)
+
+        /* Java interface */
+        fun resolveFolder(name: String) = div(name)
+        fun resolveFile(name: String) = div(name)
+        fun resolve(path: File) = div(path)
+        fun resolve(path: Folder) = div(path)
     }
 
     class Folder(override val name: String, override val parent: FolderLike): FolderLike()
