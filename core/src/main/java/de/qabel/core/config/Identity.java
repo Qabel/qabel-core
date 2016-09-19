@@ -24,6 +24,8 @@ public class Identity extends Entity {
     @SerializedName("keys")
     private QblECKeyPair primaryKeyPair;
 
+    private boolean uploadEnabled = true;
+
     private List<IdentityObserver> observers = new ArrayList<IdentityObserver>();
 
     public Identity(String alias, Collection<DropURL> drops,
@@ -222,5 +224,13 @@ public class Identity extends Entity {
 
     public void setPhoneStatus(VerificationStatus phoneStatus) {
         this.phoneStatus = phoneStatus;
+    }
+
+    public boolean isUploadEnabled() {
+        return uploadEnabled;
+    }
+
+    public void setUploadEnabled(boolean uploadEnabled) {
+        this.uploadEnabled = uploadEnabled;
     }
 }
