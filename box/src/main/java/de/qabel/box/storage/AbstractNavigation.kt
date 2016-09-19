@@ -33,7 +33,6 @@ abstract class AbstractNavigation(
     protected val defaultHashAlgorithm = volumeConfig.defaultHashAlgorithm
     protected val tempDir = volumeConfig.tempDir
     protected val folderNavigationFactory by lazy { FolderNavigationFactory(indexNavigation, volumeConfig) }
-    private val scheduler = Executors.newScheduledThreadPool(1)
     protected val cryptoUtils by lazy { CryptoUtils() }
 
     private val changes = LinkedList<DirectoryMetadataChange<*>>()
@@ -513,6 +512,8 @@ abstract class AbstractNavigation(
 
     companion object {
         val BLOCKS_PREFIX = "blocks/"
+
+        private val scheduler = Executors.newScheduledThreadPool(1)
 
         @JvmField
         @Deprecated("")
