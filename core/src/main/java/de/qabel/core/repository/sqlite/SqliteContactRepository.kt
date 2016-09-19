@@ -99,6 +99,7 @@ class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
     override fun delete(contact: Contact, identity: Identity) {
         val contactIdentities = getIdentityConnections(contact)
         removeIdentityConnection(contact, identity)
+        notifyObservers()
         if (contactIdentities.size == 1 && contactIdentities.first() == identity.id) {
             delete(contact.id)
         }
