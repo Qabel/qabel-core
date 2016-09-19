@@ -915,8 +915,8 @@ abstract class BoxVolumeTest {
         val subNavA = navA.apply { createFolder("testfolder") }.navigate("testfolder")
         val subNavB = navB.apply { refresh() }.navigate("testfolder")
 
-        assertThat(navA, this.sameInstance(navB))
-        assertThat(subNavA, this.sameInstance(subNavB))
+        assertThat(navA, Matchers.sameInstance(navB))
+        assertThat(subNavA, Matchers.sameInstance(subNavB))
     }
 
     open fun <T> sameInstance(target: T): Matcher<T> = Matchers.sameInstance(target)
