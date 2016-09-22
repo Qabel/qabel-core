@@ -94,8 +94,9 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
             if (share.key == null) {
                 updateShare(share, boxReadBackend)
             }
-            val rootUri = URI(share.metaUrl)
+            val rootUri = URI(share.metaUrl.substring(0, share.metaUrl.indexOf("files")))
             val url = rootUri.resolve("blocks/").resolve(share.block).toString()
+            println(url)
             boxReadBackend.download(url, null).use { download ->
                 cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(download.inputStream, targetFile,
                     KeyParameter(share.key!!.byteList.toByteArray()))
