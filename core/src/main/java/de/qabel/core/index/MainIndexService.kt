@@ -93,10 +93,11 @@ class MainIndexService(private val indexServer: IndexServer,
     }
 
     override fun removeIdentity(identity: Identity) {
-        UpdateIdentity.fromIdentity(identity, UpdateAction.DELETE).let {
-            indexServer.updateIdentity(it)
-            updateIdentityVerificationFlags(identity)
-        }
+        if (!identity.phone.isNullOrBlank() || !identity.email.isNullOrBlank())
+            UpdateIdentity.fromIdentity(identity, UpdateAction.DELETE).let {
+                indexServer.updateIdentity(it)
+                updateIdentityVerificationFlags(identity)
+            }
     }
 
     override fun removeIdentities() {

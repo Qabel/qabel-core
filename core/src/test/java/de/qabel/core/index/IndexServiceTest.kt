@@ -153,6 +153,12 @@ open class IndexServiceTest() : CoreTestCase {
     }
 
     @Test
+    fun testRemoveIdentityWithoutFields(){
+        val newIdentity = createIdentity("Private")
+        indexService.removeIdentity(newIdentity)
+    }
+
+    @Test
     fun testSync() {
         val externals = MockContactsAccessor()
 
