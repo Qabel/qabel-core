@@ -155,7 +155,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         DropMessage(identity, payload.toString(), messageType.type)
 
     fun DropMessage.toChatDropMessage(identity: Identity, contact: Contact): ChatDropMessage {
-        val type = if (dropPayloadType.equals(MessageType.SHARE_NOTIFICATION))
+        val type = if (dropPayloadType.equals(MessageType.SHARE_NOTIFICATION.type))
             MessageType.SHARE_NOTIFICATION else MessageType.BOX_MESSAGE
 
         return ChatDropMessage(contact.id, identity.id, Direction.INCOMING,
