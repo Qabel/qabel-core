@@ -108,17 +108,21 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
         val resultList = mutableListOf<ChatDropMessage>()
         messages.forEach {
             getMessageContact(it, identity)?.apply {
-                val message = it.toChatDropMessage(identity, this)
-                if (!chatDropMessageRepository.exists(message)) {
-                    if (message.payload is MessagePayload.ShareMessage) {
-                        message.payload.apply {
-                            shareData = sharingService.getOrCreateIncomingShare(identity, message, message.payload)
+                try {
+                    val message = it.toChatDropMessage(identity, this)
+                    if (!chatDropMessageRepository.exists(message)) {
+                        if (message.payload is MessagePayload.ShareMessage) {
+                            message.payload.apply {
+                                shareData = sharingService.getOrCreateIncomingShare(identity, message, message.payload)
+                            }
                         }
+                        chatDropMessageRepository.persist(message)
+                        resultList.add(message)
+                    } else {
+                        logger.debug("Ignoring duplicated msg to " + identity.keyIdentifier)
                     }
-                    chatDropMessageRepository.persist(message)
-                    resultList.add(message)
-                } else {
-                    logger.debug("Ignoring duplicated msg to " + identity.keyIdentifier)
+                } catch (ex: Throwable) {
+                    logger.error("Error parsing DropMessage ${it.dropPayloadType}${it.dropPayload}")
                 }
             }
         }
