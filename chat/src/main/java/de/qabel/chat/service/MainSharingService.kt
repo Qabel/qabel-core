@@ -122,7 +122,8 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
 
     private fun downloadFileMetadata(share: BoxFileChatShare, boxReadBackend: StorageReadBackend): BoxExternalFile {
         val tmpFile = createTempFile("tmp_", "_fm", tmpDir)
-        boxReadBackend.download(share.metaUrl, null).use({ download ->
+        val metaUrl = share.metaUrl.substring(share.metaUrl.indexOf("/files") + 7)
+        boxReadBackend.download(metaUrl, null).use({ download ->
             cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(download.inputStream,
                 tmpFile, KeyParameter(share.metaKey.toByteArray()))
         })
