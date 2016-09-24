@@ -11,7 +11,7 @@ public class Migration1460997043ContactDefaults extends AbstractMigration {
 
     @Override
     public long getVersion() {
-        return 1460997042L;
+        return 1460997043L;
     }
 
     @Override
