@@ -109,6 +109,7 @@ public class Identity extends Entity {
      */
     public void setEmail(String email) {
         this.email = email;
+        notifyAllObservers();
     }
 
     /**
@@ -128,6 +129,7 @@ public class Identity extends Entity {
      */
     public void setPhone(String phone) {
         this.phone = phone;
+        notifyAllObservers();
     }
 
     /**
