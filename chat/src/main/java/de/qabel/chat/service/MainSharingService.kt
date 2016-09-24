@@ -16,6 +16,7 @@ import de.qabel.core.repository.ContactRepository
 import org.spongycastle.crypto.params.KeyParameter
 import java.io.File
 import java.io.IOException
+import java.net.URI
 import java.net.URISyntaxException
 import java.security.InvalidKeyException
 
@@ -122,8 +123,7 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
 
     private fun downloadFileMetadata(share: BoxFileChatShare, boxReadBackend: StorageReadBackend): BoxExternalFile {
         val tmpFile = createTempFile("tmp_", "_fm", tmpDir)
-        val metaUrl = share.metaUrl.substring(share.metaUrl.indexOf("/files") + 7)
-        boxReadBackend.download(metaUrl, null).use({ download ->
+        boxReadBackend.download(share.metaUrl, null).use({ download ->
             cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(download.inputStream,
                 tmpFile, KeyParameter(share.metaKey.toByteArray()))
         })
