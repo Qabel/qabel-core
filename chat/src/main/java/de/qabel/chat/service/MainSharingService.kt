@@ -23,7 +23,9 @@ import java.security.InvalidKeyException
 class MainSharingService(private val chatShareRepository: ChatShareRepository,
                          private val contactRepository: ContactRepository,
                          private val tmpDir: File,
-                         private val cryptoUtils: CryptoUtils = CryptoUtils()) : SharingService {
+                         private val fileMetadataFactory: FileMetadataFactory,
+                         private val cryptoUtils: CryptoUtils = CryptoUtils()
+                         ) : SharingService {
 
     override fun getOrCreateOutgoingShare(identity: Identity, contact: Contact,
                                           boxFile: BoxFile, boxNavigation: BoxNavigation): BoxFileChatShare =
@@ -127,6 +129,6 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
             cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(download.inputStream,
                 tmpFile, KeyParameter(share.metaKey.toByteArray()))
         })
-        return JdbcFileMetadataFactory(tmpDir).open(tmpFile).file
+        return fileMetadataFactory.open(tmpFile).file
     }
 }
