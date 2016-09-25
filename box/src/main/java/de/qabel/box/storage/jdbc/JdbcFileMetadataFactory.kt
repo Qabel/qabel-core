@@ -14,11 +14,11 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
-class JdbcFileMetadataFactory(val tmpDir: File) : FileMetadataFactory {
+class JdbcFileMetadataFactory @JvmOverloads constructor(
+    val tmpDir: File,
+    var versionAdapterFactory : (connection : Connection) -> VersionAdapter = { PragmaVersionAdapter(it)}
+) : FileMetadataFactory {
 
-    companion object {
-        var versionAdapterFactory : (connection : Connection) -> VersionAdapter = { PragmaVersionAdapter(it)}
-    }
 
     @Throws(QblStorageException::class)
     override fun create(owner: QblECPublicKey, boxFile: BoxFile): JdbcFileMetadata = openNew(owner, boxFile)
