@@ -7,8 +7,8 @@ class FMMigration1468173861Init(connection: Connection) : AbstractMigration(conn
     override fun getVersion() = 1468173861L
 
     override fun up() {
-        execute("CREATE TABLE spec_version ( version INTEGER PRIMARY KEY )")
-        execute("""CREATE TABLE file (
+        execute("CREATE TABLE IF NOT EXISTS spec_version ( version INTEGER PRIMARY KEY )")
+        execute("""CREATE TABLE IF NOT EXISTS file (
             owner BLOB NOT NULL,
             prefix VARCHAR(255) NOT NULL,
             block VARCHAR(255) NOT NULL,
@@ -16,7 +16,7 @@ class FMMigration1468173861Init(connection: Connection) : AbstractMigration(conn
             size LONG NOT NULL,
             mtime LONG NOT NULL,
             key BLOB NOT NULL )""")
-        execute("INSERT INTO spec_version (version) VALUES(0)")
+        execute("INSERT OR IGNORE INTO spec_version (version) VALUES(0)")
     }
 
     override fun down() {
