@@ -12,6 +12,7 @@ import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.logging.QabelLog
+import de.qabel.core.util.loop
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.NotImplementedException
 import org.spongycastle.crypto.params.KeyParameter
@@ -200,7 +201,7 @@ abstract class AbstractNavigation(
         // remote folder adds
         newDm.listFolders()
             .filter { !originalDm.hasFolder(it.name) }
-            .map { newFolders.add(it); it }
+            .loop { newFolders.add(it) }
             .map { remoteFolderAdd(it) }
             .forEach { push(it) }
 
