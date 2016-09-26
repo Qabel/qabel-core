@@ -5,16 +5,14 @@ import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.extensions.assertThrows
 import de.qabel.core.index.*
-import de.qabel.core.index.server.IndexHTTP
-import de.qabel.core.index.server.IndexHTTPLocation
-import de.qabel.core.index.server.ServerPublicKeyEndpoint
-import de.qabel.core.index.server.ServerPublicKeyEndpointImpl
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Ignore
 import java.util.*
 
+@Ignore
 class IndexHTTPTest {
     private val server = IndexHTTPLocation("http://localhost:9698")
     private val index = IndexHTTP(server)
