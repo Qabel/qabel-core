@@ -230,7 +230,10 @@ abstract class AbstractNavigation(
             .forEach { push(it) }
     }
 
-    private fun fileChange(file: BoxFile) = UpdateFileChange(originalDm.getFile(file.name)!!, file)
+    private fun fileChange(file: BoxFile) = UpdateFileChange(
+        originalDm.getFile(file.name) ?: throw IllegalStateException("file for change event missing: " + file.name),
+        file
+    )
     private fun remoteFolderAdd(it: BoxFolder) = CreateFolderChange(this, it.name, folderNavigationFactory, directoryFactory)
     private fun remoteFolderDelete(it: BoxFolder) = DeleteFolderChange(it)
     private fun fileAdd(file: BoxFile) = UpdateFileChange(null, file)
