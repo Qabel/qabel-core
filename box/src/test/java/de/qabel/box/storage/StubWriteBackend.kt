@@ -24,7 +24,7 @@ class StubWriteBackend : StorageWriteBackend {
 
     override fun upload(name: String, content: InputStream, eTag: String?) = upload(name, content)
 
-    override fun delete(name: String) = throw UnsupportedOperationException("not implemented")
+    override fun delete(name: String) {}
 
-    private fun generateSomeResponse() = StorageWriteBackend.UploadResult(Date(), "etag");
+    private fun generateSomeResponse() = StorageWriteBackend.UploadResult(Date(), "etag")
 }

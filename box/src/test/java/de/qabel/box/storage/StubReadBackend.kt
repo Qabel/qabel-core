@@ -5,14 +5,14 @@ import de.qabel.core.logging.QabelLog
 import de.qabel.core.util.DefaultHashMap
 
 class StubReadBackend : StorageReadBackend, QabelLog {
-    val handlers = DefaultHashMap<String, MutableList<(name: String?) -> StorageDownload>>({
+    val uploadHandlers = DefaultHashMap<String, MutableList<(name: String?) -> StorageDownload>>({
         mutableListOf<(name: String?) -> StorageDownload>()
     })
 
     fun respond(fileName: String, downloadHandler: (name: String?) -> StorageDownload)
-        = handlers[fileName]!!.add(downloadHandler)
+        = uploadHandlers[fileName]!!.add(downloadHandler)
 
-    private fun pop(name: String?) = handlers[name]!!.drop(1).first()
+    private fun pop(name: String?) = uploadHandlers[name]!!.drop(1).first()
 
     override fun download(name: String?, ifModifiedVersion: String?) = download(name)
 
@@ -20,7 +20,7 @@ class StubReadBackend : StorageReadBackend, QabelLog {
 
     override fun download(name: String?): StorageDownload {
         debug("downloading $name")
-        if (!handlers.containsKey(name)) {
+        if (!uploadHandlers.containsKey(name)) {
             throw QblStorageNotFound("no entry named $name")
         }
 

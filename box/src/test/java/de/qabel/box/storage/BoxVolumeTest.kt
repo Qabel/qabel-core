@@ -586,7 +586,6 @@ abstract class BoxVolumeTest {
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
-        val prefix = boxFile.prefix
         val meta = boxFile.meta
         val metakey = boxFile.metakey
         assertTrue(blockExists(meta!!))

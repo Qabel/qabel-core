@@ -16,6 +16,7 @@ import org.apache.commons.codec.binary.Hex
 import org.apache.commons.lang3.NotImplementedException
 import org.spongycastle.crypto.params.KeyParameter
 import rx.lang.kotlin.PublishSubject
+import rx.subjects.SerializedSubject
 import rx.subjects.Subject
 import java.io.*
 import java.security.InvalidKeyException
@@ -47,7 +48,7 @@ abstract class AbstractNavigation(
 
     private val pendingChanges = LinkedList<DirectoryMetadataChange<*>>()
     override val changes: Subject<DirectoryMetadataChangeNotification, DirectoryMetadataChangeNotification>
-        = PublishSubject<DirectoryMetadataChangeNotification>()
+        = SerializedSubject(PublishSubject<DirectoryMetadataChangeNotification>())
 
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
