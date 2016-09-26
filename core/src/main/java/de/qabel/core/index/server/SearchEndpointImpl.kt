@@ -33,7 +33,9 @@ internal class SearchEndpointImpl(
         for ((type, value) in attributes) {
             uriBuilder.addParameter(type.name.toLowerCase(), value)
         }
-        return HttpGet(uriBuilder.build())
+        val request = HttpGet(uriBuilder.build())
+        location.authorize(request)
+        return request
     }
 
     override fun parseResponse(jsonString: String, statusLine: StatusLine): List<IndexContact> {

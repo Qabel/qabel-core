@@ -20,7 +20,9 @@ internal class ServerPublicKeyEndpointImpl(
 ): ServerPublicKeyEndpoint {
     override fun buildRequest(): HttpUriRequest {
         val uriBuilder = location.getUriBuilderForEndpoint("key")
-        return HttpGet(uriBuilder.build())
+        val request = HttpGet(uriBuilder.build())
+        location.authorize(request)
+        return request
     }
 
     override fun parseResponse(jsonString: String, statusLine: StatusLine): QblECPublicKey {

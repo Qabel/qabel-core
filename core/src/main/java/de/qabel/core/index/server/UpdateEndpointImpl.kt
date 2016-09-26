@@ -42,6 +42,7 @@ internal class UpdateEndpointImpl(
         val request = HttpPut(uri)
         request.addHeader("Content-Type", "application/vnd.qabel.noisebox+json")
         request.entity = ByteArrayEntity(encryptedJson)
+        location.authorize(request)
         return request
     }
 
