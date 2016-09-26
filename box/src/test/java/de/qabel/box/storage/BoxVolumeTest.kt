@@ -912,15 +912,25 @@ abstract class BoxVolumeTest {
             navigate(createFolder("newRemoteFolder")).apply {
                 createFolder("newRemoteSubfolder")
                 uploadFile(BoxNavigation@this, "subfile", "content")
+                navigate("newRemoteSubfolder").createFolder("subSubFolder")
             }
         }
 
-        val changedPaths = changes.map { it.change }.map {
-            if(it is CreateFolderChange) it.folder.name else (it as UpdateFileChange).newFile.name }
-        assertThat(changedPaths, contains(
-            "newRemoteFolder",
-            "newRemoteSubfolder",
-            "subfile"
+        val changedPaths = changes.map {
+            val change = it.change
+            val path = if (change is CreateFolderChange) {
+                it.navigation.path.resolveFile(change.folder.name)
+            } else {
+                it.navigation.path.resolveFolder((change as UpdateFileChange).newFile.name)
+            }
+            path.toString()
+        }
+
+        assertThat(changedPaths, containsInAnyOrder(
+            "/newRemoteFolder",
+            "/newRemoteFolder/newRemoteSubfolder",
+            "/newRemoteFolder/subfile",
+            "/newRemoteFolder/newRemoteSubfolder/subSubFolder"
         ))
     }
 

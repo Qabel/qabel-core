@@ -47,4 +47,5 @@ sealed class BoxPath() {
 
 
     fun toList(): List<String> = if (this is Root) emptyList() else parent.toList() + name
+    override fun toString() = toList().joinToString(separator = "/", prefix = "/")
 }

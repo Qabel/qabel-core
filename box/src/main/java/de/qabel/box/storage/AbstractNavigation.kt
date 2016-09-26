@@ -171,8 +171,8 @@ abstract class AbstractNavigation(
             originalDm = clone(DirectoryMetadata@this)
             pendingChanges.execute(DirectoryMetadata@this)
         }
-        newFolders.forEach { navigate(it).visit {
-            push(when (it) {
+        newFolders.forEach { navigate(it).visit { nav, it ->
+            nav.push(when (it) {
                 is BoxFile -> fileAdd(it)
                 is BoxFolder -> remoteFolderAdd(it)
                 else -> throw IllegalStateException("unhandled changed object: " + it)
@@ -187,9 +187,12 @@ abstract class AbstractNavigation(
         }
     }
 
-    fun visit(consumer: (BoxObject) -> Unit): Unit {
-        listFolders().forEach { consumer.invoke(it) }
-        listFiles().forEach { consumer.invoke(it) }
+    fun visit(consumer: (AbstractNavigation, BoxObject) -> Unit): Unit {
+        listFolders().forEach {
+            consumer(this, it)
+            navigate(it).visit(consumer)
+        }
+        listFiles().forEach { consumer(this, it) }
     }
 
     private var newFolders: MutableList<BoxFolder> = mutableListOf()
