@@ -1,5 +1,6 @@
 package de.qabel.core.repository
 
+import de.qabel.core.config.EntityObserver
 import de.qabel.core.config.VerificationStatus
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
@@ -21,6 +22,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
     private lateinit var identityBuilder: IdentityBuilder
 
     private lateinit var contactRepo: ContactRepository
+    private var hasCalled: Boolean = false
 
     override fun setUp() {
         super.setUp()
@@ -169,5 +171,35 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         assertThat(contacts.map { it.contact.keyIdentifier }, contains(contact.keyIdentifier))
         val loadedContact = contacts.find { it.contact == contact }!!
         assertThat(loadedContact.identities, hasSize(0))
+    }
+
+    private fun attachEntityObserver() {
+        repo.attach(EntityObserver { hasCalled = true })
+    }
+
+    @Test
+    fun testSaveIdentityObservable() {
+        val identity = createIdentity("Identity")
+        attachEntityObserver()
+        repo.save(identity)
+        assertTrue(hasCalled)
+    }
+
+    @Test
+    fun testDeleteIdentityObservable() {
+        val identity = createIdentity("Identity")
+        repo.save(identity)
+        attachEntityObserver()
+        repo.delete(identity)
+        assertTrue(hasCalled)
+    }
+
+    @Test
+    fun testUpdateIdentityObservable() {
+        val identity = createIdentity("Identity")
+        repo.save(identity)
+        attachEntityObserver()
+        repo.update (identity)
+        assertTrue(hasCalled)
     }
 }
