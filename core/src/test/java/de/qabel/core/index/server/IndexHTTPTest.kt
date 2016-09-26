@@ -13,8 +13,10 @@ import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Ignore
 import java.util.*
 
+@Ignore
 class IndexHTTPTest {
     private val server = IndexHTTPLocation("http://localhost:9698")
     private val index = IndexHTTP(server)
