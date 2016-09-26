@@ -170,6 +170,15 @@ abstract class AbstractNavigation(
             originalDm = clone(DirectoryMetadata@this)
             pendingChanges.execute(DirectoryMetadata@this)
         }
+        newFolders.forEach { navigate(it).visit {
+            push(when (it) {
+                is BoxFile -> fileAdd(it)
+                is BoxFolder -> remoteFolderAdd(it)
+                else -> throw IllegalStateException("unhandled changed object: " + it)
+            })
+        } }
+        newFolders.clear()
+
         if (recursive) {
             listFolders().forEach {
                 navigate(it).refresh(true)
@@ -177,6 +186,12 @@ abstract class AbstractNavigation(
         }
     }
 
+    fun visit(consumer: (BoxObject) -> Unit): Unit {
+        listFolders().forEach { consumer.invoke(it) }
+        listFiles().forEach { consumer.invoke(it) }
+    }
+
+    private var newFolders: MutableList<BoxFolder> = mutableListOf()
     private fun detectDmChanges(newDm: DirectoryMetadata) {
         if (Arrays.equals(originalDm.version, newDm.version)) {
             return
@@ -185,33 +200,40 @@ abstract class AbstractNavigation(
         // remote folder adds
         newDm.listFolders()
             .filter { !originalDm.hasFolder(it.name) }
-            .map { CreateFolderChange(this, it.name, folderNavigationFactory, directoryFactory) }
+            .map { newFolders.add(it); it }
+            .map { remoteFolderAdd(it) }
             .forEach { push(it) }
 
         // remote folder deletes
         originalDm.listFolders()
             .filter { !newDm.hasFolder(it.name) }
-            .map { DeleteFolderChange(it) }
+            .map { remoteFolderDelete(it) }
             .forEach { push(it) }
 
         // local file adds
         newDm.listFiles()
             .filter { !originalDm.hasFile(it.name) }
-            .map { UpdateFileChange(null, it) }
+            .map { fileAdd(it) }
             .forEach { push(it) }
 
         // local file deletes
         originalDm.listFiles()
             .filter { !newDm.hasFile(it.name) }
-            .map { DeleteFileChange(it, indexNavigation, writeBackend) }
+            .map { localFileDelete(it) }
             .forEach { push(it) }
 
         // remote file changes (update, neither add nor delete)
         newDm.listFiles()
             .filter { originalDm.hasFile(it.name) && !hashEquals(originalDm.getFile(it.name)!!, it) }
-            .map { UpdateFileChange(originalDm.getFile(it.name)!!, it) }
+            .map { fileChange(it) }
             .forEach { push(it) }
     }
+
+    private fun fileChange(file: BoxFile) = UpdateFileChange(originalDm.getFile(file.name)!!, file)
+    private fun remoteFolderAdd(it: BoxFolder) = CreateFolderChange(this, it.name, folderNavigationFactory, directoryFactory)
+    private fun remoteFolderDelete(it: BoxFolder) = DeleteFolderChange(it)
+    private fun fileAdd(file: BoxFile) = UpdateFileChange(null, file)
+    private fun localFileDelete(file: BoxFile) = DeleteFileChange(file, indexNavigation, writeBackend)
 
     private fun push(change: DirectoryMetadataChange<*>)
         = changes.onNext(DirectoryMetadataChangeNotification(change, this))

@@ -907,6 +907,24 @@ abstract class BoxVolumeTest {
     }
 
     @Test
+    open fun notifiesAboutContentsOfNewDirectories() {
+        remoteChange {
+            navigate(createFolder("newRemoteFolder")).apply {
+                createFolder("newRemoteSubfolder")
+                uploadFile(BoxNavigation@this, "subfile", "content")
+            }
+        }
+
+        val changedPaths = changes.map { it.change }.map {
+            if(it is CreateFolderChange) it.folder.name else (it as UpdateFileChange).newFile.name }
+        assertThat(changedPaths, contains(
+            "newRemoteFolder",
+            "newRemoteSubfolder",
+            "subfile"
+        ))
+    }
+
+    @Test
     open fun sameNavigationInstancesAreReturnedReliably() {
         val navA = volume.navigate()
         val navB = volume.navigate()
