@@ -34,8 +34,9 @@ class MainIndexService(private val indexServer: IndexServer,
 
     private fun updateFieldValueIfRequired(identity: Identity, fieldType: FieldType, newValue: String?,
                                            oldValue: String? = null): VerificationStatus {
-        //Delete old value if exists and is set on server
-        if (findStateForValue(identity, oldValue, fieldType) == VerificationStatus.VERIFIED) {
+        //Delete old value if exists, changed and is set on server
+        if (newValue != oldValue &&
+            findStateForValue(identity, oldValue, fieldType) == VerificationStatus.VERIFIED) {
             info("Removing field from index $fieldType")
             UpdateIdentity(identity, listOf(UpdateField(UpdateAction.DELETE, fieldType, oldValue!!))).let {
                 indexServer.updateIdentity(it).let {
