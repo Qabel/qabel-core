@@ -1,14 +1,16 @@
 package de.qabel.core.repository.inmemory
 
+import de.qabel.core.config.EntityObservable
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
+import de.qabel.core.config.SimpleEntityObservable
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 
-open class InMemoryIdentityRepository : IdentityRepository {
+open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by SimpleEntityObservable() {
 
-    override fun delete(identity: Identity?) {
+    override fun delete(identity: Identity) {
         identities.remove(identity)
     }
 

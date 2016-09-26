@@ -1,8 +1,6 @@
 package de.qabel.core.repository.sqlite
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.Identities
-import de.qabel.core.config.Identity
+import de.qabel.core.config.*
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
@@ -18,7 +16,7 @@ import java.sql.PreparedStatement
 class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
                                private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db),
                                dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)) :
-    BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository {
+    BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository, EntityObservable by SimpleEntityObservable() {
 
     constructor(db: ClientDatabase, em: EntityManager): this(
         db,
@@ -49,6 +47,7 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
     override fun update(model: Identity) {
         super.update(model)
         prefixRepository.store(model)
+        notifyObservers()
     }
 
     override fun beforeUpdate(currentIndex: Int, statement: PreparedStatement, model: Identity): Int {
@@ -97,6 +96,7 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
         } else {
             update(identity)
         }
+        notifyObservers()
     }
 
     override fun delete(identity: Identity) {
@@ -107,6 +107,6 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
         contactRepository.findByKeyId(identity.keyIdentifier).let {
             contactRepository.delete(it)
         }
+        notifyObservers()
     }
-
 }

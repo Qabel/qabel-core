@@ -44,6 +44,8 @@ subprojects {
         testCompile 'org.mockito:mockito-core:2.0.52-beta'
         testCompile 'com.nhaarman:mockito-kotlin:0.6.0'
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+        compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '3.+'
+
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
