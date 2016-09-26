@@ -19,6 +19,8 @@ import org.junit.Test
 import org.hamcrest.Matchers.*
 import org.junit.After
 import org.junit.Assert.*
+import com.nhaarman.mockito_kotlin.*
+import org.mockito.Mockito
 
 open class IndexServiceTest() : CoreTestCase {
 
@@ -79,6 +81,8 @@ open class IndexServiceTest() : CoreTestCase {
         //Setup test contacts
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityAlice, UpdateAction.CREATE))
         indexServer.updateIdentity(UpdateIdentity.fromIdentity(identityBob, UpdateAction.CREATE))
+
+        MockitoKotlin.registerInstanceCreator { UpdateIdentity(exampleIdentity, emptyList()) }
     }
 
     @After
@@ -153,7 +157,7 @@ open class IndexServiceTest() : CoreTestCase {
     }
 
     @Test
-    fun testRemoveIdentityWithoutFields(){
+    fun testRemoveIdentityWithoutFields() {
         val newIdentity = createIdentity("Private")
         indexService.removeIdentity(newIdentity)
     }
@@ -268,6 +272,26 @@ open class IndexServiceTest() : CoreTestCase {
         matchIndexResult(resultExample)
         assertThat(exampleIdentity.emailStatus, equalTo(VerificationStatus.NOT_VERIFIED))
         assertThat(exampleIdentity.phoneStatus, equalTo(VerificationStatus.NOT_VERIFIED))
+    }
+
+    @Test
+    fun testFieldNotChanged() {
+        val indexServer: IndexServer = mock()
+        whenever(indexServer.updateIdentity(any())).thenReturn(UpdateResult.ACCEPTED_IMMEDIATE)
+
+        val indexService = MainIndexService(indexServer, contactRepository, identityRepository)
+
+        val update = UpdateIdentity(exampleIdentity, listOf(UpdateField(UpdateAction.DELETE, FieldType.EMAIL, exampleMail)))
+        val notChangedCopy = copy(exampleIdentity)
+        indexService.updateIdentity(exampleIdentity, notChangedCopy)
+        verify(indexServer, never()).updateIdentity(update)
+        reset(indexServer)
+        whenever(indexServer.updateIdentity(any())).thenReturn(UpdateResult.ACCEPTED_IMMEDIATE)
+
+        exampleIdentity.email = "test@test.de"
+        indexService.updateIdentity(exampleIdentity, notChangedCopy)
+        verify(indexServer, times(2)).updateIdentity(any())
+
     }
 
 }
