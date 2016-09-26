@@ -3,6 +3,7 @@ package de.qabel.chat.service
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
+import de.qabel.box.storage.jdbc.JdbcFileMetadataFactory
 import de.qabel.chat.repository.ChatDropMessageRepository
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.ChatDropMessage
@@ -80,7 +81,8 @@ class SharingServiceTest() : CoreTestCase {
         volumeB.createIndex("qabel", "test456")
         navigationB = volumeB.navigate()
 
-        sharingService = MainSharingService(shareRepo, contactRepo, tempFolder.toFile())
+        sharingService = MainSharingService(shareRepo, contactRepo, tempFolder.toFile(),
+            JdbcFileMetadataFactory(tempFolder.toFile()))
 
         testFile = randomFile(100)
     }

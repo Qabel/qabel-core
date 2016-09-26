@@ -18,13 +18,14 @@ import java.io.File
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
-import java.nio.file.Files
 import java.security.InvalidKeyException
 
 class MainSharingService(private val chatShareRepository: ChatShareRepository,
                          private val contactRepository: ContactRepository,
                          private val tmpDir: File,
-                         private val cryptoUtils: CryptoUtils = CryptoUtils()) : SharingService {
+                         private val fileMetadataFactory: FileMetadataFactory,
+                         private val cryptoUtils: CryptoUtils = CryptoUtils()
+                         ) : SharingService {
 
     override fun getOrCreateOutgoingShare(identity: Identity, contact: Contact,
                                           boxFile: BoxFile, boxNavigation: BoxNavigation): BoxFileChatShare =
@@ -123,11 +124,11 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
             identity.id)
 
     private fun downloadFileMetadata(share: BoxFileChatShare, boxReadBackend: StorageReadBackend): BoxExternalFile {
-        val tmpFile = Files.createTempFile(tmpDir.toPath(), "tmp_", "_fm").toFile()
+        val tmpFile = createTempFile("tmp_", "_fm", tmpDir)
         boxReadBackend.download(share.metaUrl, null).use({ download ->
             cryptoUtils.decryptFileAuthenticatedSymmetricAndValidateTag(download.inputStream,
                 tmpFile, KeyParameter(share.metaKey.toByteArray()))
         })
-        return JdbcFileMetadataFactory(tmpDir).open(tmpFile).file
+        return fileMetadataFactory.open(tmpFile).file
     }
 }

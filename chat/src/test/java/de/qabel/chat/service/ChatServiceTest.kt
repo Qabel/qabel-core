@@ -1,6 +1,7 @@
 package de.qabel.chat.service
 
 import de.qabel.box.storage.*
+import de.qabel.box.storage.jdbc.JdbcFileMetadataFactory
 import de.qabel.chat.repository.entities.ChatDropMessage
 import de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository
 import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
@@ -29,13 +30,16 @@ class ChatServiceTest : CoreTestCase {
     val dropStateRepo = InMemoryDropStateRepository()
     val dropConnector: DropConnector = MainDropConnector(MockDropServer())
 
+    val fileMetadataFactory: FileMetadataFactory = JdbcFileMetadataFactory(createTempDir())
+
     val identityA: Identity = createIdentity("IdentityA")
     val contactA: Contact = createContact(identityA.alias, identityA.helloDropUrl, identityA.ecPublicKey)
     val identityARepository = InMemoryIdentityRepository()
     val contactARepository = InMemoryContactRepository()
     val chatDropRepoA = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceA = MainChatService(dropConnector, identityARepository,
-        contactARepository, chatDropRepoA, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactARepository, createTempDir()))
+        contactARepository, chatDropRepoA, dropStateRepo, MainSharingService(
+        InMemoryChatShareRepository(), contactARepository, createTempDir(), fileMetadataFactory))
 
     val identityB: Identity = createIdentity("Identity B")
     val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
@@ -43,7 +47,8 @@ class ChatServiceTest : CoreTestCase {
     val contactBRepository = InMemoryContactRepository()
     val chatDropRepoB = InMemoryChatDropMessageRepository()
     val chatServiceB = MainChatService(dropConnector, identityBRepository,
-        contactBRepository, chatDropRepoB, dropStateRepo, MainSharingService(InMemoryChatShareRepository(), contactBRepository, createTempDir()))
+        contactBRepository, chatDropRepoB, dropStateRepo, MainSharingService(
+        InMemoryChatShareRepository(), contactBRepository, createTempDir(), fileMetadataFactory))
 
 
     @Before
