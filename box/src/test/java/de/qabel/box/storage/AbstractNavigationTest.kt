@@ -1,12 +1,20 @@
 package de.qabel.box.storage
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import com.natpryce.hamkrest.hasSize
+import de.qabel.box.storage.command.DeleteFileChange
+import de.qabel.box.storage.command.UpdateFileChange
+import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Test
 import org.spongycastle.crypto.params.KeyParameter
+import rx.observers.TestSubscriber
 import java.io.*
 import java.nio.file.Files
 import java.security.Security
@@ -34,6 +42,50 @@ abstract class AbstractNavigationTest {
         tmpDir
     )
     abstract val nav: AbstractNavigation
+    var subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+
+    @Before
+    open fun setUp() {
+        nav.changes.subscribe(subscriber)
+    }
+
+    @Test
+    fun notifiesAboutFileCreates() {
+        nav.upload("test", ByteArrayInputStream("content".toByteArray()), 7)
+        assertChange(UpdateFileChange::class.java) {
+            assertEquals("test", newFile.name)
+            assertNull(expectedFile)
+        }
+    }
+
+    @Test
+    fun notifiesAboutFileDeletes() {
+        val file = nav.upload("test", ByteArrayInputStream("content".toByteArray()), 7)
+        resubscribe()
+        nav.delete(file)
+
+        assertChange(DeleteFileChange::class.java) {
+            assertEquals("test", DeleteFileChange@this.file.name)
+        }
+    }
+
+    @Test
+    fun resubscribe() {
+        subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+        nav.changes.subscribe(subscriber)
+    }
+
+    fun <T> assertChange(clazz: Class<T>, block: T.() -> Unit) : T {
+        val changes = subscriber.onNextEvents
+        assertThat(changes, hasSize(equalTo(1)))
+
+        val change = changes.first().change
+        if (!clazz.isInstance(change)) {
+            fail(change.toString() + " is not of type " + clazz.name)
+        }
+        block(change as T)
+        return change
+    }
 
     @Test
     fun catchesDMConflictsWhileUploadingDm() {
@@ -41,7 +93,7 @@ abstract class AbstractNavigationTest {
         nav.upload("testfile", "content".byteInputStream(), 7L)
         val cPath = setupConflictingDM() { it.insertFile(someFile("anotherFile")) }
 
-        var dmWasUploaded = false;
+        var dmWasUploaded = false
         // on commit, AbstractNavigation will check if the dm has changed remotely, let's assume it has not
         readBackend.respond(dm.fileName) { throw UnmodifiedException("dm not modified") }
 
@@ -53,7 +105,7 @@ abstract class AbstractNavigationTest {
 
         // and then we can cleanly re-upload the dm
         writeBackend.respond(dm.fileName) {
-            dmWasUploaded = true;
+            dmWasUploaded = true
             StorageWriteBackend.UploadResult(Date(), "new etag")
         }
 

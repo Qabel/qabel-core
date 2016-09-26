@@ -586,7 +586,6 @@ abstract class BoxVolumeTest {
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
-        val prefix = boxFile.prefix
         val meta = boxFile.meta
         val metakey = boxFile.metakey
         assertTrue(blockExists(meta!!))
@@ -905,6 +904,34 @@ abstract class BoxVolumeTest {
         assertThat(changes, hasSize(1))
         assertThat(changes.first().change, instanceOf(expectedClass))
         assert.invoke(changes.first().change as T, changes.first().navigation)
+    }
+
+    @Test
+    open fun notifiesAboutContentsOfNewDirectories() {
+        remoteChange {
+            navigate(createFolder("newRemoteFolder")).apply {
+                createFolder("newRemoteSubfolder")
+                uploadFile(BoxNavigation@this, "subfile", "content")
+                navigate("newRemoteSubfolder").createFolder("subSubFolder")
+            }
+        }
+
+        val changedPaths = changes.map {
+            val change = it.change
+            val path = if (change is CreateFolderChange) {
+                it.navigation.path.resolveFile(change.folder.name)
+            } else {
+                it.navigation.path.resolveFolder((change as UpdateFileChange).newFile.name)
+            }
+            path.toString()
+        }
+
+        assertThat(changedPaths, containsInAnyOrder(
+            "/newRemoteFolder",
+            "/newRemoteFolder/newRemoteSubfolder",
+            "/newRemoteFolder/subfile",
+            "/newRemoteFolder/newRemoteSubfolder/subSubFolder"
+        ))
     }
 
     @Test

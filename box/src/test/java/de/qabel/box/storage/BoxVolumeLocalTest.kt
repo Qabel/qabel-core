@@ -33,6 +33,6 @@ class BoxVolumeLocalTest : BoxVolumeTest() {
     @Test
     @Throws(Exception::class)
     fun rootRefNotChanged() {
-        assertThat(volume!!.rootRef, equalTo("300c9c96-03b9-2a4b-39ed-3958bf924011"))
+        assertThat(volume.rootRef, equalTo("300c9c96-03b9-2a4b-39ed-3958bf924011"))
     }
 }

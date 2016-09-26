@@ -12,6 +12,8 @@ class CreateFolderChange(
 ) : DirectoryMetadataChange<ChangeResult<BoxFolder>> {
     private val secretKey: KeyParameter by lazy { CryptoUtils().generateSymmetricKey() }
     private val result : ChangeResult<BoxFolder> by lazy { createAndUploadDM() }
+    val folder: BoxFolder
+        get() = result.boxObject
 
     @Synchronized
     override fun execute(dm: DirectoryMetadata): ChangeResult<BoxFolder> {
