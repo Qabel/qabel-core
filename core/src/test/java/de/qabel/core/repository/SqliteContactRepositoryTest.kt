@@ -81,6 +81,15 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
         assertEquals(contact.alias, loaded.alias)
         assertEquals("01234567890", loaded.phone)
         assertEquals("test@test.de", loaded.email)
+
+        //Test nullable
+        contact.phone = null
+        repo.save(contact, identity)
+        em.clear()
+
+        val loadedAgain = repo.findByKeyId(identity, contact.keyIdentifier)
+        assertEquals("", loadedAgain.phone)
+        assertEquals("test@test.de", loadedAgain.email)
     }
 
     @Test

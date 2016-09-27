@@ -128,7 +128,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
     @Test
     fun findsSavedIdentitiesCollectionFromPreviousSession() {
         val identity = identityBuilder.build()
-        identity.email = "email"
+        identity.email = null
         identity.phone = "phone"
         identity.isUploadEnabled = false
         repo.save(identity)
@@ -146,7 +146,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
             identity.primaryKeyPair.privateKey,
             loadedIdentity.primaryKeyPair.privateKey))
         assertEquals(identity.alias, loadedIdentity.alias)
-        assertEquals(identity.email, loadedIdentity.email)
+        assertEquals(identity.email ?: "", loadedIdentity.email)
         assertEquals(identity.phone, loadedIdentity.phone)
         assertEquals(identity.isUploadEnabled, false)
         assertTrue(Arrays.equals(identity.dropUrls.toTypedArray(), loadedIdentity.dropUrls.toTypedArray()))
