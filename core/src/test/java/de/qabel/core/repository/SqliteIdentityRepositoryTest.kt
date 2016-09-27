@@ -61,6 +61,17 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
     }
 
     @Test
+    fun testSaveIdentityWithExistingContact() {
+        val identity = identityBuilder.build()
+        val contact = identity.toContact()
+        contactRepo.persist(contact, emptyList())
+        repo.save(identity)
+        val loaded = repo.find(identity.keyIdentifier)
+
+        assertSame(identity, loaded)
+    }
+
+    @Test
     fun findsSavedIdentitiesFromPreviousSession() {
         val identity = identityBuilder.build()
         identity.email = "email"

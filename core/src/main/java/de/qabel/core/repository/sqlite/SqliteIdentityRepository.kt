@@ -18,7 +18,7 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
                                dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)) :
     BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository, EntityObservable by SimpleEntityObservable() {
 
-    constructor(db: ClientDatabase, em: EntityManager): this(
+    constructor(db: ClientDatabase, em: EntityManager) : this(
         db,
         em,
         SqlitePrefixRepository(db),
@@ -58,6 +58,9 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
 
     private fun createIdentityContact(identity: Identity): Contact {
         val contact = identity.toContact()
+        if (contactRepository.exists(contact)) {
+            return contactRepository.findByKeyId(identity.keyIdentifier)
+        }
         contactRepository.persist(contact, emptyList())
         return contact
     }
