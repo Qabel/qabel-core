@@ -22,10 +22,10 @@ class IdentityAdapter(private val dropURLRepository: DropUrlRepository,
             return Identity(getString(ContactDB.ALIAS.alias()), mutableListOf<DropURL>(), QblECKeyPair(privateKey)).apply {
                 id = entityId
                 isUploadEnabled = getBoolean(IdentityDB.UPLOAD_ENABLED.alias())
-                phone = getString(ContactDB.PHONE.alias())
+                phone = getString(ContactDB.PHONE.alias()) ?: ""
                 phoneStatus = enumValue(getInt(IdentityDB.PHONE_STATUS.alias()), VerificationStatus.values())
 
-                email = getString(ContactDB.EMAIL.alias())
+                email = getString(ContactDB.EMAIL.alias()) ?: ""
                 emailStatus = enumValue(getInt(IdentityDB.EMAIL_STATUS.alias()), VerificationStatus.values())
 
                 prefixes = prefixRepository.findAll(this).toMutableList()
