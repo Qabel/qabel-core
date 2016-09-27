@@ -12,6 +12,7 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
 
     override fun delete(identity: Identity) {
         identities.remove(identity)
+        notifyObservers()
     }
 
     private val identities = Identities()
@@ -53,6 +54,7 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
         if (!identities.contains(identity)) {
             identities.put(identity)
         }
+        notifyObservers()
     }
 
     fun clear() {
