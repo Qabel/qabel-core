@@ -18,11 +18,11 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
     private val identities = Identities()
 
     @Throws(EntityNotFoundException::class)
-    override fun find(id: String): Identity {
-        if (identities.getByKeyIdentifier(id) == null) {
-            throw EntityNotFoundException("id $id not found")
+    override fun find(keyId: String): Identity {
+        if (identities.getByKeyIdentifier(keyId) == null) {
+            throw EntityNotFoundException("id $keyId not found")
         }
-        return identities.getByKeyIdentifier(id)
+        return identities.getByKeyIdentifier(keyId)
     }
 
     override fun find(keyId: String, detached: Boolean): Identity {

@@ -70,7 +70,7 @@ class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
         contact.alias = identity.alias
         contact.email = identity.email
         contact.phone = identity.phone
-        contactRepository.update(contact, emptyList())
+        contactRepository.update(contact)
         return contact
     }
 

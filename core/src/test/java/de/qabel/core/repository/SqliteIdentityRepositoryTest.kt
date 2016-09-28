@@ -1,6 +1,8 @@
 package de.qabel.core.repository
 
+import de.qabel.core.config.Contact
 import de.qabel.core.config.EntityObserver
+import de.qabel.core.config.Identity
 import de.qabel.core.config.VerificationStatus
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
@@ -212,5 +214,23 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         attachEntityObserver()
         repo.update (identity)
         assertTrue(hasCalled)
+    }
+
+    @Test
+    fun testUpdatingAnIdentitiesContactDoesNotRemoveItsConnections() {
+        val alice = createIdentity("Alice")
+        val bob = createIdentity("Bob")
+        repo.save(alice)
+        repo.save(bob)
+
+        val aliceContact = alice.toContact()
+        contactRepo.save(aliceContact, bob)
+
+        repo.update(alice)
+        assertHasContact(bob, aliceContact)
+    }
+
+    private fun assertHasContact(bob: Identity, aliceContact: Contact) {
+        assertThat(contactRepo.find(bob).contacts.map { it.keyIdentifier }, contains(aliceContact.keyIdentifier))
     }
 }

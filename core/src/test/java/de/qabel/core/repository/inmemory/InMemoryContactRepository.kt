@@ -90,12 +90,16 @@ open class InMemoryContactRepository : ContactRepository, EntityObservable by Si
     }
 
     override fun update(contact: Contact, activeIdentities: List<Identity>) {
-        contacts.put(contact.keyIdentifier, contact)
+        update(contact)
         identityMapping.values.forEach { it.remove(contact.keyIdentifier) }
         activeIdentities.forEach {
             identityMapping.getOrDefault(it.keyIdentifier).add(contact.keyIdentifier)
             identities.put(it.keyIdentifier, it)
         }
+    }
+
+    override fun update(contact: Contact) {
+        contacts.put(contact.keyIdentifier, contact)
     }
 
     override fun persist(contact: Contact, identities: List<Identity>) {
