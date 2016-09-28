@@ -1,6 +1,9 @@
 package de.qabel.core.repository
 
-import de.qabel.core.config.*
+import de.qabel.core.config.Contact
+import de.qabel.core.config.Contacts
+import de.qabel.core.config.EntityObservable
+import de.qabel.core.config.Identity
 import de.qabel.core.contacts.ContactData
 import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
@@ -20,6 +23,9 @@ interface ContactRepository: EntityObservable {
 
     @Throws(PersistenceException::class, EntityNotFoundException::class)
     fun update(contact: Contact, activeIdentities: List<Identity>)
+
+    @Throws(PersistenceException::class, EntityNotFoundException::class)
+    fun update(contact: Contact)
 
     @Throws(PersistenceException::class, EntityExistsException::class)
     fun persist(contact: Contact, identities: List<Identity>)
