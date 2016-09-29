@@ -10,7 +10,10 @@ import java.util.List;
 public class IdentityBuilder {
     private DropUrlGenerator dropUrlGenerator;
 
-    private String alias;
+    private String alias = "new identity";
+    private String email;
+    private String phone;
+    private String nickname;
     private QblECKeyPair keyPair;
     private List<DropURL> dropUrls = new LinkedList<>();
 
@@ -28,6 +31,15 @@ public class IdentityBuilder {
         return this;
     }
 
+    public IdentityBuilder withEmail(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public IdentityBuilder withPhone(String phone) {
+        this.phone = phone;
+        return this;
+    }
 
     public IdentityBuilder encryptWith(QblECKeyPair keyPair) {
         this.keyPair = keyPair;
@@ -42,6 +54,9 @@ public class IdentityBuilder {
             keyPair = new QblECKeyPair();
         }
 
-        return new Identity(alias, dropUrls, keyPair);
+        Identity identity = new Identity(alias, dropUrls, keyPair);
+        identity.setEmail(email);
+        identity.setPhone(phone);
+        return identity;
     }
 }
