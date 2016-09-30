@@ -278,4 +278,6 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     @Throws(QblStorageException::class)
     fun hasVersionChanged(dm: DirectoryMetadata): Boolean
+
+    fun visit(consumer: (AbstractNavigation, BoxObject) -> Unit): Unit
 }

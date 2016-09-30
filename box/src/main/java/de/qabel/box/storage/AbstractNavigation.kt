@@ -187,7 +187,7 @@ abstract class AbstractNavigation(
         }
     }
 
-    fun visit(consumer: (AbstractNavigation, BoxObject) -> Unit): Unit {
+    override fun visit(consumer: (AbstractNavigation, BoxObject) -> Unit): Unit {
         listFolders().forEach {
             consumer(this, it)
             navigate(it).visit(consumer)
