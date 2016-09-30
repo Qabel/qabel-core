@@ -3,6 +3,6 @@ package de.qabel.box.storage.command
 import de.qabel.box.storage.BoxShare
 import de.qabel.box.storage.DirectoryMetadata
 
-class DeleteShareChange(val share: BoxShare) : DirectoryMetadataChange<Unit> {
+class DeleteShareChange(val share: BoxShare) : DMChange<Unit> {
     override fun execute(dm: DirectoryMetadata) = dm.deleteShare(share)
 }

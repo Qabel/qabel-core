@@ -5,7 +5,7 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.hasSize
 import de.qabel.box.storage.command.DeleteFileChange
 import de.qabel.box.storage.command.UpdateFileChange
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
+import de.qabel.box.storage.dto.DMChangeNotification
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
@@ -42,7 +42,7 @@ abstract class AbstractNavigationTest {
         tmpDir
     )
     abstract val nav: AbstractNavigation
-    var subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+    var subscriber = TestSubscriber<DMChangeNotification>()
 
     @Before
     open fun setUp() {
@@ -71,7 +71,7 @@ abstract class AbstractNavigationTest {
 
     @Test
     fun resubscribe() {
-        subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+        subscriber = TestSubscriber<DMChangeNotification>()
         nav.changes.subscribe(subscriber)
     }
 

@@ -8,7 +8,7 @@ class DeleteFileChange(
     val file: BoxFile,
     private val indexNavigation: IndexNavigation,
     private val writeBackend: StorageWriteBackend
-): DirectoryMetadataChange<Unit>, Postprocessable {
+): DMChange<Unit>, Postprocessable {
     private val logger by lazy { LoggerFactory.getLogger(DeleteFileChange::class.java) }
 
     override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend)

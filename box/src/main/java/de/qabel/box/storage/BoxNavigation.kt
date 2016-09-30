@@ -1,20 +1,14 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
-import rx.Observable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.security.InvalidKeyException
 
 interface BoxNavigation : ReadableBoxNavigation {
-    /**
-     * Absolute remote path to this navigation instance.
-     */
-    val path: BoxPath.FolderLike
 
     /**
      *  Fetches and returns the remote metadata file.
@@ -32,23 +26,6 @@ interface BoxNavigation : ReadableBoxNavigation {
      */
     @Throws(QblStorageException::class)
     fun commit()
-
-    /**
-     * Fetch the remote metadata, update the internal metadata with the newly fetched and apply pending changes to it.
-     * This is like a rebase to remote.
-     */
-    @Throws(QblStorageException::class)
-    fun refresh()
-
-    /**
-     * Fetch the remote metadata, update the internal metadata with the newly fetched and apply pending changes to it.
-     * This is like a rebase to remote.
-     * @param recursive Boolean if true, refresh subdirectories recursively. Depth- or breadth-first may vary.
-     */
-    @Throws(QblStorageException::class)
-    fun refresh(recursive: Boolean = false)
-
-    val changes: Observable<DirectoryMetadataChangeNotification>
 
     /**
      * commits the DM if it has been changed (uploads or deletes)

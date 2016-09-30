@@ -4,7 +4,7 @@ import de.qabel.box.storage.cache.BoxNavigationCache
 import de.qabel.box.storage.cache.CachedFolderNavigationFactory
 import de.qabel.box.storage.command.*
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
+import de.qabel.box.storage.dto.DMChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
@@ -47,9 +47,9 @@ abstract class AbstractNavigation(
     }
     protected val cryptoUtils by lazy { CryptoUtils() }
 
-    private val pendingChanges = LinkedList<DirectoryMetadataChange<*>>()
-    override val changes: Subject<DirectoryMetadataChangeNotification, DirectoryMetadataChangeNotification>
-        = SerializedSubject(PublishSubject<DirectoryMetadataChangeNotification>())
+    private val pendingChanges = LinkedList<DMChange<*>>()
+    override val changes: Subject<DMChangeNotification, DMChangeNotification>
+        = SerializedSubject(PublishSubject<DMChangeNotification>())
 
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
@@ -242,8 +242,8 @@ abstract class AbstractNavigation(
     private fun fileAdd(file: BoxFile) = UpdateFileChange(null, file)
     private fun localFileDelete(file: BoxFile) = DeleteFileChange(file, indexNavigation, writeBackend)
 
-    private fun push(change: DirectoryMetadataChange<*>)
-        = changes.onNext(DirectoryMetadataChangeNotification(change, this))
+    private fun push(change: DMChange<*>)
+        = changes.onNext(DMChangeNotification(change, this))
 
     private fun hashEquals(oneFile: BoxFile, otherFile: BoxFile): Boolean {
         if (!oneFile.isHashed() || !otherFile.isHashed()) {
@@ -560,7 +560,7 @@ abstract class AbstractNavigation(
         execute(DeleteFolderChange(folder))
     }
 
-    protected fun <T> execute(command: DirectoryMetadataChange<T>): T {
+    protected fun <T> execute(command: DMChange<T>): T {
         val result = command.execute(dm)
         pendingChanges.add(command)
         autocommit()
