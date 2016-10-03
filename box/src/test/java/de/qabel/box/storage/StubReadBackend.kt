@@ -16,7 +16,7 @@ class StubReadBackend : StorageReadBackend, QabelLog {
 
     override fun download(name: String?, ifModifiedVersion: String?) = download(name)
 
-    override fun getUrl(meta: String?): String = throw UnsupportedOperationException("not implemented")
+    override fun getUrl(meta: String?): String = "http://some.url/" + meta
 
     override fun download(name: String?): StorageDownload {
         debug("downloading $name")

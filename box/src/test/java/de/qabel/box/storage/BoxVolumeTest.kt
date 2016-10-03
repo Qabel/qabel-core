@@ -517,6 +517,7 @@ abstract class BoxVolumeTest {
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
+        assertTrue(boxFile.isShared())
 
         val nav2 = volume2.navigate()
         val boxFile2 = nav2.getFile("file1")

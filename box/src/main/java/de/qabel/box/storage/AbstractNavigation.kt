@@ -233,6 +233,18 @@ abstract class AbstractNavigation(
             .filter { originalDm.hasFile(it.name) && !hashEquals(originalDm.getFile(it.name)!!, it) }
             .map { fileChange(it) }
             .forEach { push(it) }
+
+        // detect new shared files
+        newDm.listFiles()
+            .filter { it.isShared() && !(originalDm.getFile(it.name)?.isShared() ?: true) }
+            .map { shareChange(it) }
+            .forEach { push(it) }
+
+        // detect unshared files
+        newDm.listFiles()
+            .filter { !it.isShared() && originalDm.getFile(it.name)?.isShared() ?: false }
+            .map { unshareChange(it) }
+            .forEach { push(it) }
     }
 
     private fun fileChange(file: BoxFile) = UpdateFileChange(
@@ -243,9 +255,10 @@ abstract class AbstractNavigation(
     private fun remoteFolderDelete(it: BoxFolder) = DeleteFolderChange(it)
     private fun fileAdd(file: BoxFile) = UpdateFileChange(null, file)
     private fun localFileDelete(file: BoxFile) = DeleteFileChange(file)
+    private fun shareChange(file: BoxFile) = ShareChange(file, "")
+    private fun unshareChange(file: BoxFile) = UnshareChange(file)
 
-    private fun push(change: DMChange<*>)
-        = changes.onNext(DMChangeNotification(change, this))
+    private fun push(change: DMChange<*>) = changes.onNext(DMChangeNotification(change, this))
 
     private fun hashEquals(oneFile: BoxFile, otherFile: BoxFile): Boolean {
         if (!oneFile.isHashed() || !otherFile.isHashed()) {
@@ -429,7 +442,6 @@ abstract class AbstractNavigation(
         } catch (e: InvalidKeyException) {
             throw QblStorageException(e)
         }
-
     }
 
     @Throws(QblStorageException::class)

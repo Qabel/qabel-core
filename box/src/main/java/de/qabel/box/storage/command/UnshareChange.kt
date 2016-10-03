@@ -8,9 +8,11 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.logging.QabelLog
 
 class UnshareChange(val file: BoxFile) : DMChange<Unit>, Postprocessable, QabelLog {
-    val oldMeta = file.shared?.meta ?: throw IllegalArgumentException("cannot unshare file without share")
-
+    val oldMeta by lazy {
+        file.shared?.meta ?: throw IllegalArgumentException("cannot unshare file without share")
+    }
     override fun execute(dm: DirectoryMetadata) {
+        oldMeta
         file.shared = null
         dm.replaceFile(file)    // replace file entry to update file metadata reference
     }

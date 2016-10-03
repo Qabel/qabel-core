@@ -14,6 +14,6 @@ class ShareChange(
     }
 
     override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder) {
-        indexNavigation.insertShare(BoxShare(file.ref, recipient))
+        indexNavigation.insertShare(share)
     }
 }
