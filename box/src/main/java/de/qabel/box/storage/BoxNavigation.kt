@@ -1,6 +1,5 @@
 package de.qabel.box.storage
 
-import de.qabel.box.storage.dto.BoxPath
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
 import java.io.File
@@ -212,28 +211,10 @@ interface BoxNavigation : ReadableBoxNavigation {
     var metadata: DirectoryMetadata
 
     /**
-     * Creates and uploads a FileMetadata object for a BoxFile. FileMetadata location is written to BoxFile.meta
-     * and encryption key to BoxFile.metakey. If BoxFile.meta or BoxFile.metakey is not null, BoxFile will not be
-     * modified and no FileMetadata will be created.
-
-     * @param boxFile BoxFile to create FileMetadata from.
-     * *
-     * @return BoxExternalReference if FileMetadata has been successfully created and uploaded.
-     * *
+     * Generates a BoxExternalReference for an already shared boxFile.
+     * This interface only hides the absolute url generation from the caller.
      */
-    @Deprecated("should only be called internally (to ensure an index entry)")
-    @Throws(QblStorageException::class)
-    fun createFileMetadata(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference
-
-    /**
-     * Updates and uploads a FileMetadata object for a BoxFile.
-
-     * @param boxFile BoxFile to create FileMetadata from.
-     * *
-     */
-    @Deprecated("should only be called internally (on update)")
-    @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
-    fun updateFileMetadata(boxFile: BoxFile)
+    fun getExternalReference(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference
 
     /**
      * Makes the BoxFile shareable. Creates FileMetadata for the file and a share entry in the IndexNavigation.

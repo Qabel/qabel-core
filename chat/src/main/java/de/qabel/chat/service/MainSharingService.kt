@@ -3,7 +3,6 @@ package de.qabel.chat.service
 import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
-import de.qabel.box.storage.jdbc.JdbcFileMetadataFactory
 import de.qabel.chat.repository.ChatShareRepository
 import de.qabel.chat.repository.entities.BoxFileChatShare
 import de.qabel.chat.repository.entities.ChatDropMessage
@@ -30,8 +29,7 @@ class MainSharingService(private val chatShareRepository: ChatShareRepository,
     override fun getOrCreateOutgoingShare(identity: Identity, contact: Contact,
                                           boxFile: BoxFile, boxNavigation: BoxNavigation): BoxFileChatShare =
         (boxNavigation.getSharesOf(boxFile).find { it.recipient == contact.keyIdentifier }?.let {
-            //TODO May find other way to create reference obj
-            boxNavigation.createFileMetadata(identity.ecPublicKey, boxFile)
+            boxNavigation.getExternalReference(identity.ecPublicKey, boxFile)
         } ?: boxNavigation.share(identity.ecPublicKey, boxFile, contact.keyIdentifier)).let {
             chatShareRepository.findByBoxReference(identity, it.url, it.key) ?:
                 createNewBoxFileShare(it, boxFile, identity, ShareStatus.CREATED).apply {

@@ -15,7 +15,7 @@ open class UpdateFileChange(
 
     private fun hasSameHash(obj: BoxObject) = obj is BoxFile && obj.isHashed() && obj.hashed == newFile.hashed
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend) {
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder) {
         if (sameFileByHash) {
             writeBackend.deleteBlock(newFile.block)
         }

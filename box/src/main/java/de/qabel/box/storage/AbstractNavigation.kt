@@ -154,10 +154,12 @@ abstract class AbstractNavigation(
                 info("DM conflicted while uploading, will retry merge and upload")
             }
         }
-        pendingChanges.postprocess(dm, writeBackend)
+        val delayedIndexNavigation = DelayedIndexNavigation(indexNavigation)
+        pendingChanges.postprocess(dm, writeBackend, delayedIndexNavigation)
 
         pendingChanges.clear()
         originalDm = clone(dm)
+        delayedIndexNavigation.execute()
     }
 
     @Synchronized @Throws(QblStorageException::class)
@@ -240,7 +242,7 @@ abstract class AbstractNavigation(
     private fun remoteFolderAdd(it: BoxFolder) = CreateFolderChange(this, it.name, folderNavigationFactory, directoryFactory)
     private fun remoteFolderDelete(it: BoxFolder) = DeleteFolderChange(it)
     private fun fileAdd(file: BoxFile) = UpdateFileChange(null, file)
-    private fun localFileDelete(file: BoxFile) = DeleteFileChange(file, indexNavigation, writeBackend)
+    private fun localFileDelete(file: BoxFile) = DeleteFileChange(file)
 
     private fun push(change: DMChange<*>)
         = changes.onNext(DMChangeNotification(change, this))
@@ -431,7 +433,7 @@ abstract class AbstractNavigation(
     }
 
     @Throws(QblStorageException::class)
-    override fun createFileMetadata(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference {
+    fun createFileMetadata(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference {
         try {
             if (!boxFile.isShared()) {
                 val block = UUID.randomUUID().toString()
@@ -440,24 +442,19 @@ abstract class AbstractNavigation(
 
                 val fileMetadata = fileFactory.create(owner, boxFile)
                 uploadEncrypted(fileMetadata.path, key, block, null)
-
-                // Overwrite = delete old file, upload new file
-                val oldFile = dm.getFile(boxFile.getName())
-                if (oldFile != null) {
-                    dm.deleteFile(oldFile)
-                }
-                dm.insertFile(boxFile)
-                autocommit()
             }
-            return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
+            return getExternalReference(owner, boxFile)
         } catch (e: QblStorageException) {
             throw QblStorageException("Could not create or upload FileMetadata", e)
         }
+    }
 
+    override fun getExternalReference(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference {
+        return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
     }
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
-    override fun updateFileMetadata(boxFile: BoxFile) {
+    fun updateFileMetadata(boxFile: BoxFile) {
         val shared = boxFile.shared ?: throw QblStorageNotFound("FileMetadata is not set")
 
         try {
@@ -515,7 +512,7 @@ abstract class AbstractNavigation(
     }
 
     @Synchronized @Throws(QblStorageException::class)
-    override fun delete(file: BoxFile) = execute(DeleteFileChange(file, indexNavigation, writeBackend))
+    override fun delete(file: BoxFile) = execute(DeleteFileChange(file))
 
     @Synchronized @Throws(QblStorageException::class)
     override fun unshare(boxObject: BoxObject) {
@@ -529,20 +526,11 @@ abstract class AbstractNavigation(
         if (boxObject !is BoxFile) {
             throw NotImplementedException("unshare not implemented for " + boxObject.javaClass)
         }
-        removeFileMetadata(boxObject)
-        autocommit()
+        if (!boxObject.isShared()) {
+            return
+        }
+        execute(UnshareChange(boxObject))
     }
-
-    /**
-     * Deletes FileMetadata and sets BoxFile.meta and BoxFile.metakey to null. Does not re-encrypt BoxFile thus
-     * receivers of the FileMetadata can still read the BoxFile.
-
-     * @param boxFile BoxFile to remove FileMetadata from.
-     * *
-     * @return True if FileMetadata has been deleted. False if meta information is missing.
-     */
-    @Throws(QblStorageException::class)
-    protected fun removeFileMetadata(boxFile: BoxFile) = removeFileMetadata(boxFile, writeBackend, dm)
 
     @Synchronized @Throws(QblStorageException::class)
     override fun delete(folder: BoxFolder) {
@@ -624,15 +612,13 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     override fun share(owner: QblECPublicKey, file: BoxFile, recipient: String): BoxExternalReference {
         val ref = createFileMetadata(owner, file)
-        val share = BoxShare(file.meta, recipient)
-        indexNavigation.insertShare(share)
+        execute(ShareChange(file, recipient))
         return ref
     }
 
     @Throws(QblStorageException::class)
     override fun getSharesOf(`object`: BoxObject): List<BoxShare> {
-        return indexNavigation.listShares()?.filter({ share -> share.ref == `object`.ref })?.toList()
-            ?: throw QblStorageException("No index navigation")
+        return indexNavigation.listShares().filter({ share -> share.ref == `object`.ref }).toList()
     }
 
     @Throws(QblStorageException::class)
@@ -646,24 +632,5 @@ abstract class AbstractNavigation(
         @JvmField
         @Deprecated("")
         var DEFAULT_AUTOCOMMIT_DELAY: Long = 0
-
-        @Throws(QblStorageException::class)
-        fun removeFileMetadata(boxFile: BoxFile, writeBackend: StorageWriteBackend, dm: DirectoryMetadata): Boolean {
-            if (!boxFile.isShared()) {
-                return false
-            }
-
-            writeBackend.delete(boxFile.meta!!)
-            boxFile.shared = null
-
-            // Overwrite = delete old file, upload new file
-            val oldFile = dm.getFile(boxFile.getName())
-            if (oldFile != null) {
-                dm.deleteFile(oldFile)
-            }
-            dm.insertFile(boxFile)
-
-            return true
-        }
     }
 }
