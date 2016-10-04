@@ -25,6 +25,7 @@ import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
 
 abstract class AbstractNavigation(
     override val path: BoxPath.FolderLike,
@@ -47,7 +48,8 @@ abstract class AbstractNavigation(
     }
     protected val cryptoUtils by lazy { CryptoUtils() }
 
-    private val pendingChanges = LinkedList<DMChange<*>>()
+    private var pendingChanges: List<DMChange<*>> = emptyList()
+    private val committing = AtomicBoolean(false)
     override val changes: Subject<DMChangeNotification, DMChangeNotification>
         = SerializedSubject(PublishSubject<DMChangeNotification>())
 
@@ -124,6 +126,19 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun commit() {
+        if (!committing.compareAndSet(false, true)) {
+            return
+        }
+        do {
+            val commitChanges = pendingChanges
+            pendingChanges = emptyList()
+
+            commit(commitChanges)
+        } while (!pendingChanges.isEmpty())
+        committing.set(false)
+    }
+
+    private fun commit(changes: List<DMChange<*>>) {
         val version = dm.version
         dm.commit()
         info("Committing version " + String(Hex.encodeHex(dm.version))
@@ -144,7 +159,7 @@ abstract class AbstractNavigation(
                 // ignore our local directory metadata
                 // all changes that are not inserted in the new dm are _lost_!
                 dm = updatedDM
-                pendingChanges.execute(dm)
+                changes.execute(dm)
                 dm.commit()
             }
             try {
@@ -154,12 +169,9 @@ abstract class AbstractNavigation(
                 info("DM conflicted while uploading, will retry merge and upload")
             }
         }
-        val delayedIndexNavigation = DelayedIndexNavigation(indexNavigation)
-        pendingChanges.postprocess(dm, writeBackend, delayedIndexNavigation)
+        changes.postprocess(dm, writeBackend, indexNavigation)
 
-        pendingChanges.clear()
         originalDm = clone(dm)
-        delayedIndexNavigation.execute()
     }
 
     @Synchronized @Throws(QblStorageException::class)
@@ -560,9 +572,11 @@ abstract class AbstractNavigation(
         execute(DeleteFolderChange(folder))
     }
 
+    @Synchronized
     protected fun <T> execute(command: DMChange<T>): T {
         val result = command.execute(dm)
-        pendingChanges.add(command)
+        pendingChanges += command
+
         autocommit()
         return result
     }
