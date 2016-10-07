@@ -18,18 +18,18 @@ class DeleteFileChangeTest {
     val indexNavigation: IndexNavigation = mock()
 
     @Test
-    fun ignoresAlreadyDeletedFiles() = DeleteFileChange(file, indexNavigation, writeBackend).execute(dm)
+    fun ignoresAlreadyDeletedFiles() = DeleteFileChange(file).execute(dm)
 
     @Test
     fun deletesExistingFile() {
         dm.insertFile(file)
         writeBackend.upload("blocks/${file.block}", ByteArrayInputStream("content".toByteArray()))
 
-        val change = DeleteFileChange(file, indexNavigation, writeBackend)
+        val change = DeleteFileChange(file)
         change.execute(dm)
         assertThat(dm.hasFile(file.name), equalTo(false))
 
-        change.postprocess(dm, writeBackend)
+        change.postprocess(dm, writeBackend, indexNavigation)
         assertThrows(QblStorageNotFound::class) {
             readBackend.download("blocks/${file.block}")
         }

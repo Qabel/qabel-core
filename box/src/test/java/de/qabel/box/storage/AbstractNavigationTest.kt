@@ -4,12 +4,15 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.hasSize
 import de.qabel.box.storage.command.DeleteFileChange
+import de.qabel.box.storage.command.ShareChange
+import de.qabel.box.storage.command.UnshareChange
 import de.qabel.box.storage.command.UpdateFileChange
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
+import de.qabel.core.extensions.letApply
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -42,7 +45,7 @@ abstract class AbstractNavigationTest {
         tmpDir
     )
     abstract val nav: AbstractNavigation
-    var subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+    var subscriber = TestSubscriber<DMChangeEvent>()
 
     @Before
     open fun setUp() {
@@ -51,7 +54,7 @@ abstract class AbstractNavigationTest {
 
     @Test
     fun notifiesAboutFileCreates() {
-        nav.upload("test", ByteArrayInputStream("content".toByteArray()), 7)
+        upload("test")
         assertChange(UpdateFileChange::class.java) {
             assertEquals("test", newFile.name)
             assertNull(expectedFile)
@@ -60,7 +63,7 @@ abstract class AbstractNavigationTest {
 
     @Test
     fun notifiesAboutFileDeletes() {
-        val file = nav.upload("test", ByteArrayInputStream("content".toByteArray()), 7)
+        val file = upload("test")
         resubscribe()
         nav.delete(file)
 
@@ -69,15 +72,44 @@ abstract class AbstractNavigationTest {
         }
     }
 
+    private fun upload(filename: String) = nav.upload(filename, ByteArrayInputStream("content".toByteArray()), 7)
+
+    @Test
+    fun notifiesAboutShares() {
+        upload("test").letApply {
+            resubscribe()
+            nav.share(keyPair.pub, it, "recipient")
+        }
+
+        assertChange(ShareChange::class.java) {
+            assertEquals("test", file.name)
+            assertTrue(file.isShared())
+        }
+    }
+
+    @Test
+    fun notifiesAboutUnshares() {
+        upload("test").letApply {
+            nav.share(keyPair.pub, it, "recipient")
+            resubscribe()
+            nav.unshare(it)
+        }
+
+        assertChange(UnshareChange::class.java) {
+            assertEquals("test", file.name)
+            assertFalse(file.isShared())
+        }
+    }
+
     @Test
     fun resubscribe() {
-        subscriber = TestSubscriber<DirectoryMetadataChangeNotification>()
+        subscriber = TestSubscriber<DMChangeEvent>()
         nav.changes.subscribe(subscriber)
     }
 
     fun <T> assertChange(clazz: Class<T>, block: T.() -> Unit) : T {
         val changes = subscriber.onNextEvents
-        assertThat(changes, hasSize(equalTo(1)))
+        assertThat("no event happend, but expecting one", changes, hasSize(equalTo(1)))
 
         val change = changes.first().change
         if (!clazz.isInstance(change)) {

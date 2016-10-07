@@ -6,7 +6,7 @@ import de.qabel.box.storage.command.DeleteFileChange
 import de.qabel.box.storage.command.DeleteFolderChange
 import de.qabel.box.storage.command.UpdateFileChange
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import de.qabel.box.storage.exceptions.QblStorageNotFound
@@ -51,7 +51,7 @@ abstract class BoxVolumeTest {
     private var testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
     protected lateinit var contact: Contact
     protected lateinit var volumeTmpDir: File
-    val changes = mutableListOf<DirectoryMetadataChangeNotification>()
+    val changes = mutableListOf<DMChangeEvent>()
 
     @Before
     open fun setUp() {
@@ -385,7 +385,7 @@ abstract class BoxVolumeTest {
         assertThat(nav.listFolders().size, `is`(2))
     }
 
-    private fun setupConflictNav1(): BoxNavigation {
+    private fun setupConflictNav1(): IndexNavigation {
         val nav = volume.navigate()
         nav.setAutocommit(false)
         return nav
@@ -505,7 +505,29 @@ abstract class BoxVolumeTest {
         assertThat(nav.listFiles()[0].name, equalTo("foobar"))
     }
 
-    private fun setupConflictNav2(): BoxNavigation {
+    @Test
+    open fun testResolvesConflictsWhileCommittingShare() {
+        val (nav1, nav2) = setupConflictNavs()
+        val file = File(testFileName)
+        val boxFile = nav1.upload(DEFAULT_UPLOAD_FILENAME, file)
+        nav1.commit()
+        nav2.refresh()
+
+        nav1.share(keyPair.pub, boxFile, "recipient")
+        nav2.apply { createFolder("just some conflict") }.commit()
+        nav1.commit()
+
+        nav2.refresh()
+        assertThat(nav2.listShares(), hasSize(1))
+        with (nav2.getFile(DEFAULT_UPLOAD_FILENAME)) {
+            assertThat(this.isShared(), equalTo(true))
+            assertThat(nav2.getSharesOf(this), hasSize(1))
+        }
+    }
+
+    private fun setupConflictNavs() = Pair(setupConflictNav1(), setupConflictNav2())
+
+    private fun setupConflictNav2(): IndexNavigation {
         val nav2 = volume2.navigate()
         nav2.setAutocommit(false)
         return nav2
@@ -517,6 +539,7 @@ abstract class BoxVolumeTest {
         val file = File(testFileName)
         val boxFile = nav.upload("file1", file)
         nav.share(keyPair.pub, boxFile, contact.keyIdentifier)
+        assertTrue(boxFile.isShared())
 
         val nav2 = volume2.navigate()
         val boxFile2 = nav2.getFile("file1")

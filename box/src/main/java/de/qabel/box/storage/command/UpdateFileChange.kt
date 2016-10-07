@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory
 open class UpdateFileChange(
     val expectedFile: BoxFile?,
     val newFile: BoxFile
-    ) : DirectoryMetadataChange<Unit>, Postprocessable {
+    ) : DMChange<Unit>, Postprocessable {
 
     private val logger by lazy { LoggerFactory.getLogger(UpdateFileChange::class.java) }
 
@@ -15,7 +15,7 @@ open class UpdateFileChange(
 
     private fun hasSameHash(obj: BoxObject) = obj is BoxFile && obj.isHashed() && obj.hashed == newFile.hashed
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend) {
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder) {
         if (sameFileByHash) {
             writeBackend.deleteBlock(newFile.block)
         }

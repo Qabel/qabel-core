@@ -1,40 +1,22 @@
 package de.qabel.box.storage.command
 
-import de.qabel.box.storage.*
-import de.qabel.box.storage.exceptions.QblStorageException
-import org.slf4j.LoggerFactory
+import de.qabel.box.storage.BoxFile
+import de.qabel.box.storage.DirectoryMetadata
+import de.qabel.box.storage.ShareHolder
+import de.qabel.box.storage.StorageWriteBackend
 
-class DeleteFileChange(
-    val file: BoxFile,
-    private val indexNavigation: IndexNavigation,
-    private val writeBackend: StorageWriteBackend
-): DirectoryMetadataChange<Unit>, Postprocessable {
-    private val logger by lazy { LoggerFactory.getLogger(DeleteFileChange::class.java) }
-
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend)
-        = writeBackend.deleteBlock(file.block)
-
+class DeleteFileChange(val file: BoxFile): DMChange<Unit>, Postprocessable {
     override fun execute(dm: DirectoryMetadata) {
         if (dm.hasFile(file.name)) {
             dm.deleteFile(file)
         }
-
-        if (file.isShared()) {
-            removeSharesFromIndex()
-            removeFileMetadata(dm)
-        }
     }
 
-    private fun removeFileMetadata(dm: DirectoryMetadata)
-        = AbstractNavigation.removeFileMetadata(file, writeBackend, dm)
-
-    private fun removeSharesFromIndex() {
-        indexNavigation.getSharesOf(file).forEach { share ->
-            try {
-                indexNavigation.deleteShare(share)
-            } catch (e: QblStorageException) {
-                logger.error("failed to delete share from indexNavigation: " + e.message, e)
-            }
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder) {
+        writeBackend.deleteBlock(file.block)
+        if (file.isShared()) {
+            UnshareChange(file).postprocess(dm, writeBackend, shares)
+            file.shared = null
         }
     }
 }

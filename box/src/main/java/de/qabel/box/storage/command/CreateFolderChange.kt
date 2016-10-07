@@ -9,7 +9,7 @@ class CreateFolderChange(
     val name: String,
     val navigationFactory: FolderNavigationFactory,
     val directoryFactory: DirectoryMetadataFactory
-) : DirectoryMetadataChange<ChangeResult<BoxFolder>> {
+) : DMChange<ChangeResult<BoxFolder>> {
     private val secretKey: KeyParameter by lazy { CryptoUtils().generateSymmetricKey() }
     private val result : ChangeResult<BoxFolder> by lazy { createAndUploadDM() }
     val folder: BoxFolder

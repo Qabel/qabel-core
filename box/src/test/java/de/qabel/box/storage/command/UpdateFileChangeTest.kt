@@ -1,9 +1,7 @@
 package de.qabel.box.storage.command
 
-import de.qabel.box.storage.BoxFile
-import de.qabel.box.storage.InMemoryDirectoryMetadata
-import de.qabel.box.storage.LocalWriteBackend
-import de.qabel.box.storage.StorageWriteBackend
+import com.nhaarman.mockito_kotlin.mock
+import de.qabel.box.storage.*
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -17,6 +15,7 @@ class UpdateFileChangeTest {
     val anotherFile = BoxFile("p", "block3", "filename", 999, 666, ByteArray(0))
     val anotherConflictFile = BoxFile("p", "block4", "filename_conflict", 999, 666, ByteArray(0))
     val writeBackend = LocalWriteBackend(createTempDir().toPath())
+    val indexNavigation: IndexNavigation = mock()
 
     @Before
     fun setUp() {
@@ -81,7 +80,7 @@ class UpdateFileChangeTest {
         }
         val change = UpdateFileChange(null, file)
         change.execute(dm)
-        change.postprocess(dm, backend)
+        change.postprocess(dm, backend, mock())
         assertNotEquals("Block was deleted", "blocks/" + file.block, deleted)
         assertNotEquals("Block was deleted", "blocks/" + hashedFile.block, deleted)
     }
@@ -102,7 +101,7 @@ class UpdateFileChangeTest {
 
         val change = UpdateFileChange(null, hashedFile)
         change.execute(dm)
-        change.postprocess(dm, backend)
+        change.postprocess(dm, backend, mock())
         assertEquals("Block was not deleted", "blocks/" + hashedFile.block, deleted)
 
         assertThat(dm.listFiles(), allOf(containsInAnyOrder(hashedFile), hasSize(1)))

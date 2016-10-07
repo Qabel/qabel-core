@@ -1,20 +1,13 @@
 package de.qabel.box.storage
 
-import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DirectoryMetadataChangeNotification
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
-import rx.Observable
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.security.InvalidKeyException
 
 interface BoxNavigation : ReadableBoxNavigation {
-    /**
-     * Absolute remote path to this navigation instance.
-     */
-    val path: BoxPath.FolderLike
 
     /**
      *  Fetches and returns the remote metadata file.
@@ -26,29 +19,11 @@ interface BoxNavigation : ReadableBoxNavigation {
     /**
      * Bumps the version and uploads the metadata file
      *
-     *
      * All actions are not guaranteed to be finished before the commit
      * method returned.
      */
     @Throws(QblStorageException::class)
     fun commit()
-
-    /**
-     * Fetch the remote metadata, update the internal metadata with the newly fetched and apply pending changes to it.
-     * This is like a rebase to remote.
-     */
-    @Throws(QblStorageException::class)
-    fun refresh()
-
-    /**
-     * Fetch the remote metadata, update the internal metadata with the newly fetched and apply pending changes to it.
-     * This is like a rebase to remote.
-     * @param recursive Boolean if true, refresh subdirectories recursively. Depth- or breadth-first may vary.
-     */
-    @Throws(QblStorageException::class)
-    fun refresh(recursive: Boolean = false)
-
-    val changes: Observable<DirectoryMetadataChangeNotification>
 
     /**
      * commits the DM if it has been changed (uploads or deletes)
@@ -58,13 +33,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file file object that must be readable
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -72,13 +44,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file file object that must be readable
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -86,15 +55,11 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file stream with contents of the file
-     * *
      * @param size size of the file (of the fully read stream)
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -102,13 +67,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file stream with contents of the file
-     * *
      * @param size size of the file (of the fully read stream)
-     * *
      * @return the resulting BoxFile object
      * *
      * @throws QblStorageException if the upload failed or the name is not unique
@@ -227,7 +189,7 @@ interface BoxNavigation : ReadableBoxNavigation {
     /**
      * Sets the delay between actions and an automated commit.
      * Requires autocommit=true
-
+     *
      * @param delay in milliseconds
      */
     fun setAutocommitDelay(delay: Long)
@@ -235,36 +197,16 @@ interface BoxNavigation : ReadableBoxNavigation {
     var metadata: DirectoryMetadata
 
     /**
-     * Creates and uploads a FileMetadata object for a BoxFile. FileMetadata location is written to BoxFile.meta
-     * and encryption key to BoxFile.metakey. If BoxFile.meta or BoxFile.metakey is not null, BoxFile will not be
-     * modified and no FileMetadata will be created.
-
-     * @param boxFile BoxFile to create FileMetadata from.
-     * *
-     * @return BoxExternalReference if FileMetadata has been successfully created and uploaded.
-     * *
+     * Generates a BoxExternalReference for an already shared boxFile.
+     * This interface only hides the absolute url generation from the caller.
      */
-    @Deprecated("should only be called internally (to ensure an index entry)")
-    @Throws(QblStorageException::class)
-    fun createFileMetadata(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference
-
-    /**
-     * Updates and uploads a FileMetadata object for a BoxFile.
-
-     * @param boxFile BoxFile to create FileMetadata from.
-     * *
-     */
-    @Deprecated("should only be called internally (on update)")
-    @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
-    fun updateFileMetadata(boxFile: BoxFile)
+    fun getExternalReference(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference
 
     /**
      * Makes the BoxFile shareable. Creates FileMetadata for the file and a share entry in the IndexNavigation.
 
      * @param owner    owner of the share
-     * *
      * @param file     file to share
-     * *
      * @param recipient KeyId of the recipients (Contact) public key
      */
     @Throws(QblStorageException::class)
@@ -274,8 +216,10 @@ interface BoxNavigation : ReadableBoxNavigation {
      * List all created (and not yet deleted) shares for the given BoxObject
      */
     @Throws(QblStorageException::class)
-    fun getSharesOf(`object`: BoxObject): List<BoxShare>
+    fun getSharesOf(boxObject: BoxObject): List<BoxShare>
 
     @Throws(QblStorageException::class)
     fun hasVersionChanged(dm: DirectoryMetadata): Boolean
+
+    fun visit(consumer: (AbstractNavigation, BoxObject) -> Unit): Unit
 }
