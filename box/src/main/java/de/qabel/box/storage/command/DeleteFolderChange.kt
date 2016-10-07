@@ -7,6 +7,6 @@ import de.qabel.box.storage.StorageWriteBackend
 
 class DeleteFolderChange(val folder: BoxFolder) : DMChange<Unit>, Postprocessable {
     override fun execute(dm: DirectoryMetadata) = dm.deleteFolder(folder)
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder)
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder)
         = writeBackend.delete(folder.ref)
 }

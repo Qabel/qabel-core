@@ -6,7 +6,7 @@ import de.qabel.box.storage.command.DeleteFileChange
 import de.qabel.box.storage.command.DeleteFolderChange
 import de.qabel.box.storage.command.UpdateFileChange
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DMChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
 import de.qabel.box.storage.exceptions.QblStorageNotFound
@@ -51,7 +51,7 @@ abstract class BoxVolumeTest {
     private var testFileName = "src/test/java/de/qabel/box/storage/testFile.txt"
     protected lateinit var contact: Contact
     protected lateinit var volumeTmpDir: File
-    val changes = mutableListOf<DMChangeNotification>()
+    val changes = mutableListOf<DMChangeEvent>()
 
     @Before
     open fun setUp() {

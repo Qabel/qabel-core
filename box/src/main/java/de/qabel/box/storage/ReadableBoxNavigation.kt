@@ -1,7 +1,7 @@
 package de.qabel.box.storage
 
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DMChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.exceptions.QblStorageException
 import rx.Observable
 
@@ -11,12 +11,12 @@ interface ReadableBoxNavigation {
      */
     val path: BoxPath.FolderLike
 
-    val changes: Observable<DMChangeNotification>
+    val changes: Observable<DMChangeEvent>
 
     /**
      * Create a new navigation object that starts at another [BoxFolder]
 
-     * @param target Target folder that is a direct subfolder
+     * @param target folder that is a direct subfolder
      * *
      * @return [BoxNavigation] for the subfolder
      */
@@ -24,13 +24,13 @@ interface ReadableBoxNavigation {
     fun navigate(target: BoxFolder): BoxNavigation
 
     /**
-     * Create a new navigation object that starts at another [BoxExternal]
+     * Create a new navigation object that starts at another [BoxExternalFolder]
 
-     * @param target Target shared folder that is mounted in the current folder
+     * @param target shared folder that is mounted in the current folder
      * *
      * @return [BoxNavigation] for the external share
      */
-    fun navigate(target: BoxExternal): BoxNavigation
+    fun navigate(target: BoxExternalFolder): BoxNavigation
 
     /**
      * Create a list of all files in the current folder

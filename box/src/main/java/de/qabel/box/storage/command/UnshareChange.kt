@@ -17,10 +17,10 @@ class UnshareChange(val file: BoxFile) : DMChange<Unit>, Postprocessable, QabelL
         dm.replaceFile(file)    // replace file entry to update file metadata reference
     }
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder) {
-        indexNavigation.getSharesOf(file).forEach { share ->
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder) {
+        shares.getSharesOf(file).forEach { share ->
             try {
-                indexNavigation.deleteShare(share)
+                shares.deleteShare(share)
             } catch (e: QblStorageException) {
                 error(e.message, e)
             }

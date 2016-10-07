@@ -13,7 +13,7 @@ class ShareChange(
         dm.replaceFile(file)    // replace file entry to update file metadata reference
     }
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder) {
-        indexNavigation.insertShare(share)
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder) {
+        shares.insertShare(share)
     }
 }

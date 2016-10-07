@@ -6,7 +6,7 @@ class DelayedIndexNavigation(val indexNavigation: IndexNavigation): ShareHolder 
 
     override fun listShares() = indexNavigation.listShares()
 
-    override fun getSharesOf(`object`: BoxObject) = indexNavigation.getSharesOf(`object`)
+    override fun getSharesOf(boxObject: BoxObject) = indexNavigation.getSharesOf(boxObject)
 
     override fun insertShare(share: BoxShare) {
         insertedShares += share

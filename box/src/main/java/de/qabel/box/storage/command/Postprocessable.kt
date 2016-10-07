@@ -10,6 +10,6 @@ interface Postprocessable {
     fun postprocess(
         dm: DirectoryMetadata,
         writeBackend: StorageWriteBackend,
-        indexNavigation: ShareHolder
+        shares: ShareHolder
     )
 }

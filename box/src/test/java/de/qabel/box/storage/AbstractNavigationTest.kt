@@ -7,7 +7,7 @@ import de.qabel.box.storage.command.DeleteFileChange
 import de.qabel.box.storage.command.ShareChange
 import de.qabel.box.storage.command.UnshareChange
 import de.qabel.box.storage.command.UpdateFileChange
-import de.qabel.box.storage.dto.DMChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.crypto.CryptoUtils
@@ -45,7 +45,7 @@ abstract class AbstractNavigationTest {
         tmpDir
     )
     abstract val nav: AbstractNavigation
-    var subscriber = TestSubscriber<DMChangeNotification>()
+    var subscriber = TestSubscriber<DMChangeEvent>()
 
     @Before
     open fun setUp() {
@@ -103,7 +103,7 @@ abstract class AbstractNavigationTest {
 
     @Test
     fun resubscribe() {
-        subscriber = TestSubscriber<DMChangeNotification>()
+        subscriber = TestSubscriber<DMChangeEvent>()
         nav.changes.subscribe(subscriber)
     }
 

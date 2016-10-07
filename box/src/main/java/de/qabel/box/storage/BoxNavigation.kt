@@ -19,7 +19,6 @@ interface BoxNavigation : ReadableBoxNavigation {
     /**
      * Bumps the version and uploads the metadata file
      *
-     *
      * All actions are not guaranteed to be finished before the commit
      * method returned.
      */
@@ -34,13 +33,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file file object that must be readable
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -48,13 +44,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file file object that must be readable
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -62,15 +55,11 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file stream with contents of the file
-     * *
      * @param size size of the file (of the fully read stream)
-     * *
      * @return the resulting BoxFile object
-     * *
      * @throws QblStorageException if the upload failed or the name is not unique
      */
     @Throws(QblStorageException::class)
@@ -78,13 +67,10 @@ interface BoxNavigation : ReadableBoxNavigation {
 
     /**
      * Upload a new file to the current folder
-
+     *
      * @param name name of the file, must be unique
-     * *
      * @param file stream with contents of the file
-     * *
      * @param size size of the file (of the fully read stream)
-     * *
      * @return the resulting BoxFile object
      * *
      * @throws QblStorageException if the upload failed or the name is not unique
@@ -203,7 +189,7 @@ interface BoxNavigation : ReadableBoxNavigation {
     /**
      * Sets the delay between actions and an automated commit.
      * Requires autocommit=true
-
+     *
      * @param delay in milliseconds
      */
     fun setAutocommitDelay(delay: Long)
@@ -220,9 +206,7 @@ interface BoxNavigation : ReadableBoxNavigation {
      * Makes the BoxFile shareable. Creates FileMetadata for the file and a share entry in the IndexNavigation.
 
      * @param owner    owner of the share
-     * *
      * @param file     file to share
-     * *
      * @param recipient KeyId of the recipients (Contact) public key
      */
     @Throws(QblStorageException::class)
@@ -232,7 +216,7 @@ interface BoxNavigation : ReadableBoxNavigation {
      * List all created (and not yet deleted) shares for the given BoxObject
      */
     @Throws(QblStorageException::class)
-    fun getSharesOf(`object`: BoxObject): List<BoxShare>
+    fun getSharesOf(boxObject: BoxObject): List<BoxShare>
 
     @Throws(QblStorageException::class)
     fun hasVersionChanged(dm: DirectoryMetadata): Boolean

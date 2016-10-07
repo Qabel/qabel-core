@@ -4,7 +4,7 @@ import de.qabel.box.storage.cache.BoxNavigationCache
 import de.qabel.box.storage.cache.CachedFolderNavigationFactory
 import de.qabel.box.storage.command.*
 import de.qabel.box.storage.dto.BoxPath
-import de.qabel.box.storage.dto.DMChangeNotification
+import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.exceptions.QblStorageNameConflict
@@ -50,8 +50,8 @@ abstract class AbstractNavigation(
 
     private var pendingChanges: List<DMChange<*>> = emptyList()
     private val committing = AtomicBoolean(false)
-    override val changes: Subject<DMChangeNotification, DMChangeNotification>
-        = SerializedSubject(PublishSubject<DMChangeNotification>())
+    override val changes: Subject<DMChangeEvent, DMChangeEvent>
+        = SerializedSubject(PublishSubject<DMChangeEvent>())
 
     private var autocommit = true
     private var autocommitDelay = DEFAULT_AUTOCOMMIT_DELAY
@@ -270,7 +270,7 @@ abstract class AbstractNavigation(
     private fun shareChange(file: BoxFile) = ShareChange(file, "")
     private fun unshareChange(file: BoxFile) = UnshareChange(file)
 
-    private fun push(change: DMChange<*>) = changes.onNext(DMChangeNotification(change, this))
+    private fun push(change: DMChange<*>) = changes.onNext(DMChangeEvent(change, this))
 
     private fun hashEquals(oneFile: BoxFile, otherFile: BoxFile): Boolean {
         if (!oneFile.isHashed() || !otherFile.isHashed()) {
@@ -286,7 +286,7 @@ abstract class AbstractNavigation(
     @Throws(QblStorageException::class)
     protected abstract fun uploadDirectoryMetadata()
 
-    override fun navigate(target: BoxExternal): BoxNavigation = TODO()
+    override fun navigate(target: BoxExternalFolder): BoxNavigation = TODO()
 
     @Throws(QblStorageException::class)
     override fun listFiles(): List<BoxFile> {
@@ -473,9 +473,8 @@ abstract class AbstractNavigation(
         }
     }
 
-    override fun getExternalReference(owner: QblECPublicKey, boxFile: BoxFile): BoxExternalReference {
-        return BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
-    }
+    override fun getExternalReference(owner: QblECPublicKey, boxFile: BoxFile)
+        = BoxExternalReference(false, readBackend.getUrl(boxFile.meta), boxFile.getName(), owner, boxFile.metakey)
 
     @Throws(QblStorageException::class, IOException::class, InvalidKeyException::class)
     fun updateFileMetadata(boxFile: BoxFile) {
@@ -540,20 +539,14 @@ abstract class AbstractNavigation(
 
     @Synchronized @Throws(QblStorageException::class)
     override fun unshare(boxObject: BoxObject) {
-        indexNavigation.getSharesOf(boxObject).forEach { share ->
-            try {
-                indexNavigation.deleteShare(share)
-            } catch (e: QblStorageException) {
-                error(e.message, e)
-            }
-        }
         if (boxObject !is BoxFile) {
             throw NotImplementedException("unshare not implemented for " + boxObject.javaClass)
         }
-        if (!boxObject.isShared()) {
-            return
+        if (boxObject.isShared()) {
+            execute(UnshareChange(boxObject))
+        } else {
+            warn("unable to unshare ${boxObject.name} because it is not shared")
         }
-        execute(UnshareChange(boxObject))
     }
 
     @Synchronized @Throws(QblStorageException::class)
@@ -643,8 +636,8 @@ abstract class AbstractNavigation(
     }
 
     @Throws(QblStorageException::class)
-    override fun getSharesOf(`object`: BoxObject): List<BoxShare> {
-        return indexNavigation.listShares().filter({ share -> share.ref == `object`.ref }).toList()
+    override fun getSharesOf(boxObject: BoxObject): List<BoxShare> {
+        return indexNavigation.listShares().filter({ share -> share.ref == boxObject.ref }).toList()
     }
 
     @Throws(QblStorageException::class)

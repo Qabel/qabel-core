@@ -12,10 +12,10 @@ class DeleteFileChange(val file: BoxFile): DMChange<Unit>, Postprocessable {
         }
     }
 
-    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, indexNavigation: ShareHolder) {
+    override fun postprocess(dm: DirectoryMetadata, writeBackend: StorageWriteBackend, shares: ShareHolder) {
         writeBackend.deleteBlock(file.block)
         if (file.isShared()) {
-            UnshareChange(file).postprocess(dm, writeBackend, indexNavigation)
+            UnshareChange(file).postprocess(dm, writeBackend, shares)
             file.shared = null
         }
     }
