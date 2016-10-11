@@ -1,6 +1,5 @@
 package de.qabel.box.storage.jdbc
 
-import de.qabel.box.storage.AbstractMetadata
 import de.qabel.box.storage.DirectoryMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
@@ -16,8 +15,10 @@ import java.util.*
 class JdbcDirectoryMetadataFactory(val tempDir: File,
                                    val deviceId: ByteArray,
                                    private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase =
-                                       { DirectoryMetadataDatabase(it) }
+                                       { DirectoryMetadataDatabase(it) },
+                                   val jdbcPrefix: String = "jdbc:sqlite:"
                                    ) : DirectoryMetadataFactory {
+
     /**
      * Create (and init) a new Index DM including a new database file
      *
@@ -57,7 +58,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
     @Throws(QblStorageException::class)
     private fun openDatabase(path: File, deviceId: ByteArray, fileName: String): JdbcDirectoryMetadata {
         try {
-            val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
+            val connection = DriverManager.getConnection(jdbcPrefix + path.absolutePath)
             connection.autoCommit = true
             tryWith(connection.createStatement()) { execute("PRAGMA journal_mode=MEMORY") }
             val db = dataBaseFactory(connection)
