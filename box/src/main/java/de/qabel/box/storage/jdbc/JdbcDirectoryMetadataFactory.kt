@@ -1,5 +1,6 @@
 package de.qabel.box.storage.jdbc
 
+import de.qabel.box.storage.AbstractMetadata
 import de.qabel.box.storage.DirectoryMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageCorruptMetadata
 import de.qabel.box.storage.exceptions.QblStorageException
@@ -16,7 +17,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
                                    val deviceId: ByteArray,
                                    private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase =
                                        { DirectoryMetadataDatabase(it) },
-                                   val jdbcPrefix: String = "jdbc:sqlite:"
+                                   val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
                                    ) : DirectoryMetadataFactory {
 
     /**

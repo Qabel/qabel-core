@@ -1,5 +1,6 @@
 package de.qabel.box.storage.jdbc
 
+import de.qabel.box.storage.AbstractMetadata
 import de.qabel.box.storage.BoxFile
 import de.qabel.box.storage.FileMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageException
@@ -15,7 +16,7 @@ import java.sql.SQLException
 class JdbcFileMetadataFactory @JvmOverloads constructor(
     val tmpDir: File,
     var versionAdapterFactory : (connection : Connection) -> VersionAdapter = { PragmaVersionAdapter(it)},
-    val jdbcPrefix: String = "jdbc:sqlite:"
+    val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
 ) : FileMetadataFactory {
 
 
