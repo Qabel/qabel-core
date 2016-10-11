@@ -16,8 +16,10 @@ import java.util.*
 class JdbcDirectoryMetadataFactory(val tempDir: File,
                                    val deviceId: ByteArray,
                                    private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase =
-                                       { DirectoryMetadataDatabase(it) }
+                                       { DirectoryMetadataDatabase(it) },
+                                   val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
                                    ) : DirectoryMetadataFactory {
+
     /**
      * Create (and init) a new Index DM including a new database file
      *
@@ -57,7 +59,7 @@ class JdbcDirectoryMetadataFactory(val tempDir: File,
     @Throws(QblStorageException::class)
     private fun openDatabase(path: File, deviceId: ByteArray, fileName: String): JdbcDirectoryMetadata {
         try {
-            val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
+            val connection = DriverManager.getConnection(jdbcPrefix + path.absolutePath)
             connection.autoCommit = true
             tryWith(connection.createStatement()) { execute("PRAGMA journal_mode=MEMORY") }
             val db = dataBaseFactory(connection)

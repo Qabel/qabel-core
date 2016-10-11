@@ -5,7 +5,6 @@ import de.qabel.box.storage.BoxFile
 import de.qabel.box.storage.FileMetadataFactory
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.core.crypto.QblECPublicKey
-import de.qabel.core.repository.sqlite.PragmaVersion
 import de.qabel.core.repository.sqlite.PragmaVersionAdapter
 import de.qabel.core.repository.sqlite.VersionAdapter
 import java.io.File
@@ -16,8 +15,10 @@ import java.sql.SQLException
 
 class JdbcFileMetadataFactory @JvmOverloads constructor(
     val tmpDir: File,
-    var versionAdapterFactory : (connection : Connection) -> VersionAdapter = { PragmaVersionAdapter(it)}
+    var versionAdapterFactory : (connection : Connection) -> VersionAdapter = { PragmaVersionAdapter(it)},
+    val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
 ) : FileMetadataFactory {
+
 
 
     @Throws(QblStorageException::class)
@@ -27,7 +28,7 @@ class JdbcFileMetadataFactory @JvmOverloads constructor(
 
     private fun openExisting(path: File): JdbcFileMetadata {
         try {
-            val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
+            val connection = DriverManager.getConnection(jdbcPrefix+ path.absolutePath)
             connection.autoCommit = true
             val db = FileMetadataDatabase(connection, versionAdapterFactory.invoke(connection))
             db.migrate()
@@ -42,7 +43,7 @@ class JdbcFileMetadataFactory @JvmOverloads constructor(
         try {
             val path = File.createTempFile("dir", "db6", tmpDir)
 
-            val connection = DriverManager.getConnection(AbstractMetadata.JDBC_PREFIX + path.absolutePath)
+            val connection = DriverManager.getConnection(jdbcPrefix + path.absolutePath)
             connection.autoCommit = true
             val db = FileMetadataDatabase(connection, versionAdapterFactory.invoke(connection))
             db.migrate()
