@@ -55,7 +55,7 @@ class BlockBoxVolumeFactoryTest {
 
     @Test
     fun prefersMainPrefix() {
-        hasRef(prefix1); hasRef(prefix2); hasRef(prefix3)
+        hasRef(prefix1); hasRef(prefix2)
         prefix3.account = account.user
 
         identity.prefixes = listOf(prefix1, prefix2, prefix3)

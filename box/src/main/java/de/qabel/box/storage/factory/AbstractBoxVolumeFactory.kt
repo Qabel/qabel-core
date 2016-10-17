@@ -24,17 +24,16 @@ abstract class AbstractBoxVolumeFactory(
     @JvmOverloads
     fun choosePrefix(identity: Identity, account: Account, type: Prefix.TYPE = USER): String {
         try {
-            val serverPrefixes = boxClient.prefixes.toHashSet()
-            val matchingPrefix = localMatchingPrefixes(identity, account, serverPrefixes, type)
-                .firstOrElse {
-                    remoteMatchingPrefixes(identity, serverPrefixes, type)
-                        .firstOrElse {
-                            localPrefixesWithoutIndex(identity, serverPrefixes, type)
-                                .firstOrElse {
-                                    createNewPrefix(identity)
-                                }.apply { createIndex() }
-                        }
+            val matchingPrefix = mainPrefix(identity, account, type).firstOrElse {
+                val serverPrefixes = boxClient.prefixes.toHashSet()
+                localMatchingPrefixes(identity, serverPrefixes, type).firstOrElse {
+                    remoteMatchingPrefixes(identity, serverPrefixes, type).firstOrElse {
+                        localPrefixesWithoutIndex(identity, serverPrefixes, type).firstOrElse {
+                            createNewPrefix(identity)
+                        }.apply { createIndex() }
+                    }
                 }
+            }
             matchingPrefix.account = account.user
             identityRepository.save(identity)
             return matchingPrefix.prefix
@@ -44,6 +43,11 @@ abstract class AbstractBoxVolumeFactory(
         }
 
     }
+
+    private fun mainPrefix(identity: Identity, account: Account, type: Prefix.TYPE)
+        = identity.prefixes
+            .filter { it.type == type }
+            .filter { it.account == account.user }
 
     private fun localPrefixesWithoutIndex(identity: Identity, serverPrefixes: HashSet<String>, type: Prefix.TYPE): List<Prefix>
         = identity.prefixes
@@ -55,12 +59,11 @@ abstract class AbstractBoxVolumeFactory(
             .map { Prefix(it, type) }
             .filter { hasIndex(identity, it) }
 
-    private fun localMatchingPrefixes(identity: Identity, account: Account, serverPrefixes: HashSet<String>, type: Prefix.TYPE): List<Prefix>
+    private fun localMatchingPrefixes(identity: Identity, serverPrefixes: HashSet<String>, type: Prefix.TYPE): List<Prefix>
         = identity.prefixes
             .filter { it.type == type }
             .filter { serverPrefixes.contains(it.prefix) }
             .filter { hasIndex(identity, it) }
-            .sortedByDescending { it.account == account.user }
 
     private fun hasIndex(identity: Identity, prefix: Prefix) = hasIndex(identity, prefix.prefix, prefix.type)
 
