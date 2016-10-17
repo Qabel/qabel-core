@@ -56,7 +56,7 @@ abstract class AbstractMetadata(val connection: ClientDatabase, path: File) {
     companion object {
         val TYPE_NONE = -1
         @JvmField
-        val JDBC_PREFIX = "jdbc:sqlite:"
+        val DEFAULT_JDBC_PREFIX: String = "jdbc:sqlite:"
     }
 }
 
