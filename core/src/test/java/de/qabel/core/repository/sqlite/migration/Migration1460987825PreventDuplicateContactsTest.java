@@ -3,7 +3,6 @@ package de.qabel.core.repository.sqlite.migration;
 import org.junit.Test;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class Migration1460987825PreventDuplicateContactsTest extends AbstractMigrationTest {
@@ -28,22 +27,16 @@ public class Migration1460987825PreventDuplicateContactsTest extends AbstractMig
         execute("INSERT INTO identity_contacts (identity_id, contact_id) VALUES (1, 2)");
     }
 
-    private void execute(String query) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.execute();
-        }
-    }
-
     @Test
     public void cleansUp() throws Exception {
-        migration.down();
+        getMigration().down();
         execute("INSERT INTO identity_contacts (identity_id, contact_id) VALUES (1, 2)");
     }
 
     @Test
     public void createsConsistentState() throws Exception {
-        migration.down();
+        getMigration().down();
         execute("INSERT INTO identity_contacts (identity_id, contact_id) VALUES (1, 2)");
-        migration.up();
+        getMigration().up();
     }
 }

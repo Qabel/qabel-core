@@ -13,15 +13,18 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB.IdentityContacts.IDENTI
 import de.qabel.core.repository.sqlite.schemas.IdentityDB
 import java.sql.PreparedStatement
 
-class SqliteIdentityRepository(db: ClientDatabase, em: EntityManager,
-                               private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db),
-                               dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)) :
-    BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em), IdentityRepository, EntityObservable by SimpleEntityObservable() {
+class SqliteIdentityRepository(
+    db: ClientDatabase, em: EntityManager,
+    private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db, em),
+    dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)
+):  BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em),
+    IdentityRepository,
+    EntityObservable by SimpleEntityObservable() {
 
     constructor(db: ClientDatabase, em: EntityManager) : this(
         db,
         em,
-        SqlitePrefixRepository(db),
+        SqlitePrefixRepository(db, em),
         SqliteDropUrlRepository(db)
     )
 

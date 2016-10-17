@@ -74,7 +74,7 @@ public class Migration1460367010CreateAccountTest extends AbstractMigrationTest 
     @Test
     public void cleansUpOnDown() throws SQLException {
         insert("p", "u", "a");
-        migration.down();
+        getMigration().down();
         assertFalse(tableExists("account"));
     }
 }

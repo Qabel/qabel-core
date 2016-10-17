@@ -1,13 +1,13 @@
 package de.qabel.core.repository.sqlite;
 
+import de.qabel.core.StringUtils;
+import de.qabel.core.repository.exception.EntityNotFoundException;
+import de.qabel.core.repository.exception.PersistenceException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-
-import de.qabel.core.StringUtils;
-import de.qabel.core.repository.exception.EntityNotFoundException;
-import de.qabel.core.repository.exception.PersistenceException;
 
 public abstract class AbstractSqliteRepository<T> {
     protected ClientDatabase database;
@@ -53,6 +53,10 @@ public abstract class AbstractSqliteRepository<T> {
 
     protected Collection<T> findAll(String condition, Object... params) throws PersistenceException {
         String query = getQueryPrefix() + (condition.isEmpty() ? "" : " WHERE " + condition);
+        String defaultOrder = getDefaultOrder();
+        if (defaultOrder != null) {
+            query += " ORDER BY " + defaultOrder;
+        }
         try (PreparedStatement statement = database.prepare(query)) {
             for (int i = 0; i < params.length; i++) {
                 statement.setObject(i+1, params[i]);
@@ -66,5 +70,9 @@ public abstract class AbstractSqliteRepository<T> {
                 e
             );
         }
+    }
+
+    protected String getDefaultOrder() {
+        return null;
     }
 }

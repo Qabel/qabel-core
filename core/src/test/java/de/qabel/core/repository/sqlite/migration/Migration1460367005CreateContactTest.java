@@ -35,7 +35,7 @@ public class Migration1460367005CreateContactTest extends AbstractMigrationTest 
         insertIdentity();
         connectContactWithIdentity();
 
-        migration.down();
+        getMigration().down();
 
         assertFalse(tableExists("contact"));
         assertFalse(tableExists("contact_drop_url"));

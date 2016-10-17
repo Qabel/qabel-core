@@ -1,9 +1,6 @@
 package de.qabel.core.repository
 
-import de.qabel.core.config.Contact
-import de.qabel.core.config.EntityObserver
-import de.qabel.core.config.Identity
-import de.qabel.core.config.VerificationStatus
+import de.qabel.core.config.*
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.extensions.CoreTestCase
@@ -34,7 +31,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
 
     override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): SqliteIdentityRepository {
         val dropUrlRepository = SqliteDropUrlRepository(clientDatabase, DropURLHydrator())
-        val prefixRepository = SqlitePrefixRepository(clientDatabase)
+        val prefixRepository = SqlitePrefixRepository(clientDatabase, em)
         contactRepo = SqliteContactRepository(clientDatabase, em)
 
         return SqliteIdentityRepository(clientDatabase, em, prefixRepository, dropUrlRepository)
@@ -80,7 +77,10 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         identity.emailStatus = VerificationStatus.NOT_VERIFIED
         identity.phone = "phone"
         identity.phoneStatus = VerificationStatus.VERIFIED
-        identity.prefixes.add("my prefix")
+        identity.prefixes.add(Prefix("my prefix"))
+        val prefix2 = Prefix("another prefix", Prefix.TYPE.CLIENT)
+        prefix2.account = "username"
+        identity.prefixes.add(prefix2)
         repo.save(identity)
         em.clear()
 
@@ -101,7 +101,10 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         assertTrue(
             "DropUrls not loaded correctly: $oldUrls != $newUrls",
             Arrays.equals(oldUrls.toTypedArray(), newUrls.toTypedArray()))
-        assertTrue(Arrays.equals(identity.prefixes.toTypedArray(), loaded.prefixes.toTypedArray()))
+        assertArrayEquals(
+            identity.prefixes.toTypedArray(),
+            loaded.prefixes.toTypedArray()
+        )
     }
 
     @Test

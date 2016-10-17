@@ -19,7 +19,7 @@ public class Identity extends Entity {
     private String phone = "";
     private VerificationStatus phoneStatus = VerificationStatus.NONE;
 
-    private List<String> prefixes;
+    private List<Prefix> prefixes;
 
     @SerializedName("keys")
     private QblECKeyPair primaryKeyPair;
@@ -58,7 +58,7 @@ public class Identity extends Entity {
      *
      * @return prefixes
      */
-    public List<String> getPrefixes() {
+    public List<Prefix> getPrefixes() {
         return prefixes;
     }
 
@@ -68,7 +68,7 @@ public class Identity extends Entity {
      *
      * @param prefixes the prefixes of the identity
      */
-    public void setPrefixes(List<String> prefixes) {
+    public void setPrefixes(List<Prefix> prefixes) {
         this.prefixes = prefixes;
     }
 

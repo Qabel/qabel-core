@@ -54,7 +54,7 @@ public class Migration1460367020DropStateTest extends AbstractMigrationTest {
     @Test
     public void cleansUp() throws Exception {
         insertState("some", "content");
-        migration.down();
+        getMigration().down();
 
         assertFalse(tableExists("drop_state"));
     }

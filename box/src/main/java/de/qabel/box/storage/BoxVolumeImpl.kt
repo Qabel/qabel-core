@@ -4,6 +4,7 @@ import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageIOFailure
 import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
+import de.qabel.core.config.Prefix
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import org.apache.commons.io.IOUtils
@@ -15,9 +16,7 @@ import java.io.FileInputStream
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.security.InvalidKeyException
-import java.security.MessageDigest
 import java.security.Security
-import java.util.*
 
 open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPair: QblECKeyPair) : BoxVolume {
     private val logger by lazy { LoggerFactory.getLogger(BoxVolumeImpl::class.java) }
@@ -83,15 +82,11 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
      * Calculate the filename of the index metadata file
      */
     override val rootRef by lazy {
-        val digest = MessageDigest.getInstance("SHA-256").apply {
-            update(config.prefix.toByteArray())
-            update(keyPair.privateKey)
-        }.digest()
-        val firstBytes = Arrays.copyOfRange(digest, 0, 16)
-        val bb = ByteBuffer.wrap(firstBytes)
-        val firstLong = bb.getLong()
-        val secondLong = bb.getLong()
-        UUID(firstLong, secondLong).toString()
+        RootRefCalculator().rootFor(
+            keyPair.privateKey,
+            Prefix.TYPE.USER,
+            config.prefix
+        )
     }
 
     /**

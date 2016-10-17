@@ -1,6 +1,7 @@
 package de.qabel.core.repository.sqlite.hydrator;
 
 import de.qabel.core.config.Identity;
+import de.qabel.core.config.Prefix;
 import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.DropURL;
 import de.qabel.core.config.factory.IdentityFactory;
@@ -68,7 +69,7 @@ public class IdentityHydrator extends AbstractHydrator<Identity> implements Hydr
             for (DropURL url : dropUrlRepository.findAll(contactId)) {
                 identity.addDrop(url);
             }
-            for (String prefix : prefixRepository.findAll(identity)) {
+            for (Prefix prefix : prefixRepository.findAll(identity)) {
                 identity.getPrefixes().add(prefix);
             }
         } catch (PersistenceException e) {

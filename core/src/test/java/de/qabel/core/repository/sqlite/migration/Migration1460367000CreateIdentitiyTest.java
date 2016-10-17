@@ -130,10 +130,10 @@ public class Migration1460367000CreateIdentitiyTest extends AbstractMigrationTes
 
     @Test
     public void removedAfterDown() throws Exception {
-        migration.down();
+        getMigration().down();
         connection.setAutoCommit(false);
 
-        migration.up();
+        getMigration().up();
         insertIdentity();
         insertDropUrl();
         insertPrefix();

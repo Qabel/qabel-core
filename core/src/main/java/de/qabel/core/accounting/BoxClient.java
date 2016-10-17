@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public interface BoxClient {
-
-
     void login() throws IOException, QblInvalidCredentials;
 
     QuotaState getQuotaState() throws IOException, QblInvalidCredentials;

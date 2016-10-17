@@ -26,7 +26,7 @@ public class Migration1460367035EntityTest extends AbstractMigrationTest {
         Migration1460367000CreateIdentitiyTest.insertIdentity(connection);
         Migration1460367000CreateIdentitiyTest.insertDropUrl(connection);
         Migration1460367000CreateIdentitiyTest.insertPrefix(connection);
-        migration.up();
+        getMigration().up();
 
         assertTrue(tableExists("identity"));
         assertTrue(tableExists("prefix"));

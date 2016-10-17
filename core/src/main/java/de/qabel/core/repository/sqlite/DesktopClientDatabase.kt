@@ -22,7 +22,9 @@ open class DesktopClientDatabase(connection: Connection) : AbstractClientDatabas
             Migration1460997042ExtendContact(connection),
             Migration1460997043ContactDefaults(connection),
             Migration1460997044IndexIdentity(connection),
-            Migration1460997045UploadableIdentity(connection))
+            Migration1460997045UploadableIdentity(connection),
+            Migration1476108744PrefixTypes(connection)
+        )
     }
 
 }
