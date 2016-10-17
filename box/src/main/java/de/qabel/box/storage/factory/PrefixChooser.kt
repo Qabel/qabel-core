@@ -1,24 +1,22 @@
 package de.qabel.box.storage.factory
 
-import de.qabel.box.storage.StorageReadBackend
-import de.qabel.core.accounting.BoxClient
 import de.qabel.core.config.Account
 import de.qabel.core.config.Identity
 import de.qabel.core.config.Prefix
 import de.qabel.core.extensions.letApply
 import de.qabel.core.repository.IdentityRepository
+import java.util.*
 
 class PrefixChooser(
-    val boxClient: BoxClient,
     val identityRepository: IdentityRepository,
-    val readBackend: StorageReadBackend,
     val createNewPrefix: () -> Prefix,
     val hasIndex: (prefix: String) -> Boolean,
     val createIndex: (prefix: Prefix) -> Unit,
+    loadServerPrefixes: () -> ArrayList<String>,
     val identity: Identity,
     val account: Account,
     val type: Prefix.TYPE) {
-    val serverPrefixes by lazy { boxClient.prefixes.toHashSet() }
+    val serverPrefixes by lazy { loadServerPrefixes().toHashSet() }
 
     fun choose(): String
         = mainPrefix().firstOrElse {
