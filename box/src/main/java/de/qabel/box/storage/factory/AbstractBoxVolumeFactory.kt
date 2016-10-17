@@ -1,9 +1,6 @@
 package de.qabel.box.storage.factory
 
-import de.qabel.box.storage.RootRefCalculator
-import de.qabel.box.storage.StorageReadBackend
-import de.qabel.box.storage.createIndex
-import de.qabel.box.storage.createNewPrefix
+import de.qabel.box.storage.*
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.core.accounting.BoxClient
 import de.qabel.core.config.Account
@@ -15,17 +12,20 @@ import de.qabel.core.repository.IdentityRepository
 abstract class AbstractBoxVolumeFactory(
     protected var boxClient: BoxClient,
     protected var identityRepository: IdentityRepository,
-    protected val readBackend: StorageReadBackend
+    protected val directoryFactory: DirectoryMetadataFactory
 ) : BoxVolumeFactory {
     val rootCalculator = RootRefCalculator()
+
+    protected abstract fun writeBackend(prefix: String): StorageWriteBackend
+    protected abstract fun readBackend(prefix: String): StorageReadBackend
 
     @JvmOverloads
     fun choosePrefix(identity: Identity, account: Account, type: Prefix.TYPE = USER): String {
         return PrefixChooser(
             identityRepository,
             { createNewPrefix(identity, boxClient, identityRepository) },
-            { prefix: String -> hasIndex(identity, prefix, type) },
-            { prefix: Prefix -> createIndex(identity, prefix, boxClient) },
+            { prefix -> hasIndex(identity, prefix, type) },
+            { prefix -> createIndex(identity, prefix, directoryFactory, writeBackend(prefix.prefix)) },
             { boxClient.prefixes },
             identity,
             account,
@@ -34,7 +34,7 @@ abstract class AbstractBoxVolumeFactory(
     }
 
     private fun hasIndex(identity: Identity, prefix: String, type: Prefix.TYPE) = try {
-        readBackend.download(rootCalculator.rootFor(identity.primaryKeyPair.privateKey, type, prefix))
+        readBackend(prefix).download(rootCalculator.rootFor(identity.primaryKeyPair.privateKey, type, prefix))
         true
     } catch (e: QblStorageNotFound) {
         false

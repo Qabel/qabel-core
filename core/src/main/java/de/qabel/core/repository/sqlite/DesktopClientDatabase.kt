@@ -26,5 +26,4 @@ open class DesktopClientDatabase(connection: Connection) : AbstractClientDatabas
             Migration1476108744PrefixTypes(connection)
         )
     }
-
 }
