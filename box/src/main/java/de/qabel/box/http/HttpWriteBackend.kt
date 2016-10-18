@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpDelete
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.utils.DateUtils
 import org.apache.http.entity.InputStreamEntity
-import sun.plugin.dom.exception.InvalidStateException
 import java.io.IOException
 import java.io.InputStream
 import java.net.URI
@@ -67,7 +66,7 @@ constructor(root: String) : AbstractHttpStorageBackend(root), StorageWriteBacken
 
     private fun checkHeader(headerName: String, response: CloseableHttpResponse) {
         if (!response.containsHeader(headerName))
-            throw InvalidStateException("Missing $headerName header on block server response")
+            throw IllegalStateException("Missing $headerName header on block server response")
     }
 
     @Throws(QblStorageException::class)
