@@ -13,12 +13,12 @@ import java.sql.DriverManager
 import java.sql.SQLException
 import java.util.*
 
-class JdbcDirectoryMetadataFactory(val tempDir: File,
-                                   val deviceId: ByteArray,
-                                   private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase =
-                                       { DirectoryMetadataDatabase(it) },
-                                   val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
-                                   ) : DirectoryMetadataFactory {
+class JdbcDirectoryMetadataFactory @JvmOverloads constructor(
+    val tempDir: File,
+    val deviceId: ByteArray,
+    private val dataBaseFactory: (Connection) -> DirectoryMetadataDatabase = { DirectoryMetadataDatabase(it) },
+    val jdbcPrefix: String = AbstractMetadata.DEFAULT_JDBC_PREFIX
+) : DirectoryMetadataFactory {
 
     /**
      * Create (and init) a new Index DM including a new database file
