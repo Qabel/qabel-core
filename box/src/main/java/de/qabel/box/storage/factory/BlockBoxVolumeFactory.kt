@@ -15,7 +15,6 @@ import java.io.File
 import java.io.IOException
 import java.net.URI
 import java.net.URISyntaxException
-import java.nio.file.Files
 
 class BlockBoxVolumeFactory @Throws(IOException::class)
 @JvmOverloads constructor(
@@ -33,7 +32,7 @@ class BlockBoxVolumeFactory @Throws(IOException::class)
     override fun writeBackend(prefix: String) = writeBackendFactory(prefix)
     override fun readBackend(prefix: String) = readBackendFactory(prefix)
 
-    private val tmpDir: File = Files.createTempDirectory("qbl_tmp").toFile()
+    private val tmpDir: File = createTempDir("qbl_tmp")
 
     override fun getVolume(account: Account, identity: Identity, type: Prefix.TYPE): BoxVolumeImpl {
         val prefix = choosePrefix(identity, account)

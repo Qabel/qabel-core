@@ -238,7 +238,7 @@ class ChatServiceTest : CoreTestCase {
      */
     private fun prepareShareFileEnv(): Pair<BoxNavigation, BoxFile> {
         val tempFolder = createTempDir("share_test")
-        val volumeA = BoxVolumeImpl(LocalReadBackend(tempFolder.toPath()), LocalWriteBackend(tempFolder.toPath()),
+        val volumeA = BoxVolumeImpl(LocalReadBackend(tempFolder), LocalWriteBackend(tempFolder),
             identityA.primaryKeyPair, CryptoUtils().getRandomBytes(16), tempFolder, "").apply {
             createIndex("qabel", "test123")
         }

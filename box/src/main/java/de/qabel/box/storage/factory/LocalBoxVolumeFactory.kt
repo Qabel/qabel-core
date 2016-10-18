@@ -6,13 +6,13 @@ import de.qabel.box.storage.LocalWriteBackend
 import de.qabel.core.config.Account
 import de.qabel.core.config.Identity
 import de.qabel.core.config.Prefix
-import java.nio.file.Path
+import java.io.File
 import java.util.*
 
-class LocalBoxVolumeFactory(private val tmpDir: Path, private val deviceId: String) : BoxVolumeFactory {
+class LocalBoxVolumeFactory(private val tmpDir: File, private val deviceId: String) : BoxVolumeFactory {
     private var prefix: String? = null
 
-    constructor(tmpDir: Path, deviceId: String, prefix: String) : this(tmpDir, deviceId) {
+    constructor(tmpDir: File, deviceId: String, prefix: String) : this(tmpDir, deviceId) {
         this.prefix = prefix
     }
 
@@ -28,7 +28,7 @@ class LocalBoxVolumeFactory(private val tmpDir: Path, private val deviceId: Stri
                 LocalWriteBackend(tmpDir),
                 identity.primaryKeyPair,
                 deviceId.toByteArray(),
-                tmpDir.toFile(),
+                tmpDir,
                 prefix!!)
     }
 }

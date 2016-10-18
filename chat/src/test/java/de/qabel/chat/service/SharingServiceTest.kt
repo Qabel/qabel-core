@@ -1,7 +1,6 @@
 package de.qabel.chat.service
 
 import de.qabel.box.storage.*
-import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageNotFound
 import de.qabel.box.storage.jdbc.JdbcFileMetadataFactory
 import de.qabel.chat.repository.ChatDropMessageRepository
@@ -21,12 +20,12 @@ import org.apache.commons.io.FileUtils
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasSize
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.io.File
 import java.nio.file.Files
-import java.nio.file.Path
 
 class SharingServiceTest() : CoreTestCase {
 
@@ -47,7 +46,7 @@ class SharingServiceTest() : CoreTestCase {
     lateinit var volumeB: BoxVolume
     lateinit var navigationB: BoxNavigation
 
-    lateinit var tempFolder: Path
+    lateinit var tempFolder: File
     lateinit var readBackend: LocalReadBackend
     lateinit var volumeTmpDir: File
 
@@ -64,7 +63,7 @@ class SharingServiceTest() : CoreTestCase {
         shareRepo = InMemoryChatShareRepository()
         chatDropRepo = InMemoryChatDropMessageRepository()
 
-        tempFolder = Files.createTempDirectory("")
+        tempFolder = createTempDir()
         volumeTmpDir = Files.createTempDirectory("qbl_test").toFile()
 
         readBackend = LocalReadBackend(tempFolder)
@@ -81,15 +80,15 @@ class SharingServiceTest() : CoreTestCase {
         volumeB.createIndex("qabel", "test456")
         navigationB = volumeB.navigate()
 
-        sharingService = MainSharingService(shareRepo, contactRepo, tempFolder.toFile(),
-            JdbcFileMetadataFactory(tempFolder.toFile()))
+        sharingService = MainSharingService(shareRepo, contactRepo, tempFolder,
+            JdbcFileMetadataFactory(tempFolder))
 
         testFile = randomFile(100)
     }
 
     @After
     fun cleanUp() {
-        FileUtils.deleteDirectory(tempFolder.toFile())
+        FileUtils.deleteDirectory(tempFolder)
         FileUtils.deleteDirectory(volumeTmpDir)
     }
 
