@@ -13,9 +13,9 @@ class RootRefCalculatorTest {
 
     @Test
     fun calculatesOriginalRootRefForUserType() {
-        val rootRef = calculator.rootFor(privateKey, USER, "/myprefix")
+        val rootRef = calculator.rootFor(privateKey, USER, "/myPrefix")
 
-        assertEquals(BoxVolumeTest.originalRootRef("/myprefix", privateKey), rootRef)
+        assertEquals(BoxVolumeTest.originalRootRef("/myPrefix", privateKey), rootRef)
     }
 
     @Test

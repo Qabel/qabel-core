@@ -27,13 +27,13 @@ class SqlitePrefixRepository(
     @Throws(SQLException::class)
     fun store(identity: Identity) {
         database.prepare(
-                "REPLACE INTO $TABLE_NAME (identity_id, prefix, type, account_user) VALUES (?, ?, ?, ?)").use { prefixStatment ->
+                "REPLACE INTO $TABLE_NAME (identity_id, prefix, type, account_user) VALUES (?, ?, ?, ?)").use { prefixStatement ->
             for (prefix in identity.prefixes) {
-                prefixStatment.setInt(1, identity.id)
-                prefixStatment.setString(2, prefix.prefix)
-                prefixStatment.setString(3, prefix.type.toString())
-                prefixStatment.setString(4, prefix.account)
-                prefixStatment.execute()
+                prefixStatement.setInt(1, identity.id)
+                prefixStatement.setString(2, prefix.prefix)
+                prefixStatement.setString(3, prefix.type.toString())
+                prefixStatement.setString(4, prefix.account)
+                prefixStatement.execute()
             }
         }
     }

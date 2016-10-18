@@ -16,8 +16,8 @@ class RootRefCalculator() {
         }.digest()
         val firstBytes = Arrays.copyOfRange(digest, 0, 16)
         val bb = ByteBuffer.wrap(firstBytes)
-        val firstLong = bb.getLong()
-        val secondLong = bb.getLong()
+        val firstLong = bb.long
+        val secondLong = bb.long
         return UUID(firstLong, secondLong).toString()
     }
 }
