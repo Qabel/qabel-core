@@ -40,8 +40,8 @@ import java.util.concurrent.Callable
 abstract class BoxVolumeTest {
     private val DEFAULT_UPLOAD_FILENAME = "foobar"
 
-    protected lateinit var volume: BoxVolume
-    protected lateinit var volume2: BoxVolume
+    protected open lateinit var volume: BoxVolumeImpl
+    protected open lateinit var volume2: BoxVolumeImpl
     protected lateinit var deviceID: ByteArray
     protected lateinit var deviceID2: ByteArray
     protected lateinit var keyPair: QblECKeyPair

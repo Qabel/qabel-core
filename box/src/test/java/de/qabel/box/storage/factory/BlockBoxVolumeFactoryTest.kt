@@ -6,6 +6,7 @@ import com.nhaarman.mockito_kotlin.*
 import de.qabel.box.storage.RootRefCalculator
 import de.qabel.box.storage.StorageDownload
 import de.qabel.box.storage.StubReadBackend
+import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
 import de.qabel.core.accounting.BoxClient
 import de.qabel.core.config.Account
 import de.qabel.core.config.Prefix
@@ -14,7 +15,6 @@ import de.qabel.core.config.Prefix.TYPE.USER
 import de.qabel.core.extensions.letApply
 import de.qabel.core.repository.IdentityRepository
 import de.qabel.core.testIdentity
-import org.junit.Before
 import org.junit.Test
 import org.mockito.stubbing.OngoingStubbing
 import java.io.ByteArrayInputStream
@@ -28,7 +28,16 @@ class BlockBoxVolumeFactoryTest {
     val blockUri = URI("http://localhost:9697")
     val identityRepository: IdentityRepository = mock()
     val readBackend = StubReadBackend()
-    val factory = BlockBoxVolumeFactory("deviceId".toByteArray(), boxClient, identityRepository, readBackend, blockUri)
+    val dmf = JdbcDirectoryMetadataFactory(createTempDir("qbltest"), "deviceId".toByteArray())
+    val factory = BlockBoxVolumeFactory(
+        "deviceId".toByteArray(),
+        boxClient,
+        identityRepository,
+        dmf,
+        blockUri,
+        { readBackend },
+        { mock() }
+    )
     val boxClientPrefixes: OngoingStubbing<ArrayList<String>>
         = whenever(boxClient.prefixes).thenReturn(ArrayList(mutableListOf("prefix1", "prefix2", "prefix3")))
     val rootCalculator = RootRefCalculator()
@@ -36,10 +45,6 @@ class BlockBoxVolumeFactoryTest {
     var prefix2 = Prefix("prefix2")
     var prefix3 = Prefix("prefix3")
     var prefix4 = Prefix("prefix4")
-
-    @Before
-    fun setUp() {
-    }
 
     private fun ref(prefix: Prefix) = ref(prefix.prefix, prefix.type)
 
