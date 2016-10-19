@@ -22,14 +22,14 @@ abstract class AbstractBoxVolumeFactory(
     @JvmOverloads
     fun choosePrefix(identity: Identity, account: Account, type: Prefix.TYPE = USER): String {
         return PrefixChooser(
-            identityRepository,
-            { createNewPrefix(identity, boxClient, identityRepository) },
-            { prefix -> hasIndex(identity, prefix, type) },
-            { prefix -> createIndex(identity, prefix, directoryFactory, writeBackend(prefix.prefix)) },
-            { boxClient.prefixes },
-            identity,
-            account,
-            type
+            identityRepository  = identityRepository,
+            createNewPrefix     = { createNewPrefix(identity, boxClient, identityRepository) },
+            hasIndex            = { prefix -> hasIndex(identity, prefix, type) },
+            createIndex         = { prefix -> createIndex(identity, prefix, directoryFactory, writeBackend(prefix.prefix)) },
+            loadServerPrefixes  = { boxClient.prefixes },
+            identity            = identity,
+            account             = account,
+            type                = type
         ).choose()
     }
 

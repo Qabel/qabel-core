@@ -23,6 +23,7 @@ class BlockBoxVolumeFactory @Throws(IOException::class)
         identityRepository: IdentityRepository,
         directoryFactory: DirectoryMetadataFactory,
         private val blockUri: URI,
+        val tmpDir: File,
         val readBackendFactory: (String) -> StorageReadBackend
             = { prefix -> BlockReadBackend("$blockUri/api/v0/files/$prefix/", boxClient) },
         val writeBackendFactory: (String) -> StorageWriteBackend
@@ -31,8 +32,6 @@ class BlockBoxVolumeFactory @Throws(IOException::class)
 
     override fun writeBackend(prefix: String) = writeBackendFactory(prefix)
     override fun readBackend(prefix: String) = readBackendFactory(prefix)
-
-    private val tmpDir: File = createTempDir("qbl_tmp")
 
     override fun getVolume(account: Account, identity: Identity, type: Prefix.TYPE): BoxVolumeImpl {
         val prefix = choosePrefix(identity, account)

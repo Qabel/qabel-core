@@ -28,13 +28,15 @@ class BlockBoxVolumeFactoryTest {
     val blockUri = URI("http://localhost:9697")
     val identityRepository: IdentityRepository = mock()
     val readBackend = StubReadBackend()
-    val dmf = JdbcDirectoryMetadataFactory(createTempDir("qbltest"), "deviceId".toByteArray())
+    val tmpDir = createTempDir("qbltest")
+    val dmf = JdbcDirectoryMetadataFactory(tmpDir, "deviceId".toByteArray())
     val factory = BlockBoxVolumeFactory(
         "deviceId".toByteArray(),
         boxClient,
         identityRepository,
         dmf,
         blockUri,
+        tmpDir,
         { readBackend },
         { mock() }
     )
