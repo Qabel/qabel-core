@@ -48,12 +48,12 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
     }
 
     @Override
-    int getPayloadSize() {
+    protected int getPayloadSize() {
         return PAYLOAD_SIZE;
     }
 
     @Override
-    int getTotalSize() {
+    protected int getTotalSize() {
         return PAYLOAD_SIZE + HEADER_SIZE + BOX_HEADER_SIZE;
     }
 
@@ -90,4 +90,5 @@ public class BinaryDropMessageV0 extends AbstractBinaryDropMessage {
         }
         return decryptedPlaintext;
     }
+
 }
