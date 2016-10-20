@@ -7,6 +7,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+plugins {
+    id "com.github.hierynomus.license" version "0.13.1"
+}
 
 repositories {
     mavenCentral()
@@ -79,3 +82,4 @@ subprojects {
         archives testJar
     }
 }
+
