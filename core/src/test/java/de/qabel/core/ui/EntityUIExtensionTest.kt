@@ -58,7 +58,7 @@ class EntityUIExtensionTest() : CoreTestCase {
         assertThat(max.length, equalTo(2))
         assertThat(max, equalTo("MM"))
 
-        val identity = createIdentity("Gabba Hobbit")
+        val identity = createIdentity("Gabba 😁 Hobbit")
         assertThat(identity.initials(), equalTo("GH"))
     }
 

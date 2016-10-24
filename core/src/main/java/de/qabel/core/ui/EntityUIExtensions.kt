@@ -5,7 +5,9 @@ import de.qabel.core.config.Entity
 import de.qabel.core.config.Identity
 
 private val splitRegex: Regex by lazy { " ".toRegex() }
-private fun String.toInitials(): String = split(splitRegex).take(2).map {
+private fun String.toInitials(): String = split(splitRegex).filter {
+    it.isNotEmpty() && it.first().isLetterOrDigit()
+}.take(2).map {
     it.take(1).toUpperCase()
 }.joinToString("")
 
@@ -43,6 +45,7 @@ private fun Entity.formatKey(maxLines: Int = 4,
  * Show 64 chars grouped to 4 chars and 4 groups per row.
  */
 fun Entity.readableKey() = formatKey(4)
+
 /**
  * Show 32 chars grouped to 4 chars 4 and groups per row.
  */
