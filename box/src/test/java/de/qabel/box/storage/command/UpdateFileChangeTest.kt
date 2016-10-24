@@ -14,7 +14,7 @@ class UpdateFileChangeTest {
     val expectedFile = BoxFile("p", "block2", "filename", 10, 20, ByteArray(0))
     val anotherFile = BoxFile("p", "block3", "filename", 999, 666, ByteArray(0))
     val anotherConflictFile = BoxFile("p", "block4", "filename_conflict", 999, 666, ByteArray(0))
-    val writeBackend = LocalWriteBackend(createTempDir().toPath())
+    val writeBackend = LocalWriteBackend(createTempDir())
     val indexNavigation: IndexNavigation = mock()
 
     @Before

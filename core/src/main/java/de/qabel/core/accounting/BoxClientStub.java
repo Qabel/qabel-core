@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 public class BoxClientStub implements BoxClient {
 
+    public ArrayList<String> prefixes = new ArrayList<>();
     public QuotaState quotaState = new QuotaState(1000000000L, 300000000L);
 
     public IOException ioException;
@@ -68,6 +69,7 @@ public class BoxClientStub implements BoxClient {
         if (qblInvalidCredentials != null) {
             throw qblInvalidCredentials;
         }
+        prefixes.add("prefix" + (prefixes.size() + 1));
     }
 
     public URIBuilder buildUri(String resource) {
@@ -87,7 +89,7 @@ public class BoxClientStub implements BoxClient {
         if (qblInvalidCredentials != null) {
             throw qblInvalidCredentials;
         }
-        return null;
+        return prefixes;
     }
 
     public AccountingProfile getProfile() {

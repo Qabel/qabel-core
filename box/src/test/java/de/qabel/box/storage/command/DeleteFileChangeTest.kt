@@ -12,7 +12,7 @@ import java.io.ByteArrayInputStream
 class DeleteFileChangeTest {
     val dm = InMemoryDirectoryMetadata()
     val file = BoxFile("p", "block1", "filename", 1, 2, ByteArray(0))
-    val backendPath = createTempDir().toPath()
+    val backendPath = createTempDir()
     val writeBackend = LocalWriteBackend(backendPath)
     val readBackend = LocalReadBackend(backendPath)
     val indexNavigation: IndexNavigation = mock()

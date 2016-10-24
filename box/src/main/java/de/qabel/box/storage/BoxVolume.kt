@@ -3,12 +3,6 @@ package de.qabel.box.storage
 import de.qabel.box.storage.exceptions.QblStorageException
 
 interface BoxVolume {
-    /**
-     * Calculate the filename of the index metadata file
-     */
-    @Deprecated("gets removed soon")
-    val rootRef: String
-
     val config: BoxVolumeConfig
 
     fun getReadBackend(): StorageReadBackend
@@ -25,7 +19,9 @@ interface BoxVolume {
 
     /**
      * Create a new index metadata file
+     * @Deprecated use BoxVolume#createIndex(root: String) instead
      */
+    @Deprecated("insert root, you shouldn't know the bucket", ReplaceWith("createIndex(root: String)"))
     @Throws(QblStorageException::class)
     fun createIndex(bucket: String, prefix: String)
 

@@ -1,5 +1,7 @@
 package de.qabel.core.crypto;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -67,6 +69,7 @@ public class QblECKeyPair implements Serializable {
         return pubKey;
     }
 
+    @NotNull
     public byte[] getPrivateKey() {
         return privateKey;
     }

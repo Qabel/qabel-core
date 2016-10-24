@@ -10,6 +10,7 @@ import de.qabel.box.storage.command.UpdateFileChange
 import de.qabel.box.storage.dto.DMChangeEvent
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
 import de.qabel.box.storage.jdbc.JdbcDirectoryMetadataFactory
+import de.qabel.core.config.Prefix
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.extensions.letApply
@@ -19,7 +20,6 @@ import org.junit.Test
 import org.spongycastle.crypto.params.KeyParameter
 import rx.observers.TestSubscriber
 import java.io.*
-import java.nio.file.Files
 import java.security.Security
 import java.util.*
 
@@ -28,7 +28,7 @@ abstract class AbstractNavigationTest {
         Security.addProvider(QabelBoxDigestProvider())
     }
 
-    val tmpDir = Files.createTempDirectory("qbl").toFile()
+    val tmpDir = createTempDir("qbl")
     val deviceId = "deviceId".toByteArray()
     val dmFactory = JdbcDirectoryMetadataFactory(tmpDir, deviceId)
     val dm = dmFactory.create()
@@ -38,6 +38,7 @@ abstract class AbstractNavigationTest {
     val writeBackend = StubWriteBackend()
     val volumeConfig = BoxVolumeConfig(
         "prefix",
+        RootRefCalculator().rootFor(key, Prefix.TYPE.USER, "prefix"),
         deviceId,
         readBackend,
         writeBackend,

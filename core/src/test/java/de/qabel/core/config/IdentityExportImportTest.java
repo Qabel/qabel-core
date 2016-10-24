@@ -1,7 +1,5 @@
 package de.qabel.core.config;
 
-import de.qabel.core.config.Identity;
-import de.qabel.core.config.IdentityExportImport;
 import de.qabel.core.crypto.QblECKeyPair;
 import de.qabel.core.drop.DropURL;
 import org.junit.Test;
@@ -25,8 +23,8 @@ public class IdentityExportImportTest {
         identity.setId(1);
         identity.setPhone("049111111");
         identity.setEmail("test@example.com");
-        identity.getPrefixes().add("prefix1");
-        identity.getPrefixes().add("prefix2");
+        identity.getPrefixes().add(new Prefix("prefix1"));
+        identity.getPrefixes().add(new Prefix("prefix2"));
 
         String exportedIdentity = IdentityExportImport.exportIdentity(identity);
 

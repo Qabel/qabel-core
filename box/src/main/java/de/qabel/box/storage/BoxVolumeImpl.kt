@@ -2,24 +2,17 @@ package de.qabel.box.storage
 
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.exceptions.QblStorageIOFailure
-import de.qabel.box.storage.exceptions.QblStorageInvalidKey
 import de.qabel.box.storage.hash.QabelBoxDigestProvider
+import de.qabel.core.config.Prefix
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
-import org.apache.commons.io.IOUtils
 import org.slf4j.LoggerFactory
 import org.spongycastle.jce.provider.BouncyCastleProvider
-import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
 import java.nio.ByteBuffer
-import java.security.InvalidKeyException
-import java.security.MessageDigest
 import java.security.Security
-import java.util.*
 
-open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPair: QblECKeyPair) : BoxVolume {
+open class BoxVolumeImpl(final override val config: BoxVolumeConfig, private val keyPair: QblECKeyPair) : BoxVolume {
     private val logger by lazy { LoggerFactory.getLogger(BoxVolumeImpl::class.java) }
     private val cryptoUtils = CryptoUtils()
     private val indexDmDownloader by lazy {
@@ -51,15 +44,22 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
         Security.addProvider(BouncyCastleProvider())
     }
 
+    @JvmOverloads
     constructor (
         readBackend: StorageReadBackend,
         writeBackend: StorageWriteBackend,
         keyPair: QblECKeyPair,
         deviceId: ByteArray,
         tempDir: File,
-        prefix: String
+        prefix: String,
+        type: Prefix.TYPE = Prefix.TYPE.USER
     ) : this(
-        BoxVolumeConfig(prefix, deviceId, readBackend, writeBackend, "Blake2b", tempDir),
+        BoxVolumeConfig(prefix,
+            RootRefCalculator().rootFor(
+                keyPair.privateKey,
+                type,
+                prefix
+            ), deviceId, readBackend, writeBackend, "Blake2b", tempDir),
         keyPair
     )
 
@@ -80,44 +80,23 @@ open class BoxVolumeImpl(override val config: BoxVolumeConfig, private val keyPa
     override fun navigate(): IndexNavigation = indexNavigation
 
     /**
-     * Calculate the filename of the index metadata file
+     * filename of the index metadata file
      */
-    override val rootRef by lazy {
-        val digest = MessageDigest.getInstance("SHA-256").apply {
-            update(config.prefix.toByteArray())
-            update(keyPair.privateKey)
-        }.digest()
-        val firstBytes = Arrays.copyOfRange(digest, 0, 16)
-        val bb = ByteBuffer.wrap(firstBytes)
-        val firstLong = bb.getLong()
-        val secondLong = bb.getLong()
-        UUID(firstLong, secondLong).toString()
-    }
+    internal val rootRef = config.rootRef
 
     /**
      * Create a new index metadata file
      */
     @Throws(QblStorageException::class)
-    override fun createIndex(bucket: String, prefix: String) {
-        createIndex("https://$bucket.s3.amazonaws.com/$prefix")
-    }
+    override fun createIndex(bucket: String, prefix: String)
+        = createIndex("https://$bucket.s3.amazonaws.com/$prefix")
 
     /**
      * Create a new index metadata file
      */
     @Throws(QblStorageException::class)
-    override fun createIndex(root: String) {
-        val dm = config.directoryFactory.create(root)
-        try {
-            val plaintext = IOUtils.toByteArray(FileInputStream(dm.path))
-            val encrypted = cryptoUtils.createBox(keyPair, keyPair.pub, plaintext, 0)
-            config.writeBackend.upload(rootRef, ByteArrayInputStream(encrypted))
-        } catch (e: IOException) {
-            throw QblStorageIOFailure(e)
-        } catch (e: InvalidKeyException) {
-            throw QblStorageInvalidKey(e)
-        }
-    }
+    override fun createIndex(root: String)
+        = createIndex(config.directoryFactory, config.writeBackend, cryptoUtils, rootRef, keyPair)
 }
 
 fun ByteArray.toLong() = ByteBuffer.wrap(this).long

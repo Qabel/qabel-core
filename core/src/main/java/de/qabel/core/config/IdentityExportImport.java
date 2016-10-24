@@ -37,7 +37,7 @@ public class IdentityExportImport {
             jsonObject.put(KEY_PHONE, identity.getPhone());
             jsonObject.put(KEY_PRIVATE_KEY, Hex.toHexString(identity.getPrimaryKeyPair().getPrivateKey()));
             JSONArray jsonPrefixes = new JSONArray();
-            for (String prefix : identity.getPrefixes()) {
+            for (Prefix prefix : identity.getPrefixes()) {
                 jsonPrefixes.put(prefix);
             }
             jsonObject.put(KEY_PREFIXES, jsonPrefixes);
@@ -79,7 +79,7 @@ public class IdentityExportImport {
         if (jsonObject.has(KEY_PREFIXES)) {
             JSONArray jsonPrefixes = jsonObject.getJSONArray(KEY_PREFIXES);
             for (int i = 0; i < jsonPrefixes.length(); i++) {
-                identity.getPrefixes().add(jsonPrefixes.getString(i));
+                identity.getPrefixes().add(new Prefix(jsonPrefixes.getString(i)));
             }
         }
         if (jsonObject.has(KEY_EMAIL)) {

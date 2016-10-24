@@ -24,7 +24,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.meanbean.util.AssertionUtils
-import org.slf4j.LoggerFactory
 import org.spongycastle.util.encoders.Hex
 import java.io.ByteArrayInputStream
 import java.io.File
@@ -41,8 +40,8 @@ import java.util.concurrent.Callable
 abstract class BoxVolumeTest {
     private val DEFAULT_UPLOAD_FILENAME = "foobar"
 
-    protected lateinit var volume: BoxVolume
-    protected lateinit var volume2: BoxVolume
+    protected open lateinit var volume: BoxVolumeImpl
+    protected open lateinit var volume2: BoxVolumeImpl
     protected lateinit var deviceID: ByteArray
     protected lateinit var deviceID2: ByteArray
     protected lateinit var keyPair: QblECKeyPair
@@ -747,20 +746,7 @@ abstract class BoxVolumeTest {
     }
 
     private fun originalRootRef(): String {
-        val md: MessageDigest
-        try {
-            md = MessageDigest.getInstance("SHA-256")
-        } catch (e: NoSuchAlgorithmException) {
-            throw QblStorageException(e)
-        }
-
-        md.update(prefix.toByteArray())
-        md.update(keyPair.privateKey)
-        val digest = md.digest()
-        val firstBytes = Arrays.copyOfRange(digest, 0, 16)
-        val bb = ByteBuffer.wrap(firstBytes)
-        val uuid = UUID(bb.long, bb.long)
-        return uuid.toString()
+        return BoxVolumeTest.originalRootRef(prefix, keyPair.privateKey)
     }
 
     @Test
@@ -989,8 +975,6 @@ abstract class BoxVolumeTest {
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(BoxVolumeTest::class.java)
-
         private fun waitUntil(evaluate: Callable<Boolean>, timeout: Long) {
             val startTime = System.currentTimeMillis()
             try {
@@ -1006,6 +990,23 @@ abstract class BoxVolumeTest {
                 fail(e.message)
             }
 
+        }
+
+        fun originalRootRef(prefix: String, privateKey: ByteArray): String {
+            val md: MessageDigest
+            try {
+                md = MessageDigest.getInstance("SHA-256")
+            } catch (e: NoSuchAlgorithmException) {
+                throw QblStorageException(e)
+            }
+
+            md.update(prefix.toByteArray())
+            md.update(privateKey)
+            val digest = md.digest()
+            val firstBytes = Arrays.copyOfRange(digest, 0, 16)
+            val bb = ByteBuffer.wrap(firstBytes)
+            val uuid = UUID(bb.long, bb.long)
+            return uuid.toString()
         }
     }
 }

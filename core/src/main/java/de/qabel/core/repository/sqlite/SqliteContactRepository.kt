@@ -24,10 +24,14 @@ import java.sql.ResultSet
 import java.util.*
 
 
-class SqliteContactRepository(db: ClientDatabase, em: EntityManager,
-                              dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
-                              private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em)) :
-    BaseRepository<Contact>(ContactDB, ContactAdapter(dropUrlRepository), db, em), ContactRepository, QabelLog, EntityObservable by SimpleEntityObservable() {
+class SqliteContactRepository @JvmOverloads constructor(
+    db: ClientDatabase, em: EntityManager,
+    dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db, DropURLHydrator()),
+    private val identityRepository: IdentityRepository = SqliteIdentityRepository(db, em)
+): BaseRepository<Contact>(ContactDB, ContactAdapter(dropUrlRepository), db, em),
+    ContactRepository,
+    QabelLog,
+    EntityObservable by SimpleEntityObservable() {
 
     override fun find(id: Int): Contact = findById(id)
 

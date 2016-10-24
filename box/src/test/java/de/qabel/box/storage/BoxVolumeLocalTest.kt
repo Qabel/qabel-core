@@ -6,10 +6,9 @@ import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Test
 import java.io.File
 import java.io.IOException
-import java.nio.file.Path
 
 class BoxVolumeLocalTest : BoxVolumeTest() {
-    private val tempFolder: Path by lazy { createTempDir("longerPrefix").toPath() }
+    private val tempFolder: File by lazy { createTempDir("longerPrefix") }
 
     override val readBackend: StorageReadBackend by lazy { LocalReadBackend(tempFolder) }
 
@@ -27,7 +26,7 @@ class BoxVolumeLocalTest : BoxVolumeTest() {
 
     @Throws(IOException::class)
     override fun cleanVolume() {
-        FileUtils.deleteDirectory(tempFolder.toFile())
+        FileUtils.deleteDirectory(tempFolder)
     }
 
     @Test
