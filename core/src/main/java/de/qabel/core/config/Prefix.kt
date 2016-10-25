@@ -1,8 +1,9 @@
 package de.qabel.core.config
 
 import org.apache.commons.lang3.builder.HashCodeBuilder
+import java.io.Serializable
 
-class Prefix @JvmOverloads constructor(val prefix: String, val type: TYPE = Prefix.TYPE.USER) {
+class Prefix @JvmOverloads constructor(val prefix: String, val type: TYPE = Prefix.TYPE.USER) : Serializable {
     enum class TYPE {
         USER, CLIENT;
     }
