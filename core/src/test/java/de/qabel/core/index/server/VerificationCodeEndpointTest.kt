@@ -1,13 +1,12 @@
 package de.qabel.core.index.server
 
-import de.qabel.core.index.server.IndexHTTPLocation
-import de.qabel.core.index.server.VerificationCodeEndpointImpl
+import de.qabel.core.TestServer
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 
 
 class VerificationCodeEndpointTest {
-    private val server = IndexHTTPLocation("http://localhost:9698")
+    private val server = IndexHTTPLocation(TestServer.INDEX)
     private val verification = VerificationCodeEndpointImpl(server)
 
     @Test

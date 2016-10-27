@@ -1,10 +1,9 @@
 package de.qabel.core
 
+val testserver = System.getenv("TESTSERVER")?: "localhost"
 object TestServer {
-
-    const val DROP = "http://localhost:5000"
-    const val ACCOUNTING = "http://localhost:9696"
-    const val BLOCK = "http://localhost:9697"
-    const val INDEX = "http://localhost:9698"
-
+    @JvmField val DROP = "http://$testserver:5000"
+    @JvmField val ACCOUNTING = "http://$testserver:9696"
+    @JvmField val BLOCK = "http://$testserver:9697"
+    @JvmField val INDEX = "http://$testserver:9698"
 }

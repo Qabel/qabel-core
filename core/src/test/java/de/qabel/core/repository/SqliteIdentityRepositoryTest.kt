@@ -3,6 +3,7 @@ package de.qabel.core.repository
 import de.qabel.core.config.*
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
+import de.qabel.core.dropUrlGenerator
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.assertThrows
 import de.qabel.core.extensions.createContact
@@ -25,7 +26,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
 
     override fun setUp() {
         super.setUp()
-        identityBuilder = IdentityBuilder(DropUrlGenerator("http://localhost"))
+        identityBuilder = IdentityBuilder(dropUrlGenerator)
         identityBuilder.withAlias("testuser")
     }
 

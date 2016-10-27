@@ -1,5 +1,6 @@
 package de.qabel.core.accounting;
 
+import de.qabel.core.TestServer;
 import de.qabel.core.config.AccountingServer;
 
 import java.net.URI;
@@ -13,8 +14,8 @@ public class TestAccountingServerBuilder {
     private String pass = DEFAULT_PASS;
 
     public TestAccountingServerBuilder() throws URISyntaxException {
-        accountingUri = new URI("http://localhost:9696");
-        blockUri = new URI("http://localhost:9697");
+        accountingUri = new URI(TestServer.ACCOUNTING);
+        blockUri = new URI(TestServer.BLOCK);
     }
 
     public TestAccountingServerBuilder user(String user) {

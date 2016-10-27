@@ -15,6 +15,7 @@ import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.dropUrlGenerator
 import de.qabel.core.repository.AbstractSqliteRepositoryTest
 import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.EntityManager
@@ -39,7 +40,7 @@ class SqliteChatDropMessageRepositoryTest : AbstractSqliteRepositoryTest<ChatDro
     lateinit var identityRepo: IdentityRepository
     lateinit var contactRepo: ContactRepository
 
-    val identityA: Identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("identityA").build()
+    val identityA: Identity = IdentityBuilder(dropUrlGenerator).withAlias("identityA").build()
     val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()))
     val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()))
 

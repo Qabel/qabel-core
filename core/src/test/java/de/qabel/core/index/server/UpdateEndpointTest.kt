@@ -1,20 +1,19 @@
 package de.qabel.core.index.server
 
+import de.qabel.core.TestServer
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
 import de.qabel.core.index.*
-import de.qabel.core.index.server.IndexHTTPLocation
-import de.qabel.core.index.server.UpdateEndpointImpl
 import org.apache.http.client.methods.HttpPut
 import org.apache.http.util.EntityUtils
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 import org.spongycastle.util.encoders.Hex
 
 class UpdateEndpointTest {
-    private val server = IndexHTTPLocation("http://localhost:9698")
+    private val server = IndexHTTPLocation(TestServer.INDEX)
     private val update = UpdateEndpointImpl(server, createGson())
 
     fun makeIdentity(): UpdateIdentity {

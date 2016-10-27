@@ -6,6 +6,7 @@ import de.qabel.core.config.Identity
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
+import de.qabel.core.dropUrlGenerator
 import de.qabel.core.extensions.assertThrows
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.ClientDatabase
@@ -28,13 +29,12 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
     private lateinit var ignoredContact: Contact
     private lateinit var pubKey: QblECPublicKey
     private lateinit var identityRepository: SqliteIdentityRepository
-    private lateinit var dropUrlGenerator: DropUrlGenerator
     private var hasCalled: Boolean = false
 
     override fun setUp() {
         super.setUp()
-        identity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("tester").build()
-        otherIdentity = IdentityBuilder(DropUrlGenerator("http://localhost")).withAlias("other i").build()
+        identity = IdentityBuilder(dropUrlGenerator).withAlias("tester").build()
+        otherIdentity = IdentityBuilder(dropUrlGenerator).withAlias("other i").build()
         pubKey = QblECPublicKey("test".toByteArray())
         contact = Contact("testcontact", mutableListOf(), pubKey)
         otherContact = Contact("other contact", mutableListOf(), QblECPublicKey("test2".toByteArray()))
@@ -43,7 +43,6 @@ class SqliteContactRepositoryTest : AbstractSqliteRepositoryTest<SqliteContactRe
 
         identityRepository.save(identity)
         identityRepository.save(otherIdentity)
-        dropUrlGenerator = DropUrlGenerator("http://localhost")
     }
 
     override fun createRepo(clientDatabase: ClientDatabase, em: EntityManager): SqliteContactRepository {
