@@ -4,6 +4,7 @@ import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
+import de.qabel.core.dropUrlGenerator
 import org.junit.Assert.*
 import org.hamcrest.Matchers.*
 import org.junit.Test
@@ -13,7 +14,7 @@ import java.util.*
 
 class EntityTest {
 
-    val dropUrl = DropUrlGenerator("http://localhost").generateUrl().toString()
+    val dropUrl = dropUrlGenerator.generateUrl().toString()
     val key = Hex.toHexString(QblECKeyPair().privateKey)
     val identityA = Identity("ident", listOf(DropURL(dropUrl)), QblECKeyPair(Hex.decode(key)))
     val identityB = Identity("ident", listOf(DropURL(dropUrl)), QblECKeyPair(Hex.decode(key)))

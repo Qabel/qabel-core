@@ -1,7 +1,7 @@
 package de.qabel.core.http;
 
+import de.qabel.core.TestServer;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.net.URI;
@@ -21,19 +21,16 @@ public class DropHTTPTest {
     @Before
     public void setUp() {
         try {
-            workingUri = new URI(
-                "http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
+            workingUri = new URI(TestServer.DROP + "/abcdefghijklmnopqrstuvwxyzabcdefgworkingUrl");
 
-            tooShortUri = new URI("http://localhost:5000/IAmTooShort");
+            tooShortUri = new URI(TestServer.DROP + "/IAmTooShort");
 
-            notExistingUri = new URI(
-                "http://localhost:5000/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
+            notExistingUri = new URI(TestServer.DROP + "/abcdefghijklmnopqrstuvwxyzabcnotExistingUrl");
 
-            shouldContainMessagesUri = new URI(
-                "http://localhost:5000/abcdefghijklmnopqrstuvshouldContainMessages");
+            shouldContainMessagesUri = new URI(TestServer.DROP + "/abcdefghijklmnopqrstuvshouldContainMessages");
 
             shouldContainNoNewMessagesSinceDateUri = new URI(
-                "http://localhost:5000/xbcdefghshouldContainNoNewMessagesSinceDate");
+                TestServer.DROP + "/xbcdefghshouldContainNoNewMessagesSinceDate");
 
         } catch (URISyntaxException e) {
             e.printStackTrace();

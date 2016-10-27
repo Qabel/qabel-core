@@ -12,6 +12,7 @@ import de.qabel.core.accounting.BoxHttpClient
 import de.qabel.core.accounting.CloseableHttpResponseStub
 import de.qabel.core.config.AccountingServer
 import de.qabel.core.extensions.shouldNotMatch
+import de.qabel.core.testserver
 import org.apache.commons.io.IOUtils
 import org.junit.Test
 import java.io.ByteArrayInputStream
@@ -21,7 +22,7 @@ import java.util.*
 
 class HttpWriteBackendTest {
     val boxClient = BoxHttpClient(
-        AccountingServer(URI("http://localhost:9696"), URI("http://localhost:9697"), "testuser", "testuser"),
+        AccountingServer(URI("http://$testserver:9696"), URI("http://$testserver:9697"), "testuser", "testuser"),
         AccountingProfile()
     )
     val prefix = boxClient.apply { if (prefixes.isEmpty()) { createPrefix() } }.prefixes.first()

@@ -1,5 +1,6 @@
 package de.qabel.core.index.server
 
+import de.qabel.core.TestServer
 import de.qabel.core.crypto.QblECKeyPair
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
@@ -7,14 +8,14 @@ import de.qabel.core.extensions.assertThrows
 import de.qabel.core.index.*
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
-import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Ignore
+import org.junit.Test
 import java.util.*
 
 @Ignore
 class IndexHTTPTest {
-    private val server = IndexHTTPLocation("http://localhost:9698")
+    private val server = IndexHTTPLocation(TestServer.INDEX)
     private val index = IndexHTTP(server)
 
     companion object {

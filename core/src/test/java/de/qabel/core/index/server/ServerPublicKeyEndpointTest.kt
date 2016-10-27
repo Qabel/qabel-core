@@ -1,17 +1,15 @@
 package de.qabel.core.index.server
 
+import de.qabel.core.TestServer
 import de.qabel.core.extensions.assertThrows
 import de.qabel.core.index.MalformedResponseException
 import de.qabel.core.index.createGson
 import de.qabel.core.index.dummyStatusLine
-import de.qabel.core.index.server.IndexHTTPLocation
-import de.qabel.core.index.server.ServerPublicKeyEndpointImpl
-import org.apache.http.message.BasicStatusLine
+import org.junit.Assert.assertEquals
 import org.junit.Test
-import org.junit.Assert.*
 
 class ServerPublicKeyEndpointTest {
-    private val server = IndexHTTPLocation("http://localhost:9698")
+    private val server = IndexHTTPLocation(TestServer.INDEX)
     private val key = ServerPublicKeyEndpointImpl(server, createGson())
 
     @Test

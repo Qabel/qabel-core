@@ -1,24 +1,26 @@
 package de.qabel.core.repository
 
 import de.qabel.core.config.Contact
-import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.config.factory.IdentityBuilder
 import de.qabel.core.crypto.QblECPublicKey
 import de.qabel.core.drop.DropURL
-import de.qabel.core.repository.sqlite.*
+import de.qabel.core.dropUrlGenerator
+import de.qabel.core.repository.sqlite.ClientDatabase
+import de.qabel.core.repository.sqlite.SqliteContactRepository
+import de.qabel.core.repository.sqlite.SqliteDropUrlRepository
+import de.qabel.core.repository.sqlite.SqliteIdentityRepository
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
 import org.hamcrest.Matchers.*
-import java.util.*
 import org.junit.Assert.assertThat
 import org.junit.Test
+import java.util.*
 
 
 class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRepository>() {
 
     lateinit var contactRepo: ContactRepository
 
-    val dropGenerator = DropUrlGenerator("http://localhost")
-    val identityA = IdentityBuilder(dropGenerator).withAlias("identityA").build()
+    val identityA = IdentityBuilder(dropUrlGenerator).withAlias("identityA").build()
     val contactA = Contact("contactA", LinkedList<DropURL>(), QblECPublicKey("test13".toByteArray()));
     val contactB = Contact("contactB", LinkedList<DropURL>(), QblECPublicKey("test24".toByteArray()));
 
@@ -33,7 +35,7 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
 
     @Test
     fun testSave() {
-        val dropUrl = dropGenerator.generateUrl()
+        val dropUrl = dropUrlGenerator.generateUrl()
         contactA.addDrop(dropUrl)
         repo.store(contactA)
 
@@ -42,7 +44,7 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
 
     @Test
     fun testDelete() {
-        val dropUrl = dropGenerator.generateUrl()
+        val dropUrl = dropUrlGenerator.generateUrl()
         contactA.addDrop(dropUrl)
         repo.store(contactA)
         assertThat(repo.findAll(contactA), contains(dropUrl))
@@ -54,7 +56,7 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
 
     @Test
     fun testFindAll() {
-        val dropUrls = listOf(dropGenerator.generateUrl(), dropGenerator.generateUrl(), dropGenerator.generateUrl())
+        val dropUrls = listOf(dropUrlGenerator.generateUrl(), dropUrlGenerator.generateUrl(), dropUrlGenerator.generateUrl())
         dropUrls.forEach { contactA.addDrop(it) }
         repo.store(contactA)
 
@@ -63,11 +65,11 @@ class SqliteDropUrlRepositoryTest : AbstractSqliteRepositoryTest<SqliteDropUrlRe
 
     @Test
     fun testFindByContactIds() {
-        val dropUrlsA = listOf(dropGenerator.generateUrl(), dropGenerator.generateUrl())
+        val dropUrlsA = listOf(dropUrlGenerator.generateUrl(), dropUrlGenerator.generateUrl())
         dropUrlsA.forEach { contactA.addDrop(it) }
         repo.store(contactA)
 
-        val dropUrlB = dropGenerator.generateUrl()
+        val dropUrlB = dropUrlGenerator.generateUrl()
         contactB.addDrop(dropUrlB)
         repo.store(contactB)
 

@@ -6,6 +6,7 @@ import de.qabel.box.storage.BoxShare
 import de.qabel.box.storage.Hash
 import de.qabel.box.storage.exceptions.QblStorageException
 import de.qabel.box.storage.jdbc.migration.DMMigration1468245565Hash
+import de.qabel.core.testserver
 import org.hamcrest.CoreMatchers.*
 import org.junit.Assert.*
 import org.junit.Test
@@ -22,7 +23,7 @@ class JdbcDirectoryMetadataTest {
         bb.putLong(uuid.mostSignificantBits)
         bb.putLong(uuid.leastSignificantBits)
 
-        JdbcDirectoryMetadataFactory(File(System.getProperty("java.io.tmpdir")), bb.array()).create("https://localhost")
+        JdbcDirectoryMetadataFactory(File(System.getProperty("java.io.tmpdir")), bb.array()).create("https://$testserver")
     }
 
     @org.junit.Test

@@ -1,8 +1,9 @@
 package de.qabel.core.http
 
-import de.qabel.core.config.factory.DropUrlGenerator
+import de.qabel.core.dropUrlGenerator
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblDropInvalidURL
+import de.qabel.core.testserver
 import org.hamcrest.Matchers.*
 import org.junit.Assert.*
 import org.junit.Before
@@ -23,12 +24,11 @@ class MainDropServerTest {
 
     @Before
     fun setUp() {
-        val dropGenerator = DropUrlGenerator("http://localhost:5000")
-        workingUri = dropGenerator.generateUrl().uri
-        tooShortUri = URI("http://localhost:5000/IAmTooShort")
-        notExistingUri = dropGenerator.generateUrl().uri
-        shouldContainMessagesUri = dropGenerator.generateUrl().uri
-        shouldContainNoNewMessagesSinceDateUri = dropGenerator.generateUrl().uri
+        workingUri = dropUrlGenerator.generateUrl().uri
+        tooShortUri = URI("http://$testserver:5000/IAmTooShort")
+        notExistingUri = dropUrlGenerator.generateUrl().uri
+        shouldContainMessagesUri = dropUrlGenerator.generateUrl().uri
+        shouldContainNoNewMessagesSinceDateUri = dropUrlGenerator.generateUrl().uri
 
         //prepare dropserver content for tests.
         dropServer = MainDropServer()

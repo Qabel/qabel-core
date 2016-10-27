@@ -6,13 +6,14 @@ import de.qabel.core.accounting.AccountingProfile
 import de.qabel.core.accounting.BoxClient
 import de.qabel.core.accounting.BoxHttpClient
 import de.qabel.core.config.AccountingServer
+import de.qabel.core.testserver
 import java.io.IOException
 import java.net.URI
 
 class BoxVolumeBlockTest : BoxVolumeTest() {
 
     private val accountingHTTP: BoxClient by lazy {
-        val server = AccountingServer(URI("http://localhost:9696"), URI("http://localhost:9697"), "testuser", "testuser")
+        val server = AccountingServer(URI("http://$testserver:9696"), URI("http://$testserver:9697"), "testuser", "testuser")
         BoxHttpClient(server, AccountingProfile())
     }
 

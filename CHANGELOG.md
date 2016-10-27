@@ -1,12 +1,12 @@
 ## 0.26.0 - 2016-10-24
 ### ADDED
-- #496 metaVolumes (for cross client sync)
+- metaVolumes (for cross client sync) #496
 - license report
 
 ### CHANGED
-- #631 moved VolumeFactories from desktop client to core
-- Qabel/qabel-desktop#518 ensure UTF-8 on drop message decryption
-- #635 emoji filter for avatars
-- #614 extracted RequestAuthorizer from BoxClient
+- moved VolumeFactories from desktop client to core #631
+- ensure UTF-8 on drop message decryption Qabel/qabel-desktop#518
+- emoji filter for avatars #635
+- extracted RequestAuthorizer from BoxClient #614 
 
 ## 0.25.7
