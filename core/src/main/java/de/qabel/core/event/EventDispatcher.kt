@@ -5,7 +5,7 @@ import rx.Observable
 interface EventSource {
     fun events(): Observable<Event>
     fun <T : Event> events(type: Class<T>): Observable<T>
-        = events().ofType(type).map { type.cast(it) }
+        = events().ofType(type)
 }
 interface EventSink {
     fun push(event: Event)
