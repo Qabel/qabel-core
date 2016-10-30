@@ -1,3 +1,7 @@
+## 0.26.2 - 2016-10-30
+### CHANGED
+- (BC break) EventSource.events is now a property and events() infers type
+
 ## 0.26.0 - 2016-10-24
 ### ADDED
 - metaVolumes (for cross client sync) #496
