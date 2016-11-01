@@ -45,8 +45,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Qabel GmbH'
-copyright = u'2016, Nermin Nicevic'
+project = u'Qabel-Core'
+copyright = u'2016, Qabel GmbH'
 author = u'Nermin Nicevic'
 
 # The version info for the project you're documenting, acts as replacement for
