@@ -20,6 +20,11 @@ public class Account extends SyncSettingItem {
      * Field name in serialized json: "auth"
      */
     private String auth;
+    /**
+     * AuthToken of the account
+     * May expire but should be used until proven to be expired
+     */
+    private String token;
 
     /**
      * Creates an instance of Account
@@ -29,9 +34,19 @@ public class Account extends SyncSettingItem {
      * @param auth     Authentication of the account
      */
     public Account(String provider, String user, String auth) {
+        this(provider, user);
+        setAuth(auth);
+    }
+
+    /**
+     * Creates an instance of Account
+     *
+     * @param provider Provider of the account.
+     * @param user     User of the account
+     */
+    public Account(String provider, String user) {
         setProvider(provider);
         setUser(user);
-        setAuth(auth);
     }
 
     public void setProvider(String value) {
@@ -58,14 +73,21 @@ public class Account extends SyncSettingItem {
         return auth;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result;
 
         result = super.hashCode();
 
-        result = prime * result + (auth == null ? 0 : auth.hashCode());
         result = prime * result + (provider == null ? 0 : provider.hashCode());
         result = prime * result + (user == null ? 0 : user.hashCode());
         return result;
@@ -73,15 +95,12 @@ public class Account extends SyncSettingItem {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj) == false) {
+        if (!super.equals(obj)) {
             return false;
         }
 
         if (this == obj) {
             return true;
-        }
-        if (obj == null) {
-            return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
@@ -103,12 +122,8 @@ public class Account extends SyncSettingItem {
             return false;
         }
         if (user == null) {
-            if (other.user != null) {
-                return false;
-            }
-        } else if (!user.equals(other.user)) {
-            return false;
+            return other.user == null;
         }
-        return true;
+        return user.equals(other.user);
     }
 }
