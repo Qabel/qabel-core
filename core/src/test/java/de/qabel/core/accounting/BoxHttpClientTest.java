@@ -1,5 +1,6 @@
 package de.qabel.core.accounting;
 
+import de.qabel.core.TestServer;
 import de.qabel.core.config.AccountingServer;
 import de.qabel.core.exceptions.QblCreateAccountFailException;
 import de.qabel.core.exceptions.QblInvalidCredentials;
@@ -28,10 +29,20 @@ public class BoxHttpClientTest {
     private AccountingProfile profile;
     private TestAccountingServerBuilder serverBuilder;
 
+    @Before
+    public void setServer() throws Exception {
+        serverBuilder = new TestAccountingServerBuilder();
+        server = serverBuilder.build();
+        profile = new AccountingProfile();
+        boxClient = new BoxHttpClient(server, profile);
+        boxClient.login();
+        boxClient.createPrefix();
+    }
+
     @Test
-    public void testGetQuota() throws IOException, QblInvalidCredentials {
+    public void testGetQuota() throws Exception {
         String responseContent = "{\"quota\": 2147483648, \"size\": 15460}";
-        CloseableHttpClientStub httpClient = stubClient("GET", "http://localhost:9697/api/v0/quota/", 200, responseContent);
+        CloseableHttpClientStub httpClient = stubClient("GET", TestServer.BLOCK + "/api/v0/quota/", 200, responseContent);
         boxClient = new BoxHttpClient(server, profile, httpClient);
 
         QuotaState expectedQuota = new QuotaState(2147483648L, 15460);
@@ -47,16 +58,6 @@ public class BoxHttpClientTest {
         QuotaState quota = new QuotaState(2147483648L, 1073741824L);
         String expected = "1 GB free / 2 GB";
         assertEquals(expected, quota.toString());
-    }
-
-    @Before
-    public void setServer() throws URISyntaxException, IOException, QblInvalidCredentials {
-        serverBuilder = new TestAccountingServerBuilder();
-        server = serverBuilder.build();
-        profile = new AccountingProfile();
-        boxClient = new BoxHttpClient(server, profile);
-        boxClient.login();
-        boxClient.createPrefix();
     }
 
     @Test(expected = RuntimeException.class)
@@ -106,7 +107,7 @@ public class BoxHttpClientTest {
         expectedEx.expect(IllegalArgumentException.class);
 
         String responseContent = "{\"email\": [\"Enter a valid email address.\"]}";
-        CloseableHttpClientStub client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 400, responseContent);
+        CloseableHttpClientStub client = stubClient("POST", TestServer.ACCOUNTING + "/api/v0/auth/password/reset/", 400, responseContent);
         BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("mymail");
     }
@@ -116,7 +117,7 @@ public class BoxHttpClientTest {
         String responseContent = "{\"success\":\"Password reset e-mail has been sent.\"}";
         CloseableHttpClientStub client = new CloseableHttpClientStub();
         CloseableHttpResponseStub response = createResponseFromString(200, responseContent);
-        client.addResponse("POST", "http://localhost:9696/api/v0/auth/password/reset/", response);
+        client.addResponse("POST", TestServer.ACCOUNTING + "/api/v0/auth/password/reset/", response);
         BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("valid.email@example.org");
 
@@ -127,7 +128,7 @@ public class BoxHttpClientTest {
     @Test(expected = IOException.class)
     public void resetPasswordConvertsFormatExceptions() throws Exception {
         String responseContent = "invalid json";
-        CloseableHttpClientStub client = stubClient("POST", "http://localhost:9696/api/v0/auth/password/reset/", 200, responseContent);
+        CloseableHttpClientStub client = stubClient("POST", TestServer.ACCOUNTING + "/api/v0/auth/password/reset/", 200, responseContent);
         BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("mymail");
     }
