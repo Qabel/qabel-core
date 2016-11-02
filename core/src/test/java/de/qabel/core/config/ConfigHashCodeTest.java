@@ -13,6 +13,8 @@ public class ConfigHashCodeTest {
         ExtendedHashCodeMethodTester tester = new ExtendedHashCodeMethodTester();
         Configuration config = new ConfigurationBuilder()
             .ignoreProperty("serialVersionUID")
+            .ignoreProperty("auth")
+            .ignoreProperty("token")
             .build();
         tester.testHashCodeMethod(new AccountEquivalentTestFactory(), config);
     }
