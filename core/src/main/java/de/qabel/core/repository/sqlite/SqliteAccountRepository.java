@@ -1,11 +1,5 @@
 package de.qabel.core.repository.sqlite;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
 import de.qabel.core.config.Account;
 import de.qabel.core.config.factory.DefaultAccountFactory;
 import de.qabel.core.repository.AccountRepository;
@@ -13,6 +7,12 @@ import de.qabel.core.repository.EntityManager;
 import de.qabel.core.repository.exception.EntityNotFoundException;
 import de.qabel.core.repository.exception.PersistenceException;
 import de.qabel.core.repository.sqlite.hydrator.AccountHydrator;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 public class SqliteAccountRepository extends AbstractSqliteRepository<Account> implements AccountRepository {
     public static final String TABLE_NAME = "account";
@@ -65,12 +65,13 @@ public class SqliteAccountRepository extends AbstractSqliteRepository<Account> i
         } catch (EntityNotFoundException ignored) {}
 
         try (PreparedStatement statement = database.prepare(
-            "INSERT INTO `account` (`provider`, `user`, `auth`) VALUES (?, ?, ?)"
+            "INSERT INTO `account` (`provider`, `user`, `auth`, `token`) VALUES (?, ?, ?, ?)"
         )) {
             int i = 1;
             statement.setString(i++, account.getProvider());
             statement.setString(i++, account.getUser());
             statement.setString(i++, account.getAuth());
+            statement.setString(i++, account.getToken());
             statement.executeUpdate();
 
             try (ResultSet keys = statement.getGeneratedKeys()) {

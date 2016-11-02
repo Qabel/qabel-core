@@ -18,7 +18,7 @@ public class AccountHydrator extends AbstractHydrator<Account> {
 
     @Override
     protected String[] getFields() {
-        return new String[]{"id", "provider", "user", "auth"};
+        return new String[]{"id", "provider", "user", "auth", "token"};
     }
 
     @Override
@@ -33,9 +33,11 @@ public class AccountHydrator extends AbstractHydrator<Account> {
         String provider = resultSet.getString(i++);
         String user = resultSet.getString(i++);
         String auth = resultSet.getString(i++);
+        String token = resultSet.getString(i++);
 
         Account account = accountFactory.createAccount(provider, user, auth);
         account.setId(id);
+        account.setToken(token);
         return account;
     }
 
