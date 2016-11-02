@@ -117,7 +117,7 @@ public class BoxHttpClientTest {
         String responseContent = "{\"success\":\"Password reset e-mail has been sent.\"}";
         CloseableHttpClientStub client = new CloseableHttpClientStub();
         CloseableHttpResponseStub response = createResponseFromString(200, responseContent);
-        client.addResponse("POST", TestServer.ACCOUNTING + ":9696/api/v0/auth/password/reset/", response);
+        client.addResponse("POST", TestServer.ACCOUNTING + "/api/v0/auth/password/reset/", response);
         BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("valid.email@example.org");
 
@@ -128,7 +128,7 @@ public class BoxHttpClientTest {
     @Test(expected = IOException.class)
     public void resetPasswordConvertsFormatExceptions() throws Exception {
         String responseContent = "invalid json";
-        CloseableHttpClientStub client = stubClient("POST", TestServer.ACCOUNTING + ":9696/api/v0/auth/password/reset/", 200, responseContent);
+        CloseableHttpClientStub client = stubClient("POST", TestServer.ACCOUNTING + "/api/v0/auth/password/reset/", 200, responseContent);
         BoxClient http = new BoxHttpClient(server, profile, client);
         http.resetPassword("mymail");
     }
