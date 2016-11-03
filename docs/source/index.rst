@@ -6,5 +6,6 @@ Welcome to qabel-core's Architecture documentation!
     :maxdepth: 3
 
     core
+    box
 
 Welcome to qabel-core's Architecture documentation!
