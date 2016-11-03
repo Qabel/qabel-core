@@ -3,14 +3,8 @@ Welcome to qabel-core's Arcitecture documentation!
 ==================================================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 3
 
+    packages
 
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+Welcome to qabel-core's Arcitecture documentation!
