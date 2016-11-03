@@ -1,5 +1,5 @@
 
-Welcome to qabel-core's Arcitecture documentation!
+Welcome to qabel-core's Architecture documentation!
 ==================================================
 
 .. toctree::
@@ -7,4 +7,4 @@ Welcome to qabel-core's Arcitecture documentation!
 
     core
 
-Welcome to qabel-core's Arcitecture documentation!
+Welcome to qabel-core's Architecture documentation!
