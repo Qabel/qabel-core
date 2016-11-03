@@ -18,7 +18,7 @@ BoxClient:
     - List of Identitys
     - retrieve and create various information related to the Box Storage
         - QuotaState, storage information
-        - prefixes for connecting into the Box Volumes (for further information about Box see: "INSERT LINK HERE"
+        - prefixes for connecting into the Box Volumes
 
 
 Usage Requirements

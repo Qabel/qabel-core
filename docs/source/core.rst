@@ -9,6 +9,7 @@ Core Module
     core/contacts
     core/crypto
     core/drop
+    core/event
     core/extensions
     core/http
     core/index
