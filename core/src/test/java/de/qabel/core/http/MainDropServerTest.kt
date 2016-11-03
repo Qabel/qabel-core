@@ -1,5 +1,7 @@
 package de.qabel.core.http
 
+import de.qabel.core.drop.MainDropServer
+import de.qabel.core.drop.http.DropServerHttp
 import de.qabel.core.dropUrlGenerator
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblDropInvalidURL

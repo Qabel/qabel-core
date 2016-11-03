@@ -1,17 +1,19 @@
-package de.qabel.core.http
+package de.qabel.core.drop
 
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.BinaryDropMessageV0
 import de.qabel.core.drop.DefaultDropParser
+import de.qabel.core.drop.DropConnector
 import de.qabel.core.drop.DropMessage
 import de.qabel.core.drop.DropURL
+import de.qabel.core.drop.http.DropServerHttp
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblException
 import de.qabel.core.exceptions.QblSpoofedSenderException
 import de.qabel.core.exceptions.QblVersionMismatchException
-import de.qabel.core.http.DropServerHttp.DropServerResponse
+import de.qabel.core.drop.http.DropServerHttp.DropServerResponse
 import de.qabel.core.repository.entities.DropState
 import org.slf4j.LoggerFactory
 

@@ -1,4 +1,4 @@
-package de.qabel.core.http
+package de.qabel.core.drop.http
 
 import de.qabel.core.repository.entities.DropState
 import java.net.URI
@@ -24,8 +24,8 @@ interface DropServerHttp {
     }
 
     data class DropServerResponse<T>(val statusCode: Int,
-                                  val dropState: DropState,
-                                  val dropMessages: List<T>)
+                                     val dropState: DropState,
+                                     val dropMessages: List<T>)
 
 
     fun sendBytes(uri: URI, messageBytes: ByteArray)

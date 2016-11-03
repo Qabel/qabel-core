@@ -1,5 +1,6 @@
 package de.qabel.core.http
 
+import de.qabel.core.drop.http.DropServerHttp
 import de.qabel.core.util.DefaultHashMap
 import java.net.URI
 
