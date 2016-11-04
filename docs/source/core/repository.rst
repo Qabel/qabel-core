@@ -75,6 +75,24 @@ Transaction failures? throw this:
 
 Framework
 ^^^^^^^^^
+Here you find our small database framework.
+Usually no changes in here. If u intend to modify some data schema then go to the SQLite_ package.
+
 
 SQLite
 ^^^^^^
+
+This is the the biggest subpackage. Here u find the implementation of the database abstraction layer, each schemas, migrations and hydrator.
+The explicit SQLite repositorys are located in here.
+
+Some examples of Repositorys:
+    SqliteAccountRepository - which is used to store account and authentication information
+    SqllieContactRepository - which obviously is the repository for contacts
+
+.. note::
+
+    If u change something on the database structure - for example adding an new column than u need to create a migration.
+    Samples can be found in sqlite/migration package.
+
+
+
