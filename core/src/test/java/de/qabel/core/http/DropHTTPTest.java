@@ -1,6 +1,7 @@
 package de.qabel.core.http;
 
 import de.qabel.core.TestServer;
+import de.qabel.core.drop.http.DropHTTP;
 import org.junit.Before;
 import org.junit.Test;
 

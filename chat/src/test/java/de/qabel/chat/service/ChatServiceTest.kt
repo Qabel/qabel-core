@@ -8,13 +8,13 @@ import de.qabel.chat.repository.inmemory.InMemoryChatShareRepository
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
 import de.qabel.core.crypto.CryptoUtils
+import de.qabel.core.drop.DropConnector
 import de.qabel.core.drop.DropMessage
+import de.qabel.core.drop.MainDropConnector
 import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.createContact
 import de.qabel.core.extensions.createIdentity
 import de.qabel.core.extensions.randomFile
-import de.qabel.core.http.DropConnector
-import de.qabel.core.http.MainDropConnector
 import de.qabel.core.http.MockDropServer
 import de.qabel.core.repository.entities.DropState
 import de.qabel.core.repository.inmemory.InMemoryContactRepository
