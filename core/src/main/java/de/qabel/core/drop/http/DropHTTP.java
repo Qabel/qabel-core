@@ -1,5 +1,6 @@
-package de.qabel.core.http;
+package de.qabel.core.drop.http;
 
+import de.qabel.core.http.HTTPResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.james.mime4j.MimeException;

@@ -1,9 +1,10 @@
-package de.qabel.core.http
+package de.qabel.core.drop
 
+import de.qabel.core.drop.http.DropServerHttp
 import de.qabel.core.exceptions.QblDropInvalidMessageSizeException
 import de.qabel.core.exceptions.QblDropInvalidURL
-import de.qabel.core.http.DropServerHttp.QblHeaders
-import de.qabel.core.http.DropServerHttp.QblStatusCodes
+import de.qabel.core.drop.http.DropServerHttp.QblHeaders
+import de.qabel.core.drop.http.DropServerHttp.QblStatusCodes
 import org.apache.commons.io.IOUtils
 import org.apache.james.mime4j.stream.EntityState
 import org.apache.james.mime4j.stream.MimeTokenStream
