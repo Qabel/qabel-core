@@ -12,3 +12,17 @@ For further information see:
 
         https://qabel.github.io/docs/Qabel-Protocol-Box/
 
+
+Basic Features
+**************
+
+    - Send and receive messages
+        - Prerequisites: (each object has its own local repository)
+            - Identity and Contact
+            - ChatDropMessage (type = MESSAGE)
+    - Send and receive shares to an contact
+        - Prerequisites:
+            - Identity and Contact
+            - BoxFile
+            - BoxVolume to upload the BoxFile
+            - SharingService
