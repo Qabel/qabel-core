@@ -20,9 +20,10 @@ Basic Features
         - Prerequisites: (each object has its own local repository)
             - Identity and Contact
             - ChatDropMessage (type = MESSAGE)
+            - ChatService to send and receive
     - Send and receive shares to an contact
         - Prerequisites:
             - Identity and Contact
             - BoxFile
-            - BoxVolume to upload the BoxFile
-            - SharingService
+            - BoxVolume to upload and navigate the BoxFile
+            - SharingService to send and receive
