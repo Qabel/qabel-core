@@ -50,7 +50,7 @@ class IndexHTTPTest {
         val index = IndexHTTP(server, key = outdatedKey)
         val testParts = UpdateTestParts(index)
         testParts.publishTest()
-        assertEquals(2, outdatedKey.numCalls)
+        assertEquals(3, outdatedKey.numCalls)
         outdatedKey.numCalls = 0
         testParts.unpublishTest()
         assertEquals(2, outdatedKey.numCalls)
@@ -100,6 +100,18 @@ class IndexHTTPTest {
         assertEquals(updatedIdentity.alias, foundPublicIdentity.alias)
     }
 
+    @Test
+    fun testDeleteIdentity() {
+        val testParts = UpdateTestParts(index)
+        testParts.publishTest()
+
+        val changedIdentity = testParts.identity.copy(alias = "1234", fields = listOf())
+        index.deleteIdentity(changedIdentity)  // only the key matters
+
+        val search1Result = index.search(mapOf(Pair(FieldType.EMAIL, testParts.mail)))
+        assertEquals(0, search1Result.size)
+    }
+
     private class UpdateTestParts(private val index: IndexHTTP) {
         val mail = getRandomMail()
 
@@ -121,6 +133,14 @@ class IndexHTTPTest {
 
             /* Will be found */
             searchForMailAndAssertOurs(mail)
+
+            val status = index.identityStatus(identity)
+            assertIdentityEquals(identity, status.identity)
+            assertEquals(1, status.fieldStatus.size)
+            val field = status.fieldStatus[0]
+            assertEquals(EntryStatusEnum.CONFIRMED, field.status)
+            assertEquals(FieldType.EMAIL, field.field)
+            assertEquals(mail, field.value)
         }
 
         fun unpublishTest() {

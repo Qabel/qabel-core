@@ -29,19 +29,11 @@ internal class UpdateEndpointImpl(
         return gson.toJson(updateRequest)
     }
 
-    fun encryptJson(json: String, senderKeyPair: QblECKeyPair, serverPublicKey: QblECPublicKey): ByteArray {
-        val box = CryptoUtils().createBox(senderKeyPair, serverPublicKey, json.toByteArray(), 0)
-        return box
-    }
-
     override fun buildRequest(identity: UpdateIdentity, serverPublicKey: QblECPublicKey): HttpUriRequest {
         val json = buildJsonUpdateRequest(identity)
-        val encryptedJson = encryptJson(json, identity.keyPair, serverPublicKey)
-
         val uri = location.getUriBuilderForEndpoint("update").build()
         val request = HttpPut(uri)
-        request.addHeader("Content-Type", "application/vnd.qabel.noisebox+json")
-        request.entity = ByteArrayEntity(encryptedJson)
+        encryptJsonIntoRequest(json, identity.keyPair, serverPublicKey, request)
         return request
     }
 

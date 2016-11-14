@@ -12,6 +12,15 @@ import java.io.IOException
  */
 interface IndexServer {
     /**
+     * Search for many attributes in one request.
+     *
+     * Returns a list of [IndexContact] instances where each [IndexContact.matches] list is a list of attributes
+     * from [manyAttributes] that matched it. If nothing is found, returns an empty list.
+     */
+    @Throws(IOException::class)
+    fun search(manyAttributes: List<Field>): List<IndexContact>
+
+    /**
      * SearchEndpoint for identities on the index server.
      *
      * At least one attribute has to be specified, or [IllegalArgumentException] will be raised.
@@ -36,6 +45,18 @@ interface IndexServer {
     fun searchForPhone(phone: String): List<IndexContact> {
         return search(mapOf(Pair(FieldType.PHONE, phone)))
     }
+
+    /**
+     * Fetch the [IdentityStatus] of [identity]. [identity.fields] are ignored.
+     */
+    @Throws(IOException::class)
+    fun identityStatus(identity: UpdateIdentity): IdentityStatus
+
+    /**
+     * Delete all data related to [identity] from the index. [identity.fields] are ignored.
+     */
+    @Throws(IOException::class)
+    fun deleteIdentity(identity: UpdateIdentity)
 
     /**
      * UpdateEndpoint published data of [identity] on the index.

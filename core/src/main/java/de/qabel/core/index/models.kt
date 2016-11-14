@@ -19,7 +19,8 @@ import java.util.*
 data class IndexContact(
     val publicKey: QblECPublicKey,
     val dropUrl: DropURL,
-    val alias: String
+    val alias: String,
+    val matches: List<Field>  = listOf()
 ) {
     fun toContact(): Contact {
         return Contact(alias, listOf(dropUrl), publicKey)
@@ -40,7 +41,7 @@ data class UpdateIdentity(
     val keyPair: QblECKeyPair,
     val dropURL: DropURL,
     val alias: String,
-    val fields: List<UpdateField>
+    val fields: List<UpdateField> = listOf()
 ) {
 
     constructor(identity: Identity, fields: List<UpdateField>) :
@@ -92,10 +93,57 @@ enum class FieldType {
     PHONE,
 }
 
+
+data class Field(
+    val field: FieldType,
+    val value: String
+)
+
+
 data class UpdateField(
     val action: UpdateAction,
     val field: FieldType,
     val value: String
+)
+
+enum class EntryStatusEnum {
+    /**
+     * This field entry was confirmed and is live; publicly visible.
+     */
+    @SerializedName("confirmed")
+    CONFIRMED,
+
+    /**
+     * Confirmation (by user) pending, not publicly visible.
+     */
+    @SerializedName("unconfirmed")
+    UNCONFIRMED,
+
+    /**
+     * Confirmation (by user) to delete publicly visible entry. Currently this does normally not happen as there
+     * is no way at the moment to craft such a request through any of the clients, which authorize
+     * deletions through encrypted requests instead.
+     */
+    @SerializedName("deletion-pending")
+    DELETION_PENDING
+}
+
+data class EntryStatus(
+    val status: EntryStatusEnum,
+    val field: FieldType,
+    val value: String
+)
+
+data class IdentityStatus(
+    /**
+     * Current identity data as returned by server (drop URL, alias, public key).
+     */
+    val identity: IndexContact,
+    /**
+     * A list of field statuses for every confirmed or unconfirmed (pending) entry associated with the
+     * identity.
+     */
+    val fieldStatus: List<EntryStatus>
 )
 
 /**
@@ -115,16 +163,26 @@ private val IndexContactDeserializer = jsonDeserializer {
      */
     val obj = it.json.obj
     if (!obj.contains("public_key") || !obj.contains("alias") || !obj.contains("drop_url")) {
-        throw IllegalArgumentException("missing key in identity")
+        throw IllegalArgumentException("missing key in contact")
     }
-    /* If a custom TypeAdapter is around, at least this level has to be spelled out, since we don't have access to
-     * the generic type adapter here.
-     */
+    val matches = if (obj.contains("matches") && obj["matches"].isJsonArray()) {
+        it.context.deserialize<Array<Field>>(obj["matches"], Array<Field>::class.java).asList()
+    } else {
+        listOf()
+    }
     IndexContact(
         publicKey = it.context.deserialize(obj["public_key"], QblECPublicKey::class.java),
         dropUrl = it.context.deserialize(obj["drop_url"], DropURL::class.java),
-        alias = obj["alias"].string
+        alias = obj["alias"].string,
+        matches = matches
     )
+}
+
+private val IndexContactSerializer = jsonSerializer<IndexContact> {
+    it.context.serialize(mapOf(
+        Pair("public_key", it.src.publicKey),
+        Pair("drop_url", it.src.dropUrl),
+        Pair("alias", it.src.alias)))
 }
 
 /**
@@ -135,6 +193,7 @@ internal fun createGson(): Gson {
     return GsonBuilder()
         .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
         .registerTypeAdapter<IndexContact>(IndexContactDeserializer)
+        .registerTypeAdapter<IndexContact>(IndexContactSerializer)
         .create()
 }
 

@@ -2,10 +2,8 @@ package de.qabel.core.index.server
 
 import de.qabel.core.TestServer
 import de.qabel.core.extensions.assertThrows
-import de.qabel.core.index.FieldType
-import de.qabel.core.index.MalformedResponseException
-import de.qabel.core.index.createGson
-import de.qabel.core.index.dummyStatusLine
+import de.qabel.core.index.*
+import org.apache.http.client.methods.HttpPost
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -15,14 +13,19 @@ class SearchEndpointTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun testBuildSearchRequestEmpty() {
-        search.buildRequest(mapOf())
+        search.buildRequest(listOf())
     }
 
     @Test
     fun testBuildSearchRequestSingle() {
-        val attributes = mapOf(Pair(FieldType.EMAIL, "test@example.net"))
+        val attributes = listOf(Field(FieldType.EMAIL, "test@example.net"))
         val request = search.buildRequest(attributes)
-        assertEquals("email=test@example.net", request.uri.query)
+        assertEquals(null, request.uri.query)
+        assertEquals("POST", request.method)
+        assertEquals("application/json", request.getFirstHeader("Content-Type").value)
+        val postRequest = request as HttpPost
+        val json = postRequest.entity.content.reader(Charsets.UTF_8).readText()
+        assertEquals("""{"query":[{"field":"email","value":"test@example.net"}]}""", json)
     }
 
     @Test
@@ -101,7 +104,8 @@ class SearchEndpointTest {
             {"identities": [{
                "public_key": "0f82b0018d1140a37b9cf3a4570bbdd415c8bbbcfc7efe7ef8aa912ce3760520",
                "drop_url": "http://example.net/somewhere/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo",
-               "alias": "1234"
+               "alias": "1234",
+               "matches": []
             }]}
             """
         val result = search.parseResponse(json, dummyStatusLine())
@@ -120,7 +124,8 @@ class SearchEndpointTest {
                "public_key": "0f82b0018d1140a37b9cf3a4570bbdd415c8bbbcfc7efe7ef8aa912ce3760520",
                "drop_url": "http://example.net/somewhere/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo",
                "alias": "1234",
-               "field_from_the_future": "I'm back"
+               "field_from_the_future": "I'm back",
+               "matches": []
             }]}
             """
         val result = search.parseResponse(json, dummyStatusLine())
