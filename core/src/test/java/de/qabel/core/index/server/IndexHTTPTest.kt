@@ -9,11 +9,10 @@ import de.qabel.core.index.*
 import org.apache.http.StatusLine
 import org.apache.http.client.methods.HttpUriRequest
 import org.junit.Assert.assertEquals
-import org.junit.Ignore
 import org.junit.Test
 import java.util.*
 
-@Ignore
+
 class IndexHTTPTest {
     private val server = IndexHTTPLocation(TestServer.INDEX)
     private val index = IndexHTTP(server)
@@ -70,16 +69,14 @@ class IndexHTTPTest {
     }
 
     private class UpdateTestParts(private val index: IndexHTTP) {
-        private val mail1 = getRandomMail()
-        private val mail2 = getRandomMail()
+        val mail = getRandomMail()
 
         val identity = UpdateIdentity(
             keyPair = QblECKeyPair(),
             dropURL = DropURL("http://example.net/somewhere/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopo"),
             alias = "Major Anya, Unicode: 裸共產主義",
             fields = listOf(
-                UpdateField(UpdateAction.CREATE, FieldType.EMAIL, mail1),
-                UpdateField(UpdateAction.CREATE, FieldType.EMAIL, mail2)
+                UpdateField(UpdateAction.CREATE, FieldType.EMAIL, mail)
             )
         )
 
@@ -90,22 +87,20 @@ class IndexHTTPTest {
             */
             assertEquals(UpdateResult.ACCEPTED_IMMEDIATE, updateResult)
 
-            /* Will be found with both mails */
-            searchForMailAndAssertOurs(mail1)
-            searchForMailAndAssertOurs(mail2)
+            /* Will be found */
+            searchForMailAndAssertOurs(mail)
         }
 
         fun unpublishTest() {
             val identity = identity.copy(
                 fields = listOf(
-                    UpdateField(UpdateAction.DELETE, FieldType.EMAIL, mail2)
+                    UpdateField(UpdateAction.DELETE, FieldType.EMAIL, mail)
                 )
             )
 
             assertEquals(UpdateResult.ACCEPTED_IMMEDIATE, index.updateIdentity(identity))
 
-            searchForMailAndAssertOurs(mail1)  // still found
-            assertEquals(0, index.search(mapOf(Pair(FieldType.EMAIL, mail2))).size)  // gone
+            assertEquals(0, index.search(mapOf(Pair(FieldType.EMAIL, mail))).size)  // gone
         }
 
         fun assertIdentityEquals(identity: UpdateIdentity, indexContact: IndexContact) {
