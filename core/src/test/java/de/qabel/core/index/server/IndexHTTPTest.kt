@@ -68,6 +68,38 @@ class IndexHTTPTest {
         assertEquals(400, exception.code)
     }
 
+    @Test
+    fun testUpdateDropURL() {
+        val testParts = UpdateTestParts(index)
+        testParts.publishTest()
+
+        val updatedIdentity = testParts.identity.copy(dropURL = DropURL("http://example.net/somewhere/abcdefghijklmnopqrstuvwxyzabcdefghijklmonop"))
+        val updateResult = index.updateIdentity(updatedIdentity)
+        assertEquals(UpdateResult.ACCEPTED_IMMEDIATE, updateResult)
+
+        val search1Result = index.search(mapOf(Pair(FieldType.EMAIL, testParts.mail)))
+        assertEquals(1, search1Result.size)
+        val foundPublicIdentity = search1Result[0]
+        assertEquals(updatedIdentity.dropURL, foundPublicIdentity.dropUrl)
+        assertEquals(updatedIdentity.alias, foundPublicIdentity.alias)
+    }
+
+    @Test
+    fun testUpdateAlias() {
+        val testParts = UpdateTestParts(index)
+        testParts.publishTest()
+
+        val updatedIdentity = testParts.identity.copy(alias = "1234")
+        val updateResult = index.updateIdentity(updatedIdentity)
+        assertEquals(UpdateResult.ACCEPTED_IMMEDIATE, updateResult)
+
+        val search1Result = index.search(mapOf(Pair(FieldType.EMAIL, testParts.mail)))
+        assertEquals(1, search1Result.size)
+        val foundPublicIdentity = search1Result[0]
+        assertEquals(updatedIdentity.dropURL, foundPublicIdentity.dropUrl)
+        assertEquals(updatedIdentity.alias, foundPublicIdentity.alias)
+    }
+
     private class UpdateTestParts(private val index: IndexHTTP) {
         val mail = getRandomMail()
 

@@ -49,6 +49,9 @@ interface IndexServer {
      * 2. [UpdateField] with the new email address and [UpdateAction.CREATE]
      *
      * As soon as the user confirms the new email address the old email address will be replaced seamlessly.
+     *
+     * The drop URL and alias on the server are updated with the values of [identity] (to only update these,
+     * leave [identity.fields] empty).
      */
     @Throws(IOException::class)
     fun updateIdentity(identity: UpdateIdentity): UpdateResult
