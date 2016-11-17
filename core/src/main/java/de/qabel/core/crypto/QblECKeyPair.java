@@ -10,6 +10,15 @@ import java.util.Arrays;
  * Elliptic curve key pair
  */
 public class QblECKeyPair implements Serializable {
+    private static Class<?> curveClass;
+
+    static {
+        try {
+            curveClass = ClassLoader.getSystemClassLoader().loadClass("de.qabel.core.crypto.Curve25519");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static final int KEY_SIZE_BYTE = 32;
 
@@ -24,7 +33,11 @@ public class QblECKeyPair implements Serializable {
      */
     public QblECKeyPair(byte[] privateKey) {
 
-        curve25519 = new Curve25519();
+        try {
+            curve25519 = (Curve25519) curveClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("failed to create Curve25519 instance", e);
+        }
 
         this.privateKey = privateKey;
         pubKey = new QblECPublicKey(curve25519.cryptoScalarmultBase(this.privateKey));
