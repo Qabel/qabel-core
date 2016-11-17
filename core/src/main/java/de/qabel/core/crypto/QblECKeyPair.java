@@ -10,7 +10,6 @@ import java.util.Arrays;
  * Elliptic curve key pair
  */
 public class QblECKeyPair implements Serializable {
-
     public static final int KEY_SIZE_BYTE = 32;
 
     private Curve25519 curve25519;
