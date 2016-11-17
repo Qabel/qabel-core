@@ -1,6 +1,5 @@
 package de.qabel.core.crypto;
 
-import de.qabel.core.crypto.Curve25519;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
