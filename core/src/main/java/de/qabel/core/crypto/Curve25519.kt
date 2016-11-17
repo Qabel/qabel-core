@@ -16,9 +16,9 @@ class Curve25519 : Serializable {
         }
 
         private fun loadLibraryIfNeccessary(libname: String) {
-            //if (!isLoaded(libname)) {
+            if (!isLoaded(libname)) {
                 System.loadLibrary(libname)
-            //}
+            }
         }
 
         private fun isLoaded(libname: String): Boolean {
