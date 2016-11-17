@@ -35,5 +35,4 @@ class Curve25519 : Serializable {
             return libraries.toArray(arrayOf<String>())
         }
     }
-
 }
