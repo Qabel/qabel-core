@@ -138,7 +138,7 @@ data class IdentityStatus(
     /**
      * Current identity data as returned by server (drop URL, alias, public key).
      */
-    val identity: IndexContact,
+    val identity: IndexContact?,
     /**
      * A list of field statuses for every confirmed or unconfirmed (pending) entry associated with the
      * identity.

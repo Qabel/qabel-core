@@ -110,6 +110,9 @@ class IndexHTTPTest {
 
         val search1Result = index.search(mapOf(Pair(FieldType.EMAIL, testParts.mail)))
         assertEquals(0, search1Result.size)
+
+        val status = index.identityStatus(testParts.identity)
+        assertEquals(null, status.identity)
     }
 
     private class UpdateTestParts(private val index: IndexHTTP) {
@@ -135,7 +138,7 @@ class IndexHTTPTest {
             searchForMailAndAssertOurs(mail)
 
             val status = index.identityStatus(identity)
-            assertIdentityEquals(identity, status.identity)
+            assertIdentityEquals(identity, status.identity!!)
             assertEquals(1, status.fieldStatus.size)
             val field = status.fieldStatus[0]
             assertEquals(EntryStatusEnum.CONFIRMED, field.status)
