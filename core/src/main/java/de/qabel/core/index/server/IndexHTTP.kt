@@ -35,81 +35,27 @@ internal constructor (
     }
 
     override fun identityStatus(identity: UpdateIdentity): IdentityStatus {
-        return identityStatusWithRetries(identity)
-    }
-
-    fun identityStatus(identity: UpdateIdentity, serverPublicKey: QblECPublicKey): IdentityStatus {
-        val request = status.buildRequest(identity, serverPublicKey)
-        val response = httpClient.execute(request)
-        return status.handleResponse(response)
-    }
-
-    fun identityStatusWithRetries(identity: UpdateIdentity, retries: Int = 0): IdentityStatus {
-        val serverPublicKey = retrieveServerPublicKey()
-        try {
-            return identityStatus(identity, serverPublicKey)
-        } catch (e: APIError) {
-            e.retries = retries
-            if (e.code == HttpStatus.SC_BAD_REQUEST && retries < 2) {
-                // a bad request / 400 may be caused by an outdated server public key, retry two times (total tries = 3)
-                return identityStatusWithRetries(identity, retries + 1)
-            }
-            throw e
-        }
+        return requestWithRetries({ serverPublicKey ->
+            val request = status.buildRequest(identity, serverPublicKey)
+            val response = httpClient.execute(request)
+            status.handleResponse(response)
+        })
     }
 
     override fun deleteIdentity(identity: UpdateIdentity) {
-        return deleteIdentityWithRetries(identity)
-    }
-
-    fun deleteIdentity(identity: UpdateIdentity, serverPublicKey: QblECPublicKey) {
-        val request = deleteIdentity.buildRequest(identity, serverPublicKey)
-        val response = httpClient.execute(request)
-        return deleteIdentity.handleResponse(response)
-    }
-
-    fun deleteIdentityWithRetries(identity: UpdateIdentity, retries: Int = 0) {
-        val serverPublicKey = retrieveServerPublicKey()
-        try {
-            return deleteIdentity(identity, serverPublicKey)
-        } catch (e: APIError) {
-            e.retries = retries
-            if (e.code == HttpStatus.SC_BAD_REQUEST && retries < 2) {
-                // a bad request / 400 may be caused by an outdated server public key, retry two times (total tries = 3)
-                return deleteIdentityWithRetries(identity, retries + 1)
-            }
-            throw e
-        }
+        return requestWithRetries({ serverPublicKey ->
+            val request = deleteIdentity.buildRequest(identity, serverPublicKey)
+            val response = httpClient.execute(request)
+            deleteIdentity.handleResponse(response)
+        })
     }
 
     override fun updateIdentity(identity: UpdateIdentity): UpdateResult {
-        return updateIdentityWithRetries(identity)
-    }
-
-    fun updateIdentityWithRetries(identity: UpdateIdentity, retries: Int = 0): UpdateResult {
-        val serverPublicKey = retrieveServerPublicKey()
-        try {
-            return updateIdentity(identity, serverPublicKey)
-        } catch (e: APIError) {
-            e.retries = retries
-            if (e.code == HttpStatus.SC_BAD_REQUEST && retries < 2) {
-                // a bad request / 400 may be caused by an outdated server public key, retry two times (total tries = 3)
-                return updateIdentityWithRetries(identity, retries + 1)
-            }
-            throw e
-        }
-    }
-
-    internal fun updateIdentity(identity: UpdateIdentity, serverPublicKey: QblECPublicKey): UpdateResult {
-        val request = update.buildRequest(identity, serverPublicKey)
-        val response = httpClient.execute(request)
-        return update.handleResponse(response)
-    }
-
-    internal fun retrieveServerPublicKey(): QblECPublicKey {
-        val request = key.buildRequest()
-        val response = httpClient.execute(request)
-        return key.handleResponse(response)
+        return requestWithRetries({ serverPublicKey ->
+            val request = update.buildRequest(identity, serverPublicKey)
+            val response = httpClient.execute(request)
+            update.handleResponse(response)
+        })
     }
 
     override fun confirmVerificationCode(code: String) {
@@ -124,5 +70,25 @@ internal constructor (
         val request = verificationCode.buildRequest(code, confirm)
         val response = httpClient.execute(request)
         verificationCode.handleResponse(response)
+    }
+
+    fun <T> requestWithRetries(body: (serverPublicKey: QblECPublicKey) -> T, retries: Int = 0): T {
+        val serverPublicKey = retrieveServerPublicKey()
+        try {
+            return body(serverPublicKey)
+        } catch (e: APIError) {
+            e.retries = retries
+            if (e.code == HttpStatus.SC_BAD_REQUEST && retries < 2) {
+                // a bad request / 400 may be caused by an outdated server public key, retry two times (total tries = 3)
+                return requestWithRetries(body, retries + 1)
+            }
+            throw e
+        }
+    }
+
+    internal fun retrieveServerPublicKey(): QblECPublicKey {
+        val request = key.buildRequest()
+        val response = httpClient.execute(request)
+        return key.handleResponse(response)
     }
 }
