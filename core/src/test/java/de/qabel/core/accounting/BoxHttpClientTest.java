@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
-import java.util.Random;
+import java.util.UUID;
 
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -135,9 +135,7 @@ public class BoxHttpClientTest {
 
     @Test
     public void createBoxAccount() throws Exception {
-        Random rand = new Random();
-
-        String name = "testUser" + rand.nextInt(10000);
+        String name = ("testUser" + UUID.randomUUID()).substring(0, 30);
         server = serverBuilder.user(name).build();
         boxClient = new BoxHttpClient(server, profile);
         boxClient.createBoxAccount(name + "@example.com");
