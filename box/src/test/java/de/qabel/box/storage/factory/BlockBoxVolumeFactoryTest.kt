@@ -99,6 +99,7 @@ class BlockBoxVolumeFactoryTest {
         identity.prefixes = mutableListOf(prefix1, prefix3)
 
         assertThat(choose(CLIENT), equalTo("prefix3"))
+        assertThat(identity.prefixes.last().account ?: "", equalTo("testuser"))
     }
 
     private fun choose(type: Prefix.TYPE = USER) = factory.choosePrefix(identity, account, type)
@@ -121,6 +122,7 @@ class BlockBoxVolumeFactoryTest {
     fun usesRemotePrefixWithIndexIfExistingAndNoLocalIsAvailable() {
         hasRef(prefix2)
         assertThat(choose(), equalTo("prefix2"))
+        assertThat(identity.prefixes.last().account ?: "", equalTo("testuser"))
     }
 
     @Test
@@ -136,5 +138,6 @@ class BlockBoxVolumeFactoryTest {
         identity.prefixes = listOf(prefix2)
 
         assertThat(choose(), equalTo("prefix2"))
+        assertThat(identity.prefixes.last().account ?: "", equalTo("testuser"))
     }
 }
