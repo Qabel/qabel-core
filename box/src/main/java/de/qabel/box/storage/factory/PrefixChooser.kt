@@ -20,13 +20,11 @@ class PrefixChooser(
 
     fun choose(): String
         = mainPrefix().firstOrElse {
-            indexedPrefixes().firstOrElse {
-                remoteOnlyIndexedPrefixes().firstOrElse {
-                    localUnindexedPrefixes().firstOrElse {
-                        createNewPrefix()
-                    }.letApply { createIndex(it) }
-                }
-            }
+            indexedPrefixes() ?:
+            remoteOnlyIndexedPrefixes() ?:
+            localUnindexedPrefixes().firstOrElse {
+                createNewPrefix()
+            }.letApply { createIndex(it) }
         }.letApply {
             it.account = account.user
             identityRepository.save(identity)
@@ -42,12 +40,15 @@ class PrefixChooser(
 
     private fun remoteOnlyIndexedPrefixes() = serverPrefixes
         .map { Prefix(it, type) }
-        .filter { hasIndex(it) }
+        .firstOrNull { hasIndex(it) }
+        ?.letApply { prefix ->
+            identity.prefixes.add(prefix)
+        }
 
     private fun indexedPrefixes() = identity.prefixes
         .filter { it.type == type }
         .filter { serverPrefixes.contains(it.prefix) }
-        .filter { hasIndex(it) }
+        .firstOrNull { hasIndex(it) }
 
     private fun hasIndex(prefix: Prefix) = hasIndex(prefix.prefix)
 }
