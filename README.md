@@ -9,7 +9,6 @@ This project provides a core library for all Qabel Clients implementing <a href=
 
 <br style="clear: both"/>
 <br style="clear: both"/>
-<br style="clear: both"/>
 <p align="center">
 	<a href="#introduction">Introduction</a> |
 	<a href="#install">Install</a> |
