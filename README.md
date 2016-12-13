@@ -19,7 +19,7 @@ This project provides a core library for all Qabel Clients implementing <a href=
 
 [![Release](https://img.shields.io/github/release/Qabel/qabel-core.svg)](https://jitpack.io/#Qabel/qabel-core)
 [![License](https://img.shields.io/badge/License-QaPL-blue.svg)](https://github.com/Qabel/qabel-core/blob/master/LICENSE)
-[![Build](https://teamcity.qabel.de/app/rest/builds/buildType:QabelCore_Build/statusIcon.svg)
+![Build](https://teamcity.qabel.de/app/rest/builds/buildType:QabelCore_Build/statusIcon.svg)
 
 # Introduction
 
