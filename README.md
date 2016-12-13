@@ -8,14 +8,14 @@
 This project provides a core library for all Qabel Clients implementing <a href="https://qabel.de"><img alt="Qabel" src="https://files.qabel.de/img/qabel-kl.png" height="18px"/></a>.
 
 <br style="clear: both"/>
-<br style="clear: both"/>
-<p align="center">
+<p>
 	<a href="#introduction">Introduction</a> |
 	<a href="#install">Install</a> |
 	<a href="#getting_started">Getting Started</a> |
 	<a href="#usage">Usage</a> |
 	<a href="#contribution">Contribution</a>
 </p>
+<br style="clear: both"/>
 
 [![Release](https://img.shields.io/github/release/Qabel/qabel-core.svg)](https://jitpack.io/#Qabel/qabel-core)
 [![License](https://img.shields.io/badge/License-QaPL-blue.svg)](https://github.com/Qabel/qabel-core/blob/master/LICENSE)
