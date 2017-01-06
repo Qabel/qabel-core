@@ -11,7 +11,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.security.InvalidKeyException
 
-abstract class IndexDMDownloader(
+open class IndexDMDownloader(
     val readBackend: StorageReadBackend,
     val keyPair: QblECKeyPair,
     val tempDir: File,
@@ -42,7 +42,7 @@ abstract class IndexDMDownloader(
         }
     }
 
-    abstract fun startDownload(rootRef: String): StorageDownload
+    open fun startDownload(rootRef: String): StorageDownload = readBackend.download(rootRef)
 
     class DownloadedDirectoryMetadata(dm: DirectoryMetadata, val etag: String): DirectoryMetadata by dm
 }

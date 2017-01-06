@@ -17,19 +17,9 @@ open class BoxVolumeImpl(final override val config: BoxVolumeConfig, private val
     private val cryptoUtils = CryptoUtils()
     private val indexDmDownloader by lazy {
         with (config) {
-            ConfiguredIndexDmDownloader(readBackend, keyPair, tempDir, directoryFactory)
+            IndexDMDownloader(readBackend, keyPair, tempDir, directoryFactory)
         }
     }
-
-    private class ConfiguredIndexDmDownloader(readBackend: StorageReadBackend,
-                                              keyPair: QblECKeyPair, tempDir: File, directoryMetadataFactory:
-                                              DirectoryMetadataFactory)
-        : IndexDMDownloader(readBackend, keyPair, tempDir, directoryMetadataFactory) {
-
-        override fun startDownload(rootRef: String): StorageDownload = readBackend.download(rootRef)
-
-    }
-
     override fun getReadBackend() = config.readBackend
 
     val indexNavigation: IndexNavigation by lazy {
