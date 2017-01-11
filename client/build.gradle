@@ -1,0 +1,24 @@
+group = 'de.qabel.client'
+
+ext.sharedManifest.attributes 'Component': 'Client'
+
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+        attributes 'Implementation-Title': 'Qabel Core - Client Component'
+    }
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    project(':core')
+    project(':chat')
+    project(':box')
+}
+
+tasks.withType(Test) {
+    def platform = "${System.properties['os.name'].toLowerCase()}_${System.properties['os.arch']}"
+    systemProperty "java.library.path", "../core/build/binaries/curve25519SharedLibrary/$platform/"
+}
+testJar.manifest.attributes 'Implementation-Title': 'Qabel Core - Client Component - Test artifact'
