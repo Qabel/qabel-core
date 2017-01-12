@@ -13,7 +13,7 @@ jar {
 
 dependencies {
 	compile 'com.google.code.gson:gson:2.+'
-	compile 'com.github.salomonbrys.kotson:kotson:2.3.0'
+	compile 'com.github.salomonbrys.kotson:kotson:2.4.0'
 	compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.12'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.4'
 	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.4'
@@ -24,9 +24,9 @@ dependencies {
 	compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.8.11.2'
 	compile 'com.madgag.spongycastle:prov:1.53.0.0'
 	compile 'org.json:json:20160212'
-    compile 'io.reactivex:rxjava:1.1.5'
-    compile 'io.reactivex:rxkotlin:0.55.0'
-    compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '7.6.0'
+    compile 'io.reactivex:rxjava:1.2.5'
+    compile 'io.reactivex:rxkotlin:0.60.0'
+    compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.0.0'
 }
 
 task nativeHeaders {
