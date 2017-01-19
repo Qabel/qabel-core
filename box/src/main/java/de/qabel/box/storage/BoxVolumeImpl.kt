@@ -40,6 +40,9 @@ open class BoxVolumeImpl(final override val config: BoxVolumeConfig, private val
         Security.addProvider(BouncyCastleProvider())
     }
 
+    override fun loadIndex(indexDirectoryMetadata: DirectoryMetadata) : IndexNavigation =
+        DefaultIndexNavigation(indexDirectoryMetadata, keyPair, config)
+
     @JvmOverloads
     constructor (
         readBackend: StorageReadBackend,

@@ -24,6 +24,7 @@ import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Test
+import rx.schedulers.Schedulers
 
 class ChatServiceTest : CoreTestCase {
 
@@ -39,7 +40,7 @@ class ChatServiceTest : CoreTestCase {
     val chatDropRepoA = de.qabel.chat.repository.inmemory.InMemoryChatDropMessageRepository()
     val chatServiceA = MainChatService(dropConnector, identityARepository,
         contactARepository, chatDropRepoA, dropStateRepo, MainSharingService(
-        InMemoryChatShareRepository(), contactARepository, createTempDir(), fileMetadataFactory))
+        InMemoryChatShareRepository(), contactARepository, createTempDir(), fileMetadataFactory), Schedulers.immediate())
 
     val identityB: Identity = createIdentity("Identity B")
     val contactB: Contact = createContact(identityB.alias, identityB.helloDropUrl, identityB.ecPublicKey)
@@ -48,7 +49,7 @@ class ChatServiceTest : CoreTestCase {
     val chatDropRepoB = InMemoryChatDropMessageRepository()
     val chatServiceB = MainChatService(dropConnector, identityBRepository,
         contactBRepository, chatDropRepoB, dropStateRepo, MainSharingService(
-        InMemoryChatShareRepository(), contactBRepository, createTempDir(), fileMetadataFactory))
+        InMemoryChatShareRepository(), contactBRepository, createTempDir(), fileMetadataFactory), Schedulers.immediate())
 
 
     @Before

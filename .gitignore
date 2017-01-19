@@ -37,3 +37,4 @@ build/
 .nb-gradle
 log/
 qabel-core.sqlite
+.vagrant

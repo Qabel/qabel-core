@@ -18,13 +18,13 @@ import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.util.DefaultHashMap
 import org.slf4j.LoggerFactory
 import rx.Observable
+import rx.Scheduler
 import rx.lang.kotlin.observable
-import rx.schedulers.Schedulers
 
 
 open class MainChatService(val dropConnector: DropConnector, val identityRepository: IdentityRepository, val contactRepository: ContactRepository,
                            val chatDropMessageRepository: ChatDropMessageRepository, val dropStateRepository: DropStateRepository,
-                           val sharingService: SharingService) : ChatService {
+                           val sharingService: SharingService, val ioScheduler : Scheduler) : ChatService {
 
     companion object {
         private val logger = LoggerFactory.getLogger(MainChatService::class.java)
@@ -39,7 +39,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
             subscriber.onNext(textMessage)
             sendMessage(textMessage)
             subscriber.onCompleted()
-        }.subscribeOn(Schedulers.io())
+        }.subscribeOn(ioScheduler)
 
     override fun sendShareMessage(text: String, identity: Identity, contact: Contact, boxFile: BoxFile, boxNavigation: BoxNavigation): Observable<ChatDropMessage> =
         observable<ChatDropMessage> { subscriber ->
@@ -50,7 +50,7 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
             subscriber.onNext(shareMessage)
             sendMessage(shareMessage)
             subscriber.onCompleted()
-        }.subscribeOn(Schedulers.io())
+        }.subscribeOn(ioScheduler)
 
     private fun createOutgoingMessage(identity: Identity, contact: Contact,
                                       messageType: MessageType, payload: MessagePayload) =
@@ -152,14 +152,14 @@ open class MainChatService(val dropConnector: DropConnector, val identityReposit
             contact.status = Contact.ContactStatus.UNKNOWN
             contactRepository.save(contact, identity)
             contact
-        } ?: null
+        }
     }
 
     fun ChatDropMessage.toDropMessage(identity: Identity): DropMessage =
         DropMessage(identity, payload.toString(), messageType.type)
 
     fun DropMessage.toChatDropMessage(identity: Identity, contact: Contact): ChatDropMessage {
-        val type = if (dropPayloadType.equals(MessageType.SHARE_NOTIFICATION.type))
+        val type = if (dropPayloadType == MessageType.SHARE_NOTIFICATION.type)
             MessageType.SHARE_NOTIFICATION else MessageType.BOX_MESSAGE
 
         return ChatDropMessage(contact.id, identity.id, Direction.INCOMING,

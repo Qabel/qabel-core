@@ -9,12 +9,16 @@ jar {
     }
 }
 
+compileTestJava.dependsOn tasks.getByPath(':core:testClasses')
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-
-    project(':core')
-    project(':chat')
-    project(':box')
+    compile project(':core')
+    compile project(':box')
+    compile project(':chat')
+    testCompile project(':core').sourceSets.test.output
+    testCompile project(':box').sourceSets.test.output
+    testCompile project(':chat').sourceSets.test.output
+    compile group: 'javax.inject', name: 'javax.inject', version: '1'
+    testCompile "com.nhaarman:mockito-kotlin:0.5.0"
 }
 
 tasks.withType(Test) {

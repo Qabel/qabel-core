@@ -11,6 +11,11 @@ private fun String.toInitials(): String = split(splitRegex).filter {
     it.take(1).toUpperCase()
 }.joinToString("")
 
+interface AliasedEntity {
+    val alias: String
+    fun initials(): String = alias.toInitials()
+}
+
 fun Contact.displayName(): String {
     if (nickName != null && !nickName.isEmpty()) {
         return nickName

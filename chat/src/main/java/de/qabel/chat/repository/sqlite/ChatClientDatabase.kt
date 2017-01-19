@@ -2,12 +2,10 @@ package de.qabel.chat.repository.sqlite
 
 import de.qabel.chat.repository.sqlite.migration.Migration1460997040ChatDropMessage
 import de.qabel.chat.repository.sqlite.migration.Migration1460997041ChatShares
-import de.qabel.core.repository.sqlite.AbstractClientDatabase
 import de.qabel.core.repository.sqlite.DesktopClientDatabase
 import de.qabel.core.repository.sqlite.PragmaVersionAdapter
+import de.qabel.core.repository.sqlite.migration.AbstractMigration
 import java.sql.Connection
-
-import de.qabel.core.repository.sqlite.migration.*
 
 open class ChatClientDatabase(connection: Connection) : DesktopClientDatabase(connection) {
 

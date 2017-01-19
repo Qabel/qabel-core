@@ -31,4 +31,10 @@ interface BoxVolume {
     @Throws(QblStorageException::class)
     fun createIndex(root: String)
 
+    /**
+     * Navigate to the given index file for the volume
+     */
+    @Throws(QblStorageException::class)
+    fun loadIndex(indexDirectoryMetadata: DirectoryMetadata): IndexNavigation
+
 }

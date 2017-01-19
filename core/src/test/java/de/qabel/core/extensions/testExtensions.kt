@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.should.shouldMatch
 import de.qabel.core.TestServer
 import de.qabel.core.config.Contact
 import de.qabel.core.config.Identity
+import de.qabel.core.config.Prefix
 import de.qabel.core.config.factory.DropUrlGenerator
 import de.qabel.core.crypto.CryptoUtils
 import de.qabel.core.crypto.QblECKeyPair
@@ -26,7 +27,7 @@ interface CoreTestCase {
 fun CoreTestCase.createIdentity(alias: String,
                                 dropURL: DropURL = dropGenerator.generateUrl(),
                                 keyPair: QblECKeyPair = QblECKeyPair()) =
-    Identity(alias, mutableListOf(dropURL), keyPair)
+    Identity(alias, mutableListOf(dropURL), keyPair).apply { prefixes.add(Prefix("prefix")) }
 
 fun CoreTestCase.createContact(alias: String,
                                dropURL: DropURL = dropGenerator.generateUrl(),

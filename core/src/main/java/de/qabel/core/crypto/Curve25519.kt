@@ -22,10 +22,14 @@ class Curve25519 : Serializable {
         }
 
         private fun isLoaded(libname: String): Boolean {
-            val systemLibName = System.mapLibraryName(libname)
-            var loadedLibraryPaths = getLoadedLibraries(ClassLoader.getSystemClassLoader())
-            loadedLibraryPaths += getLoadedLibraries(Curve25519::class.java.classLoader)
-            return loadedLibraryPaths.map { File(it).name }.contains(systemLibName)
+            try {
+                val systemLibName = System.mapLibraryName(libname)
+                var loadedLibraryPaths = getLoadedLibraries(ClassLoader.getSystemClassLoader())
+                loadedLibraryPaths += getLoadedLibraries(Curve25519::class.java.classLoader)
+                return loadedLibraryPaths.map { File(it).name }.contains(systemLibName)
+            }catch (ex : Exception){
+                return false
+            }
         }
 
         private fun getLoadedLibraries(loader: ClassLoader): Array<String> {

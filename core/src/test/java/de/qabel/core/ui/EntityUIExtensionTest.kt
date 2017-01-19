@@ -58,8 +58,15 @@ class EntityUIExtensionTest() : CoreTestCase {
         assertThat(max.length, equalTo(2))
         assertThat(max, equalTo("MM"))
 
-        val identity = createIdentity("Gabba 😁 Hobbit")
-        assertThat(identity.initials(), equalTo("GH"))
+        val alias = "Gabba 😁 Hobbit"
+        val correctInitials = "GH"
+        val identity = createIdentity(alias)
+        assertThat(identity.initials(), equalTo(correctInitials))
+
+        val aliasedEntity = object: AliasedEntity {
+            override val alias: String = alias
+        }
+        assertThat(aliasedEntity.initials(), equalTo(correctInitials))
     }
 
     @Test

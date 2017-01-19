@@ -13,7 +13,7 @@ import java.util.*
 class FolderNavigation(
         override val path: BoxPath.FolderLike,
         dm: DirectoryMetadata,
-        private val key: ByteArray,
+        val key: ByteArray,
         override val indexNavigation: IndexNavigation,
         volumeConfig: BoxVolumeConfig
 ) : AbstractNavigation(path, dm, volumeConfig) {
@@ -28,7 +28,7 @@ class FolderNavigation(
 
     @Throws(QblStorageException::class)
     override fun reloadMetadata(): DirectoryMetadata {
-        logger.trace("Reloading directory metadata")
+        logger.trace("Reloading directory metadata $path")
         // duplicate of navigate()
         try {
             readBackend.download(dm.fileName, mHash).use { download ->

@@ -30,13 +30,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 abstract class AbstractNavigation(
     override val path: BoxPath.FolderLike,
     open protected var dm: DirectoryMetadata,
-    volumeConfig: BoxVolumeConfig
+    val volumeConfig: BoxVolumeConfig
 ) : BoxNavigation, QabelLog {
 
     protected val readBackend = volumeConfig.readBackend
     protected val writeBackend = volumeConfig.writeBackend
     protected val deviceId = volumeConfig.deviceId
-    protected val prefix = volumeConfig.prefix
+    val prefix = volumeConfig.prefix
     protected val directoryFactory = volumeConfig.directoryFactory
     protected val fileFactory = volumeConfig.fileFactory
     protected val defaultHashAlgorithm = volumeConfig.defaultHashAlgorithm
@@ -361,7 +361,6 @@ abstract class AbstractNavigation(
             throw QblStorageInvalidKey("failed to update file metadata")
         }
 
-        autocommit()
         return boxFile
     }
 
