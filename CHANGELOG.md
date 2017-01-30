@@ -1,8 +1,13 @@
-## [0.26.2] - 2016-11-03
+## [0.26.4] - 2017-01-30
 ### Changed
 - (BC break) moved drop related classes from http package into drop package
 - (BC break) moved drop http related classes from http package into drop/http
+- dependencies updated #664
 
+### Added
+- client module #667
+- local storage for files and DMs #669
+- box interactors from android moved to client module
 
 ## [0.26.3] - 2016-11-02
 ### Added
