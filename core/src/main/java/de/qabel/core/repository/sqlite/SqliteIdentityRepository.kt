@@ -5,6 +5,7 @@ import de.qabel.core.repository.ContactRepository
 import de.qabel.core.repository.DropUrlRepository
 import de.qabel.core.repository.EntityManager
 import de.qabel.core.repository.IdentityRepository
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.framework.BaseRepository
 import de.qabel.core.repository.framework.QueryBuilder
 import de.qabel.core.repository.sqlite.hydrator.IdentityAdapter
@@ -12,12 +13,14 @@ import de.qabel.core.repository.sqlite.schemas.ContactDB
 import de.qabel.core.repository.sqlite.schemas.ContactDB.IdentityContacts.IDENTITY_ID
 import de.qabel.core.repository.sqlite.schemas.IdentityDB
 import java.sql.PreparedStatement
+import java.sql.SQLException
+import java.sql.SQLIntegrityConstraintViolationException
 
 class SqliteIdentityRepository(
     db: ClientDatabase, em: EntityManager,
     private val prefixRepository: SqlitePrefixRepository = SqlitePrefixRepository(db, em),
     dropUrlRepository: DropUrlRepository = SqliteDropUrlRepository(db)
-):  BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em),
+) : BaseRepository<Identity>(IdentityDB, IdentityAdapter(dropUrlRepository, prefixRepository), db, em),
     IdentityRepository,
     EntityObservable by SimpleEntityObservable() {
 
@@ -97,10 +100,16 @@ class SqliteIdentityRepository(
         }
 
     override fun save(identity: Identity) {
-        if (identity.id == 0) {
-            persist(identity)
-        } else {
-            update(identity)
+        try {
+            if (identity.id == 0) {
+                persist(identity)
+            } else {
+                update(identity)
+            }
+        } catch (e: SQLException) {
+            find(identity.keyIdentifier).let {
+                throw EntityExistsException()
+            }
         }
         notifyObservers()
     }

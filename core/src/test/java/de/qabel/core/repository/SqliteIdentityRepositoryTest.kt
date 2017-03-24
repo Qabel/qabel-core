@@ -8,6 +8,7 @@ import de.qabel.core.extensions.CoreTestCase
 import de.qabel.core.extensions.assertThrows
 import de.qabel.core.extensions.createContact
 import de.qabel.core.extensions.createIdentity
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.sqlite.*
 import de.qabel.core.repository.sqlite.hydrator.DropURLHydrator
@@ -203,6 +204,16 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
     }
 
     @Test
+    fun testSaveDuplicateShouldThrowEntityExistsException() {
+        val identity = createIdentity("Ident")
+        repo.save(identity)
+        identity.id = 0
+        assertThrows(EntityExistsException::class) {
+            repo.save(identity)
+        }
+    }
+
+    @Test
     fun testDeleteIdentityObservable() {
         val identity = createIdentity("Identity")
         repo.save(identity)
@@ -216,7 +227,7 @@ class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentity
         val identity = createIdentity("Identity")
         repo.save(identity)
         attachEntityObserver()
-        repo.update (identity)
+        repo.update(identity)
         assertTrue(hasCalled)
     }
 
