@@ -38,3 +38,5 @@ build/
 log/
 qabel-core.sqlite
 .vagrant
+!/.idea/runConfigurations/*
+Würde lib/ löschen
