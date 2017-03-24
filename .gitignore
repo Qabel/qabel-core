@@ -38,5 +38,5 @@ build/
 log/
 qabel-core.sqlite
 .vagrant
-!/.idea/runConfigurations/*
+!/.idea/runConfigurations
 Würde lib/ löschen
