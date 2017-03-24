@@ -5,7 +5,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.26.5] - 2017-03-24
-## Fixed
+### Fixed
 - EntityExists expection for duplicate identities on save
 
 ## [0.26.4] - 2017-01-30
