@@ -100,17 +100,19 @@ class SqliteIdentityRepository(
         }
 
     override fun save(identity: Identity) {
-        try {
-            if (identity.id == 0) {
+        if (identity.id == 0) {
+            try {
                 persist(identity)
-            } else {
-                update(identity)
+            } catch (e: SQLException) {
+                if (e.message?.contains("UNIQUE constraint failed") ?: false) {
+                    throw EntityExistsException()
+                }
+                throw e
             }
-        } catch (e: SQLException) {
-            find(identity.keyIdentifier).let {
-                throw EntityExistsException()
-            }
+        } else {
+            update(identity)
         }
+
         notifyObservers()
     }
 

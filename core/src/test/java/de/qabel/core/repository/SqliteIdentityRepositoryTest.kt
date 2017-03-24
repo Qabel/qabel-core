@@ -16,6 +16,7 @@ import org.hamcrest.Matchers.contains
 import org.hamcrest.Matchers.hasSize
 import org.junit.Assert.*
 import org.junit.Test
+import java.sql.SQLException
 import java.util.*
 
 class SqliteIdentityRepositoryTest : AbstractSqliteRepositoryTest<SqliteIdentityRepository>(), CoreTestCase {
