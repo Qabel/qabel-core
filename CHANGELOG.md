@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
+## [0.26.6] - 2017-03-27
+### Fixed
+- EntityExists expection for duplicate identities on save (InMemoryIdentityRepository)
 
 ## [0.26.5] - 2017-03-24
 ### Fixed
