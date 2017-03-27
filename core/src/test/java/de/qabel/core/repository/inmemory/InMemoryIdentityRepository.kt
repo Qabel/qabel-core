@@ -5,6 +5,7 @@ import de.qabel.core.config.Identities
 import de.qabel.core.config.Identity
 import de.qabel.core.config.SimpleEntityObservable
 import de.qabel.core.repository.IdentityRepository
+import de.qabel.core.repository.exception.EntityExistsException
 import de.qabel.core.repository.exception.EntityNotFoundException
 import de.qabel.core.repository.exception.PersistenceException
 
@@ -26,7 +27,7 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
     }
 
     override fun find(keyId: String, detached: Boolean): Identity {
-        if(!detached){
+        if (!detached) {
             return find(keyId)
         }
         TODO("Detached operations not support by inmemoryRepos!")
@@ -51,8 +52,11 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
         if (identity.id == 0) {
             identity.id = identities.identities.size + 1
         }
-        if (!identities.contains(identity)) {
+        if (identities.contains(identity)) {
+            throw EntityExistsException()
+        } else {
             identities.put(identity)
+
         }
         notifyObservers()
     }
