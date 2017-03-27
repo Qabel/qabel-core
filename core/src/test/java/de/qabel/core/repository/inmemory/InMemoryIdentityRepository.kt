@@ -50,14 +50,13 @@ open class InMemoryIdentityRepository : IdentityRepository, EntityObservable by 
     @Throws(PersistenceException::class)
     override fun save(identity: Identity) {
         if (identity.id == 0) {
-            identity.id = identities.identities.size + 1
+            if (identities.contains(identity)) {
+                throw EntityExistsException()
+            } else {
+                identity.id = identities.identities.size + 1
+            }
         }
-        if (identities.contains(identity)) {
-            throw EntityExistsException()
-        } else {
-            identities.put(identity)
-
-        }
+        identities.put(identity)
         notifyObservers()
     }
 
